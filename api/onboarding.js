@@ -9,7 +9,7 @@
 const CLICKUP_API_KEY = process.env.CLICKUP_API_KEY;
 const SPACE_CLIENTES  = process.env.CLICKUP_SPACE_ID || '901313340318';
 const BASE_URL        = 'https://api.clickup.com/api/v2';
-const KICKOFF_URL     = process.env.KICKOFF_URL || 'https://escalando.co/kickoff';
+const KICKOFF_URL     = (process.env.KICKOFF_URL || 'https://escalando.co/kickoff').trim();
 
 // ============================================================
 // HANDLER PRINCIPAL
@@ -121,30 +121,33 @@ async function processarKickoff(d) {
   const onboarding = lists.find(l => l.name === 'Onboarding');
   if (!onboarding) throw new Error('Lista Onboarding não encontrada.');
 
-  // Cria task com briefing completo
-  await cu('post', `/list/${onboarding.id}/task`, {
-    name: `Briefing Completo — ${d.empresa}`,
-    description: [
-      `## Briefing de Kickoff — ${d.empresa}`,
-      ``,
-      `**Produtos principais:** ${d.produtos}`,
-      `**Diferenciais:** ${d.diferenciais || '—'}`,
-      `**Área de atuação:** ${d.areaAtuacao || '—'}`,
-      `**Perfil dos clientes:** ${d.perfilClientes || '—'}`,
-      `**Ticket médio:** R$ ${d.ticketMedio || '—'}`,
-      `**Como vendem hoje:** ${d.comoVendem || '—'}`,
-      d.verba ? `**Verba mensal:** R$ ${d.verba}` : '',
-      ``,
-      `### Acessos`,
-      `- Meta Business: ${d.acessoMeta}`,
-      `- Google Ads: ${d.acessoGoogle}`,
-      `- GMB: ${d.acessoGmb}`,
-      `- Site: ${d.acessoSite}`,
-      ``,
-      d.obs ? `**Observações:** ${d.obs}` : '',
-    ].filter(Boolean).join('\n'),
-    priority: 2,
-  });
+  // Busca task "Marcar Kickoff"
+  const { tasks } = await cu('get', `/list/${onboarding.id}/task?archived=false`);
+  const kickoffTask = tasks.find(t => t.name.toLowerCase().startsWith('marcar kickoff'));
+  if (!kickoffTask) throw new Error('Task "Marcar Kickoff" não encontrada.');
+
+  // Adiciona comentário com o briefing completo
+  const comentario = [
+    `📋 **Briefing de Kickoff — ${d.empresa}**`,
+    ``,
+    `**Produtos principais:** ${d.produtos}`,
+    `**Diferenciais:** ${d.diferenciais || '—'}`,
+    `**Área de atuação:** ${d.areaAtuacao || '—'}`,
+    `**Perfil dos clientes:** ${d.perfilClientes || '—'}`,
+    `**Ticket médio:** R$ ${d.ticketMedio || '—'}`,
+    `**Como vendem hoje:** ${d.comoVendem || '—'}`,
+    d.verba ? `**Verba mensal para anúncios:** R$ ${d.verba}` : '',
+    d.concorrentes ? `**Concorrentes:** ${d.concorrentes}` : '',
+    ``,
+    `**Acessos coletados:**`,
+    `• Meta Business: ${d.acessoMeta}`,
+    `• Google Ads: ${d.acessoGoogle}`,
+    `• Google Meu Negócio: ${d.acessoGmb}`,
+    `• Site / Hospedagem: ${d.acessoSite}`,
+    d.obs ? `\n**Observações:** ${d.obs}` : '',
+  ].filter(Boolean).join('\n');
+
+  await cu('post', `/task/${kickoffTask.id}/comment`, { comment_text: comentario });
 
   return { msg: `Briefing registrado para ${d.empresa}` };
 }
