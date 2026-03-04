@@ -6,10 +6,11 @@
  * Body: { action: 'fechamento' | 'kickoff', ...dados }
  */
 
-const CLICKUP_API_KEY = process.env.CLICKUP_API_KEY;
-const SPACE_CLIENTES  = process.env.CLICKUP_SPACE_ID || '901313340318';
-const BASE_URL        = 'https://api.clickup.com/api/v2';
-const KICKOFF_URL     = (process.env.KICKOFF_URL || 'https://escalando.co/kickoff').trim();
+const CLICKUP_API_KEY    = process.env.CLICKUP_API_KEY;
+const SPACE_CLIENTES     = process.env.CLICKUP_SPACE_ID || '901313553858';
+const BASE_URL           = 'https://api.clickup.com/api/v2';
+const KICKOFF_URL        = (process.env.KICKOFF_URL || 'https://escalando.co/kickoff').trim();
+const GOOGLE_WORKSPACE   = (process.env.GOOGLE_WORKSPACE_URL || '').trim();
 
 // ============================================================
 // HANDLER PRINCIPAL
@@ -100,11 +101,38 @@ async function processarFechamento(d) {
     });
   }
 
+  // Cria estrutura no Drive (pasta + planilha de leads)
+  let drive = {};
+  if (GOOGLE_WORKSPACE) {
+    try {
+      const gRes = await fetch(GOOGLE_WORKSPACE, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'criar-cliente', empresa: d.empresa }),
+      });
+      drive = await gRes.json();
+
+      // Salva link da planilha na task de NF+Contrato
+      if (drive.planilhaUrl) {
+        const { tasks: taskList } = await cu('get', `/list/${onboarding.id}/task?archived=false`);
+        const nfTask = taskList.find(t => t.name.startsWith('Emitir NF'));
+        if (nfTask) {
+          const descAtual = nfTask.description || '';
+          await cu('put', `/task/${nfTask.id}`, {
+            description: descAtual + `\n\n📊 **Planilha de Leads:** ${drive.planilhaUrl}\n📁 **Drive:** ${drive.pastaDriveUrl}`,
+          });
+        }
+      }
+    } catch (err) {
+      drive = { error: err.message };
+    }
+  }
+
   const listas = ['Onboarding', 'GMB', 'Landing Pages', 'CRM — Leads',
     ...(d.plano !== 'starter' ? ['Meta Ads'] : []),
     ...(d.plano === 'pro' ? ['Google Ads'] : [])];
 
-  return { msg: `Estrutura criada para ${d.empresa} (${nomePlano(d.plano)})`, listas };
+  return { msg: `Estrutura criada para ${d.empresa} (${nomePlano(d.plano)})`, listas, drive };
 }
 
 // ============================================================
