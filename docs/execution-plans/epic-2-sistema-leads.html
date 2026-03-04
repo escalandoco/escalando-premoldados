@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Plano de Execução — Epic 2: Sistema de Leads</title>
+  <style>
+    :root {
+      --gold: #B8860B; --gold-2: #DAA520; --gold-light: #FFFBEB;
+      --gray-50: #F9FAFB; --gray-100: #F3F4F6; --gray-200: #E5E7EB;
+      --gray-400: #9CA3AF; --gray-500: #6B7280; --gray-600: #4B5563;
+      --gray-700: #374151; --gray-800: #1F2937; --gray-900: #111827;
+      --green: #16A34A; --red: #DC2626; --blue: #2563EB; --dark: #0D1117;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #F3F4F6; color: var(--gray-800); line-height: 1.6; }
+    header { background: var(--dark); color: white; padding: 52px 24px 44px; text-align: center; position: relative; overflow: hidden; }
+    header::before { content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 30% 50%, rgba(37,99,235,0.15) 0%, transparent 55%),
+                  radial-gradient(ellipse at 75% 40%, rgba(184,134,11,0.12) 0%, transparent 55%); }
+    .header-inner { position: relative; z-index: 1; max-width: 860px; margin: 0 auto; }
+    .back-link { display: inline-flex; align-items: center; gap: 6px; color: rgba(255,255,255,0.5); font-size: 12px; text-decoration: none; margin-bottom: 20px; padding: 5px 12px; border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; }
+    .back-link:hover { color: white; border-color: rgba(255,255,255,0.3); }
+    .badge { display: inline-block; background: rgba(37,99,235,0.15); border: 1px solid rgba(37,99,235,0.4); color: #93C5FD; padding: 5px 16px; border-radius: 20px; font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 16px; }
+    header h1 { font-size: clamp(26px, 4vw, 44px); font-weight: 900; letter-spacing: -1px; line-height: 1.15; margin-bottom: 10px; }
+    header h1 em { color: #93C5FD; font-style: normal; }
+    .header-sub { color: rgba(255,255,255,0.5); font-size: 14px; margin-bottom: 24px; }
+    .meta-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+    .meta-chip { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1); padding: 5px 14px; border-radius: 6px; font-size: 12px; color: rgba(255,255,255,0.6); }
+    .meta-chip strong { color: white; }
+    .dep-banner { background: rgba(234,179,8,0.12); border: 1px solid rgba(234,179,8,0.3); border-radius: 8px; padding: 10px 16px; color: #CA8A04; font-size: 13px; margin-top: 16px; display: inline-flex; align-items: center; gap: 8px; }
+
+    .wrap { max-width: 980px; margin: 0 auto; padding: 32px 20px; }
+    .card { background: white; border-radius: 14px; padding: 28px; margin-bottom: 20px; border: 1px solid var(--gray-200); }
+    .card-title { font-size: 16px; font-weight: 800; color: var(--gray-900); margin-bottom: 20px; padding-bottom: 12px; border-bottom: 2px solid #EFF6FF; display: flex; align-items: center; gap: 10px; }
+    .card-icon { width: 32px; height: 32px; background: #EFF6FF; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+
+    .obj-box { background: var(--dark); border-radius: 10px; padding: 20px 24px; border-left: 4px solid #3B82F6; }
+    .obj-box p { color: rgba(255,255,255,0.85); font-size: 14.5px; font-style: italic; line-height: 1.75; }
+
+    .stories-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-top: 4px; }
+    @media (max-width: 700px) { .stories-grid { grid-template-columns: 1fr; } }
+    .story-card { border-radius: 10px; padding: 18px; border: 1px solid var(--gray-200); border-top: 3px solid #3B82F6; background: var(--gray-50); }
+    .story-id { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.2px; color: var(--blue); margin-bottom: 6px; }
+    .story-title { font-size: 14px; font-weight: 800; color: var(--gray-900); margin-bottom: 10px; }
+    .story-agent { display: inline-flex; align-items: center; gap: 5px; background: var(--dark); color: #93C5FD; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; margin-bottom: 12px; }
+    .story-tasks { list-style: none; }
+    .story-tasks li { display: flex; gap: 8px; align-items: flex-start; padding: 5px 0; font-size: 12.5px; color: var(--gray-700); border-bottom: 1px solid var(--gray-100); }
+    .story-tasks li:last-child { border-bottom: none; }
+    .cb { width: 15px; height: 15px; border: 2px solid var(--gray-300); border-radius: 3px; flex-shrink: 0; margin-top: 2px; }
+    .cb.done { background: var(--green); border-color: var(--green); display: flex; align-items: center; justify-content: center; }
+    .cb.done::after { content: '✓'; color: white; font-size: 9px; font-weight: 900; }
+    .story-status { margin-top: 12px; display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+    .st-done { background: #D1FAE5; color: #065F46; }
+    .st-progress { background: #DBEAFE; color: #1E40AF; }
+    .st-pending { background: var(--gray-100); color: var(--gray-500); }
+
+    .t-wrap { overflow-x: auto; border-radius: 8px; overflow: hidden; border: 1px solid var(--gray-200); margin-top: 8px; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th { background: var(--gray-900); color: rgba(255,255,255,0.85); padding: 9px 13px; text-align: left; font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.6px; }
+    td { padding: 9px 13px; border-bottom: 1px solid var(--gray-100); color: var(--gray-700); vertical-align: top; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: var(--gray-50); }
+    .tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+    .tag-de { background: #ECFDF5; color: #065F46; }
+    .tag-analyst { background: #FEF3C7; color: #92400E; }
+    .tag-arch { background: #F3E8FF; color: #6B21A8; }
+    .tag-done { background: #D1FAE5; color: #065F46; }
+    .tag-progress { background: #DBEAFE; color: #1E40AF; }
+    .tag-pending { background: var(--gray-100); color: var(--gray-500); }
+
+    /* ARCHITECTURE DIAGRAM */
+    .arch { background: var(--dark); border-radius: 12px; padding: 24px; }
+    .arch-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #93C5FD; margin-bottom: 16px; }
+    .arch-flow { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; align-items: center; }
+    @media (max-width: 640px) { .arch-flow { grid-template-columns: 1fr; } }
+    .arch-node { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 12px; text-align: center; }
+    .arch-node-icon { font-size: 20px; margin-bottom: 6px; }
+    .arch-node-name { font-size: 11px; font-weight: 700; color: white; margin-bottom: 2px; }
+    .arch-node-desc { font-size: 10px; color: rgba(255,255,255,0.4); }
+    .arch-arrow { text-align: center; color: #3B82F6; font-size: 20px; }
+
+    .comms-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 8px; }
+    @media (max-width: 580px) { .comms-grid { grid-template-columns: 1fr; } }
+    .comm-item { background: var(--gray-50); border-radius: 8px; padding: 14px; border: 1px solid var(--gray-200); }
+    .comm-trigger { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--blue); margin-bottom: 4px; }
+    .comm-from { font-size: 13px; font-weight: 700; color: var(--gray-900); }
+    .comm-to { font-size: 12px; color: var(--gray-500); margin: 3px 0; }
+    .comm-msg { font-size: 12.5px; color: var(--gray-700); font-style: italic; line-height: 1.5; }
+
+    footer { text-align: center; padding: 28px; color: var(--gray-400); font-size: 12px; border-top: 1px solid var(--gray-200); margin-top: 8px; }
+    footer a { color: var(--blue); text-decoration: none; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a href="../prd.html" class="back-link">← PRD Principal</a>
+    <div class="badge">Plano de Execução · Epic 2</div>
+    <h1>Sistema de <em>Leads</em></h1>
+    <p class="header-sub">Estrutura de tasks, agentes e fluxo de comunicação</p>
+    <div class="meta-row">
+      <div class="meta-chip"><strong>Prioridade:</strong> P1</div>
+      <div class="meta-chip"><strong>Stories:</strong> EP2-S1, EP2-S2, EP2-S3</div>
+      <div class="meta-chip"><strong>Agentes:</strong> @data-engineer · @analyst · @architect</div>
+      <div class="meta-chip"><strong>Status:</strong> In Progress</div>
+    </div>
+    <div class="dep-banner">⚠ Depende de Epic 1 concluído — LP no ar antes de ativar captação de leads</div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- OBJETIVO -->
+  <div class="card">
+    <div class="card-title"><span class="card-icon">🎯</span>Objetivo do Epic</div>
+    <div class="obj-box">
+      <p>Estruturar o sistema completo que recebe, registra, acompanha e reporta leads para cada cliente — desde a planilha Google Sheets (CRM manual) até as automações AIOS. Ao final, leads entram automaticamente na planilha e relatórios são gerados sem trabalho manual.</p>
+    </div>
+  </div>
+
+  <!-- ARQUITETURA DO SISTEMA -->
+  <div class="card">
+    <div class="card-title"><span class="card-icon">🏗️</span>Arquitetura do Sistema de Leads</div>
+    <div class="arch">
+      <div class="arch-title">Fluxo completo: LP → Planilha → Relatório → AIOS</div>
+      <div class="arch-flow">
+        <div class="arch-node">
+          <div class="arch-node-icon">📄</div>
+          <div class="arch-node-name">LP Cliente</div>
+          <div class="arch-node-desc">Formulário de captação</div>
+        </div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-node">
+          <div class="arch-node-icon">⚡</div>
+          <div class="arch-node-name">Apps Script</div>
+          <div class="arch-node-desc">Webhook Web App</div>
+        </div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-node">
+          <div class="arch-node-icon">📊</div>
+          <div class="arch-node-name">Google Sheets</div>
+          <div class="arch-node-desc">CRM Mestre + por cliente</div>
+        </div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-node">
+          <div class="arch-node-icon">📈</div>
+          <div class="arch-node-name">Relatório</div>
+          <div class="arch-node-desc">Template mensal PDF</div>
+        </div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-node">
+          <div class="arch-node-icon">🤖</div>
+          <div class="arch-node-name">AIOS Agents</div>
+          <div class="arch-node-desc">Automação 3x/mês</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STORIES -->
+  <div class="card">
+    <div class="card-title"><span class="card-icon">📖</span>Stories e Tasks</div>
+    <div class="stories-grid">
+
+      <div class="story-card">
+        <div class="story-id">EP2-S1</div>
+        <div class="story-title">Planilha Mestre de Leads</div>
+        <div class="story-agent">@data-engineer — Dara</div>
+        <ul class="story-tasks">
+          <li><div class="cb done"></div>Script setup-crm.gs (cria estrutura automática)</li>
+          <li><div class="cb done"></div>Webhook webhook-leads.gs (recebe leads da LP)</li>
+          <li><div class="cb done"></div>Aba MESTRE (todos os clientes, 15 colunas)</li>
+          <li><div class="cb done"></div>Aba TEMPLATE_CLIENTE + DASHBOARD</li>
+          <li><div class="cb done"></div>Formatação condicional por status</li>
+          <li><div class="cb done"></div>Fórmula "Dias sem contato"</li>
+          <li><div class="cb"></div>Publicar Web App no Apps Script</li>
+          <li><div class="cb"></div>Configurar URL no CONFIG.webhookUrl da LP</li>
+          <li><div class="cb"></div>Testar fluxo end-to-end (formulário → planilha)</li>
+          <li><div class="cb"></div>Documentação: docs/playbooks/crm-planilha.md</li>
+        </ul>
+        <div class="story-status st-progress">◉ In Progress</div>
+      </div>
+
+      <div class="story-card">
+        <div class="story-id">EP2-S2</div>
+        <div class="story-title">Templates de Relatório de Performance</div>
+        <div class="story-agent">@analyst — Atlas</div>
+        <ul class="story-tasks">
+          <li><div class="cb"></div>Template mensal: KPIs de tráfego pago</li>
+          <li><div class="cb"></div>Template: leads recebidos vs. atendidos vs. fechados</li>
+          <li><div class="cb"></div>Template: ROI por canal (Google, Meta, Orgânico)</li>
+          <li><div class="cb"></div>Template Google Slides ou Google Docs</li>
+          <li><div class="cb"></div>Mensagem padrão para envio ao cliente (WhatsApp)</li>
+          <li><div class="cb"></div>Calendário de envio (dia 1-5 de cada mês)</li>
+        </ul>
+        <div class="story-status st-pending">○ Pending</div>
+      </div>
+
+      <div class="story-card">
+        <div class="story-id">EP2-S3</div>
+        <div class="story-title">AIOS Agents da Agência</div>
+        <div class="story-agent">@architect — Aria</div>
+        <ul class="story-tasks">
+          <li><div class="cb"></div>Mapear 3 automações prioritárias por cliente/mês</li>
+          <li><div class="cb"></div>Agent: Alertas de leads sem contato (+3 dias)</li>
+          <li><div class="cb"></div>Agent: Gerador de relatório mensal automático</li>
+          <li><div class="cb"></div>Agent: Atualização de status de campanhas</li>
+          <li><div class="cb"></div>Configurar schedule nos workflows</li>
+          <li><div class="cb"></div>Integração com ClickUp (tasks automáticas)</li>
+          <li><div class="cb"></div>Documentação dos agents em docs/agents/</li>
+        </ul>
+        <div class="story-status st-pending">○ Pending</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- CONTROLE DE TASKS -->
+  <div class="card">
+    <div class="card-title"><span class="card-icon">📋</span>Controle Geral de Tasks</div>
+    <div class="t-wrap">
+      <table>
+        <thead>
+          <tr><th>#</th><th>Task</th><th>Agente</th><th>Entregável</th><th>Depende de</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>S1.1</td>
+            <td>Script setup-crm.gs</td>
+            <td><span class="tag tag-de">@data-engineer</span></td>
+            <td>scripts/setup-crm.gs</td>
+            <td>—</td>
+            <td><span class="tag tag-done">Done</span></td>
+          </tr>
+          <tr>
+            <td>S1.2</td>
+            <td>Webhook webhook-leads.gs</td>
+            <td><span class="tag tag-de">@data-engineer</span></td>
+            <td>scripts/webhook-leads.gs</td>
+            <td>—</td>
+            <td><span class="tag tag-done">Done</span></td>
+          </tr>
+          <tr>
+            <td>S1.3</td>
+            <td>Publicar Web App (Apps Script)</td>
+            <td><span class="tag tag-de">@data-engineer</span></td>
+            <td>URL do webhook</td>
+            <td>S1.2</td>
+            <td><span class="tag tag-pending">Pending — manual</span></td>
+          </tr>
+          <tr>
+            <td>S1.4</td>
+            <td>Conectar LP → planilha</td>
+            <td><span class="tag tag-de">@data-engineer</span></td>
+            <td>CONFIG.webhookUrl</td>
+            <td>S1.3 + EP1-S1</td>
+            <td><span class="tag tag-pending">Pending</span></td>
+          </tr>
+          <tr>
+            <td>S1.5</td>
+            <td>Teste end-to-end</td>
+            <td><span class="tag tag-de">@data-engineer</span></td>
+            <td>Lead de teste na planilha</td>
+            <td>S1.4</td>
+            <td><span class="tag tag-pending">Pending</span></td>
+          </tr>
+          <tr>
+            <td>S1.6</td>
+            <td>Documentação CRM</td>
+            <td><span class="tag tag-de">@data-engineer</span></td>
+            <td>docs/playbooks/crm-planilha.md</td>
+            <td>S1.5</td>
+            <td><span class="tag tag-pending">Pending</span></td>
+          </tr>
+          <tr>
+            <td>S2.1</td>
+            <td>Template relatório mensal</td>
+            <td><span class="tag tag-analyst">@analyst</span></td>
+            <td>Template Google Slides/Docs</td>
+            <td>S1.5</td>
+            <td><span class="tag tag-pending">Pending</span></td>
+          </tr>
+          <tr>
+            <td>S2.2</td>
+            <td>Mensagem padrão de relatório</td>
+            <td><span class="tag tag-analyst">@analyst</span></td>
+            <td>Template WhatsApp</td>
+            <td>S2.1</td>
+            <td><span class="tag tag-pending">Pending</span></td>
+          </tr>
+          <tr>
+            <td>S3.1</td>
+            <td>Mapear 3 automações AIOS</td>
+            <td><span class="tag tag-arch">@architect</span></td>
+            <td>docs/agents/agencia.md</td>
+            <td>S2.1</td>
+            <td><span class="tag tag-pending">Pending</span></td>
+          </tr>
+          <tr>
+            <td>S3.2</td>
+            <td>Implementar 3 agents</td>
+            <td><span class="tag tag-arch">@architect</span></td>
+            <td>scripts/agents/</td>
+            <td>S3.1</td>
+            <td><span class="tag tag-pending">Pending</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- HANDOFFS -->
+  <div class="card">
+    <div class="card-title"><span class="card-icon">💬</span>Protocolo de Handoffs</div>
+    <div class="comms-grid">
+      <div class="comm-item">
+        <div class="comm-trigger">Trigger: setup-crm.gs rodado</div>
+        <div class="comm-from">@data-engineer → Jon</div>
+        <div class="comm-to">Instruções de deploy</div>
+        <div class="comm-msg">"CRM configurado. Rodar setup-crm.gs na planilha (Extensions → Apps Script). Em seguida publicar o webhook-leads.gs como Web App e copiar a URL."</div>
+      </div>
+      <div class="comm-item">
+        <div class="comm-trigger">Trigger: Webhook URL gerado</div>
+        <div class="comm-from">Jon → @dev</div>
+        <div class="comm-to">Configuração da LP</div>
+        <div class="comm-msg">"URL do webhook pronta. Atualizar CONFIG.webhookUrl em lp/index.html e fazer novo deploy."</div>
+      </div>
+      <div class="comm-item">
+        <div class="comm-trigger">Trigger: EP2-S1 Done</div>
+        <div class="comm-from">@data-engineer → @analyst</div>
+        <div class="comm-to">EP2-S2 desbloqueado</div>
+        <div class="comm-msg">"Planilha rodando. Criar templates de relatório usando as colunas: D (Nome), E (WhatsApp), I (Status), M (Valor estimado)."</div>
+      </div>
+      <div class="comm-item">
+        <div class="comm-trigger">Trigger: EP2-S2 Done</div>
+        <div class="comm-from">@analyst → @architect</div>
+        <div class="comm-to">EP2-S3 desbloqueado</div>
+        <div class="comm-msg">"Templates prontos. Criar agents AIOS para automatizar: alertas de leads frios, geração de relatório e atualização de status de campanhas."</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CRITÉRIOS -->
+  <div class="card">
+    <div class="card-title"><span class="card-icon">✅</span>Critérios de Conclusão do Epic</div>
+    <ul style="list-style:none;display:grid;gap:10px;">
+      <li style="display:flex;gap:10px;align-items:flex-start;font-size:13.5px;color:var(--gray-700);padding:10px;background:var(--gray-50);border-radius:8px;border-left:3px solid var(--gray-300)">
+        <div class="cb"></div>Leads entrando automaticamente na planilha (formulário → webhook → Sheets)
+      </li>
+      <li style="display:flex;gap:10px;align-items:flex-start;font-size:13.5px;color:var(--gray-700);padding:10px;background:var(--gray-50);border-radius:8px;border-left:3px solid var(--gray-300)">
+        <div class="cb"></div>Relatório mensal gerado sem trabalho manual (template preenchido automaticamente)
+      </li>
+      <li style="display:flex;gap:10px;align-items:flex-start;font-size:13.5px;color:var(--gray-700);padding:10px;background:var(--gray-50);border-radius:8px;border-left:3px solid var(--gray-300)">
+        <div class="cb"></div>AIOS executando ao menos 3 automações por cliente/mês
+      </li>
+      <li style="display:flex;gap:10px;align-items:flex-start;font-size:13.5px;color:var(--gray-700);padding:10px;background:var(--gray-50);border-radius:8px;border-left:3px solid var(--gray-300)">
+        <div class="cb"></div>Epic 3 desbloqueado
+      </li>
+    </ul>
+  </div>
+
+</div>
+
+<footer>
+  <p><a href="../prd.html">← PRD Escalando Premoldados</a> · Plano de Execução Epic 2 · 2026-03-04</p>
+</footer>
+
+</body>
+</html>

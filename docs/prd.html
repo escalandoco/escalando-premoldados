@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PRD — Escalando Premoldados</title>
+  <style>
+    :root {
+      --orange: #F97316;
+      --orange-2: #EA580C;
+      --orange-light: #FFF7ED;
+      --gray-50: #F9FAFB;
+      --gray-100: #F3F4F6;
+      --gray-200: #E5E7EB;
+      --gray-400: #9CA3AF;
+      --gray-500: #6B7280;
+      --gray-600: #4B5563;
+      --gray-700: #374151;
+      --gray-800: #1F2937;
+      --gray-900: #111827;
+      --green: #16A34A;
+      --red: #DC2626;
+      --blue: #2563EB;
+      --dark: #0D1117;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #F3F4F6; color: var(--gray-800); line-height: 1.6; }
+
+    /* HEADER */
+    header {
+      background: var(--dark);
+      color: white;
+      padding: 60px 24px 52px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    header::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 20% 60%, rgba(249,115,22,0.18) 0%, transparent 55%),
+                  radial-gradient(ellipse at 80% 40%, rgba(37,99,235,0.1) 0%, transparent 55%);
+    }
+    .header-inner { position: relative; z-index: 1; max-width: 760px; margin: 0 auto; }
+    .badge {
+      display: inline-block;
+      background: rgba(249,115,22,0.15);
+      border: 1px solid rgba(249,115,22,0.35);
+      color: #FB923C;
+      padding: 5px 16px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+    header h1 { font-size: clamp(30px, 5vw, 52px); font-weight: 900; letter-spacing: -1px; line-height: 1.1; margin-bottom: 12px; }
+    header h1 em { color: var(--orange); font-style: normal; }
+    .header-sub { color: rgba(255,255,255,0.5); font-size: 15px; margin-bottom: 32px; font-style: italic; }
+    .meta-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+    .meta-chip { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1); padding: 5px 14px; border-radius: 6px; font-size: 12px; color: rgba(255,255,255,0.6); }
+    .meta-chip strong { color: white; }
+
+    /* NAV */
+    nav { background: white; border-bottom: 1px solid var(--gray-200); position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+    nav ul { display: flex; list-style: none; overflow-x: auto; max-width: 1160px; margin: 0 auto; padding: 0 20px; scrollbar-width: none; }
+    nav ul::-webkit-scrollbar { display: none; }
+    nav li a { display: block; padding: 13px 14px; text-decoration: none; color: var(--gray-500); font-size: 12.5px; font-weight: 500; white-space: nowrap; border-bottom: 2px solid transparent; transition: all 0.15s; }
+    nav li a:hover { color: var(--orange); border-bottom-color: var(--orange); }
+
+    /* LAYOUT */
+    .wrap { max-width: 1160px; margin: 0 auto; padding: 36px 20px; display: grid; grid-template-columns: 1fr 288px; gap: 28px; align-items: start; }
+    @media (max-width: 800px) { .wrap { grid-template-columns: 1fr; } .sidebar { order: -1; } }
+
+    /* CARD */
+    .card { background: white; border-radius: 14px; padding: 32px; margin-bottom: 22px; border: 1px solid var(--gray-200); }
+    .card-title { font-size: 18px; font-weight: 800; color: var(--gray-900); margin-bottom: 22px; padding-bottom: 14px; border-bottom: 2px solid #FFF7ED; display: flex; align-items: center; gap: 10px; }
+    .card-icon { width: 34px; height: 34px; background: var(--orange-light); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 17px; flex-shrink: 0; }
+    h3 { font-size: 14px; font-weight: 700; color: var(--gray-800); margin: 20px 0 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+    /* VISION */
+    .vision { background: var(--dark); border-radius: 10px; padding: 24px 28px; border-left: 4px solid var(--orange); margin-bottom: 20px; }
+    .vision p { color: rgba(255,255,255,0.88); font-size: 15px; font-style: italic; line-height: 1.75; }
+
+    /* PROBLEM LIST */
+    .prob-list { display: grid; gap: 8px; }
+    .prob-item { padding: 12px 16px; border-radius: 8px; font-size: 13.5px; display: flex; gap: 10px; align-items: flex-start; }
+    .prob-item.bad { background: #FEF2F2; border-left: 3px solid var(--red); color: #7F1D1D; }
+    .prob-item.good { background: #F0FDF4; border-left: 3px solid var(--green); color: #14532D; }
+
+    /* TABLE */
+    .t-wrap { overflow-x: auto; margin: 12px 0; border-radius: 8px; overflow: hidden; border: 1px solid var(--gray-200); }
+    table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+    th { background: var(--gray-900); color: rgba(255,255,255,0.9); padding: 10px 14px; text-align: left; font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.6px; }
+    td { padding: 10px 14px; border-bottom: 1px solid var(--gray-100); color: var(--gray-700); }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: var(--gray-50); }
+
+    /* FOUNDER */
+    .founder-card { background: linear-gradient(135deg, var(--dark), #1a1a3e); border-radius: 12px; padding: 28px; color: white; position: relative; overflow: hidden; margin-bottom: 20px; }
+    .founder-card::before { content: ''; position: absolute; top: -40px; right: -40px; width: 180px; height: 180px; border-radius: 50%; background: rgba(249,115,22,0.12); }
+    .founder-name { font-size: 22px; font-weight: 900; margin-bottom: 4px; }
+    .founder-name span { color: var(--orange); }
+    .founder-sub { color: rgba(255,255,255,0.5); font-size: 13px; margin-bottom: 20px; }
+    .founder-roles { display: grid; gap: 10px; position: relative; }
+    .founder-role { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 12px 14px; }
+    .founder-role-title { font-weight: 700; font-size: 13px; color: white; }
+    .founder-role-co { font-size: 12px; color: var(--orange); margin: 2px 0; }
+    .founder-role-desc { font-size: 12px; color: rgba(255,255,255,0.5); }
+    .founder-quote { margin-top: 20px; padding: 14px 18px; background: rgba(249,115,22,0.15); border-radius: 8px; border-left: 3px solid var(--orange); font-style: italic; font-size: 13px; color: rgba(255,255,255,0.8); }
+
+    /* POSITION */
+    .not-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 12px 0; }
+    @media (max-width: 500px) { .not-grid { grid-template-columns: 1fr; } }
+    .not-card { border-radius: 8px; padding: 14px; font-size: 13px; }
+    .not-card.no { background: #FEF2F2; border: 1px solid #FECACA; }
+    .not-card.yes { background: #F0FDF4; border: 1px solid #BBF7D0; }
+    .not-card strong { display: block; margin-bottom: 4px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .not-card.no strong { color: var(--red); }
+    .not-card.yes strong { color: var(--green); }
+
+    /* TAGLINE */
+    .tagline { background: var(--orange); color: white; border-radius: 10px; padding: 22px; text-align: center; font-size: 17px; font-weight: 800; font-style: italic; margin: 16px 0; line-height: 1.4; }
+
+    /* PLANS */
+    .plans { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-top: 14px; }
+    @media (max-width: 700px) { .plans { grid-template-columns: 1fr; } }
+
+    /* TIMELINE */
+    .timeline { position: relative; margin: 24px 0; }
+    .timeline::before { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; background: linear-gradient(to bottom, var(--orange), #C2410C); transform: translateX(-50%); }
+    @media (max-width: 600px) { .timeline::before { left: 20px; } }
+    .tl-week { margin-bottom: 8px; }
+    .tl-label { text-align: center; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: white; background: var(--gray-800); display: inline-block; padding: 4px 14px; border-radius: 20px; position: relative; left: 50%; transform: translateX(-50%); margin-bottom: 12px; white-space: nowrap; }
+    @media (max-width: 600px) { .tl-label { left: 20px; transform: none; } }
+    .tl-items { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    @media (max-width: 600px) { .tl-items { grid-template-columns: 1fr; padding-left: 44px; } }
+    .tl-item { background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 8px; padding: 10px 14px; font-size: 13px; color: var(--gray-700); display: flex; gap: 8px; align-items: flex-start; position: relative; }
+    .tl-item::before { content: ''; width: 10px; height: 10px; background: var(--orange); border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
+    .tl-item.done { border-color: #BBF7D0; background: #F0FDF4; }
+    .tl-item.done::before { background: var(--green); }
+    .tl-golive { background: linear-gradient(135deg, var(--orange), #C2410C); border-radius: 10px; padding: 14px 20px; color: white; font-weight: 700; font-size: 14px; text-align: center; margin-top: 8px; }
+    .tl-connector { height: 16px; display: flex; justify-content: center; align-items: center; color: var(--orange); font-size: 18px; }
+    .plan { border-radius: 12px; padding: 22px; border: 2px solid var(--gray-200); }
+    .plan.pro { border-color: var(--orange); background: var(--orange-light); }
+    .plan-tag { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; padding: 3px 10px; border-radius: 20px; background: var(--gray-200); color: var(--gray-500); display: inline-block; margin-bottom: 8px; }
+    .plan.pro .plan-tag { background: var(--orange); color: white; }
+    .plan-name { font-size: 16px; font-weight: 800; color: var(--gray-900); }
+    .plan-price { font-size: 30px; font-weight: 900; color: var(--orange); margin: 8px 0 14px; }
+    .plan-price span { font-size: 13px; font-weight: 400; color: var(--gray-400); }
+    .plan-items { list-style: none; }
+    .plan-items li { font-size: 13px; padding: 7px 0; color: var(--gray-700); display: flex; gap: 8px; border-bottom: 1px solid rgba(0,0,0,0.05); }
+    .plan-items li:last-child { border-bottom: none; }
+    .ck { color: var(--green); font-weight: 800; }
+    .plan-note { font-size: 11px; color: var(--gray-400); margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--gray-200); }
+    .plan.pro .plan-note { color: var(--orange-2); border-top-color: rgba(249,115,22,0.3); }
+
+    /* FUNNEL */
+    .funnel { max-width: 400px; margin: 16px auto; display: grid; gap: 3px; }
+    .fn { background: var(--gray-800); color: white; text-align: center; padding: 13px 16px; border-radius: 6px; font-size: 13.5px; font-weight: 500; }
+    .fn:nth-child(odd) { background: #1a2535; }
+    .fn:nth-child(even) { background: #141d2b; }
+    .fn.final { background: var(--orange); font-weight: 700; }
+    .fn-arr { text-align: center; color: var(--orange); font-size: 16px; line-height: 1; }
+
+    /* CHECKLIST */
+    .cklist { list-style: none; }
+    .cklist li { display: flex; gap: 10px; padding: 9px 0; font-size: 13.5px; color: var(--gray-700); border-bottom: 1px solid var(--gray-100); align-items: flex-start; }
+    .cklist li:last-child { border-bottom: none; }
+    .cbox { width: 17px; height: 17px; border: 2px solid var(--gray-300); border-radius: 4px; flex-shrink: 0; margin-top: 2px; }
+    .warn { font-size: 12.5px; color: var(--red); padding: 10px 14px; background: #FEF2F2; border-radius: 6px; margin-top: 10px; }
+
+    /* ONBOARDING COLS */
+    .ob-cols { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+    @media (max-width: 600px) { .ob-cols { grid-template-columns: 1fr; } }
+    .ob-col h3 { color: var(--orange); }
+
+    /* PHASES */
+    .phases { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-top: 14px; }
+    @media (max-width: 600px) { .phases { grid-template-columns: 1fr; } }
+    .phase { background: var(--gray-50); border-radius: 10px; padding: 18px; border: 1px solid var(--gray-200); border-top: 3px solid var(--orange); }
+    .ph-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--orange); margin-bottom: 6px; }
+    .ph-title { font-weight: 800; font-size: 15px; color: var(--gray-900); margin-bottom: 8px; }
+    .ph-meta { font-size: 12.5px; color: var(--gray-600); line-height: 1.7; }
+
+    /* METRICS */
+    .metrics { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-top: 14px; }
+    @media (max-width: 500px) { .metrics { grid-template-columns: 1fr 1fr; } }
+    .metric { background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 10px; padding: 16px; text-align: center; }
+    .mv { font-size: 22px; font-weight: 900; color: var(--orange); display: block; }
+    .ml { font-size: 11px; color: var(--gray-400); margin-top: 4px; }
+
+    /* AMBITION */
+    .amb-box { background: var(--dark); border-radius: 12px; padding: 24px; color: white; margin-bottom: 16px; }
+    .amb-box h4 { color: var(--orange); font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+    .amb-box p { font-size: 14px; color: rgba(255,255,255,0.75); font-style: italic; line-height: 1.7; }
+
+    /* BACKLOG */
+    .bl-item { display: flex; gap: 10px; padding: 11px 0; border-bottom: 1px solid var(--gray-100); align-items: flex-start; font-size: 13.5px; }
+    .bl-item:last-child { border-bottom: none; }
+    .pr { font-size: 10px; font-weight: 800; padding: 3px 8px; border-radius: 4px; white-space: nowrap; flex-shrink: 0; margin-top: 1px; }
+    .p0 { background: #FEE2E2; color: var(--red); }
+    .p1 { background: #FEF3C7; color: #B45309; }
+    .p2 { background: #DBEAFE; color: #1D4ED8; }
+    .p3 { background: var(--gray-100); color: var(--gray-500); }
+    .bl-text { flex: 1; color: var(--gray-700); }
+    .bl-ag { font-size: 11px; background: var(--gray-100); padding: 2px 8px; border-radius: 4px; color: var(--gray-500); white-space: nowrap; flex-shrink: 0; }
+
+    /* COMMS */
+    .comms { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-top: 12px; }
+    @media (max-width: 500px) { .comms { grid-template-columns: 1fr; } }
+    .comm { background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 8px; padding: 14px; }
+    .comm-icon { font-size: 22px; margin-bottom: 6px; }
+    .comm-title { font-weight: 700; font-size: 13px; color: var(--gray-800); }
+    .comm-desc { font-size: 12px; color: var(--gray-500); margin-top: 4px; }
+
+    /* SIDEBAR */
+    .sidebar { position: sticky; top: 50px; }
+    .sb-card { background: white; border-radius: 12px; padding: 20px; border: 1px solid var(--gray-200); margin-bottom: 16px; }
+    .sb-title { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.2px; color: var(--gray-400); margin-bottom: 12px; }
+    .mrr-card { background: linear-gradient(135deg, var(--orange), #C2410C); border-radius: 10px; padding: 18px; color: white; }
+    .mrr-item { margin-bottom: 12px; }
+    .mrr-item:last-child { margin-bottom: 0; }
+    .mrr-lbl { font-size: 10px; opacity: 0.7; text-transform: uppercase; letter-spacing: 0.5px; }
+    .mrr-val { font-size: 22px; font-weight: 900; line-height: 1.2; }
+    .mrr-det { font-size: 11px; opacity: 0.6; }
+    .sb-nav a { display: block; font-size: 12.5px; padding: 5px 0 5px 10px; text-decoration: none; color: var(--gray-500); border-left: 2px solid var(--gray-200); margin-bottom: 2px; transition: all 0.15s; }
+    .sb-nav a:hover { color: var(--orange); border-left-color: var(--orange); }
+    .sb-stat { font-size: 13px; color: var(--gray-600); padding: 6px 0; border-bottom: 1px solid var(--gray-100); display: flex; justify-content: space-between; }
+    .sb-stat:last-child { border-bottom: none; }
+    .sb-stat strong { color: var(--gray-900); }
+    .qw-item { padding: 9px 12px; border-radius: 7px; font-size: 12.5px; margin-bottom: 8px; }
+    .qw-item:last-child { margin-bottom: 0; }
+
+    /* MSG */
+    .msg-list { display: grid; gap: 10px; }
+    .msg { background: var(--gray-50); border-radius: 8px; padding: 12px 16px; font-size: 13.5px; color: var(--gray-700); border-left: 3px solid var(--orange); font-style: italic; line-height: 1.6; }
+
+    /* EXECUTION PLANS */
+    .ep-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-top: 4px; }
+    @media (max-width: 640px) { .ep-grid { grid-template-columns: 1fr; } }
+    .ep-card { border-radius: 10px; padding: 20px; border: 1px solid var(--gray-200); background: var(--gray-50); text-decoration: none; display: block; transition: all 0.15s; position: relative; overflow: hidden; }
+    .ep-card:hover { border-color: var(--orange); box-shadow: 0 4px 16px rgba(0,0,0,0.08); transform: translateY(-2px); }
+    .ep-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+    .ep-card.ep1::before { background: #DAA520; }
+    .ep-card.ep2::before { background: #3B82F6; }
+    .ep-card.ep3::before { background: #7C3AED; }
+    .ep-tag { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    .ep-card.ep1 .ep-tag { color: #B8860B; }
+    .ep-card.ep2 .ep-tag { color: #2563EB; }
+    .ep-card.ep3 .ep-tag { color: #7C3AED; }
+    .ep-title { font-size: 14px; font-weight: 800; color: var(--gray-900); margin-bottom: 8px; }
+    .ep-stories { font-size: 11px; color: var(--gray-400); margin-bottom: 10px; }
+    .ep-status { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+    .ep-status.progress { background: #DBEAFE; color: #1E40AF; }
+    .ep-status.pending { background: var(--gray-100); color: var(--gray-500); }
+    .ep-link { font-size: 12px; color: var(--orange); margin-top: 10px; display: flex; align-items: center; gap: 4px; font-weight: 600; }
+
+    /* FOOTER */
+    footer { text-align: center; padding: 32px; color: var(--gray-400); font-size: 12px; border-top: 1px solid var(--gray-200); background: white; margin-top: 16px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="badge">PRD v2.2 — Draft</div>
+    <h1><em>Escalando</em> Premoldados</h1>
+    <p class="header-sub">Estrutura de crescimento para indústrias de pré-moldados</p>
+    <div class="meta-row">
+      <div class="meta-chip"><strong>Versão:</strong> 2.2</div>
+      <div class="meta-chip"><strong>Data:</strong> 04/03/2026</div>
+      <div class="meta-chip"><strong>Status:</strong> Draft</div>
+      <div class="meta-chip"><strong>Fundador:</strong> Jon Godeiro</div>
+    </div>
+  </div>
+</header>
+
+<nav>
+  <ul>
+    <li><a href="#visao">Visão</a></li>
+    <li><a href="#fundador">Fundador</a></li>
+    <li><a href="#posicionamento">Posicionamento</a></li>
+    <li><a href="#icp">ICP</a></li>
+    <li><a href="#planos">Planos</a></li>
+    <li><a href="#jornada">Jornada</a></li>
+    <li><a href="#onboarding">Onboarding</a></li>
+    <li><a href="#operacao">Operação</a></li>
+    <li><a href="#aios">AIOS + Stack</a></li>
+    <li><a href="#crescimento">Crescimento</a></li>
+    <li><a href="#ambicao">Ambição</a></li>
+    <li><a href="#blindagem">Blindagem</a></li>
+    <li><a href="#execucao">Execução</a></li>
+    <li><a href="#backlog">Backlog</a></li>
+  </ul>
+</nav>
+
+<div class="wrap">
+<main>
+
+  <!-- VISÃO -->
+  <div class="card" id="visao">
+    <div class="card-title"><span class="card-icon">🎯</span>1. Visão do Produto</div>
+    <div class="vision">
+      <p>"A Escalando Premoldados é a estrutura de crescimento para indústrias de pré-moldados que querem sair da vulnerabilidade estrutural e construir previsibilidade comercial. Não vendemos marketing. Entregamos método — construído de dentro do setor, aplicado com autoridade de quem opera no mesmo mercado."</p>
+    </div>
+    <h3>O Problema Real</h3>
+    <div class="prob-list">
+      <div class="prob-item bad">❌ Dependência de grandes contratos e licitações imprevisíveis</div>
+      <div class="prob-item bad">❌ Poucos clientes relevantes — perder um desestrutura o negócio</div>
+      <div class="prob-item bad">❌ Guerra constante por preço — margem comprimida</div>
+      <div class="prob-item bad">❌ Sem processo comercial — venda por indicação informal</div>
+      <div class="prob-item bad">❌ Oscilação extrema de faturamento — impossível planejar</div>
+    </div>
+    <div style="margin-top:14px;padding:14px 18px;background:#FFF7ED;border-radius:8px;border-left:3px solid var(--orange);font-size:14px;color:var(--gray-700)">
+      <strong>O problema não é técnico. É estrutural e comercial.</strong><br>
+      A fábrica tem produto. Falta estrutura para vender com previsibilidade.
+    </div>
+  </div>
+
+  <!-- FUNDADOR -->
+  <div class="card" id="fundador">
+    <div class="card-title"><span class="card-icon">👤</span>2. O Fundador</div>
+    <div class="founder-card">
+      <div class="founder-name">Jon <span>Godeiro</span></div>
+      <div class="founder-sub">Estrategista de marketing · 6 anos de Escalando · Operador industrial ativo</div>
+      <div class="founder-roles">
+        <div class="founder-role">
+          <div class="founder-role-title">Fundador & Operador</div>
+          <div class="founder-role-co">Levert Premoldados</div>
+          <div class="founder-role-desc">Operação industrial ativa — conhece o chão de fábrica por dentro</div>
+        </div>
+        <div class="founder-role">
+          <div class="founder-role-title">Diretor de Marketing</div>
+          <div class="founder-role-co">Concrenor</div>
+          <div class="founder-role-desc">Empresa tradicional do setor — aplica o método em campo real</div>
+        </div>
+        <div class="founder-role">
+          <div class="founder-role-title">Estrategista</div>
+          <div class="founder-role-co">Escalando (agência)</div>
+          <div class="founder-role-desc">6 anos construindo posicionamento e crescimento estruturado</div>
+        </div>
+      </div>
+      <div class="founder-quote">"A autoridade nasce da operação, não da teoria. Nenhum concorrente pode copiar vivência."</div>
+    </div>
+    <div style="background:var(--orange-light);border-radius:10px;padding:18px 20px;font-size:13.5px;color:var(--gray-700)">
+      <strong style="display:block;margin-bottom:6px;color:var(--orange-2)">Princípio Central da Escalando</strong>
+      Marketing não é propaganda. É gestão de percepção e previsibilidade.
+    </div>
+  </div>
+
+  <!-- POSICIONAMENTO -->
+  <div class="card" id="posicionamento">
+    <div class="card-title"><span class="card-icon">🧭</span>3. Posicionamento Estratégico</div>
+    <div class="not-grid">
+      <div class="not-card no">
+        <strong>Não é</strong>
+        Agência criativa<br>
+        Agência de social media<br>
+        Agência de tráfego
+      </div>
+      <div class="not-card yes">
+        <strong>É</strong>
+        Estrutura de crescimento para indústrias de pré-moldados que querem sair da vulnerabilidade e construir previsibilidade
+      </div>
+    </div>
+    <div class="tagline">"A estrutura que coloca pré-moldado no mercado."</div>
+    <h3>Mensagens-Chave</h3>
+    <div class="msg-list">
+      <div class="msg">"Não somos especialistas que estudaram o nicho. Somos operadores que estruturaram método a partir da prática."</div>
+      <div class="msg">"Marketing não é curtida. É cliente no portão da fábrica."</div>
+      <div class="msg">"A oscilação de faturamento que você sente não é azar. É estrutura. E estrutura se conserta."</div>
+      <div class="msg">"Trabalhamos com quem quer sair da vulnerabilidade. Não com quem quer só aparecer."</div>
+    </div>
+    <h3>Tom de Voz</h3>
+    <div class="t-wrap">
+      <table>
+        <tr><th>Atributo</th><th>Descrição</th></tr>
+        <tr><td>Registro</td><td>Empresário falando com empresário</td></tr>
+        <tr><td>Intensidade</td><td>Direto, sem enrolação</td></tr>
+        <tr><td>Filosófico</td><td>Confronta crenças — "marketing é propaganda"</td></tr>
+        <tr><td>Evidência</td><td>Prova antes de promessa</td></tr>
+        <tr><td>Linguagem</td><td>Do setor: faturamento, pedido, portão, licitação</td></tr>
+        <tr><td>Nunca usar</td><td>Engajamento, alcance, curtida, viral</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- ICP -->
+  <div class="card" id="icp">
+    <div class="card-title"><span class="card-icon">🏭</span>4. Cliente Ideal (ICP)</div>
+    <div style="background:var(--orange-light);border-radius:8px;padding:14px 18px;margin-bottom:16px;font-size:13.5px;color:var(--gray-700)">
+      Não é qualquer dono de fábrica. É o dono que <strong>já percebeu que o modelo atual não escala</strong> — e está disposto a mudar.
+    </div>
+    <div class="t-wrap">
+      <table>
+        <tr><th>Atributo</th><th>Perfil</th></tr>
+        <tr><td>Idade</td><td>38–60 anos</td></tr>
+        <tr><td>Perfil</td><td>Empresário com mentalidade de crescimento</td></tr>
+        <tr><td>Consciência</td><td>Percebe a vulnerabilidade — cansado da oscilação</td></tr>
+        <tr><td>Motivação real</td><td>Quer previsibilidade, não só mais leads</td></tr>
+        <tr><td>Digital</td><td>Básico, mas aberto — WhatsApp é o CRM atual</td></tr>
+        <tr><td>Decisão</td><td>Ele mesmo — sócio ou único dono</td></tr>
+        <tr><td>Barreira</td><td>Histórico ruim com agências + desconfiança natural</td></tr>
+        <tr><td>Como convencer</td><td>Prova real + quem entende o setor + ROI claro</td></tr>
+      </table>
+    </div>
+    <h3>Segmentos Prioritários (Fase 1)</h3>
+    <div class="t-wrap">
+      <table>
+        <tr><th>Segmento</th><th>Produto</th><th>Potencial</th></tr>
+        <tr><td><strong>Cercas e mourões</strong></td><td>Rural, agronegócio</td><td>⭐⭐⭐⭐⭐ Alto volume, decisão rápida</td></tr>
+        <tr><td><strong>Lajes e vigas</strong></td><td>Construção civil residencial</td><td>⭐⭐⭐⭐⭐ Alto ticket, busca ativa</td></tr>
+        <tr><td>Blocos e muros</td><td>Residencial e comercial</td><td>⭐⭐⭐⭐ Boa demanda constante</td></tr>
+        <tr><td>Postes e drenagem</td><td>Prefeituras</td><td>⭐⭐ Canal diferente (licitação)</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- PLANOS -->
+  <div class="card" id="planos">
+    <div class="card-title"><span class="card-icon">📦</span>5. Portfólio de Planos</div>
+    <div class="plans">
+      <!-- STARTER -->
+      <div class="plan">
+        <div class="plan-tag">Starter</div>
+        <div class="plan-name">Porta de Entrada</div>
+        <div class="plan-price">R$997<span>/mês</span></div>
+        <ul class="plan-items">
+          <li><span class="ck">✓</span> Tráfego pago (1 plataforma)</li>
+          <li><span class="ck">✓</span> <strong>Verba inclusa</strong> R$25/dia (~R$750/mês)</li>
+          <li><span class="ck">✓</span> Landing Page dedicada</li>
+          <li><span class="ck">✓</span> GMB configurado + otimização</li>
+          <li><span class="ck">✓</span> Gestão de leads (Sheets + Tintim)</li>
+          <li><span class="ck">✓</span> 4 criativos/mês</li>
+          <li><span class="ck">✓</span> Relatório mensal</li>
+          <li><span class="ck">✓</span> 1 reunião/mês</li>
+          <li><span class="ck">✓</span> Grupo WhatsApp</li>
+          <li><span class="ck">✓</span> Roteiro de fotos</li>
+        </ul>
+        <div class="plan-note">Verba inclusa · Contrato 3 meses · Onboarding 7–10 dias</div>
+      </div>
+      <!-- GROWTH -->
+      <div class="plan" style="border-color:#6366F1;background:#F5F3FF;">
+        <div class="plan-tag" style="background:#6366F1;color:white;">Growth</div>
+        <div class="plan-name">Duas Frentes</div>
+        <div class="plan-price" style="color:#4F46E5;">R$1.497<span>/mês</span></div>
+        <ul class="plan-items">
+          <li><span class="ck">✓</span> Tudo do Starter</li>
+          <li><span class="ck">✓</span> Meta + Google (2 plataformas)</li>
+          <li><span class="ck">✓</span> <strong>Verba inclusa</strong> R$25/dia em cada (~R$1.500/mês)</li>
+          <li><span class="ck">✓</span> 8 criativos/mês</li>
+          <li><span class="ck">✓</span> Tintim configuração completa</li>
+          <li><span class="ck">✓</span> 2 reuniões/mês</li>
+        </ul>
+        <div class="plan-note" style="color:#4F46E5;border-top-color:rgba(99,102,241,0.3)">Verba R$25/dia por plataforma inclusa · Contrato 3 meses</div>
+      </div>
+      <!-- PRO -->
+      <div class="plan pro">
+        <div class="plan-tag">Pro</div>
+        <div class="plan-name">Estrutura Completa</div>
+        <div class="plan-price">R$2.500<span>/mês</span></div>
+        <ul class="plan-items">
+          <li><span class="ck">✓</span> Tudo do Growth</li>
+          <li><span class="ck">✓</span> Verba flexível (acima do mínimo)</li>
+          <li><span class="ck">✓</span> 12 criativos/mês</li>
+          <li><span class="ck">✓</span> Instagram feed (8 posts/mês)</li>
+          <li><span class="ck">✓</span> CRM + integração WhatsApp</li>
+          <li><span class="ck">✓</span> Relatório quinzenal</li>
+        </ul>
+        <div class="plan-note">Verba mín. R$1.500/mês gerenciada · Contrato 3 meses</div>
+      </div>
+    </div>
+    <h3>Add-ons</h3>
+    <div class="t-wrap">
+      <table>
+        <tr><th>Add-on</th><th>Preço</th></tr>
+        <tr><td>Setup inicial GMB (único)</td><td><strong>R$400</strong></td></tr>
+        <tr><td>Landing Page extra</td><td><strong>R$600</strong></td></tr>
+        <tr><td>Criativo avulso</td><td><strong>R$90/peça</strong></td></tr>
+        <tr><td>Vídeo/Reels</td><td><strong>R$180/peça</strong></td></tr>
+        <tr><td>Reunião avulsa</td><td><strong>R$150</strong></td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- JORNADA -->
+  <div class="card" id="jornada">
+    <div class="card-title"><span class="card-icon">🔄</span>6. Jornada do Cliente</div>
+    <div class="funnel">
+      <div class="fn">📣 Anúncio / Indicação / GMB / Conteúdo de autoridade</div>
+      <div class="fn-arr">↓</div>
+      <div class="fn">🌐 Landing Page da Escalando Premoldados</div>
+      <div class="fn-arr">↓</div>
+      <div class="fn">📋 Formulário → Lead qualificado</div>
+      <div class="fn-arr">↓</div>
+      <div class="fn">📱 Diagnóstico WhatsApp (15 min)</div>
+      <div class="fn-arr">↓</div>
+      <div class="fn">📄 Proposta (Starter, Growth ou Pro)</div>
+      <div class="fn-arr">↓</div>
+      <div class="fn">✍️ Contrato assinado</div>
+      <div class="fn-arr">↓</div>
+      <div class="fn final">🚀 Kickoff → Operação → Renovação → Indicação</div>
+    </div>
+    <h3>Critérios de Qualificação</h3>
+    <ul class="cklist">
+      <li><span class="cbox"></span>Tem produto/estoque para vender (não em ramp-up)</li>
+      <li><span class="cbox"></span>Tem alguém para atender lead no WhatsApp (≤ 2h)</li>
+      <li><span class="cbox"></span>Entende que verba está inclusa (Starter/Growth) ou disponível para Pro</li>
+      <li><span class="cbox"></span>Está disposto a enviar fotos reais de obra/produto</li>
+      <li><span class="cbox"></span>Tem mentalidade de processo — não espera milagre em 30 dias</li>
+    </ul>
+    <div class="warn">⚠️ Se não atender → <strong>não fechar</strong>. Registrar no CRM como "não qualificado" com motivo.</div>
+  </div>
+
+  <!-- ONBOARDING -->
+  <div class="card" id="onboarding">
+    <div class="card-title"><span class="card-icon">🚀</span>7. Processo de Onboarding</div>
+
+    <div class="timeline">
+      <!-- SEMANA 1 -->
+      <div class="tl-week">
+        <div class="tl-label">📅 Semana 1 — Kickoff</div>
+        <div class="tl-items">
+          <div class="tl-item"><div><strong>Reunião de Kickoff</strong><br><span style="font-size:11px;color:var(--gray-400)">Google Meet · 1 hora</span></div></div>
+          <div class="tl-item"><div><strong>Briefing preenchido</strong><br><span style="font-size:11px;color:var(--gray-400)">Formulário com dados da empresa</span></div></div>
+          <div class="tl-item"><div><strong>Acessos recebidos</strong><br><span style="font-size:11px;color:var(--gray-400)">Meta, Google Ads, GMB</span></div></div>
+          <div class="tl-item"><div><strong>Grupo WhatsApp criado</strong><br><span style="font-size:11px;color:var(--gray-400)">Cliente + equipe Escalando</span></div></div>
+          <div class="tl-item"><div><strong>Roteiro de fotos enviado</strong><br><span style="font-size:11px;color:var(--gray-400)">Direcionamento para captação</span></div></div>
+          <div class="tl-item"><div><strong>Contrato + NF emitidos</strong><br><span style="font-size:11px;color:var(--gray-400)">Formalização da relação</span></div></div>
+        </div>
+      </div>
+
+      <div class="tl-connector">↓</div>
+
+      <!-- SEMANA 2 -->
+      <div class="tl-week">
+        <div class="tl-label">🛠️ Semana 2 — Setup</div>
+        <div class="tl-items">
+          <div class="tl-item"><div><strong>Landing Page criada</strong><br><span style="font-size:11px;color:var(--gray-400)">Desenvolvida + aprovada pelo cliente</span></div></div>
+          <div class="tl-item"><div><strong>GMB configurado</strong><br><span style="font-size:11px;color:var(--gray-400)">Perfil otimizado e verificado</span></div></div>
+          <div class="tl-item"><div><strong>Contas de anúncios</strong><br><span style="font-size:11px;color:var(--gray-400)">Pixel, tags e configurações</span></div></div>
+          <div class="tl-item"><div><strong>Primeiros criativos</strong><br><span style="font-size:11px;color:var(--gray-400)">Enviados para aprovação</span></div></div>
+          <div class="tl-item"><div><strong>CRM / Sheets</strong><br><span style="font-size:11px;color:var(--gray-400)">Planilha de leads estruturada</span></div></div>
+          <div class="tl-item"><div><strong>Tintim configurado</strong><br><span style="font-size:11px;color:var(--gray-400)">Rastreio de leads no WhatsApp</span></div></div>
+        </div>
+      </div>
+
+      <div class="tl-connector">↓</div>
+
+      <!-- SEMANA 2-3 GO LIVE -->
+      <div class="tl-week">
+        <div class="tl-label">⚡ Semana 2–3 — Go-live</div>
+        <div class="tl-items">
+          <div class="tl-item done"><div><strong>Campanhas no ar</strong><br><span style="font-size:11px;color:var(--gray-400)">Anúncios ativos nas plataformas</span></div></div>
+          <div class="tl-item done"><div><strong>1º lead registrado</strong><br><span style="font-size:11px;color:var(--gray-400)">Notificado ao cliente via WPP</span></div></div>
+        </div>
+      </div>
+
+      <div class="tl-connector">↓</div>
+
+      <div class="tl-golive">✅ Go-live completo — Operação mensal iniciada · Ciclo de 30 dias começa</div>
+    </div>
+  </div>
+
+  <!-- OPERAÇÃO -->
+  <div class="card" id="operacao">
+    <div class="card-title"><span class="card-icon">⚙️</span>8. Operação Mensal</div>
+    <div class="t-wrap">
+      <table>
+        <tr><th>Semana</th><th>Atividade</th></tr>
+        <tr><td><strong>Semana 1</strong></td><td>Análise de performance, ajuste de campanhas, novos criativos</td></tr>
+        <tr><td><strong>Semana 2</strong></td><td>Otimização contínua, atualização de leads no CRM</td></tr>
+        <tr><td><strong>Semana 3</strong></td><td>Relatório quinzenal (Plano Pro)</td></tr>
+        <tr><td><strong>Semana 4</strong></td><td>Reunião de alinhamento + planejamento do próximo mês</td></tr>
+      </table>
+    </div>
+    <h3>Comunicação Padrão</h3>
+    <div class="comms">
+      <div class="comm"><div class="comm-icon">💬</div><div class="comm-title">WhatsApp</div><div class="comm-desc">Dúvidas, aprovações, leads. Resposta ≤ 4h úteis</div></div>
+      <div class="comm"><div class="comm-icon">🎥</div><div class="comm-title">Google Meet</div><div class="comm-desc">Reuniões agendadas. Link fixo por cliente</div></div>
+      <div class="comm"><div class="comm-icon">📊</div><div class="comm-title">Relatório</div><div class="comm-desc">PDF ou Sheets. Enviado dia 28 de cada mês</div></div>
+    </div>
+  </div>
+
+  <!-- AIOS -->
+  <div class="card" id="aios">
+    <div class="card-title"><span class="card-icon">🤖</span>9. Automações AIOS</div>
+    <div class="t-wrap">
+      <table>
+        <tr><th>Tarefa</th><th>Trigger</th><th>Resultado</th></tr>
+        <tr><td>Relatório de campanhas</td><td>Mensal (dia 28)</td><td>PDF com métricas</td></tr>
+        <tr><td>Briefing de criativos</td><td>Semanal</td><td>Template para designer</td></tr>
+        <tr><td>Onboarding checklist</td><td>Novo cliente</td><td>Checklist ao time</td></tr>
+        <tr><td>Pauta de reunião</td><td>24h antes do Meet</td><td>Pauta no grupo WPP</td></tr>
+        <tr><td>Alerta de verba baixa</td><td>Automático</td><td>Notif ao cliente</td></tr>
+        <tr><td>Registro de lead</td><td>Formulário LP</td><td>CRM + notif WPP</td></tr>
+      </table>
+    </div>
+    <h3>Stack de Ferramentas</h3>
+    <div class="t-wrap">
+      <table>
+        <tr><th>Ferramenta</th><th>Função</th><th>Custo</th></tr>
+        <tr><td>Meta Ads</td><td>Tráfego Facebook/Instagram</td><td>Incluso nos planos</td></tr>
+        <tr><td>Google Ads</td><td>Tráfego pesquisa/display</td><td>Incluso nos planos</td></tr>
+        <tr><td>Google Meu Negócio</td><td>Presença local orgânica</td><td>Grátis</td></tr>
+        <tr><td>Google Sheets</td><td>CRM fase 1 + relatórios</td><td>Grátis</td></tr>
+        <tr><td><strong>Google Drive</strong></td><td><strong>Armazenamento de arquivos + templates</strong></td><td>Grátis</td></tr>
+        <tr><td><strong>ClickUp</strong></td><td><strong>Gestão de tarefas, onboarding e pipeline de clientes</strong></td><td>Plano atual</td></tr>
+        <tr><td><strong>Tintim</strong></td><td><strong>Rastreamento de leads via WhatsApp</strong></td><td>A definir</td></tr>
+        <tr><td>Kommo / Pipedrive</td><td>CRM fase 2 + integração WPP</td><td>~R$100/mês</td></tr>
+        <tr><td>WhatsApp Business</td><td>Comunicação cliente</td><td>Grátis</td></tr>
+        <tr><td>Google Meet</td><td>Reuniões</td><td>Grátis</td></tr>
+        <tr><td>Canva + IA</td><td>Criativos</td><td>~R$80/mês</td></tr>
+        <tr><td>AIOS</td><td>Automação e orquestração</td><td>Incluso</td></tr>
+      </table>
+    </div>
+
+    <!-- 9.2 CLICKUP -->
+    <h3>9.2 — Estrutura no ClickUp</h3>
+    <div style="background:var(--gray-50);border:1px solid var(--gray-200);border-radius:10px;padding:18px 20px;margin-bottom:16px;">
+      <div style="font-size:12px;color:var(--gray-500);margin-bottom:14px;"><strong>Foco fase 1:</strong> exclusivamente operação de clientes ativos. Pipeline de leads da agência não entra no ClickUp neste momento.</div>
+      <div style="display:grid;gap:10px;">
+        <div style="background:white;border:1px solid var(--gray-200);border-radius:8px;padding:14px;border-left:3px solid var(--blue);">
+          <div style="font-weight:700;font-size:13px;color:var(--gray-900);margin-bottom:4px;">🚀 Onboarding Ativo</div>
+          <div style="font-size:12px;color:var(--gray-500);">Um card por cliente em onboarding (dias 0–21) · Subtasks = checklist do playbook (kickoff, setup, go-live)</div>
+        </div>
+        <div style="background:white;border:1px solid var(--gray-200);border-radius:8px;padding:14px;border-left:3px solid var(--green);">
+          <div style="font-weight:700;font-size:13px;color:var(--gray-900);margin-bottom:4px;">⚙️ Operação Mensal</div>
+          <div style="font-size:12px;color:var(--gray-500);">Tarefas recorrentes por cliente · relatório dia 28, criativos, reunião · link para pasta no Drive</div>
+        </div>
+        <div style="background:white;border:1px solid var(--gray-200);border-radius:8px;padding:14px;border-left:3px solid var(--gray-300);">
+          <div style="font-weight:700;font-size:13px;color:var(--gray-900);margin-bottom:4px;">📋 Backlog Operacional</div>
+          <div style="font-size:12px;color:var(--gray-500);">Melhorias de processo, ideias, tasks não urgentes</div>
+        </div>
+      </div>
+    </div>
+
+    <h3>Automações ClickUp</h3>
+    <div class="t-wrap">
+      <table>
+        <tr><th>Gatilho</th><th>Ação automática</th></tr>
+        <tr><td>Onboarding concluído (todas subtasks ✓)</td><td>Move cliente para Operação Mensal</td></tr>
+        <tr><td>Dia 28 de cada mês</td><td>Cria task "Relatório mensal — [Cliente]"</td></tr>
+        <tr><td>Task de criativos criada</td><td>Notifica no grupo WhatsApp do cliente</td></tr>
+      </table>
+    </div>
+
+    <!-- 9.3 DRIVE -->
+    <h3>9.3 — Estrutura no Google Drive</h3>
+    <div style="background:var(--gray-50);border:1px solid var(--gray-200);border-radius:10px;padding:18px 20px;margin-bottom:16px;font-size:13px;color:var(--gray-700);font-family:monospace;line-height:2;">
+      📁 Escalando Premoldados/<br>
+      &nbsp;&nbsp;├── 📁 _Templates/<br>
+      &nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── Contratos/ (Starter, Growth, Pro)<br>
+      &nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── Relatório mensal<br>
+      &nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── Briefing de criativos<br>
+      &nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── Kit de fotos (PDF)<br>
+      &nbsp;&nbsp;├── 📁 Clientes/<br>
+      &nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── 📁 [Nome do Cliente]/<br>
+      &nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── 01 - Briefing e Contrato/<br>
+      &nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── 02 - Fotos/ ← cliente envia aqui<br>
+      &nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── 03 - Criativos/<br>
+      &nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── 04 - Relatórios/<br>
+      &nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── 05 - LP/<br>
+      &nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── 📄 06 - CRM Leads (Sheets) ← leads desse cliente<br>
+      &nbsp;&nbsp;└── 📁 Operações/<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── Financeiro/ ← NFs, MRR da agência<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── Dashboard Geral/ ← visão consolidada (interno)
+    </div>
+    <div class="t-wrap">
+      <table>
+        <tr><th>Pasta</th><th>Acesso do cliente</th><th>Acesso Escalando</th></tr>
+        <tr><td>02 - Fotos</td><td>✅ Editor (faz upload)</td><td>✅ Editor</td></tr>
+        <tr><td>04 - Relatórios</td><td>👁️ Visualizador</td><td>✅ Editor</td></tr>
+        <tr><td>06 - CRM Leads</td><td>👁️ Visualizador</td><td>✅ Editor</td></tr>
+        <tr><td>Demais pastas do cliente</td><td>🚫 Sem acesso</td><td>✅ Editor</td></tr>
+        <tr><td>Operações (interno)</td><td>🚫 Sem acesso</td><td>✅ Editor</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- CRESCIMENTO -->
+  <div class="card" id="crescimento">
+    <div class="card-title"><span class="card-icon">📈</span>10. Modelo de Crescimento</div>
+    <div class="phases">
+      <div class="phase">
+        <div class="ph-label">Fase 1 · 0–3 meses</div>
+        <div class="ph-title">Solo</div>
+        <div class="ph-meta"><strong>Meta:</strong> 3–5 clientes<br><strong>Equipe:</strong> Fundador + AIOS<br><strong>Foco:</strong> Validar, coletar cases</div>
+      </div>
+      <div class="phase">
+        <div class="ph-label">Fase 2 · 3–6 meses</div>
+        <div class="ph-title">Primeiro Hire</div>
+        <div class="ph-meta"><strong>Meta:</strong> 8–12 clientes<br><strong>Equipe:</strong> Gestor tráfego + AIOS<br><strong>Foco:</strong> Replicar processo</div>
+      </div>
+      <div class="phase">
+        <div class="ph-label">Fase 3 · 6–12 meses</div>
+        <div class="ph-title">Scale</div>
+        <div class="ph-meta"><strong>Meta:</strong> 15–20 clientes<br><strong>Equipe:</strong> Time + AIOS<br><strong>Foco:</strong> Fundador estratégico</div>
+      </div>
+    </div>
+    <h3>Métricas de Saúde</h3>
+    <div class="metrics">
+      <div class="metric"><span class="mv">&lt;5%</span><div class="ml">Churn mensal</div></div>
+      <div class="metric"><span class="mv">&gt;8</span><div class="ml">NPS</div></div>
+      <div class="metric"><span class="mv">&lt;R$30</span><div class="ml">Custo por lead</div></div>
+      <div class="metric"><span class="mv">&gt;20</span><div class="ml">Leads/mês por cliente</div></div>
+      <div class="metric"><span class="mv">&lt;4h</span><div class="ml">Resposta WhatsApp</div></div>
+      <div class="metric"><span class="mv">≤10d</span><div class="ml">Prazo onboarding</div></div>
+    </div>
+  </div>
+
+  <!-- AMBIÇÃO -->
+  <div class="card" id="ambicao">
+    <div class="card-title"><span class="card-icon">🏆</span>11. Ambição de Longo Prazo</div>
+    <div class="amb-box">
+      <h4>A Visão</h4>
+      <p>"Tornar-se a referência nacional em marketing industrial aplicado ao setor de pré-moldados. Não apenas agência — autoridade sobre posicionamento industrial, previsibilidade comercial e profissionalização da indústria regional."</p>
+    </div>
+    <h3>Como se Constrói</h3>
+    <ul class="cklist">
+      <li><span class="cbox"></span>Cases reais documentados com resultado mensurável</li>
+      <li><span class="cbox"></span>Conteúdo de autoridade — método, tese, confronto de crenças</li>
+      <li><span class="cbox"></span>Presença em associações e eventos (ABCIC, feiras regionais)</li>
+      <li><span class="cbox"></span>Expansão geográfica sistemática — um estado de cada vez</li>
+      <li><span class="cbox"></span>Publicação de método (livro, curso, programa)</li>
+    </ul>
+  </div>
+
+  <!-- BLINDAGEM -->
+  <div class="card" id="blindagem">
+    <div class="card-title"><span class="card-icon">🛡️</span>12. Blindagem Estratégica</div>
+    <div class="t-wrap">
+      <table>
+        <tr><th>Princípio</th><th>Aplicação</th></tr>
+        <tr><td>Sem informação confidencial</td><td>Nenhum dado de empresas clientes é utilizado como vantagem</td></tr>
+        <tr><td>Método replicável</td><td>O diferencial é o método, não o acesso privilegiado</td></tr>
+        <tr><td>Vivência, não oportunismo</td><td>Proposta estrutural — não explora bastidor</td></tr>
+        <tr><td>Transparência</td><td>Clientes sabem da atuação dupla — é diferencial, não risco</td></tr>
+      </table>
+    </div>
+    <div style="margin-top:14px;padding:14px 18px;background:var(--orange-light);border-radius:8px;border-left:3px solid var(--orange);font-size:14px;color:var(--gray-700)">
+      <strong>"O diferencial é vivência. Não bastidor."</strong>
+    </div>
+  </div>
+
+  <!-- BACKLOG -->
+  <!-- PLANOS DE EXECUÇÃO -->
+  <div class="card" id="execucao">
+    <div class="card-title"><span class="card-icon">🗺️</span>13. Planos de Execução</div>
+    <p style="font-size:13.5px;color:var(--gray-600);margin-bottom:16px;line-height:1.7">Cada epic tem uma página dedicada com tasks detalhadas, fluxo de comunicação entre agentes e controle de progresso. Abra antes de implementar qualquer story.</p>
+    <div class="ep-grid">
+      <a href="execution-plans/epic-1-fundacao.html" class="ep-card ep1">
+        <div class="ep-tag">P0 · Epic 1</div>
+        <div class="ep-title">Fundação da Agência</div>
+        <div class="ep-stories">EP1-S1 · EP1-S2 · @dev · @sm</div>
+        <div class="ep-status progress">◉ In Progress</div>
+        <div class="ep-link">Ver plano completo →</div>
+      </a>
+      <a href="execution-plans/epic-2-sistema-leads.html" class="ep-card ep2">
+        <div class="ep-tag">P1 · Epic 2</div>
+        <div class="ep-title">Sistema de Leads</div>
+        <div class="ep-stories">EP2-S1 · EP2-S2 · EP2-S3 · @data-engineer · @analyst · @architect</div>
+        <div class="ep-status progress">◉ In Progress</div>
+        <div class="ep-link">Ver plano completo →</div>
+      </a>
+      <a href="execution-plans/epic-3-produto-cliente.html" class="ep-card ep3">
+        <div class="ep-tag">P2 · Epic 3</div>
+        <div class="ep-title">Produto ao Cliente</div>
+        <div class="ep-stories">EP3-S1 · EP3-S2 · EP3-S3 · @pm · @dev</div>
+        <div class="ep-status pending">○ Pending</div>
+        <div class="ep-link">Ver plano completo →</div>
+      </a>
+    </div>
+  </div>
+
+  <div class="card" id="backlog">
+    <div class="card-title"><span class="card-icon">📋</span>14. Backlog Inicial</div>
+    <div class="bl-item"><span class="pr p0">P0</span><span class="bl-text">Criar landing page da Escalando Premoldados</span><span class="bl-ag">@dev</span></div>
+    <div class="bl-item"><span class="pr p0">P0</span><span class="bl-text">Montar playbook de onboarding</span><span class="bl-ag">@sm</span></div>
+    <div class="bl-item"><span class="pr p1">P1</span><span class="bl-text">Configurar CRM / Planilha mestre de leads</span><span class="bl-ag">@data-engineer</span></div>
+    <div class="bl-item"><span class="pr p1">P1</span><span class="bl-text">Criar templates de relatório de performance</span><span class="bl-ag">@analyst</span></div>
+    <div class="bl-item"><span class="pr p1">P1</span><span class="bl-text">Configurar AIOS agents da agência</span><span class="bl-ag">@architect</span></div>
+    <div class="bl-item"><span class="pr p2">P2</span><span class="bl-text">Criar kit de captação de fotos (roteiro)</span><span class="bl-ag">@pm</span></div>
+    <div class="bl-item"><span class="pr p2">P2</span><span class="bl-text">Definir contrato padrão (Starter, Growth e Pro)</span><span class="bl-ag">@pm</span></div>
+    <div class="bl-item"><span class="pr p2">P2</span><span class="bl-text">Criar 3 modelos de LP por segmento</span><span class="bl-ag">@dev</span></div>
+    <div class="bl-item"><span class="pr p3">P3</span><span class="bl-text">Estratégia de conteúdo de autoridade</span><span class="bl-ag">@analyst</span></div>
+    <div class="bl-item"><span class="pr p3">P3</span><span class="bl-text">Mapa de expansão geográfica</span><span class="bl-ag">@pm</span></div>
+  </div>
+
+</main>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sb-card">
+    <div class="sb-title">MRR Projetado</div>
+    <div class="mrr-card">
+      <div class="mrr-item"><div class="mrr-lbl">MVP (5 clientes)</div><div class="mrr-val">R$5.500</div><div class="mrr-det">ticket médio R$1.100</div></div>
+      <div class="mrr-item"><div class="mrr-lbl">Crescimento (10)</div><div class="mrr-val">R$15.000</div><div class="mrr-det">ticket médio R$1.500</div></div>
+      <div class="mrr-item"><div class="mrr-lbl">Meta (20 clientes)</div><div class="mrr-val">R$34.000</div><div class="mrr-det">ticket médio R$1.700</div></div>
+    </div>
+  </div>
+  <div class="sb-card">
+    <div class="sb-title">Navegação</div>
+    <div class="sb-nav">
+      <a href="#visao">🎯 Visão</a>
+      <a href="#fundador">👤 Fundador</a>
+      <a href="#posicionamento">🧭 Posicionamento</a>
+      <a href="#icp">🏭 ICP</a>
+      <a href="#planos">📦 Planos</a>
+      <a href="#jornada">🔄 Jornada</a>
+      <a href="#onboarding">🚀 Onboarding</a>
+      <a href="#operacao">⚙️ Operação</a>
+      <a href="#aios">🤖 AIOS + ClickUp + Drive</a>
+      <a href="#crescimento">📈 Crescimento</a>
+      <a href="#ambicao">🏆 Ambição</a>
+      <a href="#blindagem">🛡️ Blindagem</a>
+      <a href="#execucao">🗺️ Planos de Execução</a>
+      <a href="#backlog">📋 Backlog</a>
+    </div>
+  </div>
+  <div class="sb-card">
+    <div class="sb-title">Mercado</div>
+    <div class="sb-stat"><span>Empresas no Brasil</span><strong>~1.880</strong></div>
+    <div class="sb-stat"><span>Tamanho do mercado</span><strong>US$3,25bi</strong></div>
+    <div class="sb-stat"><span>Crescimento 2024</span><strong>+9,6%</strong></div>
+    <div class="sb-stat"><span>Sem GMB otimizado</span><strong>90%+</strong></div>
+  </div>
+  <div class="sb-card">
+    <div class="sb-title">Quick Wins</div>
+    <div class="qw-item" style="background:#F0FDF4;border-left:3px solid var(--green)"><strong>GMB</strong> — resultado em semanas, sem verba</div>
+    <div class="qw-item" style="background:#FFF7ED;border-left:3px solid var(--orange)"><strong>Google local</strong> — CPC baixo, intenção alta</div>
+    <div class="qw-item" style="background:#EFF6FF;border-left:3px solid #2563EB"><strong>Interior BR</strong> — mercado grande, pouca concorrência</div>
+  </div>
+  <div class="sb-card">
+    <div class="sb-title">Diferencial Central</div>
+    <div style="font-size:13px;color:var(--gray-600);line-height:1.7;padding:10px;background:var(--orange-light);border-radius:8px;border-left:3px solid var(--orange)">
+      Jon opera dentro do setor (Levert + Concrenor) enquanto constrói o método para o setor. <strong style="color:var(--orange-2)">Impossível de copiar.</strong>
+    </div>
+  </div>
+</aside>
+</div>
+
+<footer>
+  <p>PRD v2.2 — Escalando Premoldados — 2026-03-04</p>
+  <p style="margin-top:4px;color:#D1D5DB">Gerado por Atlas · AIOS Analyst · escalando-premoldados</p>
+</footer>
+
+</body>
+</html>

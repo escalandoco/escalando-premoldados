@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Novo Cliente — Escalando Premoldados</title>
+  <style>
+    :root {
+      --gold: #C4B470; --gold-2: #A89858; --gold-light: #FFFBEB;
+      --dark: #0D1117; --gray-100: #F3F4F6; --gray-200: #E5E7EB;
+      --gray-500: #6B7280; --gray-700: #374151; --gray-900: #111827;
+      --green: #16A34A; --red: #DC2626;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, system-ui, sans-serif; background: #F3F4F6; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px; }
+
+    .card { background: white; border-radius: 16px; padding: 40px; max-width: 560px; width: 100%; box-shadow: 0 4px 24px rgba(0,0,0,0.08); border: 1px solid var(--gray-200); }
+
+    .logo { display: flex; align-items: center; gap: 10px; margin-bottom: 28px; }
+    .logo-icon { width: 36px; height: 36px; background: var(--dark); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--gold-2); font-size: 18px; font-weight: 900; }
+    .logo-text { font-size: 13px; font-weight: 700; color: var(--gray-900); }
+    .logo-sub { font-size: 11px; color: var(--gray-500); }
+
+    h1 { font-size: 22px; font-weight: 900; color: var(--gray-900); margin-bottom: 6px; }
+    .subtitle { font-size: 13.5px; color: var(--gray-500); margin-bottom: 28px; line-height: 1.5; }
+
+    .divider { height: 1px; background: var(--gray-200); margin: 24px 0; }
+
+    label { display: block; font-size: 12px; font-weight: 700; color: var(--gray-700); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+    input, select, textarea {
+      width: 100%; padding: 11px 14px; border: 1.5px solid var(--gray-200); border-radius: 8px;
+      font-size: 14px; color: var(--gray-900); background: white; outline: none;
+      transition: border-color 0.15s; font-family: inherit;
+    }
+    input:focus, select:focus, textarea:focus { border-color: var(--gold-2); box-shadow: 0 0 0 3px rgba(218,165,32,0.12); }
+    .field { margin-bottom: 18px; }
+    .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    @media (max-width: 480px) { .row2 { grid-template-columns: 1fr; } }
+
+    .planos { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 18px; }
+    @media (max-width: 460px) { .planos { grid-template-columns: 1fr; } }
+    .plano-opt { cursor: pointer; }
+    .plano-opt input[type="radio"] { display: none; }
+    .plano-box { border: 2px solid var(--gray-200); border-radius: 10px; padding: 14px; text-align: center; transition: all 0.15s; }
+    .plano-opt input:checked + .plano-box { border-color: var(--gold-2); background: var(--gold-light); }
+    .plano-nome { font-size: 13px; font-weight: 800; color: var(--gray-900); }
+    .plano-valor { font-size: 15px; font-weight: 900; color: var(--gold); margin-top: 3px; }
+    .plano-desc { font-size: 10px; color: var(--gray-500); margin-top: 3px; }
+
+    button {
+      width: 100%; padding: 14px; background: var(--dark); color: var(--gold-2); border: none;
+      border-radius: 10px; font-size: 15px; font-weight: 800; cursor: pointer;
+      transition: all 0.15s; letter-spacing: 0.3px; margin-top: 6px;
+    }
+    button:hover { background: #1a1a2e; }
+    button:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    .status { display: none; padding: 14px 18px; border-radius: 8px; font-size: 13.5px; font-weight: 600; margin-top: 16px; }
+    .status.ok { background: #D1FAE5; color: #065F46; display: block; }
+    .status.err { background: #FEE2E2; color: #7F1D1D; display: block; }
+  </style>
+</head>
+<body>
+
+<div class="card">
+
+  <div class="logo">
+    <div class="logo-icon">E</div>
+    <div>
+      <div class="logo-text">Escalando Premoldados</div>
+      <div class="logo-sub">Uso interno — novo cliente fechado</div>
+    </div>
+  </div>
+
+  <h1>Novo Cliente Fechado</h1>
+  <p class="subtitle">Preencha logo após fechar o contrato. O ClickUp vai criar a estrutura completa automaticamente.</p>
+
+  <form id="form">
+
+    <div class="row2">
+      <div class="field">
+        <label>Nome da empresa *</label>
+        <input type="text" name="empresa" placeholder="Ex: Premoldados Silva" required>
+      </div>
+      <div class="field">
+        <label>CNPJ *</label>
+        <input type="text" name="cnpj" placeholder="00.000.000/0001-00" required>
+      </div>
+    </div>
+
+    <div class="row2">
+      <div class="field">
+        <label>Responsável *</label>
+        <input type="text" name="responsavel" placeholder="Nome do dono/contato" required>
+      </div>
+      <div class="field">
+        <label>WhatsApp *</label>
+        <input type="tel" name="whatsapp" placeholder="(00) 00000-0000" required>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <label style="margin-bottom:12px">Plano contratado *</label>
+    <div class="planos">
+      <label class="plano-opt">
+        <input type="radio" name="plano" value="starter" required>
+        <div class="plano-box">
+          <div class="plano-nome">Starter</div>
+          <div class="plano-valor">R$997</div>
+          <div class="plano-desc">GMB + LP</div>
+        </div>
+      </label>
+      <label class="plano-opt">
+        <input type="radio" name="plano" value="growth">
+        <div class="plano-box">
+          <div class="plano-nome">Growth</div>
+          <div class="plano-valor">R$1.497</div>
+          <div class="plano-desc">+ Meta Ads</div>
+        </div>
+      </label>
+      <label class="plano-opt">
+        <input type="radio" name="plano" value="pro">
+        <div class="plano-box">
+          <div class="plano-nome">Pro</div>
+          <div class="plano-valor">R$2.500</div>
+          <div class="plano-desc">+ Google Ads</div>
+        </div>
+      </label>
+    </div>
+
+    <div class="row2">
+      <div class="field">
+        <label>Valor mensal (R$) *</label>
+        <input type="number" name="valor" placeholder="1497" required>
+      </div>
+      <div class="field">
+        <label>Data de início *</label>
+        <input type="date" name="dataInicio" required>
+      </div>
+    </div>
+
+    <button type="submit" id="btn">Criar estrutura no ClickUp →</button>
+    <div class="status" id="status"></div>
+
+  </form>
+</div>
+
+<script>
+  const CONFIG = {
+    webhookUrl: '', // Cole aqui a URL do Apps Script após publicar onboarding-clickup.gs
+  };
+
+  // Máscara CNPJ
+  document.querySelector('[name="cnpj"]').addEventListener('input', function(e) {
+    let v = e.target.value.replace(/\D/g, '').slice(0, 14);
+    if (v.length > 12) v = v.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, '$1.$2.$3/$4-$5');
+    else if (v.length > 8) v = v.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})/, '$1.$2.$3/$4');
+    else if (v.length > 5) v = v.replace(/^(\d{2})(\d{3})(\d{3})/, '$1.$2.$3');
+    else if (v.length > 2) v = v.replace(/^(\d{2})(\d{3})/, '$1.$2');
+    e.target.value = v;
+  });
+
+  // Máscara WhatsApp
+  document.querySelector('[name="whatsapp"]').addEventListener('input', function(e) {
+    let v = e.target.value.replace(/\D/g, '').slice(0, 11);
+    if (v.length > 6) v = v.replace(/^(\d{2})(\d{5})(\d{0,4})/, '($1) $2-$3');
+    else if (v.length > 2) v = v.replace(/^(\d{2})(\d{0,5})/, '($1) $2');
+    e.target.value = v;
+  });
+
+  document.getElementById('form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const btn = document.getElementById('btn');
+    const st  = document.getElementById('status');
+    const fd  = new FormData(e.target);
+
+    st.className = 'status';
+    st.textContent = '';
+    btn.disabled = true;
+    btn.textContent = 'Criando estrutura...';
+
+    const dados = {
+      action:     'fechamento',
+      empresa:    fd.get('empresa'),
+      cnpj:       fd.get('cnpj'),
+      responsavel:fd.get('responsavel'),
+      whatsapp:   fd.get('whatsapp'),
+      plano:      fd.get('plano'),
+      valor:      fd.get('valor'),
+      dataInicio: fd.get('dataInicio'),
+    };
+
+    try {
+      const res = await fetch(CONFIG.webhookUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(dados),
+      });
+      const json = await res.json();
+
+      if (json.success) {
+        st.className = 'status ok';
+        st.textContent = '✅ ' + json.msg + ' — ClickUp atualizado!';
+        e.target.reset();
+      } else {
+        throw new Error(json.error || 'Erro desconhecido');
+      }
+    } catch (err) {
+      st.className = 'status err';
+      st.textContent = '❌ Erro: ' + err.message;
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Criar estrutura no ClickUp →';
+    }
+  });
+</script>
+</body>
+</html>
