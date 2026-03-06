@@ -175,10 +175,18 @@ export default async function handler(req, res) {
       return res.status(200).json({ skipped: true, reason: 'empty_comment' });
     }
 
-    // Ignorar comentários do próprio bot
-    if (commentText.includes('_Gerado automaticamente pelo sistema Escalando_') ||
-        commentText.includes('🤖 Agente') ||
-        commentText.includes('_Dispatcher_')) {
+    // Ignorar comentários do próprio bot (múltiplas assinaturas)
+    const BOT_SIGNATURES = [
+      '_Dispatcher — Escalando Premoldados_',
+      '_Gerado automaticamente pelo sistema Escalando',
+      '🤖 **Dispatcher**',
+      '**Análise Automática',
+      'Executando **',
+      'Aguarde o resultado.',
+      '❌ **Erro ao executar',
+      '❌ **Erro interno do Dispatcher',
+    ];
+    if (BOT_SIGNATURES.some(sig => commentText.includes(sig))) {
       return res.status(200).json({ skipped: true, reason: 'bot_comment' });
     }
 
@@ -228,15 +236,9 @@ export default async function handler(req, res) {
     return res.status(200).json({ ok: true, agent: intent.agent, exitCode: result.exitCode });
 
   } catch (err) {
+    // NÃO posta erro no ClickUp (causaria loop de webhook)
+    // Erro fica no log do Vercel
     console.error('[dispatcher] Erro:', err.message);
-
-    // Tenta postar o erro na task
-    try {
-      await clickupComment(task_id,
-        `❌ **Erro interno do Dispatcher**\n\n${err.message}\n\n---\n_Dispatcher — Escalando Premoldados_`
-      );
-    } catch {}
-
     return res.status(500).json({ error: err.message });
   }
 }

@@ -182,7 +182,9 @@ export default async function handler(req, res) {
     }
 
     // 3. Evitar processar tasks criadas pelo próprio bot
-    if (taskName.startsWith('🤖') || (task.tags || []).some(t => t.name === 'bot-analyzed')) {
+    const BOT_SIGS = ['_Dispatcher — Escalando Premoldados_', 'Análise Automática —', '_Gerado automaticamente'];
+    const desc = task.description || task.markdown_description || '';
+    if (taskName.startsWith('🤖') || BOT_SIGS.some(s => (taskName + desc).includes(s)) || (task.tags || []).some(t => t.name === 'bot-analyzed')) {
       return res.status(200).json({ skipped: true, reason: 'bot_task' });
     }
 
