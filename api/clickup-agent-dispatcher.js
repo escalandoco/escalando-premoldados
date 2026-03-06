@@ -193,6 +193,8 @@ export default async function handler(req, res) {
       'Aguarde o resultado.',
       '❌ **Erro ao executar',
       '❌ **Erro interno do Dispatcher',
+      'não entendeu o pedido',
+      'Pode explicar o que precisa?',
     ];
     if (BOT_SIGNATURES.some(sig => commentText.includes(sig))) {
       return res.status(200).json({ skipped: true, reason: 'bot_comment' });
@@ -210,7 +212,13 @@ export default async function handler(req, res) {
     console.log(`[dispatcher] Intent:`, JSON.stringify(intent));
 
     if (!intent.agent) {
-      // Não é um comando — não fazer nada
+      // Não entendeu o comando — pede para explicar melhor
+      const agentsList = Object.entries(AGENTS)
+        .map(([id, a]) => `• \`${id}\` — ${a.desc}`)
+        .join('\n');
+      await clickupComment(task_id,
+        `🤖 **Dispatcher** não entendeu o pedido: _"${commentText.slice(0, 80)}"_\n\nPode explicar o que precisa? Exemplos do que sei fazer:\n${agentsList}\n\n---\n_Dispatcher — Escalando Premoldados_`
+      );
       return res.status(200).json({ skipped: true, reason: 'not_a_command', comment: commentText.slice(0, 100) });
     }
 
