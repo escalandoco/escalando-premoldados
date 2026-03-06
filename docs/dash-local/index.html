@@ -261,6 +261,27 @@ section{margin-bottom:36px}
 .workers-loading{color:var(--muted);font-size:14px;padding:40px;text-align:center}
 .worker-next{font-size:11px;color:var(--muted)}
 
+/* links page */
+.links-section{margin-bottom:28px}
+.links-section-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.links-section-title::after{content:'';flex:1;height:1px;background:var(--border)}
+.links-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
+.link-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;display:flex;gap:12px;align-items:flex-start;cursor:pointer;text-decoration:none;transition:border-color .15s,background .15s}
+.link-card:hover{border-color:var(--blue);background:var(--bg3)}
+.link-icon{font-size:22px;flex-shrink:0;margin-top:1px}
+.link-body{min-width:0;flex:1}
+.link-name{font-size:13px;font-weight:700;color:var(--fg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.link-desc{font-size:11px;color:var(--muted);margin-top:3px;line-height:1.45}
+.link-url{font-size:10px;color:var(--blue);margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;opacity:.8}
+.link-badges{display:flex;gap:5px;margin-top:6px;flex-wrap:wrap}
+.link-badge{font-size:9px;font-weight:700;padding:2px 7px;border-radius:10px;text-transform:uppercase;letter-spacing:.04em}
+.lb-live{background:rgba(63,185,80,.15);color:var(--green)}
+.lb-local{background:var(--bg4);color:var(--muted);border:1px solid var(--border)}
+.lb-pending{background:rgba(210,168,255,.1);color:#D2A8FF}
+.lb-webhook{background:rgba(88,166,255,.12);color:var(--blue)}
+.lb-copy{background:var(--bg4);color:var(--muted);border:1px solid var(--border);cursor:pointer}
+.lb-copy:hover{background:var(--bg3)}
+
 /* toast */
 .toast{position:fixed;bottom:20px;right:20px;background:var(--bg2);border:1px solid var(--green);color:var(--green);border-radius:8px;padding:10px 16px;font-size:13px;font-weight:600;opacity:0;transform:translateY(6px);transition:all .2s;pointer-events:none;z-index:300}
 .toast.show{opacity:1;transform:translateY(0)}
@@ -281,6 +302,7 @@ section{margin-bottom:36px}
       <button class="tab" data-tab="team"><span class="tab-icon">👥</span> Time</button>
       <button class="tab" data-tab="tools"><span class="tab-icon">⚙️</span> Ferramentas</button>
       <button class="tab" data-tab="tasks"><span class="tab-icon">🔴</span> Tarefas <span class="tab-badge" id="task-count">9</span></button>
+      <button class="tab" data-tab="links"><span class="tab-icon">🔗</span> Links</button>
       <button class="tab" data-tab="workers"><span class="tab-icon">⚡</span> Workers 24/7</button>
       <button class="tab" data-tab="prd"><span class="tab-icon">📄</span> PRD</button>
     </nav>
@@ -318,6 +340,7 @@ section{margin-bottom:36px}
   </div>
 
   <!-- PRD -->
+  <div id="tab-links" class="tab-content"></div>
   <div id="tab-workers" class="tab-content"></div>
   <div id="tab-prd" class="tab-content"></div>
 </div>
@@ -386,8 +409,102 @@ document.querySelectorAll('.tab').forEach(btn => {
     if (btn.dataset.tab === 'workers') {
       loadWorkers();
     }
+    // Links: render once
+    if (btn.dataset.tab === 'links' && !$('tab-links').dataset.rendered) {
+      $('tab-links').innerHTML = renderLinks();
+      $('tab-links').dataset.rendered = '1';
+    }
   });
 });
+
+// ── LINKS ────────────────────────────────────────────────────
+const LINKS_DATA = [
+  {
+    section: 'Formulários da Agência',
+    items: [
+      { icon:'📋', name:'Fechamento — Novo Cliente',    url:'https://escalando.co/fechamento',    local:'lp/fechamento.html',  desc:'Cliente preenche ao fechar contrato. Cria pasta + listas + tasks no ClickUp automaticamente.', badges:['live','local'] },
+      { icon:'🚀', name:'Kickoff — Briefing Inicial',   url:'https://escalando.co/kickoff',       local:'lp/kickoff.html',     desc:'Preenchido após fechamento. Coleta estratégia, objetivos e referências para onboarding.', badges:['live','local'] },
+      { icon:'🎨', name:'LP Briefing — Design',         url:'',                                   local:'lp/lp-briefing.html', desc:'Você preenche os detalhes visuais, público e história da empresa para gerar a landing page.', badges:['local'] },
+      { icon:'💰', name:'Orçamento',                    url:'',                                   local:'lp/orcamento.html',   desc:'Cria proposta de orçamento para o cliente com itens e preços.', badges:['local'] },
+      { icon:'👤', name:'Registrar Lead Manual',        url:'',                                   local:'lp/lead.html',        desc:'Captura manual de lead (nome, telefone, produto) direto para o CRM.', badges:['local'] },
+    ],
+  },
+  {
+    section: 'Landing Pages dos Clientes',
+    items: [
+      { icon:'🏗️', name:'LP Concrenor',                url:'https://concrenor.escalando.co/',    local:'',                    desc:'Landing page de mourão de concreto — Concrenor. Gerada e hospedada via FTP HostGator.', badges:['live'] },
+    ],
+  },
+  {
+    section: 'Webhooks & Endpoints (Vercel)',
+    items: [
+      { icon:'⚙️', name:'Onboarding API',              url:'https://escalando-premoldados.vercel.app/api/onboarding',                  local:'api/onboarding.js',                  desc:'Recebe fechamento, kickoff, leads e orçamentos. Cria estrutura no ClickUp.', badges:['webhook','live'] },
+      { icon:'💬', name:'Tintim (WhatsApp)',            url:'https://escalando-premoldados.vercel.app/api/tintim',                     local:'api/tintim.js',                      desc:'Webhook do Tintim — recebe mensagens WPP e roteia para planilha Google Sheets.', badges:['webhook','live'] },
+      { icon:'📘', name:'Meta CAPI (Conversions API)', url:'https://escalando-premoldados.vercel.app/api/events',                     local:'api/events.js',                      desc:'Recebe eventos de conversão do browser e repassa server-side para o Meta (deduplicação).', badges:['webhook','live'] },
+      { icon:'🤖', name:'ClickUp Processor',           url:'https://escalando-premoldados.vercel.app/api/clickup-processor',          local:'api/clickup-processor.js',           desc:'Task criada no ClickUp → Claude analisa e posta comentário com diagnóstico.', badges:['webhook','live'] },
+      { icon:'⚡', name:'ClickUp Agent Dispatcher',    url:'https://escalando-premoldados.vercel.app/api/clickup-agent-dispatcher',   local:'api/clickup-agent-dispatcher.js',    desc:'Comentário no ClickUp → Claude identifica o pedido → executa agente no VPS → responde.', badges:['webhook','live'] },
+    ],
+  },
+  {
+    section: 'Ferramentas Externas',
+    items: [
+      { icon:'✅', name:'ClickUp — Concrenor',         url:'https://app.clickup.com/90133050692/home',                       local:'', desc:'Workspace principal da agência — tasks, onboarding, alertas e relatórios.', badges:['live'] },
+      { icon:'📊', name:'Google Sheets CRM',           url:'https://docs.google.com/spreadsheets/d/1ypUuEzLRpXAACLryN530O3yfMicJLqW_FPZM_nlSN-U', local:'', desc:'Planilha de leads da Concrenor (Tintim + LP). Leads entram aqui, não no ClickUp.', badges:['live'] },
+      { icon:'📘', name:'Meta Ads Manager',            url:'https://adsmanager.facebook.com/',                               local:'', desc:'Gerenciador de anúncios Meta — campanhas, conjuntos, criativos e métricas.', badges:['live'] },
+      { icon:'📚', name:'Meta Ads Library',            url:'https://www.facebook.com/ads/library/',                          local:'', desc:'Biblioteca pública de anúncios — pesquisa de concorrentes e referências criativas.', badges:['live'] },
+      { icon:'🏢', name:'Meta Business Manager',       url:'https://business.facebook.com/',                                 local:'', desc:'Gerenciamento de ativos, pixels e acessos de Business Partners.', badges:['live'] },
+      { icon:'📍', name:'Google Meu Negócio',          url:'https://business.google.com/',                                   local:'', desc:'Perfil GMB da Concrenor — publicações, avaliações e SEO local.', badges:['live'] },
+      { icon:'🔍', name:'Google Search Console',       url:'https://search.google.com/search-console',                       local:'', desc:'Monitora indexação, erros e palavras-chave orgânicas das LPs.', badges:['live'] },
+      { icon:'🌐', name:'Vercel Dashboard',            url:'https://vercel.com/dashboard',                                   local:'', desc:'Deploy e logs dos endpoints da agência.', badges:['live'] },
+      { icon:'🐱', name:'GitHub — escalandoco',        url:'https://github.com/escalandoco',                                 local:'', desc:'Organização no GitHub com todos os repositórios do projeto.', badges:['live'] },
+      { icon:'🤖', name:'Anthropic Console',           url:'https://console.anthropic.com/',                                 local:'', desc:'Billing e API keys da Anthropic — créditos para o pipeline de IA.', badges:['live'] },
+    ],
+  },
+];
+
+function copyText(text) {
+  navigator.clipboard.writeText(text).then(() => {
+    const t = document.querySelector('.toast');
+    if (t) { t.textContent = 'URL copiada!'; t.style.opacity = '1'; setTimeout(() => t.style.opacity = '0', 1500); }
+  });
+}
+
+function renderLinks() {
+  const BADGE_MAP = {
+    live:    ['lb-live',    '● Online'],
+    local:   ['lb-local',   '◉ Local'],
+    pending: ['lb-pending', '○ Pendente'],
+    webhook: ['lb-webhook', '⇄ Webhook'],
+  };
+
+  return LINKS_DATA.map(section => {
+    const cards = section.items.map(item => {
+      const href   = item.url || (item.local ? `/${item.local}` : '#');
+      const target = item.url ? 'target="_blank" rel="noopener"' : '';
+      const badgesHtml = item.badges.map(b => {
+        const [cls, label] = BADGE_MAP[b] || ['lb-local', b];
+        return `<span class="link-badge ${cls}">${label}</span>`;
+      }).join('');
+      const copyBtn = item.url
+        ? `<span class="link-badge lb-copy" onclick="event.preventDefault();copyText('${item.url}')">⎘ copiar</span>`
+        : '';
+      const displayUrl = item.url || (item.local ? item.local : '');
+      return `<a class="link-card" href="${href}" ${target}>
+        <div class="link-icon">${item.icon}</div>
+        <div class="link-body">
+          <div class="link-name">${item.name}</div>
+          <div class="link-desc">${item.desc}</div>
+          ${displayUrl ? `<div class="link-url">${displayUrl}</div>` : ''}
+          <div class="link-badges">${badgesHtml}${copyBtn}</div>
+        </div>
+      </a>`;
+    }).join('');
+    return `<div class="links-section">
+      <div class="links-section-title">${section.section}</div>
+      <div class="links-grid">${cards}</div>
+    </div>`;
+  }).join('');
+}
 
 // ── WORKERS 24/7 ─────────────────────────────────────────────
 function fmtDt(iso) {
