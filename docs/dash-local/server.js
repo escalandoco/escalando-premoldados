@@ -12,7 +12,9 @@ import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT      = path.join(__dirname, '../..');
-const PORT      = 3030;
+const PORT      = process.env.DASH_PORT ? parseInt(process.env.DASH_PORT) : 3030;
+const DASH_USER = process.env.DASH_USER || '';
+const DASH_PASS = process.env.DASH_PASS || '';
 
 // ── AGENTS ──────────────────────────────────────────────────
 const AGENTS = [
@@ -225,9 +227,26 @@ const SAFE_PATTERNS = [
   /^node scripts\/relatorio-ads\.js/,
 ];
 
+// ── AUTH HELPER ──────────────────────────────────────────────
+function checkAuth(req, res) {
+  if (!DASH_USER || !DASH_PASS) return true;
+  const authHeader = req.headers['authorization'] || '';
+  const expected = 'Basic ' + Buffer.from(`${DASH_USER}:${DASH_PASS}`).toString('base64');
+  if (authHeader !== expected) {
+    res.writeHead(401, {
+      'WWW-Authenticate': 'Basic realm="Escalando Dashboard"',
+      'Content-Type': 'text/plain; charset=utf-8',
+    });
+    res.end('Acesso restrito. Use usuário e senha.');
+    return false;
+  }
+  return true;
+}
+
 // ── HTTP SERVER ──────────────────────────────────────────────
 const server = http.createServer((req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
+  if (!checkAuth(req, res)) return;
 
   // ── GET /api/data ──
   if (req.method === 'GET' && req.url === '/api/data') {
@@ -299,8 +318,9 @@ const server = http.createServer((req, res) => {
   res.end(fs.readFileSync(path.join(__dirname, 'index.html'), 'utf8'));
 });
 
-server.listen(PORT, () => {
-  console.log(`\n  Escalando Premoldados — Dashboard Local v2`);
-  console.log(`  http://localhost:${PORT}\n`);
+server.listen(PORT, '0.0.0.0', () => {
+  console.log(`\n  Escalando Premoldados — Dashboard v2`);
+  console.log(`  http://0.0.0.0:${PORT}`);
+  if (DASH_USER) console.log(`  Auth: ${DASH_USER} / ****`);
   console.log('  Ctrl+C para encerrar\n');
 });
