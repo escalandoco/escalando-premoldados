@@ -13,8 +13,9 @@
  *   FTP_HOST, FTP_USER, FTP_PASS
  */
 
-import { execSync } from 'child_process';
+import { execSync, spawnSync } from 'child_process';
 import fs from 'fs';
+import os from 'os';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -65,10 +66,15 @@ if (!ftpHost || !ftpUser || !ftpPass || !ftpPath) {
   process.exit(1);
 }
 
-// Arquivo a ser deployado
-const arquivoLocal = args.arquivo
-  ? path.resolve(ROOT, args.arquivo)
-  : path.join(ROOT, 'lp', args.cliente, 'index.html');
+// Arquivo a ser deployado — tenta dist/ primeiro, depois lp/
+let arquivoLocal;
+if (args.arquivo) {
+  arquivoLocal = path.resolve(ROOT, args.arquivo);
+} else {
+  const distPath = path.join(ROOT, 'dist', args.cliente, 'index.html');
+  const lpPath   = path.join(ROOT, 'lp', args.cliente, 'index.html');
+  arquivoLocal = fs.existsSync(distPath) ? distPath : lpPath;
+}
 
 if (!fs.existsSync(arquivoLocal)) {
   console.error(`❌ Arquivo não encontrado: ${arquivoLocal}`);
@@ -93,18 +99,21 @@ if (args['dry-run']) {
   process.exit(0);
 }
 
-// ---- Deploy via Python ftplib ----
-const htmlContent = fs.readFileSync(arquivoLocal, 'utf8');
+// ---- Deploy via Python ftplib (usa temp files para evitar shell interpolation) ----
+const tmpHtml = path.join(os.tmpdir(), `esc-lp-${Date.now()}.html`);
+const tmpPy   = path.join(os.tmpdir(), `esc-ftp-${Date.now()}.py`);
+
+fs.copyFileSync(arquivoLocal, tmpHtml);
 
 const pythonScript = `
-import ftplib, io, sys
+import ftplib, sys
 
 host     = ${JSON.stringify(ftpHost)}
 user     = ${JSON.stringify(ftpUser)}
 password = ${JSON.stringify(ftpPass)}
 ftp_path = ${JSON.stringify(ftpPath)}
 filename = ${JSON.stringify(nomeArquivo)}
-content  = ${JSON.stringify(htmlContent)}
+local_file = ${JSON.stringify(tmpHtml)}
 
 try:
     ftp = ftplib.FTP()
@@ -112,7 +121,6 @@ try:
     ftp.login(user, password)
     ftp.set_pasv(True)
 
-    # Navega para o diretório
     parts = [p for p in ftp_path.split('/') if p]
     for part in parts:
         try:
@@ -121,9 +129,8 @@ try:
             ftp.mkd(part)
             ftp.cwd(part)
 
-    # Envia arquivo
-    bio = io.BytesIO(content.encode('utf-8'))
-    ftp.storbinary(f'STOR {filename}', bio)
+    with open(local_file, 'rb') as f:
+        ftp.storbinary(f'STOR {filename}', f)
     ftp.quit()
     print(f'OK:{ftp_path}{filename}')
 except Exception as e:
@@ -131,24 +138,27 @@ except Exception as e:
     sys.exit(1)
 `;
 
+fs.writeFileSync(tmpPy, pythonScript, 'utf8');
 console.log('\n📤 Enviando via FTP...');
 
 try {
-  const result = execSync(`python3 -c ${JSON.stringify(pythonScript)}`, {
-    encoding: 'utf8',
-    timeout: 60000,
-  }).trim();
+  const r = spawnSync('python3', [tmpPy], { encoding: 'utf8', timeout: 60000 });
+  const result = (r.stdout || '').trim();
+  const errOut = (r.stderr || '').trim();
 
-  if (result.startsWith('OK:')) {
-    console.log(`\n✅ index.html deployado!`);
-    console.log(`   Arquivo: ${result.replace('OK:', '')}`);
-  } else {
-    throw new Error(result);
+  if (r.status !== 0 || !result.startsWith('OK:')) {
+    throw new Error(errOut || result || 'FTP falhou sem mensagem de erro');
   }
+
+  console.log(`\n✅ index.html deployado!`);
+  console.log(`   Arquivo: ${result.replace('OK:', '')}`);
 } catch (err) {
   console.error(`\n❌ Erro no deploy:`);
-  console.error(`   ${err.stderr || err.message}`);
+  console.error(`   ${err.message}`);
   process.exit(1);
+} finally {
+  try { fs.unlinkSync(tmpHtml); } catch {}
+  try { fs.unlinkSync(tmpPy); } catch {}
 }
 
 // ---- Deploy de sitemap.xml e robots.txt (SEO) ----
@@ -157,9 +167,12 @@ for (const seoFile of ['sitemap.xml', 'robots.txt']) {
   const seoPath = path.join(distDir, seoFile);
   if (!fs.existsSync(seoPath)) continue;
 
-  const seoContent = fs.readFileSync(seoPath, 'utf8');
+  const tmpSeo   = path.join(os.tmpdir(), `esc-seo-${Date.now()}.tmp`);
+  const tmpSeoPy = path.join(os.tmpdir(), `esc-seo-${Date.now()}.py`);
+  fs.copyFileSync(seoPath, tmpSeo);
+
   const seoPython = `
-import ftplib, io, sys
+import ftplib, sys
 ftp = ftplib.FTP()
 ftp.connect(${JSON.stringify(ftpHost)}, 21, timeout=30)
 ftp.login(${JSON.stringify(ftpUser)}, ${JSON.stringify(ftpPass)})
@@ -168,16 +181,21 @@ parts = [p for p in ${JSON.stringify(ftpPath)}.split('/') if p]
 for part in parts:
     try: ftp.cwd(part)
     except: ftp.mkd(part); ftp.cwd(part)
-bio = io.BytesIO(${JSON.stringify(seoContent)}.encode('utf-8'))
-ftp.storbinary('STOR ${seoFile}', bio)
+with open(${JSON.stringify(tmpSeo)}, 'rb') as f:
+    ftp.storbinary('STOR ${seoFile}', f)
 ftp.quit()
 print('OK')
 `;
+  fs.writeFileSync(tmpSeoPy, seoPython, 'utf8');
   try {
-    execSync(`python3 -c ${JSON.stringify(seoPython)}`, { encoding: 'utf8', timeout: 30000 });
-    console.log(`✅ ${seoFile} deployado`);
+    const r = spawnSync('python3', [tmpSeoPy], { encoding: 'utf8', timeout: 30000 });
+    if (r.status === 0) console.log(`✅ ${seoFile} deployado`);
+    else console.warn(`⚠️  ${seoFile}: ${r.stderr}`);
   } catch (e) {
     console.warn(`⚠️  ${seoFile}: ${e.message}`);
+  } finally {
+    try { fs.unlinkSync(tmpSeo); } catch {}
+    try { fs.unlinkSync(tmpSeoPy); } catch {}
   }
 }
 
