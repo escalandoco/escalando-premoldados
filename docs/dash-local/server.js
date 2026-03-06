@@ -12,9 +12,10 @@ import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT      = path.join(__dirname, '../..');
-const PORT      = process.env.DASH_PORT ? parseInt(process.env.DASH_PORT) : 3030;
-const DASH_USER = process.env.DASH_USER || '';
-const DASH_PASS = process.env.DASH_PASS || '';
+const PORT          = process.env.DASH_PORT ? parseInt(process.env.DASH_PORT) : 3030;
+const DASH_USER     = process.env.DASH_USER     || '';
+const DASH_PASS     = process.env.DASH_PASS     || '';
+const WORKER_SECRET = process.env.WORKER_SECRET || '';
 
 // ── AGENTS ──────────────────────────────────────────────────
 const AGENTS = [
@@ -418,6 +419,52 @@ const server = http.createServer((req, res) => {
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ stdout: stdout || '', stderr: stderr || '', code: err?.code ?? 0 }));
       });
+    });
+    return;
+  }
+
+  // ── POST /api/run-worker (chamado pelo Vercel dispatcher) ──
+  if (req.method === 'POST' && req.url === '/api/run-worker') {
+    let body = '';
+    req.on('data', d => body += d);
+    req.on('end', () => {
+      try {
+        const { secret, script, cliente = 'concrenor' } = JSON.parse(body || '{}');
+
+        // Auth por token secreto
+        if (!WORKER_SECRET || secret !== WORKER_SECRET) {
+          res.writeHead(401, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: 'unauthorized' }));
+          return;
+        }
+
+        // Whitelist de scripts permitidos
+        const ALLOWED = ['monitorar-ads','relatorio-ads','exportar-leads-meta','verificar-lp','gerar-lp','deploy-lp','gerar-copy-ads','gerar-copy'];
+        if (!ALLOWED.includes(script)) {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: `Script não permitido: ${script}` }));
+          return;
+        }
+
+        const cmd = `node scripts/${script}.js --cliente=${cliente}`;
+        const ts  = new Date().toISOString().replace('T',' ').slice(0,19);
+        console.log(`[${ts}] run-worker: ${cmd}`);
+
+        exec(cmd, { cwd: ROOT, timeout: 120000, env: { ...process.env } }, (err, stdout, stderr) => {
+          const output = (stdout || '') + (stderr ? `\nSTDERR: ${stderr}` : '');
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({
+            ok:       !err,
+            script,
+            cliente,
+            exitCode: err?.code ?? 0,
+            output:   output.slice(0, 3000),
+          }));
+        });
+      } catch (e) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: e.message }));
+      }
     });
     return;
   }
