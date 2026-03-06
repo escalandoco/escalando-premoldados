@@ -27,34 +27,42 @@ const WORKER_SECRET = process.env.WORKER_SECRET  || '';
 const AGENTS = {
   'monitorar-ads': {
     desc: 'Monitora performance dos anúncios Meta — verifica CPL, CTR, CPM vs metas',
+    agent: 'Theo', handle: '@theo', role: 'Traffic Manager',
     keywords: ['monitora', 'monitorar', 'checar ads', 'verificar ads', 'performance ads', 'como estão os anúncios', 'ads hoje'],
   },
   'relatorio-ads': {
     desc: 'Gera relatório HTML de performance de anúncios com análise quinzenal',
+    agent: 'Alex', handle: '@alex', role: 'Analyst',
     keywords: ['relatório', 'relatorio', 'report', 'performance', 'resumo de ads', 'resultados'],
   },
   'gerar-copy-ads': {
     desc: 'Gera copy para anúncios Meta usando 7 Pilares Pedro Sobral',
+    agent: 'Theo', handle: '@theo', role: 'Traffic Manager',
     keywords: ['copy', 'copia', 'texto de anúncio', 'copy de ad', 'gera copy', 'novo criativo', 'copy ads'],
   },
   'gerar-lp': {
     desc: 'Gera a landing page HTML da empresa (sem fazer upload)',
+    agent: 'Uma', handle: '@uma', role: 'UX Designer',
     keywords: ['gera lp', 'gerar lp', 'landing page', 'página de vendas', 'nova lp', 'criar lp', 'gera a página'],
   },
   'deploy-lp': {
     desc: 'Faz o deploy da LP via FTP para o servidor (coloca a página no ar)',
+    agent: 'Uma', handle: '@uma', role: 'UX Designer',
     keywords: ['deploy', 'sobe a lp', 'publica', 'coloca no ar', 'atualiza o site', 'ftp', 'publicar lp'],
   },
   'verificar-lp': {
     desc: 'Verifica se a landing page está online e respondendo (HTTP 200)',
+    agent: 'Uma', handle: '@uma', role: 'UX Designer',
     keywords: ['verifica lp', 'site no ar', 'lp online', 'site funcionando', 'checar site', 'verificar site'],
   },
   'exportar-leads': {
     desc: 'Exporta leads do Google Sheets para Custom Audiences do Meta Ads',
+    agent: 'Alex', handle: '@alex', role: 'Analyst',
     keywords: ['exporta leads', 'exportar leads', 'audience', 'custom audience', 'leads para meta', 'público personalizado'],
   },
   'gerar-copy': {
     desc: 'Gera copy completo para a landing page usando Claude',
+    agent: 'Theo', handle: '@theo', role: 'Traffic Manager',
     keywords: ['copy da lp', 'copy da landing', 'texto da página', 'copy completo'],
   },
 };
@@ -207,9 +215,12 @@ export default async function handler(req, res) {
     }
 
     // 4. Feedback imediato: "entendi, executando..."
-    const agentInfo = AGENTS[intent.agent];
+    const agentInfo = AGENTS[intent.agent] || {};
+    const agentLabel = agentInfo.agent
+      ? `**${agentInfo.agent}** (${agentInfo.handle}) — ${agentInfo.role}`
+      : intent.agent;
     await clickupComment(task_id,
-      `🤖 **Dispatcher** entendeu: _${intent.summary}_\n\nExecutando **${intent.agent}** para cliente **${intent.cliente}**...\n_Aguarde o resultado._`
+      `🤖 **Dispatcher** entendeu: _${intent.summary}_\n\nExecutando ${agentLabel} · script \`${intent.agent}\` · cliente **${intent.cliente}**...\n_Aguarde o resultado._`
     );
 
     // 5. Executar agente no VPS
@@ -218,7 +229,7 @@ export default async function handler(req, res) {
       result = await runAgentOnVPS(intent.agent, intent.cliente);
     } catch (vpsErr) {
       await clickupComment(task_id,
-        `❌ **Erro ao executar ${intent.agent}**\n\n${vpsErr.message}\n\n---\n_Dispatcher — Escalando Premoldados_`
+        `❌ ${agentLabel} — erro ao executar \`${intent.agent}\`\n\n${vpsErr.message}\n\n---\n_Dispatcher — Escalando Premoldados_`
       );
       return res.status(200).json({ ok: false, error: vpsErr.message });
     }
@@ -230,7 +241,7 @@ export default async function handler(req, res) {
       : '';
 
     await clickupComment(task_id,
-      `${statusIcon} **${intent.agent}** concluído (exit ${result.exitCode})${outputBlock}\n\n---\n_Dispatcher — Escalando Premoldados_`
+      `${statusIcon} ${agentLabel} concluiu \`${intent.agent}\` (exit ${result.exitCode})${outputBlock}\n\n---\n_Dispatcher — Escalando Premoldados_`
     );
 
     return res.status(200).json({ ok: true, agent: intent.agent, exitCode: result.exitCode });

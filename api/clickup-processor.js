@@ -29,6 +29,9 @@ const LIST_PROMPTS = {
   '901326173208': {
     name: 'Ações do Dia',
     icon: '⚡',
+    agent: 'Theo',
+    handle: '@theo',
+    role: 'Traffic Manager',
     system: `Você é Theo, Traffic Manager especializado em Meta Ads para o setor rural brasileiro.
 ${CONTEXTO_CONCRENOR}
 Analise o alerta gerado automaticamente pelo sistema de monitoramento.
@@ -40,6 +43,9 @@ Formato: 3 seções — 📊 Diagnóstico | 🎯 Causa Provável | ✅ Ação Re
   '901326173211': {
     name: 'Relatórios',
     icon: '📈',
+    agent: 'Alex',
+    handle: '@alex',
+    role: 'Analyst',
     system: `Você é Alex, Analyst de marketing digital especializado em tráfego pago rural.
 ${CONTEXTO_CONCRENOR}
 Analise o relatório de performance e extraia os insights mais importantes.
@@ -51,6 +57,9 @@ Formato: 3 seções — 🏆 Destaques | ⚠️ Pontos de Atenção | 📅 Próx
   '901326173213': {
     name: 'Sucesso do Cliente',
     icon: '🎯',
+    agent: 'Morgan',
+    handle: '@morgan',
+    role: 'Customer Success',
     system: `Você é Morgan, o gerente de produto e sucesso do cliente da agência Escalando.
 ${CONTEXTO_CONCRENOR}
 Analise este marco entregue para a Concrenor.
@@ -62,6 +71,9 @@ Formato: 2 seções — ✅ Impacto da Entrega | ➡️ Próximo Passo`,
   '901326092377': {
     name: 'Landing Pages',
     icon: '🌐',
+    agent: 'Uma',
+    handle: '@uma',
+    role: 'UX Designer',
     system: `Você é Uma, UX Designer especializada em landing pages de alta conversão para o mercado rural.
 ${CONTEXTO_CONCRENOR}
 Analise esta task de landing page com foco em conversão, experiência do fazendeiro e SEO local.
@@ -73,6 +85,9 @@ Formato: 2 seções — 🔍 Revisão Crítica | 🚀 Otimizações Sugeridas`,
   '901326092379': {
     name: 'Meta Ads',
     icon: '📘',
+    agent: 'Theo',
+    handle: '@theo',
+    role: 'Traffic Manager',
     system: `Você é Theo, Traffic Manager especializado em Meta Ads para o agronegócio.
 ${CONTEXTO_CONCRENOR}
 Analise esta task relacionada às campanhas Meta Ads da Concrenor.
@@ -84,6 +99,9 @@ Formato: 2 seções — 💡 Análise Estratégica | ✅ Ação Recomendada`,
   '901326092376': {
     name: 'GMB',
     icon: '📍',
+    agent: 'Alex',
+    handle: '@alex',
+    role: 'SEO Local',
     system: `Você é Alex, especialista em SEO local e Google Meu Negócio para pequenas empresas B2B.
 ${CONTEXTO_CONCRENOR}
 Analise esta task do Google Meu Negócio da Concrenor.
@@ -95,6 +113,9 @@ Formato: 2 seções — 🗺️ Impacto Local | ✅ Próxima Ação`,
   '901326092375': {
     name: 'Onboarding',
     icon: '🚀',
+    agent: 'Morgan',
+    handle: '@morgan',
+    role: 'Project Manager',
     system: `Você é Morgan, gerente de projeto especializado em onboarding de clientes de agência.
 ${CONTEXTO_CONCRENOR}
 Analise esta etapa do onboarding da Concrenor.
@@ -193,7 +214,10 @@ export default async function handler(req, res) {
     if (!analysis) throw new Error('Claude retornou análise vazia');
 
     // 5. Postar comentário na task
-    const comment = `${listCfg.icon} **Análise Automática — ${listCfg.name}**\n\n${analysis}\n\n---\n_Gerado automaticamente pelo sistema Escalando Premoldados_`;
+    const agentLine = listCfg.agent
+      ? `**${listCfg.agent}** (${listCfg.handle}) — ${listCfg.role}`
+      : listCfg.name;
+    const comment = `${listCfg.icon} **Análise Automática — ${listCfg.name}**\n_por ${agentLine}_\n\n${analysis}\n\n---\n_Gerado automaticamente pelo sistema Escalando Premoldados_`;
     await clickupComment(task_id, comment);
 
     console.log(`[processor] ✓ Comentário postado na task "${taskName}"`);
