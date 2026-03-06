@@ -228,9 +228,8 @@ export default async function handler(req, res) {
     try {
       result = await runAgentOnVPS(intent.agent, intent.cliente);
     } catch (vpsErr) {
-      await clickupComment(task_id,
-        `❌ ${agentLabel} — erro ao executar \`${intent.agent}\`\n\n${vpsErr.message}\n\n---\n_Dispatcher — Escalando Premoldados_`
-      );
+      // NÃO posta no ClickUp — causaria loop de webhook
+      console.error(`[dispatcher] VPS error for ${intent.agent}:`, vpsErr.message);
       return res.status(200).json({ ok: false, error: vpsErr.message });
     }
 
