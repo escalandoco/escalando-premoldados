@@ -220,6 +220,122 @@ const COMMANDS = [
   { label: 'Deploy Status',  safe: false, cmd: 'node scripts/deploy-lp.js --cliente=concrenor --dry-run',                                   desc: 'Dry run do deploy' },
 ];
 
+// ── WORKERS 24/7 CONFIG ──────────────────────────────────────
+const WORKERS = [
+  {
+    id: 'monitorar-ads',
+    name: 'Monitorar Ads',
+    desc: 'Verifica CPL/CTR/CPM vs limites e cria alerta no ClickUp se fora do padrão',
+    icon: '📊',
+    cron: '0 11 * * *',
+    cronHuman: 'Diário · 08h BRT',
+    logFile: '/var/log/escalando-monitorar.log',
+    script: 'monitorar-ads',
+    cliente: 'concrenor',
+  },
+  {
+    id: 'relatorio-ads',
+    name: 'Relatório Ads',
+    desc: 'Gera relatório de performance HTML dos anúncios e notifica no ClickUp',
+    icon: '📈',
+    cron: '0 11 1,15 * *',
+    cronHuman: 'Dias 1 e 15 · 08h BRT',
+    logFile: '/var/log/escalando-relatorio.log',
+    script: 'relatorio-ads',
+    cliente: 'concrenor',
+  },
+  {
+    id: 'exportar-leads',
+    name: 'Exportar Leads Meta',
+    desc: 'Exporta lista de leads do Google Sheets para Custom Audiences do Meta Ads',
+    icon: '📤',
+    cron: '0 11 * * 1',
+    cronHuman: 'Toda 2ª feira · 08h BRT',
+    logFile: '/var/log/escalando-leads.log',
+    script: 'exportar-leads-meta',
+    cliente: 'concrenor',
+  },
+  {
+    id: 'verificar-lp',
+    name: 'Verificar LP',
+    desc: 'Testa se a landing page está online (HTTP 200) e alerta se cair',
+    icon: '🌐',
+    cron: '0 */4 * * *',
+    cronHuman: 'A cada 4 horas',
+    logFile: '/var/log/escalando-verificar-lp.log',
+    script: 'verificar-lp',
+    cliente: 'concrenor',
+  },
+];
+
+// ── PARSE WORKER LOGS ─────────────────────────────────────────
+function parseWorkerLog(logFile, limit = 20) {
+  try {
+    if (!fs.existsSync(logFile)) return [];
+    const lines = fs.readFileSync(logFile, 'utf8').trim().split('\n').filter(Boolean);
+    const runs = [];
+    let current = null;
+    for (const line of lines) {
+      const mStart = line.match(/\[(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})\] Iniciando (.+)/);
+      const mEnd   = line.match(/\[(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})\] Concluído .+\(code (\d+)\)/);
+      if (mStart) {
+        current = { startedAt: mStart[1], script: mStart[2], exitCode: null, endedAt: null, log: [line] };
+      } else if (mEnd && current) {
+        current.endedAt  = mEnd[1];
+        current.exitCode = parseInt(mEnd[2]);
+        current.log.push(line);
+        current.ok = current.exitCode === 0;
+        runs.push(current);
+        current = null;
+      } else if (current) {
+        current.log.push(line);
+      }
+    }
+    if (current) { current.exitCode = null; current.ok = null; runs.push(current); }
+    return runs.slice(-limit).reverse();
+  } catch { return []; }
+}
+
+// ── CALC NEXT CRON RUN ────────────────────────────────────────
+function nextCronRun(cronExpr) {
+  const [min, hour, dom, month, dow] = cronExpr.split(' ');
+  const now = new Date();
+  const next = new Date(now);
+  next.setSeconds(0);
+  next.setMilliseconds(0);
+
+  // Support for common patterns only (*/N and lists)
+  const parseField = (f, max, min0 = 0) => {
+    if (f === '*') return null; // any
+    if (f.startsWith('*/')) {
+      const step = parseInt(f.slice(2));
+      return Array.from({ length: Math.floor((max - min0) / step) + 1 }, (_, i) => min0 + i * step);
+    }
+    return f.split(',').map(Number);
+  };
+
+  const mins   = parseField(min, 59, 0);
+  const hours  = parseField(hour, 23, 0);
+  const days   = parseField(dom, 31, 1);
+  const dows   = parseField(dow, 6, 0);
+
+  for (let i = 0; i < 60 * 24 * 31; i++) {
+    next.setMinutes(next.getMinutes() + 1);
+    const m = next.getMinutes();
+    const h = next.getHours();
+    const d = next.getDate();
+    const w = next.getDay();
+
+    const mOk  = !mins   || mins.includes(m);
+    const hOk  = !hours  || hours.includes(h);
+    const dOk  = !days   || days.includes(d);
+    const wOk  = !dows   || dows.includes(w);
+
+    if (mOk && hOk && dOk && wOk) return next.toISOString();
+  }
+  return null;
+}
+
 // ── SAFE COMMAND WHITELIST ───────────────────────────────────
 const SAFE_PATTERNS = [
   /^node scripts\/gerar-lp\.js.*--no-upload/,
@@ -303,6 +419,38 @@ const server = http.createServer((req, res) => {
         res.end(JSON.stringify({ stdout: stdout || '', stderr: stderr || '', code: err?.code ?? 0 }));
       });
     });
+    return;
+  }
+
+  // ── GET /api/workers ──
+  if (req.method === 'GET' && req.url === '/api/workers') {
+    try {
+      const data = WORKERS.map(w => {
+        const runs = parseWorkerLog(w.logFile, 30);
+        const last = runs[0] || null;
+        return {
+          id:        w.id,
+          name:      w.name,
+          desc:      w.desc,
+          icon:      w.icon,
+          cronHuman: w.cronHuman,
+          nextRun:   nextCronRun(w.cron),
+          lastRun:   last ? { startedAt: last.startedAt, endedAt: last.endedAt, ok: last.ok, exitCode: last.exitCode } : null,
+          history:   runs.slice(0, 10).map(r => ({
+            startedAt: r.startedAt,
+            endedAt:   r.endedAt,
+            ok:        r.ok,
+            exitCode:  r.exitCode,
+            snippet:   r.log.slice(-3).join('\n'),
+          })),
+        };
+      });
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(data));
+    } catch (e) {
+      res.writeHead(500, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: e.message }));
+    }
     return;
   }
 

@@ -230,6 +230,37 @@ section{margin-bottom:36px}
 /* prd iframe */
 #prd-frame{width:100%;height:calc(100vh - 80px);border:none;border-radius:var(--radius);display:block}
 
+/* workers 24/7 */
+.workers-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;margin-bottom:24px}
+.worker-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:18px;display:flex;flex-direction:column;gap:12px}
+.worker-card.ok{border-left:3px solid var(--green)}
+.worker-card.erro{border-left:3px solid var(--red)}
+.worker-card.sem-dado{border-left:3px solid var(--border)}
+.worker-head{display:flex;align-items:center;gap:10px}
+.worker-icon{font-size:20px}
+.worker-name{font-size:15px;font-weight:700}
+.worker-desc{font-size:12px;color:var(--muted);line-height:1.5}
+.worker-meta{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.worker-meta-item{display:flex;flex-direction:column;gap:2px}
+.worker-meta-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.worker-meta-value{font-size:12px;font-weight:600}
+.worker-status{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:12px;font-size:11px;font-weight:700}
+.ws-ok{background:rgba(63,185,80,.15);color:var(--green)}
+.ws-erro{background:rgba(248,81,73,.15);color:var(--red)}
+.ws-sem{background:var(--bg4);color:var(--muted)}
+.worker-history{border-top:1px solid var(--border);padding-top:12px}
+.worker-history-title{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px}
+.history-row{display:flex;align-items:center;gap:8px;padding:4px 0;font-size:11px;border-bottom:1px solid var(--bg4)}
+.history-row:last-child{border-bottom:none}
+.history-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.hd-ok{background:var(--green)}
+.hd-erro{background:var(--red)}
+.hd-run{background:var(--yellow)}
+.history-time{color:var(--muted);min-width:130px}
+.history-badge{margin-left:auto;font-weight:700}
+.workers-loading{color:var(--muted);font-size:14px;padding:40px;text-align:center}
+.worker-next{font-size:11px;color:var(--muted)}
+
 /* toast */
 .toast{position:fixed;bottom:20px;right:20px;background:var(--bg2);border:1px solid var(--green);color:var(--green);border-radius:8px;padding:10px 16px;font-size:13px;font-weight:600;opacity:0;transform:translateY(6px);transition:all .2s;pointer-events:none;z-index:300}
 .toast.show{opacity:1;transform:translateY(0)}
@@ -250,6 +281,7 @@ section{margin-bottom:36px}
       <button class="tab" data-tab="team"><span class="tab-icon">👥</span> Time</button>
       <button class="tab" data-tab="tools"><span class="tab-icon">⚙️</span> Ferramentas</button>
       <button class="tab" data-tab="tasks"><span class="tab-icon">🔴</span> Tarefas <span class="tab-badge" id="task-count">9</span></button>
+      <button class="tab" data-tab="workers"><span class="tab-icon">⚡</span> Workers 24/7</button>
       <button class="tab" data-tab="prd"><span class="tab-icon">📄</span> PRD</button>
     </nav>
     <div class="header-right">
@@ -286,6 +318,7 @@ section{margin-bottom:36px}
   </div>
 
   <!-- PRD -->
+  <div id="tab-workers" class="tab-content"></div>
   <div id="tab-prd" class="tab-content"></div>
 </div>
 
@@ -349,8 +382,102 @@ document.querySelectorAll('.tab').forEach(btn => {
     if (btn.dataset.tab === 'prd' && !$('prd-frame')) {
       $('tab-prd').innerHTML = '<iframe id="prd-frame" src="/prd"></iframe>';
     }
+    // Workers: load fresh data
+    if (btn.dataset.tab === 'workers') {
+      loadWorkers();
+    }
   });
 });
+
+// ── WORKERS 24/7 ─────────────────────────────────────────────
+function fmtDt(iso) {
+  if (!iso) return '—';
+  const d = new Date(iso.replace(' ', 'T'));
+  if (isNaN(d)) return iso;
+  return d.toLocaleString('pt-BR', { day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' });
+}
+function timeUntil(iso) {
+  if (!iso) return '';
+  const diff = new Date(iso) - Date.now();
+  if (diff < 0) return 'agora';
+  const h = Math.floor(diff / 3600000);
+  const m = Math.floor((diff % 3600000) / 60000);
+  if (h > 24) return `em ${Math.floor(h/24)}d ${h%24}h`;
+  if (h > 0)  return `em ${h}h ${m}m`;
+  return `em ${m}m`;
+}
+function renderWorkerCard(w) {
+  const last = w.lastRun;
+  const statusCls = last === null ? 'sem-dado' : (last.ok ? 'ok' : 'erro');
+  const statusBadge = last === null
+    ? `<span class="worker-status ws-sem">Sem dados</span>`
+    : last.ok
+      ? `<span class="worker-status ws-ok">✓ OK</span>`
+      : `<span class="worker-status ws-erro">✕ ERRO</span>`;
+
+  const histRows = (w.history || []).slice(0, 6).map(r => {
+    const dotCls = r.ok === null ? 'hd-run' : r.ok ? 'hd-ok' : 'hd-erro';
+    const badge  = r.ok === null ? '...' : r.ok ? 'OK' : `ERRO ${r.exitCode}`;
+    const bColor = r.ok === null ? 'var(--yellow)' : r.ok ? 'var(--green)' : 'var(--red)';
+    return `<div class="history-row">
+      <div class="history-dot ${dotCls}"></div>
+      <span class="history-time">${fmtDt(r.startedAt)}</span>
+      <span class="history-badge" style="color:${bColor}">${badge}</span>
+    </div>`;
+  }).join('');
+
+  return `<div class="worker-card ${statusCls}">
+    <div class="worker-head">
+      <div class="worker-icon">${w.icon}</div>
+      <div>
+        <div class="worker-name">${w.name}</div>
+        <div class="worker-desc">${w.desc}</div>
+      </div>
+    </div>
+    <div class="worker-meta">
+      <div class="worker-meta-item">
+        <div class="worker-meta-label">Frequência</div>
+        <div class="worker-meta-value">${w.cronHuman}</div>
+      </div>
+      <div class="worker-meta-item">
+        <div class="worker-meta-label">Última execução</div>
+        <div class="worker-meta-value">${last ? fmtDt(last.startedAt) : '—'}</div>
+      </div>
+      <div class="worker-meta-item">
+        <div class="worker-meta-label">Status</div>
+        <div>${statusBadge}</div>
+      </div>
+      <div class="worker-meta-item">
+        <div class="worker-meta-label">Próxima</div>
+        <div class="worker-meta-value worker-next">${timeUntil(w.nextRun)} <span style="color:var(--muted);font-weight:400">(${fmtDt(w.nextRun)})</span></div>
+      </div>
+    </div>
+    ${histRows ? `<div class="worker-history">
+      <div class="worker-history-title">Últimas execuções</div>
+      ${histRows}
+    </div>` : ''}
+  </div>`;
+}
+
+function loadWorkers() {
+  const el = $('tab-workers');
+  el.innerHTML = '<div class="workers-loading">Carregando dados dos workers...</div>';
+  fetch('/api/workers').then(r => r.json()).then(workers => {
+    const ok    = workers.filter(w => w.lastRun?.ok === true).length;
+    const erro  = workers.filter(w => w.lastRun?.ok === false).length;
+    const total = workers.length;
+    const sumBar = `<div style="display:flex;gap:16px;align-items:center;margin-bottom:20px;padding:14px 18px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius)">
+      <div style="font-size:13px;color:var(--muted)">Workers ativos: <b style="color:var(--fg)">${total}</b></div>
+      <div style="font-size:13px;color:var(--green)">✓ OK: <b>${ok}</b></div>
+      ${erro > 0 ? `<div style="font-size:13px;color:var(--red)">✕ Erros: <b>${erro}</b></div>` : ''}
+      <div style="margin-left:auto;font-size:11px;color:var(--muted)">Atualizado ${new Date().toLocaleTimeString('pt-BR')}</div>
+      <button onclick="loadWorkers()" style="background:var(--bg4);border:1px solid var(--border);color:var(--fg);border-radius:6px;padding:4px 12px;cursor:pointer;font-size:12px">↻ Atualizar</button>
+    </div>`;
+    el.innerHTML = sumBar + `<div class="workers-grid">${workers.map(renderWorkerCard).join('')}</div>`;
+  }).catch(e => {
+    el.innerHTML = `<div class="workers-loading" style="color:var(--red)">Erro ao carregar workers: ${e.message}</div>`;
+  });
+}
 
 // ── OVERVIEW ─────────────────────────────────────────────────
 function renderOverview(data) {
