@@ -1,0 +1,75 @@
+{
+  "_instrucoes": "Briefing de anuncios da Concrenor — caso piloto EP4. Call de ideias pendente com o cliente.",
+  "_versao": "1.0",
+  "_status": "rascunho — aguardando call de ideias com cliente para validar referencias e materiais",
+
+  "cliente": "Concrenor",
+  "data_briefing": "2026-03-06",
+  "responsavel": "Escalando Premoldados",
+
+  "produto_anunciado": "Mourão Torneado de Concreto",
+  "objetivo_campanha": "leads",
+  "orcamento_mensal_brl": 1500,
+  "orcamento_obs": "R$1.500 aprovados pelo cliente. Com impostos Meta Brasil (+12%): ~R$1.680 consumidos. Fase Discovery: R$50/dia por 30 dias.",
+  "plataformas": ["Meta Ads"],
+  "duracao_prevista_dias": 30,
+
+  "avatar": {
+    "nome_ficticio": "Antônio, fazendeiro",
+    "idade": "40-65 anos",
+    "profissao": "Produtor rural / pecuarista",
+    "regiao": "Sergipe, Alagoas, Sul da Bahia",
+    "nivel_consciencia": "com_problema",
+    "dor_principal": "Gasta R$8.000/ano repondo mourão de eucalipto que apodrece a cada 5-7 anos. Perde dias de trabalho parando a cerca e corre risco do gado fugir.",
+    "desejo_principal": "Cerca durável que não precise de manutenção por décadas — resolver o problema de vez.",
+    "objecoes": [
+      "Preço mais caro que mourão de madeira (não vê o custo total de longo prazo)",
+      "Não sabe se é resistente como madeira (desconhece o concreto)",
+      "Como a entrega chega até minha fazenda no interior"
+    ],
+    "linguagem": "Direta, sem frescura. Fala em hectare, cabeças de gado, custeio por ano. Desconfia de propaganda mas respeita quem fala com clareza.",
+    "onde_passa_tempo": "Facebook (grupos rurais, leilões de gado), YouTube (conteúdo agro), WhatsApp"
+  },
+
+  "promessa_principal": "Mourão que dura 50 anos — uma vez colocado, nunca mais troca.",
+  "angulo_criativo": "Economia",
+
+  "provas_sociais": [
+    "Antônio Mendes: 8 anos de cerca sem trocar um mourão",
+    "300 hectares de Carlos entregues no prazo — sem uma peça com defeito",
+    "Mais de 500 clientes em 38 cidades de SE e AL"
+  ],
+
+  "referencias_cliente": {
+    "anuncios_que_gostou": ["A COLETAR NA CALL DE IDEIAS"],
+    "o_que_ja_tentou": "A COLETAR NA CALL DE IDEIAS",
+    "o_que_nao_funcionou": "A COLETAR NA CALL DE IDEIAS",
+    "materiais_disponiveis": {
+      "fotos": false,
+      "videos": false,
+      "depoimentos_texto": true,
+      "depoimentos_video": false,
+      "logo": true
+    }
+  },
+
+  "cta_principal": "Peça seu orçamento pelo WhatsApp",
+  "cta_url": "https://wa.me/5579999999999",
+  "cta_utm_padrao": "?utm_source=meta&utm_medium=cpc&utm_campaign={campanha}&utm_content={criativo}",
+
+  "restricoes": {
+    "temas_proibidos": ["não mencionar preço exato nos anúncios (variação por quantidade/frete)"],
+    "tom_proibido": "Não usar linguagem de cidade grande. Sem termos como 'inovação', 'disruptivo', 'ecossistema'.",
+    "aprovacao_necessaria": true,
+    "prazo_aprovacao_dias": 2
+  },
+
+  "acessos_necessarios": {
+    "meta_business_manager": false,
+    "meta_ads_manager": false,
+    "pixel_meta_id": "",
+    "google_ads_mcc": false,
+    "gtm_container_id": "",
+    "ga4_measurement_id": ""
+  }
+}

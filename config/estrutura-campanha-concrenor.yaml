@@ -1,0 +1,86 @@
+# Estrutura de Campanha — Concrenor
+# Story: EP4-S5
+# Criado: 2026-03-06
+
+cliente: Concrenor
+angulo_principal: "Economia de longo prazo vs mourão de madeira"
+ideia_central: "O mourão de concreto parece mais caro — mas custa 10x menos ao longo da vida"
+
+abordagens:
+  - id: A1
+    nome: "Dor financeira"
+    descricao: "Quanto você gasta por ano repondo mourão podre?"
+    hook: "Você sabia que mourão de madeira custa R$8.000/ano para 100 hectares?"
+
+  - id: A2
+    nome: "Geração"
+    descricao: "Cerca que seu filho vai herdar. Sem manutenção."
+    hook: "Meu pai instalou essa cerca em 1995. Eu nunca troquei um mourão."
+
+  - id: A3
+    nome: "Prova social"
+    descricao: "Antônio Mendes: 8 anos de cerca sem trocar um mourão"
+    hook: "8 anos, 300 hectares, zero reposição. Isso é mourão Concrenor."
+
+# ---- FASE DISCOVERY ----
+fase_inicial: Discovery
+orcamento_discovery_dia: 50
+duracao_discovery_dias: 21
+objetivo: leads
+cta: "Peça seu orçamento pelo WhatsApp"
+cta_url: "https://wa.me/5579999999999"
+
+campanhas:
+  - nome: "CONCRENOR_MOURAO_DISCOVERY_LEADS_202603"
+    objetivo: Leads (WhatsApp)
+    orcamento_dia: 50
+    periodo_dias: 21
+
+    conjuntos:
+      - nome: "CONCRENOR_DISC_INTERESSES-PECUARIA_SE-AL-BA"
+        temperatura: frio
+        localizacao: "Sergipe + Alagoas + Sul da Bahia"
+        idade: "30-65"
+        interesses:
+          - Agropecuária
+          - Pecuária
+          - Cerca rural
+          - Fazenda
+        anuncios:
+          - "CONCRENOR_DORFINANCEIRA_FEED_V1"
+          - "CONCRENOR_GERACAO_FEED_V2"
+          - "CONCRENOR_PROVASOCIAL_FEED_V3"
+
+      - nome: "CONCRENOR_DISC_RETARGETING-LP30D_SE"
+        temperatura: quente
+        audiencia: "CA_CONCRENOR_VISITANTES-LP_30D"
+        anuncios:
+          - "CONCRENOR_DORFINANCEIRA_STORIES_V1"
+          - "CONCRENOR_GERACAO_STORIES_V2"
+          - "CONCRENOR_PROVASOCIAL_STORIES_V3"
+
+      - nome: "CONCRENOR_DISC_LAL1PCT-CLIENTES_SE-AL-BA"
+        temperatura: morno
+        audiencia_base: "CA_CONCRENOR_LISTA-CLIENTES"
+        lookalike: "1%"
+        filtro_localizacao: "Sergipe + Alagoas + Sul da Bahia"
+        anuncios:
+          - "CONCRENOR_DORFINANCEIRA_FEED_V1"
+          - "CONCRENOR_GERACAO_FEED_V2"
+          - "CONCRENOR_PROVASOCIAL_FEED_V3"
+
+# ---- FASE SCALE (após 30 dias com ROAS > 3x) ----
+fase_scale:
+  gatilho: "ROAS > 3x após 30 dias ou CPL < R$30"
+  regra_escala: "Máximo +50% de orçamento a cada 48h"
+  publicos_novos:
+    - "LAL_CONCRENOR_CLIENTES_2PCT_BR"
+    - "CA_CONCRENOR_ENGAJOU-IG_30D"
+
+# ---- GOOGLE ADS ----
+google_ads:
+  campanha: "CONCRENOR_SEARCH_MOURAO_202603"
+  tipo: Search
+  orcamento_dia: 30
+  inicio: "após 30 dias de Meta Discovery"
+  rationale: "Meta cria demanda, Google captura quem já está buscando"

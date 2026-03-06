@@ -1,5 +1,5 @@
-# Epic 1 — Fundação da Agência
-**Status:** In Progress
+# Epic 1 — Presença Digital Base
+**Status:** Done
 **Prioridade:** P0
 **Responsável:** @dev + @sm
 **PRD:** docs/prd.md
@@ -11,9 +11,9 @@ Criar a presença digital da Escalando Premoldados e o processo de onboarding qu
 
 | ID | Título | Responsável | Status |
 |----|--------|-------------|--------|
-| EP1-S1 | Landing Page da Escalando Premoldados | @dev | Pending |
-| EP1-S2 | Playbook de Onboarding | @sm | Pending |
+| EP1-S1 | Landing Page | @dev | Done |
+| EP1-S2 | Playbook de Onboarding | @sm | Done |
 
 ## Critério de conclusão do Epic
-- [ ] LP no ar e convertendo leads
-- [ ] Playbook testado em pelo menos 1 cliente real
+- [x] LP no ar e convertendo leads
+- [x] Playbook testado em pelo menos 1 cliente real

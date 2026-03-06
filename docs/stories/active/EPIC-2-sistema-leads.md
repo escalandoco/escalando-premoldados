@@ -1,22 +1,26 @@
-# Epic 2 — Sistema de Leads
-**Status:** Pending
+# Epic 2 — CRM & Automação de Leads
+**Status:** In Progress (1/5)
 **Prioridade:** P1
-**Responsável:** @data-engineer + @analyst + @architect
+**Responsável:** @data-engineer + @analyst
 **PRD:** docs/prd.md
 **Depende de:** Epic 1 concluído
 
 ## Objetivo
-Estruturar o sistema que recebe, registra, acompanha e reporta leads para cada cliente — desde a planilha inicial até as automações AIOS.
+Estruturar o sistema que recebe, registra, acompanha e reporta leads para cada cliente — desde a planilha inicial até automações e dashboards.
 
 ## Stories
 
 | ID | Título | Responsável | Status |
 |----|--------|-------------|--------|
-| EP2-S1 | Planilha Mestre de Leads | @data-engineer | Pending |
-| EP2-S2 | Templates de Relatório de Performance | @analyst | Pending |
-| EP2-S3 | AIOS Agents da Agência | @architect | Pending |
+| EP2-S1 | CRM Planilha Google Sheets | @data-engineer | In Progress |
+| EP2-S2 | Alertas de Follow-up | @dev | Pending |
+| EP2-S3 | Tintim Multi-Cliente | @dev | Pending |
+| EP2-S4 | Relatório PDF Mensal | @analyst | Pending |
+| EP2-S5 | Dashboard de Resultados | @dev | Pending |
 
 ## Critério de conclusão do Epic
 - [ ] Leads entrando automaticamente na planilha
-- [ ] Relatório gerado sem trabalho manual
-- [ ] AIOS executando ao menos 3 automações por cliente/mês
+- [ ] Alertas de follow-up funcionando
+- [ ] Tintim integrado para múltiplos clientes
+- [ ] Relatório PDF gerado automaticamente
+- [ ] Dashboard de resultados acessível por cliente

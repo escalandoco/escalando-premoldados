@@ -1,0 +1,103 @@
+{
+  "empresa": "Concrenor",
+  "url": "https://concrenor.escalando.co/",
+  "estado": "SE",
+  "gmb_url": "",
+  "slogan": "Cercou uma vez, não troca mais.",
+  "cor_primaria": "#C4B470",
+  "cor_secundaria": "#0D1117",
+  "estilo": "clean",
+  "whatsapp": "5579999999999",
+  "whatsapp_msg": "Olá Concrenor! Vim pelo site e gostaria de um orçamento para mourão torneado.",
+  "telefone": "(79) 99999-9999",
+  "cidade": "Itabaiana — SE",
+  "regioes": [
+    "Todo Sergipe",
+    "Interior de Alagoas",
+    "Sul da Bahia"
+  ],
+  "headline": "Cansou de trocar mourão? Esse dura 50 anos.",
+  "headline_ab": "R$ 8.000 por ano em mourão que apodrece? Acabe com isso.",
+  "subheadline": "Mourão torneado de concreto direto da fábrica em Itabaiana, com entrega em 48h para Sergipe, Alagoas e Bahia.",
+  "badge": "Mourão de Concreto",
+  "numeros": [
+    {
+      "valor": "12+",
+      "label": "Anos no mercado"
+    },
+    {
+      "valor": "500+",
+      "label": "Clientes atendidos"
+    },
+    {
+      "valor": "48h",
+      "label": "Prazo de entrega"
+    }
+  ],
+  "produtos": [
+    {
+      "nome": "Mourão Torneado",
+      "aplicacao": "Cercas rurais e currais",
+      "preco": "A partir de R$ 18,00",
+      "desc": "Alta resistência e durabilidade para cercamento de propriedades rurais. Disponível em vários comprimentos.",
+      "foto": ""
+    },
+    {
+      "nome": "Bloco de Concreto",
+      "aplicacao": "Construção civil",
+      "preco": "Consulte",
+      "desc": "Bloco estrutural e de vedação com dimensões padronizadas.",
+      "foto": ""
+    },
+    {
+      "nome": "Palanque",
+      "aplicacao": "Cercas e divisórias",
+      "preco": "Consulte",
+      "desc": "Resistente às intempéries, ideal para uso em áreas externas.",
+      "foto": ""
+    },
+    {
+      "nome": "Meio-Fio",
+      "aplicacao": "Obras públicas e privadas",
+      "preco": "Consulte",
+      "desc": "Acabamento perfeito para calçadas e estacionamentos. Padrão ABNT.",
+      "foto": ""
+    }
+  ],
+  "diferenciais": [
+    {
+      "icone": "🏭",
+      "titulo": "Fábrica própria em Itabaiana",
+      "desc": "Sem intermediário, sem markup. Você compra direto de quem fabrica e paga preço justo."
+    },
+    {
+      "icone": "🚚",
+      "titulo": "Entrega em 48h",
+      "desc": "Pediu hoje, recebe em até 2 dias em qualquer cidade de Sergipe, interior de Alagoas e sul da Bahia."
+    },
+    {
+      "icone": "⏳",
+      "titulo": "Dura mais de 50 anos",
+      "desc": "Enquanto mourão de eucalipto apodrece em 5 anos, o de concreto passa de geração em geração."
+    },
+    {
+      "icone": "📋",
+      "titulo": "Laudo técnico por lote",
+      "desc": "Todo lote sai com laudo de resistência ABNT NBR 8953. Se quebrar no transporte, repomos de graça."
+    }
+  ],
+  "depoimentos": [
+    {
+      "nome": "Antônio Mendes",
+      "local": "Tobias Barreto — SE",
+      "texto": "Instalei o mourão da Concrenor há 8 anos e tá tudo igual, firme no chão. Antes eu gastava quase R$ 8 mil por ano repondo madeira podre e ainda perdia gado pela cerca caída."
+    },
+    {
+      "nome": "Carlos Oliveira",
+      "local": "Arapiraca — AL",
+      "texto": "Cercaram minha fazenda de 300 hectares no prazo certinho, sem uma peça com defeito. Já indiquei pra três vizinhos e todos fecharam. Coisa rara achar fornecedor sério assim."
+    }
+  ],
+  "pixel_meta": "",
+  "ga4": ""
+}

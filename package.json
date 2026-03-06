@@ -2,5 +2,19 @@
   "name": "escalando-premoldados",
   "version": "1.0.0",
   "private": true,
-  "type": "module"
+  "type": "module",
+  "scripts": {
+    "gerar-copy": "node --env-file=.env scripts/gerar-copy.js",
+    "gerar-copy-ads": "node --env-file=.env scripts/gerar-copy-ads.js",
+    "gerar-lp": "node --env-file=.env scripts/gerar-lp.js",
+    "exportar-leads-meta": "node --env-file=.env scripts/exportar-leads-meta.js",
+    "relatorio-ads": "node --env-file=.env scripts/relatorio-ads.js",
+    "monitorar-ads": "node --env-file=.env scripts/monitorar-ads.js",
+    "deploy-lp": "node scripts/deploy-lp.js",
+    "dash": "node docs/dash-local/server.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.78.0",
+    "dotenv": "^17.3.1"
+  }
 }

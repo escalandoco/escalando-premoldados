@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Escalando Premoldados — Dashboard</title>
+<style>
+:root{
+  --bg:#0d1117;--bg2:#161b22;--bg3:#1c2128;--bg4:#21262d;
+  --border:#30363d;--border2:#444c56;
+  --text:#e6edf3;--muted:#8b949e;--muted2:#6e7681;
+  --orange:#E85110;--orange-l:rgba(232,81,16,.14);
+  --green:#2ea043;--green-l:rgba(46,160,67,.14);
+  --blue:#58a6ff;--blue-l:rgba(88,166,255,.14);
+  --yellow:#d97706;--yellow-l:rgba(217,119,6,.14);
+  --red:#f85149;--red-l:rgba(248,81,73,.14);
+  --purple:#d2a8ff;--purple-l:rgba(210,168,255,.14);
+  --radius:10px;--radius-sm:6px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:14px;line-height:1.5;min-height:100vh}
+
+/* ── HEADER ── */
+header{background:var(--bg2);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
+.header-inner{max-width:1440px;margin:0 auto;padding:0 24px;display:flex;align-items:center;gap:20px;height:52px}
+.logo{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.logo-dot{width:9px;height:9px;border-radius:50%;background:var(--orange);box-shadow:0 0 8px var(--orange)}
+.logo-text{font-size:14px;font-weight:700}
+.logo-sub{font-size:11px;color:var(--muted);margin-left:2px}
+
+/* tabs */
+nav{display:flex;gap:2px;flex:1}
+.tab{padding:6px 14px;border-radius:var(--radius-sm);font-size:13px;font-weight:500;color:var(--muted);cursor:pointer;transition:all .15s;white-space:nowrap;border:none;background:none;display:flex;align-items:center;gap:6px}
+.tab:hover{color:var(--text);background:var(--bg3)}
+.tab.active{color:var(--text);background:var(--bg4);border:1px solid var(--border)}
+.tab-icon{font-size:14px}
+.tab-badge{font-size:10px;background:var(--orange-l);color:var(--orange);border-radius:10px;padding:1px 6px;font-weight:700}
+
+.header-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.updated{font-size:11px;color:var(--muted2)}
+.refresh-btn{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:5px 12px;font-size:12px;color:var(--muted);cursor:pointer;transition:all .15s}
+.refresh-btn:hover{border-color:var(--orange);color:var(--orange)}
+.pulse{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--green);margin-right:5px;animation:pulse 2.5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+
+/* ── LAYOUT ── */
+.wrap{max-width:1440px;margin:0 auto;padding:24px 24px 80px}
+.tab-content{display:none}
+.tab-content.active{display:block}
+
+/* ── LOADING ── */
+.loading{text-align:center;padding:80px;color:var(--muted)}
+.spinner{width:28px;height:28px;border:2px solid var(--border);border-top-color:var(--orange);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 12px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── SECTION ── */
+.section-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.section-title::after{content:'';flex:1;height:1px;background:var(--border)}
+section{margin-bottom:36px}
+
+/* ── BADGES ── */
+.badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;white-space:nowrap}
+.badge-done{background:var(--green-l);color:var(--green)}
+.badge-progress{background:var(--blue-l);color:var(--blue)}
+.badge-locked{background:var(--yellow-l);color:var(--yellow)}
+.badge-pending{background:var(--bg4);color:var(--muted);border:1px solid var(--border)}
+.badge-human{background:var(--purple-l);color:var(--purple);font-size:9px}
+
+/* ── OVERVIEW: EPIC CARDS ── */
+.epics-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
+.epic-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;cursor:pointer;transition:all .2s;user-select:none}
+.epic-card:hover{border-color:var(--orange);transform:translateY(-1px)}
+.epic-card.ep-active{border-color:var(--orange);background:var(--bg3)}
+.epic-hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
+.epic-id{font-size:11px;font-weight:700;color:var(--muted)}
+.epic-name{font-size:13px;font-weight:600;margin-bottom:10px}
+.progress-bar{height:4px;background:var(--bg4);border-radius:2px;overflow:hidden;margin-bottom:6px}
+.pbar-fill{height:100%;border-radius:2px;transition:width .6s}
+.fill-done{background:var(--green)}
+.fill-progress{background:var(--blue)}
+.fill-locked{background:var(--yellow)}
+.epic-count{font-size:11px;color:var(--muted)}
+
+/* ── STORIES TAB ── */
+.epic-section{margin-bottom:28px}
+.epic-section-header{display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;transition:border-color .2s;user-select:none}
+.epic-section-header:hover{border-color:var(--border2)}
+.epic-section-header.open{border-bottom-left-radius:0;border-bottom-right-radius:0;border-bottom-color:transparent}
+.epic-arrow{font-size:12px;color:var(--muted);transition:transform .2s;margin-left:auto}
+.epic-section-header.open .epic-arrow{transform:rotate(90deg)}
+.epic-stories{border:1px solid var(--border);border-top:none;border-bottom-left-radius:var(--radius);border-bottom-right-radius:var(--radius);overflow:hidden;display:none}
+.epic-stories.open{display:block}
+
+.story-row{display:flex;align-items:center;gap:12px;padding:10px 16px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s}
+.story-row:last-child{border-bottom:none}
+.story-row:hover{background:var(--bg3)}
+.story-row.expanded{background:var(--bg3)}
+.story-icon{font-size:14px;flex-shrink:0}
+.story-info{flex:1;min-width:0}
+.story-id{font-size:10px;color:var(--muted);font-family:monospace}
+.story-title{font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.story-meta{display:flex;align-items:center;gap:8px;margin-top:3px;flex-wrap:wrap}
+.story-resp{font-size:10px;color:var(--muted);background:var(--bg4);border-radius:4px;padding:1px 6px;font-family:monospace}
+.story-checks{font-size:10px;color:var(--muted)}
+.story-expand{display:none;padding:14px 16px 16px;background:var(--bg3);border-bottom:1px solid var(--border)}
+.story-expand.open{display:block}
+.story-context{font-size:12px;color:var(--muted);margin-bottom:10px;line-height:1.5}
+.tasks-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted2);margin-bottom:6px}
+.task-line{display:flex;align-items:flex-start;gap:8px;padding:4px 0;font-size:12px}
+.task-check{flex-shrink:0;margin-top:1px;font-size:13px}
+
+/* ── TEAM TAB ── */
+.agents-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px}
+.agent-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;gap:8px}
+.agent-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.3)}
+.agent-card.selected{border-color:var(--orange);background:var(--bg3)}
+.agent-avatar{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;letter-spacing:.5px;margin-bottom:2px}
+.agent-name{font-size:14px;font-weight:700}
+.agent-role{font-size:11px;color:var(--muted)}
+.agent-handle{font-size:10px;font-family:monospace;padding:2px 6px;background:var(--bg4);border-radius:4px;width:fit-content;color:var(--muted)}
+.agent-scope{font-size:11px;color:var(--muted);border-top:1px solid var(--border);padding-top:8px}
+.agent-stats{display:flex;gap:10px;font-size:11px}
+.astat span{font-weight:700}
+.agent-last{font-size:10px;border-top:1px solid var(--border);padding-top:8px;margin-top:auto}
+.agent-last-lbl{color:var(--muted2);margin-bottom:2px}
+.agent-last-story{font-weight:600;font-size:11px}
+.agent-last-id{font-size:9px;margin-top:1px}
+.executor-badge{font-size:9px;font-weight:700;padding:2px 7px;border-radius:10px;width:fit-content;letter-spacing:.4px;text-transform:uppercase}
+.ex-agente{background:rgba(88,166,255,.15);color:#58a6ff}
+.ex-analyst{background:rgba(210,168,255,.15);color:#d2a8ff}
+.ex-worker{background:rgba(63,185,80,.15);color:#3fb950}
+.ex-clone{background:rgba(248,81,73,.15);color:#f85149}
+.ex-humano{background:rgba(232,81,16,.2);color:#E85110;border:1px solid rgba(232,81,16,.4)}
+
+/* executor legend */
+.exec-legend{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-bottom:28px}
+.exec-legend-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;display:flex;gap:12px;align-items:flex-start}
+.exec-legend-icon{font-size:22px;flex-shrink:0;margin-top:1px}
+.exec-legend-name{font-size:12px;font-weight:700;margin-bottom:3px}
+.exec-legend-desc{font-size:11px;color:var(--muted);line-height:1.4}
+
+/* Agent modal */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:200;display:none;align-items:center;justify-content:center;padding:24px}
+.modal-bg.open{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--border);border-radius:14px;width:100%;max-width:560px;max-height:80vh;overflow:hidden;display:flex;flex-direction:column}
+.modal-header{padding:20px 22px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:14px}
+.modal-avatar{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;flex-shrink:0}
+.modal-name{font-size:16px;font-weight:700}
+.modal-role{font-size:12px;color:var(--muted)}
+.modal-close{margin-left:auto;background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;padding:4px 8px;border-radius:6px;line-height:1}
+.modal-close:hover{background:var(--bg3);color:var(--text)}
+.modal-body{overflow-y:auto;padding:16px 22px}
+.modal-stories-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin-bottom:10px}
+.modal-story{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:var(--radius-sm);margin-bottom:4px;background:var(--bg3)}
+.modal-story-id{font-size:10px;font-family:monospace;color:var(--muted);width:64px;flex-shrink:0}
+.modal-story-title{font-size:12px;flex:1}
+.modal-empty{text-align:center;padding:32px;color:var(--muted);font-size:13px}
+
+/* ── EDIT MODAL ── */
+.edit-modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:300;display:none;align-items:center;justify-content:center;padding:24px}
+.edit-modal-bg.open{display:flex}
+.edit-modal{background:var(--bg2);border:1px solid var(--border);border-radius:14px;width:100%;max-width:440px;padding:24px}
+.edit-modal-title{font-size:15px;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:10px}
+.edit-modal-sub{font-size:12px;color:var(--muted);margin-bottom:20px}
+.edit-field{margin-bottom:14px}
+.edit-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:6px}
+.edit-input{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 12px;font-size:13px;color:var(--text);font-family:monospace;outline:none;transition:border-color .15s}
+.edit-input:focus{border-color:var(--orange)}
+.edit-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:20px}
+.btn-cancel{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 16px;font-size:13px;color:var(--muted);cursor:pointer}
+.btn-cancel:hover{border-color:var(--border2);color:var(--text)}
+.btn-save{background:var(--orange);border:1px solid var(--orange);border-radius:var(--radius-sm);padding:8px 20px;font-size:13px;font-weight:700;color:#fff;cursor:pointer;transition:opacity .15s}
+.btn-save:hover{opacity:.85}
+.btn-save:disabled{opacity:.4;cursor:not-allowed}
+
+/* ── TOOLS TAB ── */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:900px){.two-col{grid-template-columns:1fr}}
+.int-grid{display:flex;flex-direction:column;gap:8px}
+.int-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;display:flex;align-items:center;gap:12px;transition:border-color .2s;cursor:pointer}
+.int-card:hover{border-color:var(--border2)}
+.int-card.not-connected:hover{border-color:var(--yellow)}
+.int-icon{font-size:20px;width:30px;text-align:center;flex-shrink:0}
+.int-info{flex:1;min-width:0}
+.int-name{font-size:12px;font-weight:600}
+.int-detail{font-size:11px;color:var(--muted);margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.dot-on{background:var(--green);box-shadow:0 0 6px var(--green)}
+.dot-off{background:var(--border)}
+
+/* commands */
+.cmd-list{display:flex;flex-direction:column;gap:8px}
+.cmd-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px}
+.cmd-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.cmd-label{font-size:12px;font-weight:700}
+.cmd-desc{font-size:11px;color:var(--muted)}
+.cmd-row{display:flex;gap:6px}
+.cmd-code{flex:1;font-family:monospace;font-size:11px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:7px 10px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer;transition:all .15s}
+.cmd-code:hover{border-color:var(--orange);color:var(--text)}
+.btn{border:1px solid var(--border);border-radius:var(--radius-sm);padding:6px 12px;font-size:11px;cursor:pointer;transition:all .15s;background:var(--bg3);color:var(--muted);white-space:nowrap}
+.btn:hover{border-color:var(--border2);color:var(--text)}
+.btn-copy:hover{border-color:var(--blue);color:var(--blue)}
+.btn-run{border-color:var(--green);color:var(--green);background:var(--green-l)}
+.btn-run:hover{background:var(--green);color:#000}
+.btn-run:disabled{opacity:.4;cursor:not-allowed}
+.btn.copied{border-color:var(--green);color:var(--green)}
+
+/* terminal */
+.terminal{margin-top:12px;background:#000;border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;font-family:monospace;font-size:12px;min-height:60px;max-height:280px;overflow-y:auto;display:none}
+.terminal.open{display:block}
+.term-line{white-space:pre-wrap;word-break:break-all;margin-bottom:2px}
+.term-out{color:#7ee787}
+.term-err{color:#f85149}
+.term-sys{color:#79c0ff}
+.term-loader{color:#ffa657;animation:blink .8s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* tasks tab */
+.tasks-list{display:flex;flex-direction:column;gap:6px}
+.task-item{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:11px 14px;display:flex;align-items:flex-start;gap:12px}
+.task-bar{width:4px;border-radius:2px;align-self:stretch;flex-shrink:0;margin-top:1px}
+.p-high{background:var(--red)}
+.p-medium{background:var(--yellow)}
+.p-low{background:var(--green)}
+.task-text{font-size:13px}
+.task-tags{display:flex;gap:6px;margin-top:5px;flex-wrap:wrap}
+.tag{font-size:10px;background:var(--bg4);border:1px solid var(--border);border-radius:4px;padding:1px 7px;color:var(--muted)}
+
+/* prd iframe */
+#prd-frame{width:100%;height:calc(100vh - 80px);border:none;border-radius:var(--radius);display:block}
+
+/* toast */
+.toast{position:fixed;bottom:20px;right:20px;background:var(--bg2);border:1px solid var(--green);color:var(--green);border-radius:8px;padding:10px 16px;font-size:13px;font-weight:600;opacity:0;transform:translateY(6px);transition:all .2s;pointer-events:none;z-index:300}
+.toast.show{opacity:1;transform:translateY(0)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-dot"></div>
+      <span class="logo-text">Escalando Premoldados</span>
+      <span class="logo-sub">· Dashboard</span>
+    </div>
+    <nav id="tabs">
+      <button class="tab active" data-tab="overview"><span class="tab-icon">📊</span> Overview</button>
+      <button class="tab" data-tab="stories"><span class="tab-icon">📋</span> Stories</button>
+      <button class="tab" data-tab="team"><span class="tab-icon">👥</span> Time</button>
+      <button class="tab" data-tab="tools"><span class="tab-icon">⚙️</span> Ferramentas</button>
+      <button class="tab" data-tab="tasks"><span class="tab-icon">🔴</span> Tarefas <span class="tab-badge" id="task-count">9</span></button>
+      <button class="tab" data-tab="prd"><span class="tab-icon">📄</span> PRD</button>
+    </nav>
+    <div class="header-right">
+      <span class="updated" id="updated-label"><span class="pulse"></span>ao vivo</span>
+      <button class="refresh-btn" onclick="loadData()">↻ Atualizar</button>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <!-- OVERVIEW -->
+  <div id="tab-overview" class="tab-content active">
+    <div class="loading"><div class="spinner"></div>Carregando...</div>
+  </div>
+
+  <!-- STORIES -->
+  <div id="tab-stories" class="tab-content">
+    <div class="loading"><div class="spinner"></div>Carregando...</div>
+  </div>
+
+  <!-- TEAM -->
+  <div id="tab-team" class="tab-content">
+    <div class="loading"><div class="spinner"></div>Carregando...</div>
+  </div>
+
+  <!-- TOOLS -->
+  <div id="tab-tools" class="tab-content">
+    <div class="loading"><div class="spinner"></div>Carregando...</div>
+  </div>
+
+  <!-- TASKS -->
+  <div id="tab-tasks" class="tab-content">
+    <div class="loading"><div class="spinner"></div>Carregando...</div>
+  </div>
+
+  <!-- PRD -->
+  <div id="tab-prd" class="tab-content"></div>
+</div>
+
+<!-- EDIT INTEGRATION MODAL -->
+<div class="edit-modal-bg" id="edit-modal" onclick="closeEditModal(event)">
+  <div class="edit-modal" id="edit-modal-inner"></div>
+</div>
+
+<!-- AGENT MODAL -->
+<div class="modal-bg" id="agent-modal" onclick="closeModal(event)">
+  <div class="modal" id="modal-inner"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── UTILS ────────────────────────────────────────────────────
+const $ = id => document.getElementById(id);
+let DATA = null;
+
+function toast(msg, color = 'var(--green)') {
+  const el = $('toast');
+  el.textContent = msg;
+  el.style.borderColor = color;
+  el.style.color = color;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 2200);
+}
+
+function timeSince(iso) {
+  const s = Math.floor((Date.now() - new Date(iso)) / 1000);
+  if (s < 5)  return 'agora';
+  if (s < 60) return `há ${s}s`;
+  if (s < 3600) return `há ${Math.floor(s/60)}min`;
+  return `há ${Math.floor(s/3600)}h`;
+}
+
+function statusIcon(s) {
+  const sl = (s||'').toLowerCase();
+  if (sl.startsWith('done'))  return '✅';
+  if (sl.includes('lock') || sl.includes('bloque')) return '🔒';
+  return '⏳';
+}
+
+function statusBadge(s) {
+  const sl = (s||'').toLowerCase();
+  if (sl.startsWith('done'))  return `<span class="badge badge-done">Done</span>`;
+  if (sl.includes('lock') || sl.includes('bloque')) return `<span class="badge badge-locked">Bloqueado</span>`;
+  if (sl.includes('tarefa humana') || sl.includes('aguardando')) return `<span class="badge badge-human">aguardando</span>`;
+  return `<span class="badge badge-pending">Pending</span>`;
+}
+
+// ── TABS ─────────────────────────────────────────────────────
+document.querySelectorAll('.tab').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    $('tab-' + btn.dataset.tab).classList.add('active');
+    // PRD: inject iframe once
+    if (btn.dataset.tab === 'prd' && !$('prd-frame')) {
+      $('tab-prd').innerHTML = '<iframe id="prd-frame" src="/prd"></iframe>';
+    }
+  });
+});
+
+// ── OVERVIEW ─────────────────────────────────────────────────
+function renderOverview(data) {
+  const pct = e => e.total > 0 ? Math.round(e.done / e.total * 100) : 0;
+  const fillCls = e => ({ done:'fill-done', progress:'fill-progress', locked:'fill-locked' }[e.status] || 'fill-progress');
+  const badgeCls = e => ({ done:'badge-done', progress:'badge-progress', locked:'badge-locked' }[e.status] || 'badge-pending');
+  const badgeTxt = e => ({ done:'✅ Concluído', progress:'Em andamento', locked:'🔒 Bloqueado' }[e.status] || '');
+
+  const intOk  = data.integrations.filter(i => i.connected).length;
+  const intTot = data.integrations.length;
+  const pending = data.pendingTasks.filter(t => t.priority === 'high').length;
+
+  return `
+    <section>
+      <div class="section-title">Progresso dos Epics</div>
+      <div class="epics-grid">
+        ${data.epics.map(e => `
+          <div class="epic-card" onclick="goToStories('${e.id}')">
+            <div class="epic-hdr">
+              <span class="epic-id">${e.id}</span>
+              <span class="badge ${badgeCls(e)}">${badgeTxt(e)}</span>
+            </div>
+            <div class="epic-name">${e.name}</div>
+            <div class="progress-bar"><div class="pbar-fill ${fillCls(e)}" style="width:${pct(e)}%"></div></div>
+            <div class="epic-count">${e.done}/${e.total} stories${e.locked?' · '+e.locked+' 🔒':''}</div>
+          </div>`).join('')}
+      </div>
+    </section>
+
+    <section>
+      <div class="section-title">Resumo do Projeto</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px">
+        ${[
+          ['Total de Stories', data.epics.reduce((a,e)=>a+e.total,0), 'var(--text)'],
+          ['Stories Done', data.epics.reduce((a,e)=>a+e.done,0), 'var(--green)'],
+          ['Bloqueadas 🔒', data.epics.reduce((a,e)=>a+(e.locked||0),0), 'var(--yellow)'],
+          ['Integrações ON', `${intOk}/${intTot}`, intOk < intTot ? 'var(--yellow)' : 'var(--green)'],
+          ['Tarefas urgentes', pending, pending > 0 ? 'var(--red)' : 'var(--green)'],
+          ['Agentes com stories', data.agents.filter(a=>a.storiesTotal>0).length, 'var(--blue)'],
+        ].map(([l,v,c])=>`
+          <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;text-align:center">
+            <div style="font-size:11px;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.4px">${l}</div>
+            <div style="font-size:28px;font-weight:800;color:${c}">${v}</div>
+          </div>`).join('')}
+      </div>
+    </section>
+
+    <section>
+      <div class="section-title">Integrações — Visão Rápida</div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:6px;font-weight:600;letter-spacing:.3px">NOSSAS FERRAMENTAS</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px;margin-bottom:14px">
+        ${data.integrations.filter(i=>i.group==='agency').map(i=>`
+          <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 14px;display:flex;align-items:center;gap:10px">
+            <span style="font-size:18px">${i.icon}</span>
+            <span style="flex:1;font-size:12px;font-weight:500">${i.name}</span>
+            <div class="dot ${i.connected?'dot-on':'dot-off'}"></div>
+          </div>`).join('')}
+      </div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:6px;font-weight:600;letter-spacing:.3px">POR CLIENTE — CONCRENOR</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px">
+        ${data.integrations.filter(i=>i.group==='client').map(i=>`
+          <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 14px;display:flex;align-items:center;gap:10px">
+            <span style="font-size:18px">${i.icon}</span>
+            <span style="flex:1;font-size:12px;font-weight:500">${i.name}</span>
+            <div class="dot ${i.connected?'dot-on':'dot-off'}"></div>
+          </div>`).join('')}
+      </div>
+    </section>`;
+}
+
+// ── STORIES ──────────────────────────────────────────────────
+let expandedStory = null;
+
+function renderStories(data, filterEpic = null) {
+  return data.epics.map(e => {
+    const stories = e.stories || [];
+    const isOpen  = !filterEpic || filterEpic === e.id;
+    const pct     = e.total > 0 ? Math.round(e.done / e.total * 100) : 0;
+
+    return `
+      <div class="epic-section" id="epic-section-${e.id}">
+        <div class="epic-section-header ${isOpen?'open':''}" onclick="toggleEpic('${e.id}')">
+          <span class="epic-id" style="font-size:12px;font-weight:700;width:36px">${e.id}</span>
+          <span style="font-size:13px;font-weight:600">${e.name}</span>
+          <span class="badge ${{done:'badge-done',progress:'badge-progress',locked:'badge-locked'}[e.status]||'badge-pending'}" style="margin-left:8px">
+            ${e.done}/${e.total}
+          </span>
+          <div style="margin-left:8px;width:80px;height:4px;background:var(--bg4);border-radius:2px;overflow:hidden">
+            <div style="height:100%;width:${pct}%;background:${{done:'var(--green)',progress:'var(--blue)',locked:'var(--yellow)'}[e.status]||'var(--muted)'}"></div>
+          </div>
+          <span class="epic-arrow" style="margin-left:8px">▶</span>
+        </div>
+        <div class="epic-stories ${isOpen?'open':''}" id="stories-${e.id}">
+          ${stories.length === 0 ? `<div style="padding:14px 16px;color:var(--muted);font-size:12px">Nenhuma story individual encontrada.</div>` :
+            stories.map(s => `
+              <div class="story-row ${expandedStory===s.file?'expanded':''}" onclick="toggleStory('${s.file}')">
+                <span class="story-icon">${statusIcon(s.status)}</span>
+                <div class="story-info">
+                  <div style="display:flex;align-items:center;gap:8px">
+                    <span class="story-id">${s.epicId}-${s.storyId}</span>
+                    <span class="story-title">${s.title}</span>
+                  </div>
+                  <div class="story-meta">
+                    ${statusBadge(s.status)}
+                    ${s.responsavel ? `<span class="story-resp">${s.responsavel}</span>` : ''}
+                    ${s.tasksTotal > 0 ? `<span class="story-checks">${s.tasksDone}/${s.tasksTotal} tasks</span>` : ''}
+                    ${s.estimativa ? `<span style="font-size:10px;color:var(--muted2)">${s.estimativa}</span>` : ''}
+                  </div>
+                </div>
+              </div>
+              <div class="story-expand ${expandedStory===s.file?'open':''}" id="expand-${s.file.replace('.','_')}">
+                ${s.context ? `<p class="story-context">${s.context}</p>` : ''}
+                ${s.taskLines && s.taskLines.length > 0 ? `
+                  <div class="tasks-title">Tarefas técnicas</div>
+                  ${s.taskLines.map(t=>`
+                    <div class="task-line">
+                      <span class="task-check">${t.done?'✅':'⬜'}</span>
+                      <span style="color:${t.done?'var(--muted)':'var(--text)'};text-decoration:${t.done?'line-through':'none'}">${t.text}</span>
+                    </div>`).join('')}` : ''}
+              </div>`).join('')}
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function toggleEpic(id) {
+  const hdr = document.querySelector(`#epic-section-${id} .epic-section-header`);
+  const body = $('stories-' + id);
+  hdr.classList.toggle('open');
+  body.classList.toggle('open');
+}
+
+function toggleStory(file) {
+  expandedStory = expandedStory === file ? null : file;
+  renderActive();
+}
+
+function goToStories(epicId) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelector('[data-tab="stories"]').classList.add('active');
+  $('tab-stories').classList.add('active');
+  if (DATA) {
+    $('tab-stories').innerHTML = renderStories(DATA, epicId);
+    setTimeout(() => {
+      const el = $(`epic-section-${epicId}`);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
+  }
+}
+
+// ── TEAM ─────────────────────────────────────────────────────
+const EXEC_LEGEND = [
+  { type: 'Humano',  icon: '👤', color: '#E85110', desc: 'Decisão final, aprovação e tarefas que exigem presença. O centro de tudo.' },
+  { type: 'Agente',  icon: '🤖', color: '#58a6ff', desc: 'IA com raciocínio contextual. Toma decisões complexas, navega ambiguidade.' },
+  { type: 'Analyst', icon: '🧠', color: '#d2a8ff', desc: 'IA especializada em análise, pesquisa e geração de conteúdo em escala.' },
+  { type: 'Worker',  icon: '⚙️', color: '#3fb950', desc: 'Script determinístico. Não pensa, só faz. 100% previsível e confiável.' },
+  { type: 'Clone',   icon: '🎭', color: '#f85149', desc: 'Avatar ou voz sintética. Presença humana multiplicada em escala.' },
+];
+
+function renderTeam(agents) {
+  const legend = `
+    <section>
+      <div class="section-title">Os 4 Tipos de Executores</div>
+      <div class="exec-legend">
+        ${EXEC_LEGEND.map(e => `
+          <div class="exec-legend-card" style="border-color:${e.color}22">
+            <div class="exec-legend-icon">${e.icon}</div>
+            <div>
+              <div class="exec-legend-name" style="color:${e.color}">${e.type}</div>
+              <div class="exec-legend-desc">${e.desc}</div>
+            </div>
+          </div>`).join('')}
+      </div>
+    </section>`;
+
+  const cards = agents.map(a => {
+    const isHuman = a.id === 'jon';
+    const bg = isHuman ? 'rgba(232,81,16,.15)' : (!a.storiesTotal ? 'rgba(139,148,158,.1)' : a.color + '22');
+    const fg = isHuman ? '#E85110' : (!a.storiesTotal ? 'var(--muted)' : a.color);
+
+    return `
+      <div class="agent-card" style="${isHuman ? 'border-color:rgba(232,81,16,.35);' : ''}">
+        <div class="agent-avatar" style="background:${bg};color:${fg};${isHuman?'font-size:20px;':''}">${isHuman ? '👤' : a.initials}</div>
+        <div>
+          <div class="agent-name" style="color:${isHuman?'var(--text)':(!a.storiesTotal?'var(--muted)':'var(--text)')}">${a.name}</div>
+          <div class="agent-role">${a.role}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+          ${!isHuman ? `<div class="agent-handle">@${a.id}</div>` : ''}
+          ${a.executorType ? `<div class="executor-badge ex-${a.executorType.toLowerCase()}">${a.executorType}</div>` : ''}
+        </div>
+        <div class="agent-scope">${a.desc || a.scope}</div>
+        ${!isHuman && a.storiesTotal ? `
+          <div class="agent-stats">
+            <div class="astat"><span>${a.storiesTotal}</span> stories</div>
+            <div class="astat" style="margin-left:auto"><span style="color:var(--green)">${a.storiesDone}</span> done</div>
+          </div>` : ''}
+        ${!isHuman && a.lastStory ? `
+          <div class="agent-last" onclick="openModal('${a.id}');event.stopPropagation()">
+            <div class="agent-last-lbl">Último trabalho</div>
+            <div class="agent-last-story">${a.lastStory.title}</div>
+            <div class="agent-last-id" style="color:var(--muted)">${a.lastStory.id}</div>
+          </div>
+          <button class="btn" style="font-size:10px;margin-top:2px;width:100%;justify-content:center" onclick="openModal('${a.id}');event.stopPropagation()">
+            Ver todas as stories →
+          </button>` : (!isHuman ? `<div style="font-size:11px;color:var(--muted2);margin-top:auto">Sem stories atribuídas</div>` : '')}
+      </div>`;
+  }).join('');
+
+  return legend + `<div class="section-title" style="margin-bottom:14px">Time</div><div class="agents-grid">${cards}</div>`;
+}
+
+function openModal(agentId) {
+  const agent = DATA?.agents.find(a => a.id === agentId);
+  if (!agent) return;
+
+  const bg = agent.color + '22';
+  const fg = agent.color;
+
+  $('modal-inner').innerHTML = `
+    <div class="modal-header">
+      <div class="modal-avatar" style="background:${bg};color:${fg}">${agent.initials}</div>
+      <div>
+        <div class="modal-name">${agent.name}</div>
+        <div class="modal-role">${agent.role} · @${agent.id}</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:4px;line-height:1.5">${agent.desc || agent.scope}</div>
+      </div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      ${agent.stories.length === 0
+        ? `<div class="modal-empty">Nenhuma story atribuída a @${agent.id}</div>`
+        : `<div class="modal-stories-title">${agent.storiesTotal} stories · ${agent.storiesDone} concluídas</div>
+           ${agent.stories.map(s=>`
+             <div class="modal-story">
+               <span class="modal-story-id">${s.id}</span>
+               <span class="modal-story-title">${s.title}</span>
+               ${statusBadge(s.status)}
+             </div>`).join('')}`}
+    </div>`;
+
+  $('agent-modal').classList.add('open');
+}
+
+function closeModal(e) {
+  if (!e || e.target === $('agent-modal')) $('agent-modal').classList.remove('open');
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+// ── TOOLS ────────────────────────────────────────────────────
+function renderTools(data) {
+  const cmds = data.commands.map((c, i) => `
+    <div class="cmd-card">
+      <div class="cmd-top">
+        <span class="cmd-label">${c.label}</span>
+        <span class="cmd-desc">${c.desc}</span>
+      </div>
+      <div class="cmd-row">
+        <div class="cmd-code" onclick="copyCmd('${c.cmd.replace(/'/g,"\\'")}')" title="${c.cmd}">${c.cmd}</div>
+        <button class="btn btn-copy" id="cp-${i}" onclick="copyCmd('${c.cmd.replace(/'/g,"\\'")}',this)">Copiar</button>
+        ${c.safe ? `<button class="btn btn-run" onclick="runCmd('${c.cmd.replace(/'/g,"\\'")}','${i}')">▶ Run</button>` : ''}
+      </div>
+    </div>`).join('');
+
+  const renderIntCard = (i, idx) => `
+    <div class="int-card ${i.connected?'':'not-connected'}">
+      <span class="int-icon">${i.icon}</span>
+      <div class="int-info">
+        <div class="int-name">${i.name}</div>
+        <div class="int-detail">${i.connected ? i.detail : (i.action || i.detail)}</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
+        <div class="dot ${i.connected?'dot-on':'dot-off'}"></div>
+        ${i.edit ? `<button class="btn" style="font-size:11px;padding:4px 8px" onclick="openEditModal(${idx})">✏️</button>` : ''}
+      </div>
+    </div>`;
+
+  const agencyInts = data.integrations
+    .map((i, idx) => ({ i, idx }))
+    .filter(({ i }) => i.group === 'agency')
+    .map(({ i, idx }) => renderIntCard(i, idx)).join('');
+
+  const clientInts = data.integrations
+    .map((i, idx) => ({ i, idx }))
+    .filter(({ i }) => i.group === 'client')
+    .map(({ i, idx }) => renderIntCard(i, idx)).join('');
+
+  return `
+    <div class="two-col">
+      <div>
+        <section>
+          <div class="section-title">Nossas Ferramentas</div>
+          <div style="font-size:11px;color:var(--muted);margin-bottom:10px">Credenciais da agência — configuradas uma vez, valem para todos os clientes</div>
+          <div class="int-grid">${agencyInts}</div>
+        </section>
+        <section>
+          <div class="section-title">Por Cliente — Concrenor</div>
+          <div style="font-size:11px;color:var(--muted);margin-bottom:10px">Dados específicos do cliente — pixel, analytics, WPP, CRM</div>
+          <div class="int-grid">${clientInts}</div>
+        </section>
+      </div>
+      <div>
+        <section>
+          <div class="section-title">Comandos Rápidos</div>
+          <div class="cmd-list">${cmds}</div>
+          <div id="terminal" class="terminal"></div>
+        </section>
+      </div>
+    </div>`;
+}
+
+function copyCmd(cmd, btn) {
+  navigator.clipboard.writeText(cmd).then(() => {
+    if (btn) { btn.textContent = '✓'; btn.classList.add('copied'); setTimeout(()=>{btn.textContent='Copiar';btn.classList.remove('copied')},2000); }
+    toast('Comando copiado!');
+  });
+}
+
+async function runCmd(cmd, idx) {
+  const terminal = $('terminal');
+  terminal.className = 'terminal open';
+  terminal.innerHTML = `<div class="term-line term-sys">$ ${cmd}</div><div class="term-loader">Executando...</div>`;
+
+  try {
+    const res  = await fetch('/api/run', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({cmd}) });
+    const data = await res.json();
+
+    if (data.error) {
+      terminal.innerHTML += `<div class="term-line term-err">${data.error}</div>`;
+      return;
+    }
+    terminal.innerHTML = `<div class="term-line term-sys">$ ${cmd}</div>`;
+    if (data.stdout) data.stdout.split('\n').forEach(l => {
+      if (l.trim()) terminal.innerHTML += `<div class="term-line term-out">${l}</div>`;
+    });
+    if (data.stderr) data.stderr.split('\n').forEach(l => {
+      if (l.trim()) terminal.innerHTML += `<div class="term-line term-err">${l}</div>`;
+    });
+    terminal.innerHTML += `<div class="term-line term-sys" style="margin-top:4px">✓ Concluído (code ${data.code})</div>`;
+    terminal.scrollTop = terminal.scrollHeight;
+  } catch (e) {
+    terminal.innerHTML += `<div class="term-line term-err">Erro: ${e.message}</div>`;
+  }
+}
+
+// ── TASKS ────────────────────────────────────────────────────
+function renderTasks(tasks) {
+  const pLabel = { high:'🔴 Alta', medium:'🟡 Média', low:'🟢 Baixa' };
+  return `
+    <section>
+      <div class="section-title">Tarefas Pendentes — ${tasks.length} no total</div>
+      <div class="tasks-list">
+        ${tasks.map(t=>`
+          <div class="task-item">
+            <div class="task-bar p-${t.priority}"></div>
+            <div style="flex:1">
+              <div class="task-text">${t.task}</div>
+              <div class="task-tags">
+                <span class="tag">${t.story}</span>
+                <span class="tag">${pLabel[t.priority]||t.priority}</span>
+              </div>
+            </div>
+          </div>`).join('')}
+      </div>
+    </section>`;
+}
+
+// ── RENDER ACTIVE TABS ───────────────────────────────────────
+function renderActive() {
+  if (!DATA) return;
+  $('tab-overview').innerHTML  = renderOverview(DATA);
+  $('tab-stories').innerHTML   = renderStories(DATA);
+  $('tab-team').innerHTML      = renderTeam(DATA.agents);
+  $('tab-tools').innerHTML     = renderTools(DATA);
+  $('tab-tasks').innerHTML     = renderTasks(DATA.pendingTasks);
+  $('task-count').textContent  = DATA.pendingTasks.filter(t=>t.priority==='high').length;
+}
+
+// ── EDIT INTEGRATION MODAL ───────────────────────────────────
+function openEditModal(idx) {
+  const int = DATA?.integrations[idx];
+  if (!int?.edit) return;
+  const e = int.edit;
+
+  const isFtp = e.source === 'ftp';
+  const fields = isFtp
+    ? `<div class="edit-field"><div class="edit-label">FTP Host</div><input class="edit-input" id="ftp-host" placeholder="sh00204.hostgator.com.br"></div>
+       <div class="edit-field"><div class="edit-label">Usuário FTP</div><input class="edit-input" id="ftp-user" placeholder="usuario_cpanel"></div>
+       <div class="edit-field"><div class="edit-label">Senha FTP</div><input class="edit-input" type="password" id="ftp-pass" placeholder="senha"></div>`
+    : `<div class="edit-field">
+         <div class="edit-label">${e.label}</div>
+         <input class="edit-input" id="edit-value" placeholder="${e.placeholder}" autocomplete="off">
+       </div>`;
+
+  $('edit-modal-inner').innerHTML = `
+    <div class="edit-modal-title">${int.icon} ${int.name}</div>
+    <div class="edit-modal-sub">${int.action || int.detail}</div>
+    ${fields}
+    <div class="edit-actions">
+      <button class="btn-cancel" onclick="closeEditModal()">Cancelar</button>
+      <button class="btn-save" id="edit-save-btn" onclick="saveEdit(${idx})">Salvar</button>
+    </div>`;
+
+  // Pre-fill if already has value
+  if (!isFtp) {
+    const cur = int.detail !== '—' && !int.detail.startsWith('••') ? int.detail : '';
+    $('edit-value').value = cur;
+    setTimeout(() => $('edit-value').focus(), 50);
+  }
+
+  $('edit-modal').classList.add('open');
+}
+
+async function saveEdit(idx) {
+  const int = DATA?.integrations[idx];
+  if (!int?.edit) return;
+  const e    = int.edit;
+  const btn  = $('edit-save-btn');
+  btn.disabled = true;
+  btn.textContent = 'Salvando...';
+
+  let value;
+  if (e.source === 'ftp') {
+    value = JSON.stringify({
+      FTP_HOST: $('ftp-host').value.trim(),
+      FTP_USER: $('ftp-user').value.trim(),
+      FTP_PASS: $('ftp-pass').value.trim(),
+    });
+  } else {
+    value = $('edit-value').value.trim();
+    if (!value) { btn.disabled = false; btn.textContent = 'Salvar'; return; }
+  }
+
+  try {
+    const res  = await fetch('/api/save', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ source: e.source, key: e.key, value }) });
+    const data = await res.json();
+    if (data.ok) {
+      toast('✅ ' + data.msg);
+      closeEditModal();
+      await loadData();
+    } else {
+      toast('❌ ' + data.msg, 'var(--red)');
+      btn.disabled = false; btn.textContent = 'Salvar';
+    }
+  } catch (err) {
+    toast('❌ Erro: ' + err.message, 'var(--red)');
+    btn.disabled = false; btn.textContent = 'Salvar';
+  }
+}
+
+function closeEditModal(e) {
+  if (!e || e.target === $('edit-modal')) $('edit-modal').classList.remove('open');
+}
+
+// ── LOAD DATA ────────────────────────────────────────────────
+let lastUpdated = null;
+
+async function loadData() {
+  try {
+    const res  = await fetch('/api/data');
+    DATA       = await res.json();
+    lastUpdated = DATA.lastUpdated;
+    renderActive();
+    $('updated-label').innerHTML = `<span class="pulse"></span>${timeSince(lastUpdated)}`;
+  } catch (e) {
+    const msg = `<div style="text-align:center;padding:60px;color:var(--red)">Erro: ${e.message}<br><small style="color:var(--muted)">server rodando?</small></div>`;
+    ['overview','stories','team','tools','tasks'].forEach(t => $('tab-'+t).innerHTML = msg);
+  }
+}
+
+// auto-refresh 30s
+loadData();
+setInterval(loadData, 30000);
+setInterval(() => {
+  if (lastUpdated) $('updated-label').innerHTML = `<span class="pulse"></span>${timeSince(lastUpdated)}`;
+}, 5000);
+</script>
+</body>
+</html>

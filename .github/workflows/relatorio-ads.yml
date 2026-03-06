@@ -1,0 +1,59 @@
+name: Relatorio de Anuncios (Quinzenal)
+
+on:
+  schedule:
+    # Dias 1 e 16 de cada mês às 08:00 BRT (11:00 UTC)
+    - cron: '0 11 1,16 * *'
+  workflow_dispatch:
+    inputs:
+      cliente:
+        description: 'Nome do cliente'
+        required: true
+        default: 'Concrenor'
+      periodo:
+        description: 'Período (YYYY-MM-DD:YYYY-MM-DD)'
+        required: false
+        default: ''
+
+jobs:
+  gerar-relatorio:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Instalar dependencias
+        run: npm install
+
+      - name: Gerar relatorio — Concrenor
+        env:
+          META_ADS_TOKEN: ${{ secrets.META_ADS_TOKEN }}
+          META_AD_ACCOUNT_ID: ${{ secrets.META_AD_ACCOUNT_ID }}
+        run: |
+          CLIENTE="${{ github.event.inputs.cliente || 'Concrenor' }}"
+          PERIODO="${{ github.event.inputs.periodo }}"
+
+          if [ -n "$PERIODO" ]; then
+            node scripts/relatorio-ads.js --cliente="$CLIENTE" --periodo="$PERIODO"
+          else
+            node scripts/relatorio-ads.js --cliente="$CLIENTE"
+          fi
+
+      - name: Commit relatorio gerado
+        run: |
+          git config user.name "Escalando Bot"
+          git config user.email "bot@escalando.co"
+          git add dist/
+          git diff --staged --quiet || git commit -m "relatorio: ads quinzenal $(date +%Y-%m-%d)"
+
+      - name: Push
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: main

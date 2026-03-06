@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registrar Lead</title>
+  <style>
+    :root {
+      --gold: #C4B470; --gold-2: #A89858; --gold-light: #FFFBEB;
+      --dark: #0D1117; --gray-100: #F3F4F6; --gray-200: #E5E7EB;
+      --gray-500: #6B7280; --gray-700: #374151; --gray-900: #111827;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, system-ui, sans-serif; background: #F3F4F6; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px; }
+
+    .card { background: white; border-radius: 16px; padding: 40px; max-width: 520px; width: 100%; box-shadow: 0 4px 24px rgba(0,0,0,0.08); border: 1px solid var(--gray-200); }
+
+    .logo { display: flex; align-items: center; gap: 10px; margin-bottom: 28px; }
+    .logo-icon { width: 36px; height: 36px; background: var(--dark); border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 5px; }
+    .logo-icon img { width: 100%; height: 100%; object-fit: contain; }
+    .logo-text { font-size: 13px; font-weight: 700; color: var(--gray-900); }
+    .logo-sub { font-size: 11px; color: var(--gray-500); }
+
+    h1 { font-size: 22px; font-weight: 900; color: var(--gray-900); margin-bottom: 6px; }
+    .subtitle { font-size: 13.5px; color: var(--gray-500); margin-bottom: 28px; }
+
+    label { display: block; font-size: 12px; font-weight: 700; color: var(--gray-700); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+    input, select, textarea {
+      width: 100%; padding: 11px 14px; border: 1.5px solid var(--gray-200); border-radius: 8px;
+      font-size: 14px; color: var(--gray-900); background: white; outline: none;
+      transition: border-color 0.15s; font-family: inherit;
+    }
+    input:focus, select:focus, textarea:focus { border-color: var(--gold-2); box-shadow: 0 0 0 3px rgba(196,180,112,0.15); }
+    input[readonly] { background: var(--gray-100); color: var(--gray-500); cursor: not-allowed; }
+    textarea { resize: vertical; min-height: 72px; }
+    .field { margin-bottom: 18px; }
+    .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    @media (max-width: 480px) { .row2 { grid-template-columns: 1fr; } }
+
+    button {
+      width: 100%; padding: 14px; background: var(--dark); color: var(--gold-2); border: none;
+      border-radius: 10px; font-size: 15px; font-weight: 800; cursor: pointer;
+      transition: all 0.15s; margin-top: 6px;
+    }
+    button:hover { background: #1a1a2e; }
+    button:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    .status { display: none; padding: 14px 18px; border-radius: 8px; font-size: 13.5px; font-weight: 600; margin-top: 16px; }
+    .status.ok  { background: #D1FAE5; color: #065F46; display: block; }
+    .status.err { background: #FEE2E2; color: #7F1D1D; display: block; }
+
+    /* Link inválido */
+    .invalid { text-align: center; padding: 48px 24px; }
+    .invalid-icon { font-size: 48px; margin-bottom: 16px; }
+    .invalid h2 { font-size: 20px; font-weight: 900; color: var(--gray-900); margin-bottom: 8px; }
+    .invalid p { font-size: 14px; color: var(--gray-500); line-height: 1.6; }
+  </style>
+</head>
+<body>
+
+<div class="card" id="card">
+
+  <div class="logo">
+    <div class="logo-icon"><img src="/logo.png" alt="Escalando"></div>
+    <div>
+      <div class="logo-text">Escalando Premoldados</div>
+      <div class="logo-sub" id="logo-sub">Registro de lead</div>
+    </div>
+  </div>
+
+  <!-- Conteúdo dinâmico -->
+  <div id="conteudo"></div>
+
+</div>
+
+<script>
+  const CONFIG = {
+    webhookUrl: 'https://escalando-premoldados.vercel.app/api/onboarding',
+  };
+
+  const params = new URLSearchParams(window.location.search);
+  const cliente = params.get('cliente');
+  const conteudo = document.getElementById('conteudo');
+
+  if (!cliente) {
+    // Link inválido
+    conteudo.innerHTML = `
+      <div class="invalid">
+        <div class="invalid-icon">🔒</div>
+        <h2>Link inválido</h2>
+        <p>Use o link enviado pela Escalando Premoldados.<br>Entre em contato caso precise de ajuda.</p>
+      </div>`;
+    document.getElementById('logo-sub').textContent = 'Acesso restrito';
+  } else {
+    // Form de lead
+    conteudo.innerHTML = `
+      <h1>Novo Lead</h1>
+      <p class="subtitle">Preencha os dados do cliente interessado.</p>
+
+      <form id="form">
+        <div class="field">
+          <label>Empresa *</label>
+          <input type="text" value="${cliente}" readonly>
+        </div>
+
+        <div class="row2">
+          <div class="field">
+            <label>Nome do lead *</label>
+            <input type="text" name="nome" placeholder="Nome completo" required>
+          </div>
+          <div class="field">
+            <label>Telefone *</label>
+            <input type="tel" name="telefone" placeholder="(00) 00000-0000" required>
+          </div>
+        </div>
+
+        <div class="row2">
+          <div class="field">
+            <label>Região de entrega</label>
+            <input type="text" name="cidade" placeholder="Ex: Interior de Sergipe">
+          </div>
+          <div class="field">
+            <label>Canal de origem *</label>
+            <select name="canal" id="canal" required>
+              <option value="">Selecione...</option>
+              <option>Meta Ads</option>
+              <option>Google Ads</option>
+              <option>GMB</option>
+              <option>WhatsApp Direto</option>
+              <option>Indicação</option>
+              <option>Ligação</option>
+              <option>Visita</option>
+              <option>Site</option>
+              <option value="outro">Outro</option>
+            </select>
+            <input type="text" name="canal_outro" id="canal_outro" placeholder="Descreva o canal..." style="display:none; margin-top:8px;">
+          </div>
+        </div>
+
+        <div class="row2">
+          <div class="field">
+            <label>Produto de interesse</label>
+            <input type="text" name="produto" placeholder="Ex: Mourão torneado">
+          </div>
+          <div class="field">
+            <label>Valor do orçamento (R$)</label>
+            <input type="number" name="valor" placeholder="Ex: 3500">
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Observação</label>
+          <textarea name="obs" placeholder="Algum detalhe importante sobre esse lead..."></textarea>
+        </div>
+
+        <button type="submit" id="btn">Registrar lead →</button>
+        <div class="status" id="status"></div>
+      </form>`;
+
+    // Canal "Outro" — mostra campo manual
+    document.getElementById('canal').addEventListener('change', function() {
+      const outro = document.getElementById('canal_outro');
+      if (this.value === 'outro') {
+        outro.style.display = 'block';
+        outro.required = true;
+      } else {
+        outro.style.display = 'none';
+        outro.required = false;
+        outro.value = '';
+      }
+    });
+
+    // Máscara telefone
+    document.querySelector('[name="telefone"]').addEventListener('input', function(e) {
+      let v = e.target.value.replace(/\D/g, '').slice(0, 11);
+      if (v.length > 6) v = v.replace(/^(\d{2})(\d{5})(\d{0,4})/, '($1) $2-$3');
+      else if (v.length > 2) v = v.replace(/^(\d{2})(\d{0,5})/, '($1) $2');
+      e.target.value = v;
+    });
+
+    document.getElementById('form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const btn = document.getElementById('btn');
+      const st  = document.getElementById('status');
+      const fd  = new FormData(e.target);
+
+      st.className = 'status';
+      st.textContent = '';
+      btn.disabled = true;
+      btn.textContent = 'Registrando...';
+
+      const dados = {
+        action:   'novo-lead',
+        empresa:  cliente,
+        nome:     fd.get('nome'),
+        telefone: fd.get('telefone'),
+        cidade:   fd.get('cidade'),
+        canal:    fd.get('canal') === 'outro' ? (fd.get('canal_outro') || 'Outro') : fd.get('canal'),
+        produto:  fd.get('produto'),
+        valor:    fd.get('valor'),
+        obs:      fd.get('obs'),
+      };
+
+      try {
+        const res  = await fetch(CONFIG.webhookUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(dados),
+        });
+        const json = await res.json();
+
+        if (json.success) {
+          st.className = 'status ok';
+          st.textContent = '✅ ' + json.msg;
+          e.target.reset();
+          document.querySelector('[name="canal"]').value = '';
+        } else {
+          throw new Error(json.error || 'Erro desconhecido');
+        }
+      } catch (err) {
+        st.className = 'status err';
+        st.textContent = '❌ Erro: ' + err.message;
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Registrar lead →';
+      }
+    });
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Briefing de Landing Page — Escalando Premoldados</title>
+  <style>
+    :root {
+      --gold: #C4B470; --gold-2: #A89858; --gold-light: #FFFBEB;
+      --dark: #0D1117; --dark-2: #161B22;
+      --gray-50: #F9FAFB; --gray-100: #F3F4F6; --gray-200: #E5E7EB;
+      --gray-400: #9CA3AF; --gray-500: #6B7280; --gray-700: #374151; --gray-900: #111827;
+      --green: #065F46; --green-bg: #D1FAE5;
+      --red: #7F1D1D; --red-bg: #FEE2E2;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: var(--gray-100); color: var(--gray-900); line-height: 1.6;
+    }
+
+    /* ---- PROGRESS BAR ---- */
+    #progress-bar {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--dark); border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding: 14px 24px;
+    }
+    .progress-inner { max-width: 760px; margin: 0 auto; }
+    .progress-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .progress-logo { display: flex; align-items: center; gap: 10px; }
+    .progress-logo img { height: 28px; width: auto; }
+    .progress-empresa { font-size: 13px; font-weight: 700; color: white; }
+    .progress-lp { font-size: 11px; color: var(--gold); }
+    .progress-pct { font-size: 12px; font-weight: 700; color: var(--gold); }
+    .progress-track { height: 4px; background: rgba(255,255,255,0.1); border-radius: 99px; overflow: hidden; }
+    .progress-fill { height: 100%; background: var(--gold); border-radius: 99px; transition: width 0.4s ease; width: 0%; }
+
+    /* ---- LAYOUT ---- */
+    .wrap { max-width: 760px; margin: 0 auto; padding: 32px 24px 80px; }
+    @media (max-width: 540px) { .wrap { padding: 20px 14px 60px; } }
+
+    /* ---- HEADER ---- */
+    .page-header { text-align: center; margin-bottom: 32px; }
+    .page-header h1 { font-size: 26px; font-weight: 900; color: var(--gray-900); margin-bottom: 8px; }
+    .page-header p { font-size: 14px; color: var(--gray-500); max-width: 500px; margin: 0 auto; line-height: 1.6; }
+
+    /* ---- CARDS ---- */
+    .card {
+      background: white; border-radius: 16px; padding: 32px;
+      margin-bottom: 20px; border: 1px solid var(--gray-200);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }
+    @media (max-width: 540px) { .card { padding: 20px 16px; } }
+
+    .section-header { margin-bottom: 24px; }
+    .section-tag {
+      display: inline-block; font-size: 10px; font-weight: 800;
+      text-transform: uppercase; letter-spacing: 1.5px; color: var(--gold-2);
+      background: var(--gold-light); padding: 4px 10px; border-radius: 99px;
+      margin-bottom: 8px;
+    }
+    .section-title { font-size: 17px; font-weight: 900; color: var(--gray-900); margin-bottom: 4px; }
+    .section-desc { font-size: 13px; color: var(--gray-500); line-height: 1.6; }
+
+    /* ---- FIELDS ---- */
+    .field { margin-bottom: 20px; }
+    .field:last-child { margin-bottom: 0; }
+    label {
+      display: block; font-size: 12px; font-weight: 700; color: var(--gray-700);
+      text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;
+    }
+    label .opt { font-weight: 400; color: var(--gray-400); text-transform: none; }
+    input[type="text"], input[type="url"], input[type="tel"], input[type="number"],
+    select, textarea {
+      width: 100%; padding: 11px 14px; border: 1.5px solid var(--gray-200);
+      border-radius: 8px; font-size: 14px; color: var(--gray-900);
+      background: white; outline: none; transition: border-color 0.15s;
+      font-family: inherit;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--gold-2);
+      box-shadow: 0 0 0 3px rgba(196,180,112,0.15);
+    }
+    input[readonly] { background: var(--gray-100); color: var(--gray-500); cursor: not-allowed; }
+    textarea { resize: vertical; min-height: 80px; }
+    .field-hint { font-size: 12px; color: var(--gray-400); margin-top: 5px; line-height: 1.5; }
+
+    .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+    @media (max-width: 520px) { .row2, .row3 { grid-template-columns: 1fr; } }
+
+    /* ---- COLOR PICKER ---- */
+    .color-field { display: flex; align-items: center; gap: 10px; }
+    .color-field input[type="color"] {
+      width: 44px; height: 44px; padding: 2px; border-radius: 8px;
+      border: 1.5px solid var(--gray-200); cursor: pointer; flex-shrink: 0;
+    }
+    .color-field input[type="text"] { flex: 1; }
+
+    /* ---- CHIPS ---- */
+    .chip-grid { display: grid; gap: 10px; }
+    .chip-grid.cols2 { grid-template-columns: 1fr 1fr; }
+    .chip-grid.cols3 { grid-template-columns: 1fr 1fr 1fr; }
+    @media (max-width: 520px) { .chip-grid.cols3 { grid-template-columns: 1fr 1fr; } }
+    .chip-opt input[type="radio"] { display: none; }
+    .chip-opt label {
+      display: block; padding: 11px 14px; border: 1.5px solid var(--gray-200);
+      border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600;
+      color: var(--gray-700); text-transform: none; letter-spacing: 0;
+      text-align: center; transition: all 0.15s;
+    }
+    .chip-opt label .chip-sub { display: block; font-size: 11px; color: var(--gray-400); font-weight: 400; margin-top: 2px; }
+    .chip-opt input:checked + label {
+      border-color: var(--gold-2); background: var(--gold-light); color: var(--gray-900);
+    }
+
+    /* ---- DYNAMIC ITEMS ---- */
+    .dyn-item {
+      background: var(--gray-50); border: 1px solid var(--gray-200);
+      border-radius: 10px; padding: 18px; margin-bottom: 12px; position: relative;
+    }
+    .dyn-item .remove-btn {
+      position: absolute; top: 12px; right: 12px;
+      width: 26px; height: 26px; border-radius: 6px; border: none;
+      background: var(--red-bg); color: var(--red); font-size: 15px;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      font-family: inherit;
+    }
+    .dyn-label {
+      font-size: 11px; font-weight: 800; color: var(--gold-2);
+      text-transform: uppercase; letter-spacing: 1px; margin-bottom: 14px;
+    }
+    .btn-add {
+      width: 100%; padding: 11px; background: white; color: var(--gray-600);
+      border: 1.5px dashed var(--gray-200); border-radius: 8px; font-size: 13px;
+      font-weight: 700; cursor: pointer; transition: all 0.15s; margin-top: 4px;
+      font-family: inherit;
+    }
+    .btn-add:hover { background: var(--gold-light); border-color: var(--gold-2); color: var(--gold-2); }
+
+    /* ---- CHECKLIST ---- */
+    .checklist { display: grid; gap: 8px; }
+    .check-item { display: flex; align-items: flex-start; gap: 10px; cursor: pointer; }
+    .check-item input[type="checkbox"] { width: 16px; height: 16px; margin-top: 2px; flex-shrink: 0; accent-color: var(--gold-2); }
+    .check-item span { font-size: 13px; color: var(--gray-700); }
+
+    /* ---- SUBMIT ---- */
+    #btn-submit {
+      width: 100%; padding: 16px; background: var(--dark); color: var(--gold);
+      border: none; border-radius: 10px; font-size: 16px; font-weight: 800;
+      cursor: pointer; transition: all 0.15s; font-family: inherit;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.2); margin-top: 8px;
+    }
+    #btn-submit:hover { background: #1a1a2e; transform: translateY(-1px); }
+    #btn-submit:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+
+    .status { display: none; padding: 16px 20px; border-radius: 10px; font-size: 14px; font-weight: 600; margin-top: 16px; line-height: 1.5; }
+    .status.ok  { background: var(--green-bg); color: var(--green); display: block; }
+    .status.err { background: var(--red-bg); color: var(--red); display: block; }
+
+    /* ---- INVALID ---- */
+    .invalid { text-align: center; padding: 64px 24px; }
+    .invalid-icon { font-size: 56px; margin-bottom: 16px; }
+    .invalid h2 { font-size: 22px; font-weight: 900; color: var(--gray-900); margin-bottom: 10px; }
+    .invalid p { font-size: 14px; color: var(--gray-500); line-height: 1.7; }
+  </style>
+</head>
+<body>
+
+<!-- PROGRESS BAR -->
+<div id="progress-bar">
+  <div class="progress-inner">
+    <div class="progress-top">
+      <div class="progress-logo">
+        <img src="/logo.png" alt="Escalando">
+        <div>
+          <div class="progress-empresa" id="prog-empresa"></div>
+          <div class="progress-lp" id="prog-lp"></div>
+        </div>
+      </div>
+      <div class="progress-pct" id="prog-pct">0% preenchido</div>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="prog-fill"></div></div>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="page-header">
+    <h1 id="page-title">Briefing de Landing Page</h1>
+    <p id="page-sub">Quanto mais detalhes você preencher, mais única e eficaz será sua página. Reserve 15–20 minutos.</p>
+  </div>
+  <div id="conteudo"></div>
+</div>
+
+<script>
+const CONFIG = { webhookUrl: 'https://escalando-premoldados.vercel.app/api/onboarding' };
+const params  = new URLSearchParams(window.location.search);
+const cliente = params.get('cliente');
+const lpNome  = params.get('lp') || '';
+const cont    = document.getElementById('conteudo');
+
+if (!cliente) {
+  cont.innerHTML = `
+    <div class="card">
+      <div class="invalid">
+        <div class="invalid-icon">🔒</div>
+        <h2>Link inválido</h2>
+        <p>Use o link enviado pela Escalando Premoldados.<br>Em caso de dúvidas, entre em contato com nossa equipe.</p>
+      </div>
+    </div>`;
+  document.getElementById('page-title').textContent = 'Acesso restrito';
+  document.getElementById('page-sub').textContent = '';
+} else {
+
+  document.getElementById('prog-empresa').textContent = cliente;
+  document.getElementById('prog-lp').textContent = lpNome || 'LP Principal';
+  document.getElementById('page-title').textContent = `Briefing de LP — ${cliente}`;
+  if (lpNome) document.getElementById('page-sub').textContent = `Campanha: ${lpNome} · Reserve 15–20 minutos para preencher com calma.`;
+
+  let prodCount = 0;
+  let depoCount = 0;
+  let projetoCount = 0;
+
+  cont.innerHTML = `
+
+    <!-- ==============================
+      BLOCO A — IDENTIFICAÇÃO
+    ============================== -->
+    <div class="card">
+      <div class="section-header">
+        <div class="section-tag">Bloco A</div>
+        <div class="section-title">Identificação</div>
+        <div class="section-desc">Informações básicas desta landing page.</div>
+      </div>
+
+      <div class="row2">
+        <div class="field">
+          <label>Empresa</label>
+          <input type="text" value="${cliente}" readonly>
+        </div>
+        <div class="field">
+          <label>Nome da LP / Campanha *</label>
+          <input type="text" name="lp_nome" value="${lpNome}" placeholder="Ex: Mourão Torneado, Geral, Black Friday" required>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Segmento principal desta LP *</label>
+        <div class="chip-grid cols3">
+          <div class="chip-opt"><input type="radio" name="segmento" value="rural" id="seg-rural" required>
+            <label for="seg-rural">🌾 Rural<span class="chip-sub">Fazendeiros, pecuaristas</span></label></div>
+          <div class="chip-opt"><input type="radio" name="segmento" value="civil" id="seg-civil">
+            <label for="seg-civil">🏗️ Construção Civil<span class="chip-sub">Construtoras, empreiteiros</span></label></div>
+          <div class="chip-opt"><input type="radio" name="segmento" value="publico" id="seg-pub">
+            <label for="seg-pub">🏛️ Obras Públicas<span class="chip-sub">Prefeituras, licitações</span></label></div>
+        </div>
+      </div>
+
+      <div class="row2">
+        <div class="field">
+          <label>WhatsApp comercial *</label>
+          <input type="tel" name="whatsapp" placeholder="5579999999999 (DDI+DDD+número)" required>
+          <div class="field-hint">Sem espaços ou traços. Ex: 5579999999999</div>
+        </div>
+        <div class="field">
+          <label>Telefone fixo <span class="opt">(opcional)</span></label>
+          <input type="tel" name="telefone" placeholder="(79) 3333-4444">
+        </div>
+      </div>
+
+      <div class="row2">
+        <div class="field">
+          <label>Cidade sede *</label>
+          <input type="text" name="cidade" placeholder="Ex: Itabaiana — SE" required>
+        </div>
+        <div class="field">
+          <label>Regiões de entrega *</label>
+          <input type="text" name="regioes" placeholder="Ex: Todo Sergipe, interior de Alagoas" required>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==============================
+      BLOCO B — IDENTIDADE VISUAL
+    ============================== -->
+    <div class="card">
+      <div class="section-header">
+        <div class="section-tag">Bloco B</div>
+        <div class="section-title">Identidade Visual</div>
+        <div class="section-desc">Defina as cores e o estilo da página. A logo pode ser enviada por WhatsApp para nossa equipe.</div>
+      </div>
+
+      <div class="row2">
+        <div class="field">
+          <label>Cor principal da marca</label>
+          <div class="color-field">
+            <input type="color" id="cor1-picker" value="#C4B470">
+            <input type="text" name="cor_primaria" id="cor1-hex" value="#C4B470" maxlength="7" placeholder="#000000">
+          </div>
+        </div>
+        <div class="field">
+          <label>Cor secundária <span class="opt">(fundo escuro)</span></label>
+          <div class="color-field">
+            <input type="color" id="cor2-picker" value="#0D1117">
+            <input type="text" name="cor_secundaria" id="cor2-hex" value="#0D1117" maxlength="7" placeholder="#000000">
+          </div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Estilo visual da página</label>
+        <div class="chip-grid cols2">
+          <div class="chip-opt"><input type="radio" name="estilo" value="clean" id="est-clean" checked>
+            <label for="est-clean">✨ Clean & Moderno<span class="chip-sub">Linhas simples, muito espaço em branco</span></label></div>
+          <div class="chip-opt"><input type="radio" name="estilo" value="bold" id="est-bold">
+            <label for="est-bold">💪 Negrito & Impactante<span class="chip-sub">Fontes grandes, contraste forte</span></label></div>
+          <div class="chip-opt"><input type="radio" name="estilo" value="rustico" id="est-rust">
+            <label for="est-rust">🏡 Rústico & Artesanal<span class="chip-sub">Texturas, tons terrosos, calor humano</span></label></div>
+          <div class="chip-opt"><input type="radio" name="estilo" value="industrial" id="est-ind">
+            <label for="est-ind">⚙️ Industrial & Técnico<span class="chip-sub">Cinzas, aço, linguagem técnica</span></label></div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Slogan da empresa <span class="opt">(opcional)</span></label>
+        <input type="text" name="slogan" placeholder="Ex: Qualidade que sustenta gerações">
+      </div>
+    </div>
+
+    <!-- ==============================
+      BLOCO C — HISTÓRIA & CREDENCIAIS
+    ============================== -->
+    <div class="card">
+      <div class="section-header">
+        <div class="section-tag">Bloco C</div>
+        <div class="section-title">História e Credenciais</div>
+        <div class="section-desc">Esses detalhes transformam uma LP genérica numa página que realmente representa sua empresa. Seja honesto e específico.</div>
+      </div>
+
+      <div class="row3">
+        <div class="field">
+          <label>Ano de fundação *</label>
+          <input type="number" name="ano_fundacao" placeholder="Ex: 2008" min="1950" max="2025" required>
+        </div>
+        <div class="field">
+          <label>Clientes atendidos *</label>
+          <input type="text" name="num_clientes" placeholder="Ex: 1.200+">
+          <div class="field-hint">Seja específico: "1.247" converte mais que "mais de 1.000"</div>
+        </div>
+        <div class="field">
+          <label>Cidades / estados atendidos</label>
+          <input type="text" name="num_cidades" placeholder="Ex: 38 cidades em SE e AL">
+        </div>
+      </div>
+
+      <div class="row2">
+        <div class="field">
+          <label>Capacidade de produção</label>
+          <input type="text" name="producao" placeholder="Ex: 5.000 peças/mês">
+        </div>
+        <div class="field">
+          <label>Prazo médio de entrega</label>
+          <input type="text" name="prazo_entrega" placeholder="Ex: 3 a 5 dias úteis">
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Por que você fundou esta empresa? *</label>
+        <textarea name="historia_fundacao" placeholder="Ex: Vi que os fazendeiros da região pagavam caro por mourão de madeira que apodreecia em 5 anos. Decidi fabricar mourão de concreto localmente para resolver isso de vez..." style="min-height:100px"></textarea>
+        <div class="field-hint">Conte a história real. Mesmo que simples, ela conecta com o cliente.</div>
+      </div>
+
+      <div class="field">
+        <label>Qual foi o projeto ou cliente do qual você mais se orgulha?</label>
+        <textarea name="maior_orgulho" placeholder="Ex: Cercamos uma fazenda de 1.200 hectares em 45 dias, entregando no prazo e sem uma peça com defeito. O dono nos indicou para mais 6 fazendeiros da região." style="min-height:90px"></textarea>
+      </div>
+
+      <div class="field">
+        <label>Certificações e laudos técnicos <span class="opt">(opcional)</span></label>
+        <input type="text" name="certificacoes" placeholder="Ex: ABNT NBR 8953, laudos de resistência por lote, ISO 9001">
+      </div>
+    </div>
+
+    <!-- ==============================
+      BLOCO D — PÚBLICO E SEGMENTO
+    ============================== -->
+    <div class="card">
+      <div class="section-header">
+        <div class="section-tag">Bloco D</div>
+        <div class="section-title">Público e Mercado</div>
+        <div class="section-desc">Entender o cliente é o que separa um copy médio de um copy que vende.</div>
+      </div>
+
+      <div class="field">
+        <label>Quem é seu cliente ideal? *</label>
+        <textarea name="cliente_ideal" placeholder="Ex: Pecuarista com propriedade entre 50 e 500 hectares em Sergipe e Alagoas. Já usou mourão de eucalipto e está cansado de repor a cada 5-7 anos. Busca uma solução definitiva." style="min-height:90px" required></textarea>
+      </div>
+
+      <div class="field">
+        <label>Qual é a maior dor do seu cliente ANTES de te contratar? *</label>
+        <textarea name="dor_cliente" placeholder="Ex: Gasta R$ 8.000 todo ano repondo mourão de madeira que apodrece, perde dias de trabalho parando a cerca, e ainda corre o risco do gado fugir..." style="min-height:90px" required></textarea>
+        <div class="field-hint">Quanto mais específico e doloroso, melhor o copy.</div>
+      </div>
+
+      <div class="field">
+        <label>O que seus clientes dizem depois de usar seus produtos? *</label>
+        <textarea name="resultado_cliente" placeholder="Ex: 'Nunca mais precisei repor mourão. Instalei há 8 anos e tá igual.' / 'Entregou no prazo prometido, coisa rara no mercado.'" style="min-height:90px" required></textarea>
+        <div class="field-hint">Cole aqui mensagens reais de WhatsApp ou Google Maps — são o melhor copy.</div>
+      </div>
+
+      <div class="field">
+        <label>Como seus clientes chegam até você hoje?</label>
+        <div class="chip-grid cols2">
+          <div class="chip-opt"><input type="checkbox" name="canal_indicacao" id="can-ind" value="Indicação">
+            <label for="can-ind">🤝 Indicação boca a boca</label></div>
+          <div class="chip-opt"><input type="checkbox" name="canal_gmb" id="can-gmb" value="Google Meu Negócio">
+            <label for="can-gmb">📍 Google Meu Negócio</label></div>
+          <div class="chip-opt"><input type="checkbox" name="canal_meta" id="can-meta" value="Meta Ads">
+            <label for="can-meta">📱 Anúncios (Meta/Google)</label></div>
+          <div class="chip-opt"><input type="checkbox" name="canal_outros" id="can-outros" value="Outros">
+            <label for="can-outros">🔗 Redes sociais / outros</label></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==============================
+      BLOCO E — PRODUTOS
+    ============================== -->
+    <div class="card">
+      <div class="section-header">
+        <div class="section-tag">Bloco E</div>
+        <div class="section-title">Produtos</div>
+        <div class="section-desc">Adicione os produtos que serão destacados nesta LP. Foque nos mais relevantes para o segmento selecionado.</div>
+      </div>
+      <div id="produtos-lista"></div>
+      <button type="button" class="btn-add" onclick="addProduto()">+ Adicionar produto</button>
+    </div>
+
+    <!-- ==============================
+      BLOCO F — DIFERENCIAIS
+    ============================== -->
+    <div class="card">
+      <div class="section-header">
+        <div class="section-tag">Bloco F</div>
+        <div class="section-title">Diferenciais Reais</div>
+        <div class="section-desc">Não liste características genéricas. Escreva o que você faz que os concorrentes NÃO fazem.</div>
+      </div>
+
+      <div class="field">
+        <label>O que você NUNCA faria que os concorrentes ruins fazem?</label>
+        <textarea name="nunca_faria" placeholder="Ex: Nunca entregaria um lote sem laudo de resistência. Nunca prometeria um prazo que não consigo cumprir. Nunca venderia peça com deficiência de cura..." style="min-height:80px"></textarea>
+      </div>
+
+      ${[1,2,3,4].map(i => `
+      <div class="field">
+        <label>Diferencial ${i}${i === 1 ? ' *' : ' <span class="opt">(opcional)</span>'}</label>
+        <input type="text" name="diferencial_${i}" placeholder="${
+          i === 1 ? 'Ex: Fábrica própria com controle de qualidade por lote — sem intermediários' :
+          i === 2 ? 'Ex: Entrega garantida por contrato — se atrasar, desconto automático' :
+          i === 3 ? 'Ex: Técnico na obra gratuitamente para os primeiros 3 pedidos' :
+          'Ex: Laudos ABNT disponíveis para todos os lotes'
+        }"${i === 1 ? ' required' : ''}>
+      </div>`).join('')}
+    </div>
+
+    <!-- ==============================
+      BLOCO G — PROVA SOCIAL
+    ============================== -->
+    <div class="card">
+      <div class="section-header">
+        <div class="section-tag">Bloco G</div>
+        <div class="section-title">Prova Social</div>
+        <div class="section-desc">Depoimentos reais com nome, cidade e contexto convertem muito mais do que avaliações genéricas.</div>
+      </div>
+
+      <div class="field">
+        <label>Foto do dono/responsável comercial <span class="opt">(muito recomendado)</span></label>
+        <input type="text" name="foto_dono_instrucao" readonly value="Envie por WhatsApp para nossa equipe — foto informal funciona melhor que foto formal">
+        <div class="field-hint">💡 Páginas com foto real do dono convertem 25–35% mais. Uma selfie já resolve.</div>
+      </div>
+
+      <div class="field">
+        <label>Nome do dono para assinatura <span class="opt">(opcional)</span></label>
+        <input type="text" name="nome_dono" placeholder="Ex: João Santos, fundador">
+      </div>
+
+      <label style="margin-bottom:12px">Depoimentos de clientes *</label>
+      <div id="depos-lista"></div>
+      <button type="button" class="btn-add" onclick="addDepo()">+ Adicionar depoimento</button>
+
+      <div style="margin-top:24px">
+        <label>Projetos ou obras de referência <span class="opt">(opcional)</span></label>
+        <div class="field-hint" style="margin-bottom:12px">Citar uma fazenda conhecida na região ou uma obra pública gera reconhecimento.</div>
+        <div id="projetos-lista"></div>
+        <button type="button" class="btn-add" onclick="addProjeto()">+ Adicionar projeto/obra</button>
+      </div>
+    </div>
+
+    <!-- ==============================
+      BLOCO H — TOM E POSICIONAMENTO
+    ============================== -->
+    <div class="card">
+      <div class="section-header">
+        <div class="section-tag">Bloco H</div>
+        <div class="section-title">Tom de Voz e Posicionamento</div>
+        <div class="section-desc">Essas respostas definem a personalidade da LP — se vai soar como você ou como um template genérico.</div>
+      </div>
+
+      <div class="field">
+        <label>Se sua empresa fosse uma pessoa, como ela seria? *</label>
+        <div class="chip-grid cols2">
+          <div class="chip-opt"><input type="radio" name="tom" value="direto-pratico" id="tom-1">
+            <label for="tom-1">🎯 Direto e prático<span class="chip-sub">Vai ao ponto, sem enrolação</span></label></div>
+          <div class="chip-opt"><input type="radio" name="tom" value="tecnico-especialista" id="tom-2">
+            <label for="tom-2">📊 Técnico e especialista<span class="chip-sub">Dados, especificações, credibilidade</span></label></div>
+          <div class="chip-opt"><input type="radio" name="tom" value="amigo-parceiro" id="tom-3">
+            <label for="tom-3">🤝 Amigo e parceiro<span class="chip-sub">Próximo, acessível, confiável</span></label></div>
+          <div class="chip-opt"><input type="radio" name="tom" value="tradicional-solido" id="tom-4">
+            <label for="tom-4">🏆 Tradicional e sólido<span class="chip-sub">Experiência, história, legado</span></label></div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Em uma frase: por que um cliente deve comprar de você e não de qualquer outro? *</label>
+        <textarea name="proposta_unica" placeholder="Ex: Sou o único fabricante de mourão de concreto em Sergipe que entrega com laudo técnico e garante reposição gratuita em caso de quebra no transporte." style="min-height:80px" required></textarea>
+      </div>
+
+      <div class="field">
+        <label>Qual palavra ou frase seus clientes mais usam quando recomendam você? <span class="opt">(opcional)</span></label>
+        <input type="text" name="frase_clientes" placeholder="Ex: 'Qualidade e pontualidade', 'Preço justo', 'Pode confiar'">
+      </div>
+    </div>
+
+    <!-- ==============================
+      BLOCO I — TEXTOS FINAIS
+    ============================== -->
+    <div class="card">
+      <div class="section-header">
+        <div class="section-tag">Bloco I</div>
+        <div class="section-title">Textos e Detalhes Finais</div>
+        <div class="section-desc">Se tiver sugestões específicas de texto, coloque aqui. Se preferir deixar que nossa equipe crie, pode pular.</div>
+      </div>
+
+      <div class="field">
+        <label>Headline sugerida <span class="opt">(opcional)</span></label>
+        <input type="text" name="headline" placeholder="Ex: Mourão de concreto que dura 40 anos — entrega em Sergipe em 3 dias">
+        <div class="field-hint">Deixe em branco para nossa equipe criar com base no briefing.</div>
+      </div>
+
+      <div class="field">
+        <label>Fotos disponíveis para enviar</label>
+        <div class="checklist">
+          ${[
+            ['foto_fabrica','Fábrica / área de produção'],
+            ['foto_equipe','Equipe de trabalho'],
+            ['foto_produto','Produto acabado'],
+            ['foto_instalado','Produto instalado / obra pronta'],
+            ['foto_antes_depois','Antes e depois de um projeto'],
+            ['foto_dono','Foto do dono / responsável'],
+          ].map(([n,l]) => `
+          <div class="check-item">
+            <input type="checkbox" name="${n}" id="${n}" value="sim">
+            <label for="${n}" style="text-transform:none;font-weight:400;font-size:13px;letter-spacing:0">${l}</label>
+          </div>`).join('')}
+        </div>
+        <div class="field-hint" style="margin-top:10px">📲 Envie as fotos marcadas por WhatsApp para nossa equipe após enviar este formulário.</div>
+      </div>
+
+      <div class="field">
+        <label>Observações adicionais <span class="opt">(opcional)</span></label>
+        <textarea name="obs" placeholder="Qualquer informação extra que queira que a equipe saiba..." style="min-height:70px"></textarea>
+      </div>
+
+      <button type="button" id="btn-submit" onclick="enviar()">Enviar briefing →</button>
+      <div class="status" id="status"></div>
+    </div>
+  `;
+
+  // ---- Inicializa ----
+  addProduto(); addProduto();
+  addDepo();    addDepo();
+
+  // ---- Color pickers ----
+  document.getElementById('cor1-picker').addEventListener('input', e => {
+    document.getElementById('cor1-hex').value = e.target.value;
+  });
+  document.getElementById('cor1-hex').addEventListener('input', e => {
+    if (/^#[0-9a-fA-F]{6}$/.test(e.target.value))
+      document.getElementById('cor1-picker').value = e.target.value;
+  });
+  document.getElementById('cor2-picker').addEventListener('input', e => {
+    document.getElementById('cor2-hex').value = e.target.value;
+  });
+  document.getElementById('cor2-hex').addEventListener('input', e => {
+    if (/^#[0-9a-fA-F]{6}$/.test(e.target.value))
+      document.getElementById('cor2-picker').value = e.target.value;
+  });
+
+  // ---- Progress ----
+  document.addEventListener('input', atualizarProgresso);
+  document.addEventListener('change', atualizarProgresso);
+}
+
+// ============================================================
+// PRODUTOS DINÂMICOS
+// ============================================================
+function addProduto() {
+  prodCount++;
+  const n = prodCount;
+  const el = document.createElement('div');
+  el.className = 'dyn-item';
+  el.id = `prod-${n}`;
+  el.innerHTML = `
+    <div class="dyn-label">Produto ${n}</div>
+    ${n > 1 ? `<button class="remove-btn" type="button" onclick="document.getElementById('prod-${n}').remove()">×</button>` : ''}
+    <div class="row2" style="margin-bottom:14px">
+      <div class="field">
+        <label>Nome do produto *</label>
+        <input type="text" name="prod_${n}_nome" placeholder="Ex: Mourão Torneado" required>
+      </div>
+      <div class="field">
+        <label>Aplicação principal</label>
+        <input type="text" name="prod_${n}_aplicacao" placeholder="Ex: Cercas rurais e currais">
+      </div>
+    </div>
+    <div class="row2" style="margin-bottom:14px">
+      <div class="field">
+        <label>Preço / faixa de preço <span class="opt">(opcional)</span></label>
+        <input type="text" name="prod_${n}_preco" placeholder="Ex: A partir de R$ 18,00">
+      </div>
+      <div class="field">
+        <label>Diferenciais técnicos</label>
+        <input type="text" name="prod_${n}_specs" placeholder="Ex: CP-IV, resistência 25 MPa, cura 28 dias">
+      </div>
+    </div>
+    <div class="field">
+      <label>Descrição do benefício principal</label>
+      <textarea name="prod_${n}_desc" placeholder="Ex: Alta resistência e durabilidade garantida por 40 anos. Ideal para cercamento de grandes propriedades rurais sem necessidade de manutenção." style="min-height:70px"></textarea>
+    </div>
+  `;
+  document.getElementById('produtos-lista').appendChild(el);
+}
+
+// ============================================================
+// DEPOIMENTOS DINÂMICOS
+// ============================================================
+function addDepo() {
+  depoCount++;
+  const n = depoCount;
+  const el = document.createElement('div');
+  el.className = 'dyn-item';
+  el.id = `depo-${n}`;
+  el.innerHTML = `
+    <div class="dyn-label">Depoimento ${n}</div>
+    ${n > 1 ? `<button class="remove-btn" type="button" onclick="document.getElementById('depo-${n}').remove()">×</button>` : ''}
+    <div class="row3" style="margin-bottom:14px">
+      <div class="field">
+        <label>Nome do cliente *</label>
+        <input type="text" name="depo_${n}_nome" placeholder="Ex: João Pereira" required>
+      </div>
+      <div class="field">
+        <label>Cidade</label>
+        <input type="text" name="depo_${n}_cidade" placeholder="Ex: Itabaiana — SE">
+      </div>
+      <div class="field">
+        <label>Contexto <span class="opt">(opcional)</span></label>
+        <input type="text" name="depo_${n}_contexto" placeholder="Ex: Fazenda 300 ha">
+      </div>
+    </div>
+    <div class="field">
+      <label>Depoimento *</label>
+      <textarea name="depo_${n}_texto" placeholder="Cole aqui a mensagem real do cliente (WhatsApp, Google, etc.)" style="min-height:70px" required></textarea>
+    </div>
+  `;
+  document.getElementById('depos-lista').appendChild(el);
+}
+
+// ============================================================
+// PROJETOS DE REFERÊNCIA
+// ============================================================
+function addProjeto() {
+  projetoCount++;
+  const n = projetoCount;
+  const el = document.createElement('div');
+  el.className = 'dyn-item';
+  el.id = `proj-${n}`;
+  el.innerHTML = `
+    <div class="dyn-label">Projeto ${n}</div>
+    ${n > 1 ? `<button class="remove-btn" type="button" onclick="document.getElementById('proj-${n}').remove()">×</button>` : ''}
+    <div class="row2" style="margin-bottom:14px">
+      <div class="field">
+        <label>Nome / descrição</label>
+        <input type="text" name="proj_${n}_nome" placeholder="Ex: Fazenda Santa Cruz — 800 ha">
+      </div>
+      <div class="field">
+        <label>Localização</label>
+        <input type="text" name="proj_${n}_local" placeholder="Ex: Nossa Senhora das Dores — SE">
+      </div>
+    </div>
+    <div class="field">
+      <label>O que foi entregue</label>
+      <input type="text" name="proj_${n}_entrega" placeholder="Ex: 4.800 mourões torneados, entrega em 12 dias">
+    </div>
+  `;
+  document.getElementById('projetos-lista').appendChild(el);
+}
+
+// ============================================================
+// PROGRESSO
+// ============================================================
+function atualizarProgresso() {
+  const inputs = document.querySelectorAll('input:not([readonly]):not([type="color"]):not([type="checkbox"]):not([type="radio"]), textarea, select');
+  let preenchidos = 0;
+  inputs.forEach(el => { if (el.value.trim()) preenchidos++; });
+  const pct = Math.min(100, Math.round((preenchidos / inputs.length) * 100));
+  document.getElementById('prog-fill').style.width = pct + '%';
+  document.getElementById('prog-pct').textContent = pct + '% preenchido';
+}
+
+// ============================================================
+// ENVIO
+// ============================================================
+async function enviar() {
+  const btn = document.getElementById('btn-submit');
+  const st  = document.getElementById('status');
+
+  st.className = 'status'; st.textContent = '';
+
+  // Coleta produtos
+  const produtos = [];
+  document.querySelectorAll('[id^="prod-"]').forEach(el => {
+    const n = el.id.split('-')[1];
+    const nome = el.querySelector(`[name="prod_${n}_nome"]`)?.value.trim();
+    if (nome) produtos.push({
+      nome,
+      aplicacao: el.querySelector(`[name="prod_${n}_aplicacao"]`)?.value.trim() || '',
+      preco:     el.querySelector(`[name="prod_${n}_preco"]`)?.value.trim()     || '',
+      specs:     el.querySelector(`[name="prod_${n}_specs"]`)?.value.trim()     || '',
+      desc:      el.querySelector(`[name="prod_${n}_desc"]`)?.value.trim()      || '',
+    });
+  });
+
+  if (!produtos.length) {
+    st.className = 'status err'; st.textContent = '❌ Adicione pelo menos 1 produto.'; return;
+  }
+
+  // Coleta depoimentos
+  const depoimentos = [];
+  document.querySelectorAll('[id^="depo-"]').forEach(el => {
+    const n    = el.id.split('-')[1];
+    const nome = el.querySelector(`[name="depo_${n}_nome"]`)?.value.trim();
+    const txt  = el.querySelector(`[name="depo_${n}_texto"]`)?.value.trim();
+    if (nome && txt) depoimentos.push({
+      nome,
+      cidade:   el.querySelector(`[name="depo_${n}_cidade"]`)?.value.trim()   || '',
+      contexto: el.querySelector(`[name="depo_${n}_contexto"]`)?.value.trim() || '',
+      texto:    txt,
+    });
+  });
+
+  // Coleta projetos
+  const projetos = [];
+  document.querySelectorAll('[id^="proj-"]').forEach(el => {
+    const n    = el.id.split('-')[1];
+    const nome = el.querySelector(`[name="proj_${n}_nome"]`)?.value.trim();
+    if (nome) projetos.push({
+      nome,
+      local:   el.querySelector(`[name="proj_${n}_local"]`)?.value.trim()   || '',
+      entrega: el.querySelector(`[name="proj_${n}_entrega"]`)?.value.trim() || '',
+    });
+  });
+
+  // Coleta canais
+  const canais = ['indicacao','gmb','meta','outros']
+    .filter(c => document.querySelector(`[name="canal_${c}"]`)?.checked)
+    .map(c => document.querySelector(`[name="canal_${c}"]`)?.value);
+
+  // Coleta fotos marcadas
+  const fotos_disponiveis = ['foto_fabrica','foto_equipe','foto_produto','foto_instalado','foto_antes_depois','foto_dono']
+    .filter(n => document.getElementById(n)?.checked);
+
+  const g = (n) => document.querySelector(`[name="${n}"]`)?.value?.trim() || '';
+  const segmento = document.querySelector('[name="segmento"]:checked')?.value || '';
+  const estilo   = document.querySelector('[name="estilo"]:checked')?.value   || 'clean';
+  const tom      = document.querySelector('[name="tom"]:checked')?.value      || '';
+
+  if (!g('whatsapp') || !g('cidade') || !g('regioes') || !g('cliente_ideal') || !g('dor_cliente') || !g('resultado_cliente') || !g('proposta_unica') || !segmento) {
+    st.className = 'status err'; st.textContent = '❌ Preencha os campos obrigatórios (marcados com *).'; return;
+  }
+
+  const dados = {
+    action:          'lp-briefing',
+    empresa:         cliente,
+    lp_nome:         g('lp_nome') || lpNome,
+    segmento,
+    whatsapp:        g('whatsapp').replace(/\D/g,''),
+    telefone:        g('telefone'),
+    cidade:          g('cidade'),
+    regioes:         g('regioes'),
+    slogan:          g('slogan'),
+    cor_primaria:    g('cor_primaria'),
+    cor_secundaria:  g('cor_secundaria'),
+    estilo,
+    // História
+    ano_fundacao:    g('ano_fundacao'),
+    num_clientes:    g('num_clientes'),
+    num_cidades:     g('num_cidades'),
+    producao:        g('producao'),
+    prazo_entrega:   g('prazo_entrega'),
+    historia_fundacao:g('historia_fundacao'),
+    maior_orgulho:   g('maior_orgulho'),
+    certificacoes:   g('certificacoes'),
+    // Público
+    cliente_ideal:   g('cliente_ideal'),
+    dor_cliente:     g('dor_cliente'),
+    resultado_cliente:g('resultado_cliente'),
+    canais_atuais:   canais,
+    // Produtos / depoimentos / projetos
+    produtos,
+    depoimentos,
+    projetos,
+    // Diferenciais
+    nunca_faria:     g('nunca_faria'),
+    diferenciais:    [1,2,3,4].map(i => g(`diferencial_${i}`)).filter(Boolean),
+    // Tom
+    tom,
+    proposta_unica:  g('proposta_unica'),
+    frase_clientes:  g('frase_clientes'),
+    // Final
+    headline:        g('headline'),
+    nome_dono:       g('nome_dono'),
+    fotos_disponiveis,
+    obs:             g('obs'),
+  };
+
+  btn.disabled = true; btn.textContent = 'Enviando...';
+
+  try {
+    const res  = await fetch(CONFIG.webhookUrl, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(dados),
+    });
+    const json = await res.json();
+    if (json.success) {
+      st.className = 'status ok';
+      st.innerHTML = `✅ ${json.msg}<br><br>📲 <strong>Próximo passo:</strong> envie as fotos marcadas por WhatsApp para nossa equipe. Entraremos em contato em breve com o preview da sua LP.`;
+      btn.textContent = '✅ Enviado!';
+    } else throw new Error(json.error || 'Erro desconhecido');
+  } catch(err) {
+    st.className = 'status err';
+    st.textContent = '❌ Erro: ' + err.message;
+    btn.disabled = false; btn.textContent = 'Enviar briefing →';
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,67 @@
+# Negative Keywords — Google Ads
+# Cliente: Concrenor (pré-moldados rurais)
+# Última atualização: 2026-03-06
+#
+# Formato: uma keyword por linha
+# Aplicar em: nível de campanha (todas as campanhas do cliente)
+
+# ---- MATERIAL CONCORRENTE ----
+madeira
+eucalipto
+pinus
+mourão de madeira
+mourão de eucalipto
+mourão de pinus
+poste de madeira
+cerca de madeira
+estaca de madeira
+
+# ---- INTENÇÃO INFORMACIONAL (não vai comprar) ----
+como fazer
+faça você mesmo
+faz em casa
+tutorial
+curso
+aprenda
+passo a passo
+como instalar
+como colocar
+o que é
+para que serve
+diferença entre
+
+# ---- GRATUITO / BARATO ----
+grátis
+gratuito
+de graça
+doação
+barato demais
+mais barato
+preço mínimo
+menor preço
+
+# ---- ALUGUEL ----
+alugar
+aluguel
+locação
+locar
+
+# ---- PRODUTOS NÃO RELACIONADOS ----
+cerca elétrica
+cerca virtual
+cerca invisível
+choque
+eletrificador
+arame farpado
+arame liso
+porteira
+portão
+grama
+pastagem
+sementes
+fertilizante
+ração
+
+# ---- CONCORRENTES DIRETOS (adicionar quando identificados) ----
+# [nome do concorrente 1]
+# [nome do concorrente 2]

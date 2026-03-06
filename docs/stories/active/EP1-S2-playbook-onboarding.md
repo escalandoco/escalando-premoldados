@@ -1,8 +1,8 @@
 # Story EP1-S2 — Playbook de Onboarding
-**Epic:** Epic 1 — Fundação da Agência
+**Epic:** EP1 — Presença Digital Base
 **Prioridade:** P0
 **Responsável:** @sm
-**Status:** Ready for Review
+**Status:** Done
 **Estimativa:** 1 sprint
 **Depende de:** EP1-S1 (LP precisa existir para onboarding fazer sentido)
 

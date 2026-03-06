@@ -1,0 +1,1403 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Roadmap - Escalando Premoldados</title>
+  <style>
+    :root {
+      --gold: #C4B470;
+      --gold-2: #A89858;
+      --gold-light: rgba(196,180,112,0.12);
+      --dark: #0D1117;
+      --dark-2: #161B22;
+      --dark-3: #21262D;
+      --border: #30363D;
+      --text: #E6EDF3;
+      --text-muted: #8B949E;
+      --green: #238636;
+      --green-light: #2EA04320;
+      --blue: #1F6FEB;
+      --blue-light: #1F6FEB20;
+      --gray-badge: #484F58;
+      --gray-light: #484F5820;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+      background: var(--dark);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* Header */
+    .header {
+      background: var(--dark-2);
+      border-bottom: 1px solid var(--border);
+      padding: 20px 24px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .header-left { display: flex; align-items: center; gap: 14px; }
+    .logo-box {
+      width: 40px; height: 40px;
+      background: var(--dark);
+      border: 1.5px solid var(--gold);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; font-weight: 900; color: var(--gold); flex-shrink: 0;
+    }
+    .header-title { font-size: 18px; font-weight: 800; color: var(--text); line-height: 1.2; }
+    .header-title span { color: var(--gold); }
+    .header-updated { font-size: 11px; color: var(--text-muted); text-align: right; }
+
+    /* Filters */
+    .filters {
+      max-width: 900px; margin: 20px auto 0; padding: 0 24px;
+      display: flex; gap: 8px; flex-wrap: wrap;
+    }
+    .filter-btn {
+      padding: 6px 14px; border-radius: 20px; border: 1px solid var(--border);
+      background: transparent; color: var(--text-muted); font-size: 12px;
+      font-weight: 600; cursor: pointer; transition: all 0.15s; font-family: inherit;
+    }
+    .filter-btn:hover { border-color: var(--gold); color: var(--gold); }
+    .filter-btn.active { background: var(--gold); color: var(--dark); border-color: var(--gold); }
+
+    /* Summary */
+    .summary {
+      max-width: 900px; margin: 20px auto 0; padding: 0 24px;
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+    }
+    .summary-card {
+      background: var(--dark-2); border: 1px solid var(--border);
+      border-radius: 10px; padding: 16px; text-align: center;
+    }
+    .summary-number { font-size: 28px; font-weight: 900; }
+    .summary-number.green { color: #2EA043; }
+    .summary-number.blue { color: #58A6FF; }
+    .summary-number.gray { color: var(--text-muted); }
+    .summary-label {
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.5px; color: var(--text-muted); margin-top: 4px;
+    }
+
+    /* ============================================
+       AGENTES — Painel global de comunicação
+       ============================================ */
+    .agents-panel {
+      max-width: 900px;
+      margin: 20px auto 0;
+      padding: 0 24px;
+    }
+    .agents-panel-card {
+      background: var(--dark-2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .agents-panel-header {
+      padding: 14px 20px;
+      cursor: pointer;
+      user-select: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.15s;
+    }
+    .agents-panel-card.open .agents-panel-header {
+      border-bottom-color: var(--border);
+    }
+    .agents-panel-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 0.3px;
+    }
+    .agents-panel-toggle {
+      font-size: 10px;
+      color: var(--text-muted);
+      transition: transform 0.2s;
+      margin-left: auto;
+    }
+    .agents-panel-card.open .agents-panel-toggle { transform: rotate(90deg); }
+    .agents-panel-body { display: none; padding: 20px; }
+    .agents-panel-card.open .agents-panel-body { display: block; }
+
+    /* Actor cards row */
+    .ag-actors {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .ag-actor {
+      border-radius: 8px;
+      padding: 12px 10px;
+      text-align: center;
+    }
+    .ag-actor.humano { background: rgba(196,180,112,0.08); border: 1.5px solid rgba(196,180,112,0.3); }
+    .ag-actor.ia     { background: rgba(88,166,255,0.07);  border: 1.5px solid rgba(88,166,255,0.25); }
+    .ag-actor.aut    { background: rgba(46,160,67,0.07);   border: 1.5px solid rgba(46,160,67,0.25); }
+    .ag-actor.fer    { background: rgba(163,113,247,0.07); border: 1.5px solid rgba(163,113,247,0.25); }
+    .ag-actor-icon { font-size: 20px; display: block; margin-bottom: 5px; }
+    .ag-actor-name { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+    .ag-actor.humano .ag-actor-name { color: #C4B470; }
+    .ag-actor.ia     .ag-actor-name { color: #79B8FF; }
+    .ag-actor.aut    .ag-actor-name { color: #56D364; }
+    .ag-actor.fer    .ag-actor-name { color: #BC8CFF; }
+    .ag-actor-who { font-size: 10px; color: var(--text-muted); line-height: 1.4; margin-bottom: 5px; }
+    .ag-actor-does { font-size: 10px; color: var(--text-muted); line-height: 1.5; }
+
+    /* Communication arrows diagram */
+    .ag-comms-title {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+    .ag-comms {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .ag-comm {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      line-height: 1.4;
+    }
+    .ag-from {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      border-radius: 8px;
+      font-size: 10px;
+      font-weight: 700;
+      white-space: nowrap;
+      min-width: 94px;
+      justify-content: center;
+    }
+    .ag-from.humano { background: rgba(196,180,112,0.12); color: #C4B470; }
+    .ag-from.ia     { background: rgba(88,166,255,0.10);  color: #79B8FF; }
+    .ag-from.aut    { background: rgba(46,160,67,0.10);   color: #56D364; }
+    .ag-from.fer    { background: rgba(163,113,247,0.10); color: #BC8CFF; }
+    .ag-arrow-icon { color: var(--text-muted); font-size: 13px; flex-shrink: 0; }
+    .ag-to {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      border-radius: 8px;
+      font-size: 10px;
+      font-weight: 700;
+      white-space: nowrap;
+      min-width: 94px;
+      justify-content: center;
+    }
+    .ag-to.humano { background: rgba(196,180,112,0.08); color: #C4B470; border: 1px dashed rgba(196,180,112,0.3); }
+    .ag-to.ia     { background: rgba(88,166,255,0.07);  color: #79B8FF; border: 1px dashed rgba(88,166,255,0.25); }
+    .ag-to.aut    { background: rgba(46,160,67,0.07);   color: #56D364; border: 1px dashed rgba(46,160,67,0.25); }
+    .ag-to.fer    { background: rgba(163,113,247,0.07); color: #BC8CFF; border: 1px dashed rgba(163,113,247,0.25); }
+    .ag-comm-desc { color: var(--text-muted); font-size: 11px; }
+
+    /* Container */
+    .container { max-width: 900px; margin: 20px auto; padding: 0 24px 48px; }
+
+    /* EP Card */
+    .ep-card {
+      background: var(--dark-2); border: 1px solid var(--border);
+      border-radius: 12px; margin-bottom: 16px; overflow: hidden; transition: border-color 0.15s;
+    }
+    .ep-card:hover { border-color: var(--gold); }
+    .ep-header {
+      padding: 20px 24px; cursor: pointer; user-select: none;
+      display: flex; align-items: center; gap: 16px;
+    }
+    .ep-toggle {
+      width: 24px; height: 24px; display: flex; align-items: center;
+      justify-content: center; color: var(--text-muted); transition: transform 0.2s;
+      flex-shrink: 0; font-size: 14px;
+    }
+    .ep-card.open .ep-toggle { transform: rotate(90deg); }
+    .ep-info { flex: 1; min-width: 0; }
+    .ep-title { font-size: 16px; font-weight: 800; color: var(--text); margin-bottom: 8px; }
+    .ep-progress-bar { width: 100%; height: 6px; background: var(--dark-3); border-radius: 3px; overflow: hidden; }
+    .ep-progress-fill { height: 100%; border-radius: 3px; transition: width 0.3s ease; }
+    .ep-progress-fill.green { background: #2EA043; }
+    .ep-progress-fill.blue  { background: #58A6FF; }
+    .ep-progress-fill.gray  { background: var(--gray-badge); }
+    .ep-meta { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+    .ep-count { font-size: 12px; font-weight: 700; color: var(--text-muted); white-space: nowrap; }
+    .badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; white-space: nowrap;
+    }
+    .badge-done     { background: var(--green-light); color: #2EA043; }
+    .badge-progress { background: var(--blue-light);  color: #58A6FF; }
+    .badge-pending  { background: var(--gray-light);  color: var(--text-muted); }
+    .badge-locked   { background: rgba(245,166,35,0.12); color: #d97706; }
+    .ep-lock-notice { background: rgba(245,166,35,0.07); border: 1px solid rgba(245,166,35,0.25); border-radius: 8px; padding: 16px 20px; margin: 4px 0 8px; font-size: 13px; color: #d97706; line-height: 1.6; }
+    .ep-lock-notice strong { color: #f59e0b; }
+
+    /* Stories */
+    .ep-body { display: none; border-top: 1px solid var(--border); }
+    .ep-card.open .ep-body { display: block; }
+    .story { padding: 18px 24px; border-bottom: 1px solid var(--border); }
+    .story:last-child { border-bottom: none; }
+    .story-header { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 8px; }
+    .story-status-icon {
+      width: 22px; height: 22px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; font-size: 11px; margin-top: 1px;
+    }
+    .story-status-icon.done     { background: #2EA043; color: #fff; }
+    .story-status-icon.progress { background: #1F6FEB; color: #fff; }
+    .story-status-icon.pending  { background: var(--gray-badge); color: var(--text-muted); }
+    .story-title { font-size: 14px; font-weight: 700; color: var(--text); }
+    .story-detail { margin-left: 34px; font-size: 13px; line-height: 1.65; color: var(--text-muted); }
+    .story-detail strong { color: var(--text); font-weight: 600; }
+    .story-detail .done-text { color: #8B949E; }
+    .story-detail .paused-block {
+      background: rgba(31,111,235,0.08); border-left: 3px solid #58A6FF;
+      border-radius: 0 6px 6px 0; padding: 10px 14px; margin: 8px 0;
+      font-size: 12px; line-height: 1.6;
+    }
+    .story-detail .pending-block {
+      background: rgba(72,79,88,0.15); border-left: 3px solid var(--gray-badge);
+      border-radius: 0 6px 6px 0; padding: 10px 14px; margin: 8px 0;
+      font-size: 12px; line-height: 1.6;
+    }
+    .story-detail .done-block {
+      background: rgba(46,160,67,0.08); border-left: 3px solid #2EA043;
+      border-radius: 0 6px 6px 0; padding: 10px 14px; margin: 8px 0;
+      font-size: 12px; line-height: 1.6;
+    }
+    .story-url {
+      display: inline-block; margin-top: 6px; font-size: 12px;
+      color: var(--gold); text-decoration: none; border-bottom: 1px dashed var(--gold-2);
+    }
+
+    /* ============================================
+       SWIMLANE — Fluxo de Agentes
+       ============================================ */
+    .sl-wrap { margin-top: 12px; }
+    .sl-btn {
+      background: none; border: 1px solid var(--border); border-radius: 6px;
+      color: var(--text-muted); font-size: 11px; font-weight: 600;
+      padding: 5px 12px; cursor: pointer; font-family: inherit;
+      transition: all 0.15s; display: inline-flex; align-items: center;
+      gap: 6px; letter-spacing: 0.3px;
+    }
+    .sl-btn:hover { border-color: var(--gold); color: var(--gold); }
+    .sl-btn.open {
+      border-color: var(--gold); color: var(--gold);
+      background: rgba(196,180,112,0.07);
+    }
+    .sl-diagram { display: none; margin-top: 10px; }
+    .sl-diagram.open { display: block; }
+
+    /* Legend */
+    .sl-legend { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+    .sl-tag {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 2px 9px; border-radius: 10px; font-size: 10px;
+      font-weight: 700; letter-spacing: 0.3px;
+    }
+    .sl-tag.humano { background: rgba(196,180,112,0.12); color: #C4B470; border: 1px solid rgba(196,180,112,0.28); }
+    .sl-tag.ia     { background: rgba(88,166,255,0.10);  color: #79B8FF; border: 1px solid rgba(88,166,255,0.25); }
+    .sl-tag.aut    { background: rgba(46,160,67,0.10);   color: #56D364; border: 1px solid rgba(46,160,67,0.25); }
+    .sl-tag.fer    { background: rgba(163,113,247,0.10); color: #BC8CFF; border: 1px solid rgba(163,113,247,0.25); }
+
+    /* Scroll wrapper */
+    .sl-scroll { overflow-x: auto; border-radius: 8px; border: 1px solid var(--border); }
+
+    /* Table */
+    .sl-table { border-collapse: collapse; min-width: 100%; width: max-content; }
+    .sl-table tr:not(.sl-conn-row):not(:last-child) td { border-bottom: 1px solid var(--border); }
+
+    /* Actor label cell */
+    .sl-label-td {
+      width: 72px; min-width: 72px; padding: 10px 8px;
+      text-align: center; font-size: 9px; font-weight: 800;
+      text-transform: uppercase; letter-spacing: 0.5px; line-height: 1.6;
+      border-right: 1px solid var(--border); vertical-align: middle;
+    }
+
+    /* Step cell */
+    .sl-cell-td {
+      min-width: 112px; padding: 10px 6px;
+      vertical-align: middle; text-align: center; position: relative;
+    }
+    /* Lane midline */
+    .sl-cell-td::before {
+      content: ''; position: absolute;
+      top: 50%; left: 0; right: 0; height: 1px;
+      background: var(--border); z-index: 0;
+    }
+    /* Arrow tip between cells */
+    .sl-cell-td:not(:last-child)::after {
+      content: '›'; position: absolute; right: -5px; top: 50%;
+      transform: translateY(-52%); font-size: 16px;
+      color: #484F58; z-index: 2; line-height: 1;
+    }
+
+    /* Step box */
+    .sl-box {
+      position: relative; z-index: 1;
+      display: inline-flex; flex-direction: column; align-items: center; gap: 2px;
+      padding: 6px 9px; border-radius: 7px; font-size: 10px; font-weight: 700;
+      line-height: 1.3; text-align: center; min-width: 80px; max-width: 100px;
+    }
+    .sl-box .sl-num { font-size: 8px; font-weight: 900; opacity: 0.55; letter-spacing: 0.5px; line-height: 1; }
+    .sl-box .sl-txt { display: block; }
+    .sl-box.humano { background: rgba(196,180,112,0.13); border: 1.5px solid rgba(196,180,112,0.45); color: #D4C480; }
+    .sl-box.ia     { background: rgba(88,166,255,0.10);  border: 1.5px solid rgba(88,166,255,0.38); color: #79B8FF; }
+    .sl-box.aut    { background: rgba(46,160,67,0.10);   border: 1.5px solid rgba(46,160,67,0.38);  color: #56D364; }
+    .sl-box.fer    { background: rgba(163,113,247,0.10); border: 1.5px solid rgba(163,113,247,0.38);color: #BC8CFF; }
+
+    /* Back-connection note inside box */
+    .sl-back {
+      display: block; font-size: 9px; color: var(--text-muted);
+      font-weight: 600; margin-top: 3px; opacity: 0.75;
+      border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 2px;
+      white-space: nowrap;
+    }
+
+    /* Row backgrounds */
+    .row-humano .sl-label-td, .row-humano .sl-cell-td { background: rgba(196,180,112,0.03); }
+    .row-humano .sl-label-td { color: #C4B470; }
+    .row-ia .sl-label-td,     .row-ia .sl-cell-td     { background: rgba(88,166,255,0.025); }
+    .row-ia .sl-label-td     { color: #79B8FF; }
+    .row-aut .sl-label-td,    .row-aut .sl-cell-td    { background: rgba(46,160,67,0.025); }
+    .row-aut .sl-label-td    { color: #56D364; }
+    .row-fer .sl-label-td,    .row-fer .sl-cell-td    { background: rgba(163,113,247,0.025); }
+    .row-fer .sl-label-td    { color: #BC8CFF; }
+
+    /* ---- Connector rows (vertical arrows between lanes) ---- */
+    .sl-conn-row td {
+      padding: 0;
+      height: 18px;
+      border-bottom: none !important;
+      text-align: center;
+      vertical-align: bottom;
+      background: var(--dark-2) !important;
+    }
+    .sl-conn-row .sl-vconn { position: relative; }
+    /* vertical line */
+    .sl-conn-row .sl-vconn::before {
+      content: '';
+      position: absolute;
+      top: 0; bottom: 5px; left: 50%;
+      width: 1px;
+      background: var(--border);
+      transform: translateX(-50%);
+    }
+    /* arrowhead pointing down */
+    .sl-conn-row .sl-vconn::after {
+      content: '▼';
+      font-size: 7px;
+      position: absolute; bottom: 0; left: 50%;
+      transform: translateX(-50%);
+      color: var(--text-muted);
+      line-height: 1;
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center; padding: 24px; font-size: 11px;
+      color: var(--text-muted); border-top: 1px solid var(--border);
+      max-width: 900px; margin: 0 auto;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .summary { grid-template-columns: 1fr; }
+      .header-inner { flex-direction: column; align-items: flex-start; }
+      .header-updated { text-align: left; }
+      .ep-header { padding: 16px; gap: 12px; }
+      .ep-title { font-size: 14px; }
+      .story { padding: 14px 16px; }
+      .story-detail { margin-left: 34px; }
+      .filters { padding: 0 16px; }
+      .container { padding: 0 16px 48px; }
+      .agents-panel { padding: 0 16px; }
+      .ag-actors { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <div class="header-left">
+      <div class="logo-box">E</div>
+      <div class="header-title">Roadmap &mdash; <span>Escalando Premoldados</span></div>
+    </div>
+    <div class="header-updated">
+      Atualizado em 05/03/2026<br>
+      Fluxos de agentes + conectores de comunicacao adicionados
+    </div>
+  </div>
+</div>
+
+<div class="filters">
+  <button class="filter-btn active" data-filter="all">Todos</button>
+  <button class="filter-btn" data-filter="done">Concluido</button>
+  <button class="filter-btn" data-filter="progress">Em andamento</button>
+  <button class="filter-btn" data-filter="pending">Pendente</button>
+</div>
+
+<div class="summary">
+  <div class="summary-card">
+    <div class="summary-number green">8</div>
+    <div class="summary-label">Concluidas</div>
+  </div>
+  <div class="summary-card">
+    <div class="summary-number blue">1</div>
+    <div class="summary-label">Em andamento</div>
+  </div>
+  <div class="summary-card">
+    <div class="summary-number gray">22</div>
+    <div class="summary-label">Pendentes</div>
+  </div>
+</div>
+
+<!-- =====================================================
+     PAINEL GLOBAL DE AGENTES
+     ===================================================== -->
+<div class="agents-panel">
+  <div class="agents-panel-card" id="agentsCard">
+    <div class="agents-panel-header" onclick="toggleAgents()">
+      <span style="font-size:14px">⬡</span>
+      <span class="agents-panel-title">Agentes do sistema — quem faz o que e como se comunicam</span>
+      <span class="agents-panel-toggle">&#9654;</span>
+    </div>
+    <div class="agents-panel-body">
+      <!-- 4 actor cards -->
+      <div class="ag-actors">
+        <div class="ag-actor humano">
+          <span class="ag-actor-icon">👤</span>
+          <div class="ag-actor-name">Humano</div>
+          <div class="ag-actor-who">Jon — gestor da agencia</div>
+          <div class="ag-actor-does">Solicita, valida, aprova e executa acoes manuais</div>
+        </div>
+        <div class="ag-actor ia">
+          <span class="ag-actor-icon">🤖</span>
+          <div class="ag-actor-name">IA / Claude</div>
+          <div class="ag-actor-who">Este AI (Claude Sonnet)</div>
+          <div class="ag-actor-does">Cria codigo, templates, pesquisa e renderiza LPs</div>
+        </div>
+        <div class="ag-actor aut">
+          <span class="ag-actor-icon">⚙️</span>
+          <div class="ag-actor-name">Automacao</div>
+          <div class="ag-actor-who">Vercel · FTP · Apps Script</div>
+          <div class="ag-actor-does">Executa deploys, processa webhooks e POST requests</div>
+        </div>
+        <div class="ag-actor fer">
+          <span class="ag-actor-icon">🔧</span>
+          <div class="ag-actor-name">Ferramenta</div>
+          <div class="ag-actor-who">ClickUp · Sheets · Drive</div>
+          <div class="ag-actor-does">Armazena dados, cria tasks e registra resultados</div>
+        </div>
+      </div>
+      <!-- Communication flows -->
+      <div class="ag-comms-title">Fluxo de comunicacao entre agentes</div>
+      <div class="ag-comms">
+        <div class="ag-comm">
+          <span class="ag-from humano">👤 Humano</span>
+          <span class="ag-arrow-icon">→</span>
+          <span class="ag-to ia">🤖 IA/Claude</span>
+          <span class="ag-comm-desc">solicita criacao de features, templates e pesquisas</span>
+        </div>
+        <div class="ag-comm">
+          <span class="ag-from ia">🤖 IA/Claude</span>
+          <span class="ag-arrow-icon">→</span>
+          <span class="ag-to aut">⚙️ Automacao</span>
+          <span class="ag-comm-desc">entrega scripts e templates prontos para deploy</span>
+        </div>
+        <div class="ag-comm">
+          <span class="ag-from humano">👤 Humano</span>
+          <span class="ag-arrow-icon">→</span>
+          <span class="ag-to aut">⚙️ Automacao</span>
+          <span class="ag-comm-desc">dispara via CLI (node gerar-lp.js) ou form (escalando.co/fechamento)</span>
+        </div>
+        <div class="ag-comm">
+          <span class="ag-from aut">⚙️ Automacao</span>
+          <span class="ag-arrow-icon">→</span>
+          <span class="ag-to fer">🔧 Ferramenta</span>
+          <span class="ag-comm-desc">POST webhook → ClickUp cria tasks / Sheets registra leads / FTP sobe LP</span>
+        </div>
+        <div class="ag-comm">
+          <span class="ag-from fer">🔧 Ferramenta</span>
+          <span class="ag-arrow-icon">→</span>
+          <span class="ag-to humano">👤 Humano</span>
+          <span class="ag-comm-desc">notifica via ClickUp task, LP URL confirmada, lead registrado em Sheets</span>
+        </div>
+        <div class="ag-comm">
+          <span class="ag-from humano">👤 Humano</span>
+          <span class="ag-arrow-icon">→</span>
+          <span class="ag-to ia">🤖 IA/Claude</span>
+          <span class="ag-comm-desc">valida entrega e solicita ajustes ou proxima story</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container" id="roadmap">
+
+  <!-- EP1 -->
+  <div class="ep-card open" data-status="done">
+    <div class="ep-header" onclick="toggleEp(this)">
+      <div class="ep-toggle">&#9654;</div>
+      <div class="ep-info">
+        <div class="ep-title">EP1 &mdash; Presenca Digital Base</div>
+        <div class="ep-progress-bar"><div class="ep-progress-fill green" style="width:100%"></div></div>
+      </div>
+      <div class="ep-meta">
+        <span class="ep-count">2/2</span>
+        <span class="badge badge-done">Concluido</span>
+      </div>
+    </div>
+    <div class="ep-body">
+
+      <!-- EP1-S1 -->
+      <div class="story" data-status="done">
+        <div class="story-header">
+          <div class="story-status-icon done">&#10003;</div>
+          <div class="story-title">S1 &mdash; Landing Page</div>
+        </div>
+        <div class="story-detail">
+          <span class="done-text">Template HTML com CONFIG JS, secoes hero/produtos/diferenciais/depoimentos/formulario CRM, mobile-first, Pixel Meta + GA4 prontos.</span>
+          <br><a class="story-url" href="https://lp.escalando.co" target="_blank">lp.escalando.co (template base)</a>
+          <div class="sl-wrap">
+            <button class="sl-btn" onclick="toggleSl(this)">&#9660; Ver fluxo de agentes</button>
+            <div class="sl-diagram">
+              <div class="sl-legend">
+                <span class="sl-tag humano">👤 Humano</span>
+                <span class="sl-tag ia">🤖 IA/Claude</span>
+                <span class="sl-tag aut">⚙️ Automacao</span>
+              </div>
+              <div class="sl-scroll">
+                <table class="sl-table">
+                  <!-- HUMANO -->
+                  <tr class="row-humano">
+                    <td class="sl-label-td">👤<br>Humano</td>
+                    <td class="sl-cell-td"><div class="sl-box humano"><span class="sl-num">PASSO 1</span><span class="sl-txt">Solicita LP para cliente</span></div></td>
+                    <td class="sl-cell-td"></td>
+                    <td class="sl-cell-td"></td>
+                    <td class="sl-cell-td"></td>
+                    <td class="sl-cell-td"></td>
+                    <td class="sl-cell-td"></td>
+                  </tr>
+                  <!-- connector: HUMANO → IA (at col 3 = passo2) -->
+                  <tr class="sl-conn-row">
+                    <td></td><td></td>
+                    <td class="sl-vconn"></td>
+                    <td></td><td></td><td></td><td></td>
+                  </tr>
+                  <!-- IA -->
+                  <tr class="row-ia">
+                    <td class="sl-label-td">🤖<br>IA/Claude</td>
+                    <td class="sl-cell-td"></td>
+                    <td class="sl-cell-td"><div class="sl-box ia"><span class="sl-num">PASSO 2</span><span class="sl-txt">Cria template-lp.html</span></div></td>
+                    <td class="sl-cell-td"><div class="sl-box ia"><span class="sl-num">PASSO 3</span><span class="sl-txt">CONFIG JS + secoes</span></div></td>
+                    <td class="sl-cell-td"><div class="sl-box ia"><span class="sl-num">PASSO 4</span><span class="sl-txt">Pixel Meta + GA4</span></div></td>
+                    <td class="sl-cell-td"></td>
+                    <td class="sl-cell-td"></td>
+                  </tr>
+                  <!-- connector: IA → AUTOMACAO (at col 6 = passo5) -->
+                  <tr class="sl-conn-row">
+                    <td></td><td></td><td></td><td></td><td></td>
+                    <td class="sl-vconn"></td>
+                    <td></td>
+                  </tr>
+                  <!-- AUTOMACAO -->
+                  <tr class="row-aut">
+                    <td class="sl-label-td">⚙️<br>Automacao</td>
+                    <td class="sl-cell-td"></td>
+                    <td class="sl-cell-td"></td>
+                    <td class="sl-cell-td"></td>
+                    <td class="sl-cell-td"></td>
+                    <td class="sl-cell-td"><div class="sl-box aut"><span class="sl-num">PASSO 5</span><span class="sl-txt">FTP deploy HostGator</span><span class="sl-back">⤴ Humano valida LP</span></div></td>
+                    <td class="sl-cell-td"></td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- EP1-S2 -->
+      <div class="story" data-status="done">
+        <div class="story-header">
+          <div class="story-status-icon done">&#10003;</div>
+          <div class="story-title">S2 &mdash; Playbook de Onboarding</div>
+        </div>
+        <div class="story-detail">
+          <span class="done-text">docs/playbooks/onboarding.md + roteiro-fotos.md, 21 tarefas no ClickUp criadas automaticamente no fechamento do cliente.</span>
+          <div class="sl-wrap">
+            <button class="sl-btn" onclick="toggleSl(this)">&#9660; Ver fluxo de agentes</button>
+            <div class="sl-diagram">
+              <div class="sl-legend">
+                <span class="sl-tag humano">👤 Humano</span>
+                <span class="sl-tag ia">🤖 IA/Claude</span>
+                <span class="sl-tag aut">⚙️ Automacao</span>
+                <span class="sl-tag fer">🔧 Ferramenta</span>
+              </div>
+              <div class="sl-scroll">
+                <table class="sl-table">
+                  <tr class="row-humano">
+                    <td class="sl-label-td">👤<br>Humano</td>
+                    <td class="sl-cell-td"><div class="sl-box humano"><span class="sl-num">PASSO 1</span><span class="sl-txt">Fecha contrato (form fechamento)</span></div></td>
+                    <td class="sl-cell-td"></td>
+                    <td class="sl-cell-td"></td>
+                    <td class="sl-cell-td"></td>
+                    <td class="sl-cell-td"></td>
+                  </tr>
+                  <!-- HUMANO→IA (col 3 = passo2) -->
+                  <tr class="sl-conn-row">
+                    <td></td><td></td>
+                    <td class="sl-vconn"></td>
+                    <td></td><td></td><td></td>
+                  </tr>
+                  <tr class="row-ia">
+                    <td class="sl-label-td">🤖<br>IA/Claude</td>
+                    <td class="sl-cell-td"></td>
+                    <td class="sl-cell-td"><div class="sl-box ia"><span class="sl-num">PASSO 2</span><span class="sl-txt">Cria onboarding.md + roteiro-fotos.md</span></div></td>
+                    <td class="sl-cell-td"></td>
+                    <td class="sl-cell-td"></td>
+                    <td class="sl-cell-td"></td>
+                  </tr>
+                  <!-- IA→AUTOMACAO (col 4 = passo3) -->
+                  <tr class="sl-conn-row">
+                    <td></td><td></td><td></td>
+                    <td class="sl-vconn"></td>
+                    <td></td><td></td>
+                  </tr>
+                  <tr class="row-aut">
+                    <td class="sl-label-td">⚙️<br>Automacao</td>
+                    <td class="sl-cell-td"></td>
+                    <td class="sl-cell-td"></td>
+                    <td class="sl-cell-td"><div class="sl-box aut"><span class="sl-num">PASSO 3</span><span class="sl-txt">Vercel /api/onboarding processa fechamento</span></div></td>
+                    <td class="sl-cell-td"></td>
+                    <td class="sl-cell-td"></td>
+                  </tr>
+                  <!-- AUTOMACAO→FERRAMENTA (col 5 = passo4) -->
+                  <tr class="sl-conn-row">
+                    <td></td><td></td><td></td><td></td>
+                    <td class="sl-vconn"></td>
+                    <td></td>
+                  </tr>
+                  <tr class="row-fer">
+                    <td class="sl-label-td">🔧<br>Ferramenta</td>
+                    <td class="sl-cell-td"></td>
+                    <td class="sl-cell-td"></td>
+                    <td class="sl-cell-td"></td>
+                    <td class="sl-cell-td"><div class="sl-box fer"><span class="sl-num">PASSO 4</span><span class="sl-txt">ClickUp: folder + 4 listas + 12 tasks</span><span class="sl-back">⤴ Humano executa playbook</span></div></td>
+                    <td class="sl-cell-td"></td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- EP2 -->
+  <div class="ep-card" data-status="done">
+    <div class="ep-header" onclick="toggleEp(this)">
+      <div class="ep-toggle">&#9654;</div>
+      <div class="ep-info">
+        <div class="ep-title">EP2 &mdash; CRM &amp; Automacao de Leads</div>
+        <div class="ep-progress-bar"><div class="ep-progress-fill blue" style="width:20%"></div></div>
+      </div>
+      <div class="ep-meta">
+        <span class="ep-count">5/5</span>
+        <span class="badge badge-done">Concluido</span>
+      </div>
+    </div>
+    <div class="ep-body">
+
+      <!-- EP2-S1 -->
+      <div class="story" data-status="done">
+        <div class="story-header">
+          <div class="story-status-icon progress">&#8635;</div>
+          <div class="story-title">S1 &mdash; CRM Planilha Google Sheets</div>
+        </div>
+        <div class="story-detail">
+          <strong>O que foi feito:</strong> google-workspace.gs com criar-cliente, novo-lead, novo-orcamento, configurarPlanilha (abas Leads + Orcamentos, validacoes, formatacao condicional, formula Dias sem Contato).
+          <div class="paused-block">
+            <strong>Pausado em:</strong> Documentacao pendente, testar end-to-end com cliente real (orcamento.html e lead.html nunca confirmados com dados reais).<br>
+            <strong>O que falta:</strong> Confirmar que orcamento.html e lead.html funcionam de ponta a ponta com Apps Script atualizado.
+          </div>
+          <div class="sl-wrap">
+            <button class="sl-btn" onclick="toggleSl(this)">&#9660; Ver fluxo de agentes</button>
+            <div class="sl-diagram">
+              <div class="sl-legend">
+                <span class="sl-tag humano">👤 Humano</span>
+                <span class="sl-tag ia">🤖 IA/Claude</span>
+                <span class="sl-tag aut">⚙️ Automacao</span>
+                <span class="sl-tag fer">🔧 Ferramenta</span>
+              </div>
+              <div class="sl-scroll">
+                <table class="sl-table">
+                  <tr class="row-humano">
+                    <td class="sl-label-td">👤<br>Humano</td>
+                    <td class="sl-cell-td"><div class="sl-box humano"><span class="sl-num">PASSO 1</span><span class="sl-txt">Lead entra via LP ou WhatsApp</span></div></td>
+                    <td class="sl-cell-td"></td>
+                    <td class="sl-cell-td"></td>
+                    <td class="sl-cell-td"></td>
+                    <td class="sl-cell-td"></td>
+                    <td class="sl-cell-td"></td>
+                  </tr>
+                  <!-- HUMANO→IA (col 3 = passo2) -->
+                  <tr class="sl-conn-row">
+                    <td></td><td></td>
+                    <td class="sl-vconn"></td>
+                    <td></td><td></td><td></td><td></td>
+                  </tr>
+                  <tr class="row-ia">
+                    <td class="sl-label-td">🤖<br>IA/Claude</td>
+                    <td class="sl-cell-td"></td>
+                    <td class="sl-cell-td"><div class="sl-box ia"><span class="sl-num">PASSO 2</span><span class="sl-txt">Desenvolveu google-workspace.gs</span></div></td>
+                    <td class="sl-cell-td"></td>
+                    <td class="sl-cell-td"></td>
+                    <td class="sl-cell-td"></td>
+                    <td class="sl-cell-td"></td>
+                  </tr>
+                  <!-- IA→AUTOMACAO (col 4 = passo3) -->
+                  <tr class="sl-conn-row">
+                    <td></td><td></td><td></td>
+                    <td class="sl-vconn"></td>
+                    <td></td><td></td><td></td>
+                  </tr>
+                  <tr class="row-aut">
+                    <td class="sl-label-td">⚙️<br>Automacao</td>
+                    <td class="sl-cell-td"></td>
+                    <td class="sl-cell-td"></td>
+                    <td class="sl-cell-td"><div class="sl-box aut"><span class="sl-num">PASSO 3</span><span class="sl-txt">Vercel recebe POST novo-lead</span></div></td>
+                    <td class="sl-cell-td"><div class="sl-box aut"><span class="sl-num">PASSO 4</span><span class="sl-txt">Repassa para Apps Script</span></div></td>
+                    <td class="sl-cell-td"></td>
+                    <td class="sl-cell-td"></td>
+                  </tr>
+                  <!-- AUTOMACAO→FERRAMENTA (col 6 = passo5) -->
+                  <tr class="sl-conn-row">
+                    <td></td><td></td><td></td><td></td><td></td>
+                    <td class="sl-vconn"></td>
+                    <td></td>
+                  </tr>
+                  <tr class="row-fer">
+                    <td class="sl-label-td">🔧<br>Ferramenta</td>
+                    <td class="sl-cell-td"></td>
+                    <td class="sl-cell-td"></td>
+                    <td class="sl-cell-td"></td>
+                    <td class="sl-cell-td"></td>
+                    <td class="sl-cell-td"><div class="sl-box fer"><span class="sl-num">PASSO 5</span><span class="sl-txt">Sheets salva lead + ClickUp task follow-up</span><span class="sl-back">⤴ Humano contata lead</span></div></td>
+                    <td class="sl-cell-td"></td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="story" data-status="done">
+        <div class="story-header"><div class="story-status-icon done">&#10003;</div><div class="story-title">S2 &mdash; Alertas de Follow-up</div></div>
+        <div class="story-detail"><div class="pending-block"><strong>O que falta:</strong> Script que verifica coluna "Dias sem Contato" > threshold e envia alerta WhatsApp ou cria task ClickUp.</div></div>
+      </div>
+      <div class="story" data-status="done">
+        <div class="story-header"><div class="story-status-icon done">&#10003;</div><div class="story-title">S3 &mdash; Tintim Multi-Cliente</div></div>
+        <div class="story-detail">
+          <div class="paused-block">
+            <strong>Pausado em:</strong> Research 100% concluida. Tintim (tintim.app) e uma plataforma de Sales Intelligence para WhatsApp. Funciona via links rastreaveis unicos por campanha/canal &mdash; quando o lead clica, o Tintim sabe a origem automaticamente. Webhook dispara nos eventos: lead.create, lead.update, lead_source.update, message.create. Payload JSON mapeado: { event_name, action_source, event_datetime, phone, name, gender, country, city, state, postal_code, value, currency, external_id }. Plano necessario: Escala (R$297/mes) ou Agencias (desconto 65%+).<br><br>
+            <strong>O que falta:</strong> (1) Cliente adquire Tintim e fornece credenciais do workspace; (2) Criar endpoint <code>api/tintim.js</code>; (3) Configurar links rastreaveis por canal; (4) Apontar webhook para <code>escalando-premoldados.vercel.app/api/tintim?empresa=NomeCliente</code>.
+          </div>
+        </div>
+      </div>
+      <div class="story" data-status="done">
+        <div class="story-header"><div class="story-status-icon done">&#10003;</div><div class="story-title">S4 &mdash; Relatorio PDF Mensal</div></div>
+        <div class="story-detail"><div class="pending-block"><strong>O que falta:</strong> Script que le Google Sheets do cliente e gera PDF com metricas do mes.</div></div>
+      </div>
+      <div class="story" data-status="done">
+        <div class="story-header"><div class="story-status-icon done">&#10003;</div><div class="story-title">S5 &mdash; Dashboard de Resultados</div></div>
+        <div class="story-detail"><div class="pending-block"><strong>O que falta:</strong> Pagina de dashboard por cliente com graficos alimentado pelo Sheets.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EP3 -->
+  <div class="ep-card" data-status="progress">
+    <div class="ep-header" onclick="toggleEp(this)">
+      <div class="ep-toggle">&#9654;</div>
+      <div class="ep-info">
+        <div class="ep-title">EP3 &mdash; Sistema de Landing Pages (Ciclo Completo)</div>
+        <div class="ep-progress-bar"><div class="ep-progress-fill blue" style="width:50%"></div></div>
+      </div>
+      <div class="ep-meta">
+        <span class="ep-count">10/12</span>
+        <span class="badge badge-progress">Em andamento</span>
+      </div>
+    </div>
+    <div class="ep-body">
+
+      <!-- EP3-S1 -->
+      <div class="story" data-status="done">
+        <div class="story-header">
+          <div class="story-status-icon done">&#10003;</div>
+          <div class="story-title">S1 &mdash; Formulario de Briefing de LP</div>
+        </div>
+        <div class="story-detail">
+          <span class="done-text">app.escalando.co/lp-briefing?cliente=X&amp;lp=NomeCampanha &mdash; 9 blocos: (A) Identificacao, (B) Visual, (C) Historia, (D) Publico, (E) Produtos, (F) Diferenciais, (G) Prova social, (H) Tom de voz, (I) Textos + checklist fotos. Multi-LP por cliente.</span>
+          <br><a class="story-url" href="https://app.escalando.co/lp-briefing?cliente=Concrenor&lp=Geral" target="_blank">Preview: app.escalando.co/lp-briefing?cliente=Concrenor&lp=Geral</a>
+          <div class="sl-wrap">
+            <button class="sl-btn" onclick="toggleSl(this)">&#9660; Ver fluxo de agentes</button>
+            <div class="sl-diagram">
+              <div class="sl-legend">
+                <span class="sl-tag humano">👤 Humano</span>
+                <span class="sl-tag aut">⚙️ Automacao</span>
+                <span class="sl-tag fer">🔧 Ferramenta</span>
+                <span class="sl-tag ia">🤖 IA/Claude</span>
+              </div>
+              <div class="sl-scroll">
+                <table class="sl-table">
+                  <!-- HUMANO é o ator que inicia e que vai no topo -->
+                  <tr class="row-humano">
+                    <td class="sl-label-td">👤<br>Humano</td>
+                    <td class="sl-cell-td"><div class="sl-box humano"><span class="sl-num">PASSO 1</span><span class="sl-txt">Gestor envia link ?cliente=X&lp=Y</span></div></td>
+                    <td class="sl-cell-td"><div class="sl-box humano"><span class="sl-num">PASSO 2</span><span class="sl-txt">Cliente preenche 9 blocos</span></div></td>
+                    <td class="sl-cell-td"></td>
+                    <td class="sl-cell-td"></td>
+                    <td class="sl-cell-td"></td>
+                  </tr>
+                  <!-- HUMANO→AUTOMACAO (col 4 = passo3) -->
+                  <tr class="sl-conn-row">
+                    <td></td><td></td><td></td>
+                    <td class="sl-vconn"></td>
+                    <td></td><td></td>
+                  </tr>
+                  <tr class="row-aut">
+                    <td class="sl-label-td">⚙️<br>Automacao</td>
+                    <td class="sl-cell-td"></td>
+                    <td class="sl-cell-td"></td>
+                    <td class="sl-cell-td"><div class="sl-box aut"><span class="sl-num">PASSO 3</span><span class="sl-txt">Vercel POST /api/onboarding lp-briefing</span></div></td>
+                    <td class="sl-cell-td"></td>
+                    <td class="sl-cell-td"></td>
+                  </tr>
+                  <!-- AUTOMACAO→FERRAMENTA (col 5 = passo4) -->
+                  <tr class="sl-conn-row">
+                    <td></td><td></td><td></td><td></td>
+                    <td class="sl-vconn"></td>
+                    <td></td>
+                  </tr>
+                  <tr class="row-fer">
+                    <td class="sl-label-td">🔧<br>Ferramenta</td>
+                    <td class="sl-cell-td"></td>
+                    <td class="sl-cell-td"></td>
+                    <td class="sl-cell-td"></td>
+                    <td class="sl-cell-td"><div class="sl-box fer"><span class="sl-num">PASSO 4</span><span class="sl-txt">ClickUp: task "Gerar LP" + JSON config no comentario</span></div></td>
+                    <td class="sl-cell-td"></td>
+                  </tr>
+                  <!-- FERRAMENTA→IA (col 6 = passo5) -->
+                  <tr class="sl-conn-row">
+                    <td></td><td></td><td></td><td></td><td></td>
+                    <td class="sl-vconn"></td>
+                  </tr>
+                  <tr class="row-ia">
+                    <td class="sl-label-td">🤖<br>IA/Claude</td>
+                    <td class="sl-cell-td"></td>
+                    <td class="sl-cell-td"></td>
+                    <td class="sl-cell-td"></td>
+                    <td class="sl-cell-td"></td>
+                    <td class="sl-cell-td"><div class="sl-box ia"><span class="sl-num">PASSO 5</span><span class="sl-txt">Le config e gera LP para cliente</span></div></td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="story" data-status="done">
+        <div class="story-header"><div class="story-status-icon done">&#10003;</div><div class="story-title">S2 &mdash; Copywriting da LP</div></div>
+        <div class="story-detail"><span class="done-text">scripts/gerar-copy.js — Claude Opus 4.6 gera headline, subheadline, badge, slogan, diferenciais, depoimentos e variacao A/B a partir de config/briefing-{cliente}.json. Saida: config/lp-{cliente}.json pronto para gerar-lp.js.</span></div>
+      </div>
+
+      <!-- EP3-S3 -->
+      <div class="story" data-status="done">
+        <div class="story-header">
+          <div class="story-status-icon done">&#10003;</div>
+          <div class="story-title">S3 &mdash; Template Base HTML/CSS</div>
+        </div>
+        <div class="story-detail">
+          <span class="done-text">lp/template-lp.html com CONFIG JS no topo, todas as secoes (hero, produtos, diferenciais, depoimentos, cobertura, formulario CRM, footer, botao WhatsApp), CSS vars dinamicas, UTM auto-reading, Pixel Meta + GA4.</span>
+          <div class="sl-wrap">
+            <button class="sl-btn" onclick="toggleSl(this)">&#9660; Ver fluxo de agentes</button>
+            <div class="sl-diagram">
+              <div class="sl-legend">
+                <span class="sl-tag ia">🤖 IA/Claude</span>
+                <span class="sl-tag humano">👤 Humano</span>
+              </div>
+              <div class="sl-scroll">
+                <table class="sl-table">
+                  <tr class="row-ia">
+                    <td class="sl-label-td">🤖<br>IA/Claude</td>
+                    <td class="sl-cell-td"><div class="sl-box ia"><span class="sl-num">PASSO 1</span><span class="sl-txt">Cria template-lp.html</span></div></td>
+                    <td class="sl-cell-td"><div class="sl-box ia"><span class="sl-num">PASSO 2</span><span class="sl-txt">Define CONFIG JS no topo</span></div></td>
+                    <td class="sl-cell-td"><div class="sl-box ia"><span class="sl-num">PASSO 3</span><span class="sl-txt">Secoes hero, produtos, CTA, footer</span></div></td>
+                    <td class="sl-cell-td"><div class="sl-box ia"><span class="sl-num">PASSO 4</span><span class="sl-txt">CSS vars dinamicas + mobile</span></div></td>
+                    <td class="sl-cell-td"></td>
+                  </tr>
+                  <!-- IA→HUMANO (col 6 = passo5) -->
+                  <tr class="sl-conn-row">
+                    <td></td><td></td><td></td><td></td><td></td>
+                    <td class="sl-vconn"></td>
+                  </tr>
+                  <tr class="row-humano">
+                    <td class="sl-label-td">👤<br>Humano</td>
+                    <td class="sl-cell-td"></td>
+                    <td class="sl-cell-td"></td>
+                    <td class="sl-cell-td"></td>
+                    <td class="sl-cell-td"></td>
+                    <td class="sl-cell-td"><div class="sl-box humano"><span class="sl-num">PASSO 5</span><span class="sl-txt">Valida design e responsividade</span></div></td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- EP3-S4 -->
+      <div class="story" data-status="done">
+        <div class="story-header">
+          <div class="story-status-icon done">&#10003;</div>
+          <div class="story-title">S4 &mdash; Gerador de LP (Staging)</div>
+        </div>
+        <div class="story-detail">
+          <span class="done-text">scripts/gerar-lp.js &mdash; CLI que le config do ClickUp (JSON comment na task) ou arquivo local JSON, renderiza template-lp.html, sobe via FTP para lp.escalando.co/{cliente}/{campanha}/. Multi-LP por cliente implementado.</span>
+          <br><a class="story-url" href="https://lp.escalando.co/concrenor/mourao-torneado/" target="_blank">Demo: lp.escalando.co/concrenor/mourao-torneado/</a>
+          <div class="sl-wrap">
+            <button class="sl-btn" onclick="toggleSl(this)">&#9660; Ver fluxo de agentes</button>
+            <div class="sl-diagram">
+              <div class="sl-legend">
+                <span class="sl-tag humano">👤 Humano</span>
+                <span class="sl-tag fer">🔧 Ferramenta</span>
+                <span class="sl-tag ia">🤖 IA/Claude</span>
+                <span class="sl-tag aut">⚙️ Automacao</span>
+              </div>
+              <div class="sl-scroll">
+                <table class="sl-table">
+                  <tr class="row-humano">
+                    <td class="sl-label-td">👤<br>Humano</td>
+                    <td class="sl-cell-td"><div class="sl-box humano"><span class="sl-num">PASSO 1</span><span class="sl-txt">CLI: node gerar-lp.js --empresa=X --lp=Y</span></div></td>
+                    <td class="sl-cell-td"></td>
+                    <td class="sl-cell-td"></td>
+                    <td class="sl-cell-td"></td>
+                    <td class="sl-cell-td"></td>
+                  </tr>
+                  <!-- HUMANO→FERRAMENTA (col 3 = passo2) -->
+                  <tr class="sl-conn-row">
+                    <td></td><td></td>
+                    <td class="sl-vconn"></td>
+                    <td></td><td></td><td></td>
+                  </tr>
+                  <tr class="row-fer">
+                    <td class="sl-label-td">🔧<br>Ferramenta</td>
+                    <td class="sl-cell-td"></td>
+                    <td class="sl-cell-td"><div class="sl-box fer"><span class="sl-num">PASSO 2</span><span class="sl-txt">ClickUp API: busca JSON config da task</span></div></td>
+                    <td class="sl-cell-td"></td>
+                    <td class="sl-cell-td"></td>
+                    <td class="sl-cell-td"></td>
+                  </tr>
+                  <!-- FERRAMENTA→IA (col 4 = passo3) -->
+                  <tr class="sl-conn-row">
+                    <td></td><td></td><td></td>
+                    <td class="sl-vconn"></td>
+                    <td></td><td></td>
+                  </tr>
+                  <tr class="row-ia">
+                    <td class="sl-label-td">🤖<br>IA/Claude</td>
+                    <td class="sl-cell-td"></td>
+                    <td class="sl-cell-td"></td>
+                    <td class="sl-cell-td"><div class="sl-box ia"><span class="sl-num">PASSO 3</span><span class="sl-txt">Renderiza template com dados do cliente</span></div></td>
+                    <td class="sl-cell-td"></td>
+                    <td class="sl-cell-td"></td>
+                  </tr>
+                  <!-- IA→AUTOMACAO (col 5 = passo4) -->
+                  <tr class="sl-conn-row">
+                    <td></td><td></td><td></td><td></td>
+                    <td class="sl-vconn"></td>
+                    <td></td>
+                  </tr>
+                  <tr class="row-aut">
+                    <td class="sl-label-td">⚙️<br>Automacao</td>
+                    <td class="sl-cell-td"></td>
+                    <td class="sl-cell-td"></td>
+                    <td class="sl-cell-td"></td>
+                    <td class="sl-cell-td"><div class="sl-box aut"><span class="sl-num">PASSO 4</span><span class="sl-txt">Python FTP → lp.escalando.co/{slug}/</span><span class="sl-back">⤴ Humano verifica staging</span></div></td>
+                    <td class="sl-cell-td"></td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="story" data-status="done">
+        <div class="story-header"><div class="story-status-icon done">&#10003;</div><div class="story-title">S5 &mdash; Review e Aprovacao</div></div>
+        <div class="story-detail"><span class="done-text">gerar-lp.js apos upload adiciona comentario automatico na task "S2 — Configurar LP" do ClickUp com link de preview + checklist de QA (5 pontos). Aprovacao manual: gestor move task para "complete" apos confirmacao do cliente via WhatsApp.</span></div>
+      </div>
+
+      <!-- EP3-S6 -->
+      <div class="story" data-status="done">
+        <div class="story-header">
+          <div class="story-status-icon done">&#10003;</div>
+          <div class="story-title">S6 &mdash; Briefing Aprofundado (LP unica por cliente)</div>
+        </div>
+        <div class="story-detail">
+          <span class="done-text">Pesquisa concluida (10 regras, 25 perguntas, segmentacao por publico). Formulario lp-briefing.html refatorado: 9 blocos, historia do fundador, numeros reais, dor do cliente, foto do dono, checklist de fotos, tom de voz.</span>
+          <br><span class="done-text">Pendente: atualizar template-lp.html com estrutura BAB no hero, agitacao do problema e FAQ com objecoes por segmento.</span>
+          <div class="sl-wrap">
+            <button class="sl-btn" onclick="toggleSl(this)">&#9660; Ver fluxo de agentes</button>
+            <div class="sl-diagram">
+              <div class="sl-legend">
+                <span class="sl-tag ia">🤖 IA/Claude</span>
+                <span class="sl-tag humano">👤 Humano</span>
+              </div>
+              <div class="sl-scroll">
+                <table class="sl-table">
+                  <tr class="row-ia">
+                    <td class="sl-label-td">🤖<br>IA/Claude</td>
+                    <td class="sl-cell-td"><div class="sl-box ia"><span class="sl-num">PASSO 1</span><span class="sl-txt">Pesquisa: 10 regras + 25 perguntas de LP</span></div></td>
+                    <td class="sl-cell-td"><div class="sl-box ia"><span class="sl-num">PASSO 2</span><span class="sl-txt">Refatora briefing em 9 blocos A–I</span></div></td>
+                    <td class="sl-cell-td"><div class="sl-box ia"><span class="sl-num">PASSO 3</span><span class="sl-txt">Adiciona historia, dor, prova social, tom de voz</span></div></td>
+                    <td class="sl-cell-td"></td>
+                  </tr>
+                  <!-- IA→HUMANO (col 5 = passo4) -->
+                  <tr class="sl-conn-row">
+                    <td></td><td></td><td></td><td></td>
+                    <td class="sl-vconn"></td>
+                  </tr>
+                  <tr class="row-humano">
+                    <td class="sl-label-td">👤<br>Humano</td>
+                    <td class="sl-cell-td"></td>
+                    <td class="sl-cell-td"></td>
+                    <td class="sl-cell-td"></td>
+                    <td class="sl-cell-td"><div class="sl-box humano"><span class="sl-num">PASSO 4</span><span class="sl-txt">Valida e aprova novo formulario</span></div></td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="story" data-status="done">
+        <div class="story-header"><div class="story-status-icon done">&#10003;</div><div class="story-title">S7 &mdash; Otimizacao de Velocidade (PageSpeed &gt; 90)</div></div>
+        <div class="story-detail"><div class="pending-block"><strong>O que falta:</strong> Auditar template com PageSpeed Insights, imagens WebP + lazy loading, remover dependencias externas, script de verificacao automatica pos-deploy. Feito antes do deploy final.</div></div>
+      </div>
+      <div class="story" data-status="done">
+        <div class="story-header"><div class="story-status-icon done">&#10003;</div><div class="story-title">S8 &mdash; UTM &amp; Rastreamento por Campanha</div></div>
+        <div class="story-detail"><div class="pending-block"><strong>O que falta:</strong> UTMs configurados por canal antes do deploy. Integracao com Tintim links, relatorio de origem de leads por LP. Rastreamento pronto no dia 1 do go-live.</div></div>
+      </div>
+      <div class="story" data-status="done">
+        <div class="story-header"><div class="story-status-icon done">&#10003;</div><div class="story-title">S9 &mdash; Deploy no Dominio do Cliente</div></div>
+        <div class="story-detail"><div class="pending-block"><strong>O que falta:</strong> Script para subir LP (velocidade otimizada + UTMs configurados) no dominio/subdominio do cliente. LP so vai ao ar apos S7 e S8 concluidos.</div></div>
+      </div>
+      <div class="story" data-status="locked">
+        <div class="story-header"><div class="story-status-icon" style="color:#d97706;">&#128274;</div><div class="story-title">S10 &mdash; Heatmap e Gravacao de Sessao</div></div>
+        <div class="story-detail"><div class="ep-lock-notice">Bloqueado &mdash; requer 30+ dias de trfego real. Instalar Hotjar ou Microsoft Clarity apos atingir 500 sessoes/ms.</div></div>
+        <div class="story-detail"><div class="pending-block"><strong>O que falta:</strong> Microsoft Clarity instalado pos-deploy (necessita trafego real). Scroll depth, top clicks, rage clicks. Pelo menos 1 insight de UX identificado e implementado apos 2 semanas de dados.</div></div>
+      </div>
+      <div class="story" data-status="locked">
+        <div class="story-header"><div class="story-status-icon" style="color:#d97706;">&#128274;</div><div class="story-title">S11 &mdash; A/B Testing de LPs</div></div>
+        <div class="story-detail"><div class="ep-lock-notice">Bloqueado &mdash; depende de S10 (Heatmap). Ativar quando houver dados de comportamento para definir o que testar.</div></div>
+      </div>
+      <div class="story" data-status="done">
+        <div class="story-header"><div class="story-status-icon done">&#10003;</div><div class="story-title">S12 &mdash; SEO Local</div></div>
+        <div class="story-detail"><div class="pending-block"><strong>O que falta:</strong> Meta tags dinamicas (cidade, empresa), Schema JSON-LD LocalBusiness + Product, sitemap.xml gerado pelo gerar-lp.js, Google Search Console verificado. Longo prazo apos dominio estabelecido.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EP4 -->
+  <div class="ep-card open" data-status="done">
+    <div class="ep-header" onclick="toggleEp(this)">
+      <div class="ep-toggle">&#9660;</div>
+      <div class="ep-info">
+        <div class="ep-title">EP4 &mdash; Producao &amp; Gestao de Anuncios</div>
+        <div class="ep-progress-bar"><div class="ep-progress-fill green" style="width:100%"></div></div>
+      </div>
+      <div class="ep-meta"><span class="ep-count">11/11</span><span class="badge badge-done">Concluido</span></div>
+    </div>
+    <div class="ep-body">
+
+      <!-- S1 -->
+      <div class="story" data-status="done">
+        <div class="story-header"><div class="story-status-icon done">&#10003;</div><div class="story-title">S1 &mdash; Briefing + Call de Ideias com Cliente</div></div>
+        <div class="story-detail">
+          <div class="done-block">
+            <strong>Entregue:</strong> <code>config/briefing-ads-template.json</code> + <code>config/briefing-ads-concrenor.json</code> + <code>docs/playbooks/briefing-ads.md</code><br><br>
+            <strong>Acao humana pendente:</strong> Call de briefing com Concrenor (roteiro no playbook) + aprovacao do rascunho JSON.<br><br>
+            <strong>&#128295; Ferramentas:</strong><br>
+            &bull; <strong>Config JSON:</strong> <code>config/briefing-ads-{cliente}.json</code> (avatar, dor, objecoes, orcamento, provas sociais)<br>
+            &bull; <strong>Playbook:</strong> <code>docs/playbooks/briefing-ads.md</code> &mdash; roteiro da call + mensagem WhatsApp padrao
+          </div>
+        </div>
+      </div>
+
+      <!-- S2 -->
+      <div class="story" data-status="done">
+        <div class="story-header"><div class="story-status-icon done">&#10003;</div><div class="story-title">S2 &mdash; Setup Meta Ads (Pixel + Conversions API)</div></div>
+        <div class="story-detail">
+          <div class="done-block">
+            <strong>Entregue:</strong> <code>api/events.js</code> (endpoint CAPI no Vercel) + <code>docs/playbooks/setup-meta-ads.md</code><br>
+            Pixel browser + CAPI server-side deduplicados por <code>event_id</code>. Eventos: PageView, Contact (WhatsApp), Lead (form).<br><br>
+            <strong>Acao humana pendente:</strong> Pixel ID + META_CAPI_TOKEN configurados no Vercel. Match rate verificado no Events Manager.<br><br>
+            <strong>&#128295; Ferramentas:</strong><br>
+            &bull; <strong>Vercel:</strong> <code>api/events.js</code> &mdash; recebe eventos e envia para Meta via CAPI<br>
+            &bull; <strong>LP gerada:</strong> <code>gerar-lp.js</code> injeta Pixel ID automaticamente via config JSON
+          </div>
+        </div>
+      </div>
+
+      <!-- S3 -->
+      <div class="story" data-status="done">
+        <div class="story-header"><div class="story-status-icon done">&#10003;</div><div class="story-title">S3 &mdash; Setup Google Ads + GTM + Conversoes</div></div>
+        <div class="story-detail">
+          <div class="done-block">
+            <strong>Entregue:</strong> GTM injection em <code>gerar-lp.js</code> + <code>docs/playbooks/setup-google-ads.md</code> + <code>config/google-ads-negativos.txt</code><br><br>
+            <strong>Acao humana pendente:</strong> Criar container GTM + publicar. Criar conta MCC + sub-conta Concrenor.<br><br>
+            <strong>&#128295; Ferramentas:</strong><br>
+            &bull; <strong>Config LP:</strong> campo <code>gtm_id</code> no JSON do cliente &rarr; <code>gerar-lp.js</code> injeta automaticamente<br>
+            &bull; <strong>Playbook:</strong> <code>docs/playbooks/setup-google-ads.md</code> &mdash; estrutura GTM, campanha Search Concrenor
+          </div>
+        </div>
+      </div>
+
+      <!-- S4 -->
+      <div class="story" data-status="done">
+        <div class="story-header"><div class="story-status-icon done">&#10003;</div><div class="story-title">S4 &mdash; Benchmarking de Concorrentes (Meta Ad Library)</div></div>
+        <div class="story-detail">
+          <div class="done-block">
+            <strong>Entregue:</strong> <code>docs/playbooks/benchmarking-ads.md</code> + <code>assets/benchmarking/README.md</code><br>
+            3 oportunidades identificadas: comparativo com custo/ano real, UGC local, urgencia geografica por cidade.<br><br>
+            <strong>Acao humana pendente:</strong> Pesquisa na Meta Ad Library + screenshots em <code>assets/benchmarking/</code>.<br><br>
+            <strong>&#128295; Ferramentas:</strong><br>
+            &bull; <strong>Meta Ad Library:</strong> facebook.com/ads/library &mdash; buscar "mourao de concreto", "premoldados"<br>
+            &bull; <strong>Docs:</strong> <code>docs/playbooks/benchmarking-ads.md</code> &mdash; template de analise por concorrente
+          </div>
+        </div>
+      </div>
+
+      <!-- S5 -->
+      <div class="story" data-status="done">
+        <div class="story-header"><div class="story-status-icon done">&#10003;</div><div class="story-title">S5 &mdash; Estrategia Criativa + Nomenclatura Padrao</div></div>
+        <div class="story-detail">
+          <div class="done-block">
+            <strong>Entregue:</strong> <code>config/estrutura-campanha-concrenor.yaml</code> + <code>docs/playbooks/nomenclatura-ads.md</code><br>
+            Discovery phase: 3 abordagens (A1 dor financeira, A2 geracao, A3 prova social) x 3 conjuntos (Interesses, Retargeting, LAL 1%).<br><br>
+            <strong>&#128295; Ferramentas:</strong><br>
+            &bull; <strong>YAML:</strong> <code>config/estrutura-campanha-{cliente}.yaml</code> &mdash; estrategia, fases, orcamentos, gatilhos de escala<br>
+            &bull; <strong>Nomenclatura:</strong> <code>docs/playbooks/nomenclatura-ads.md</code> &mdash; padrao Meta + Google Ads
+          </div>
+        </div>
+      </div>
+
+      <!-- S6 -->
+      <div class="story" data-status="done">
+        <div class="story-header"><div class="story-status-icon done">&#10003;</div><div class="story-title">S6 &mdash; Publicos Personalizados (Custom Audiences)</div></div>
+        <div class="story-detail">
+          <div class="done-block">
+            <strong>Entregue:</strong> <code>scripts/exportar-leads-meta.js</code> + <code>docs/playbooks/publicos-personalizados.md</code><br>
+            8 publicos documentados: 4 pixel-based, 2 CSV-upload, 2 Lookalike. Script exporta leads do Google Sheets para CSV Meta-compativel.<br><br>
+            <strong>Acao humana pendente:</strong> Criar publicos no Meta Ads Manager apos Pixel ativo 30 dias.<br><br>
+            <strong>&#128295; Ferramentas:</strong><br>
+            &bull; <strong>CLI:</strong> <code>npm run exportar-leads-meta -- --cliente=Concrenor</code><br>
+            &bull; <strong>Playbook:</strong> <code>docs/playbooks/publicos-personalizados.md</code> &mdash; passo a passo de criacao + regras de exclusao
+          </div>
+        </div>
+      </div>
+
+      <!-- S7 -->
+      <div class="story" data-status="done">
+        <div class="story-header"><div class="story-status-icon done">&#10003;</div><div class="story-title">S7 &mdash; Copy dos Anuncios (7 Pilares Pedro Sobral)</div></div>
+        <div class="story-detail">
+          <div class="done-block">
+            <strong>Entregue:</strong> <code>scripts/gerar-copy-ads.js</code> (Claude Opus 4.6) + <code>config/ads-copy-concrenor.json</code> (18 variacoes rascunho)<br>
+            3 abordagens x 4 formatos (feed, stories, search, retargeting) = ate 36 variacoes por cliente.<br><br>
+            <strong>Acao humana pendente:</strong> Revisar e aprovar copy com o cliente.<br><br>
+            <strong>&#128295; Ferramentas:</strong><br>
+            &bull; <strong>CLI:</strong> <code>npm run gerar-copy-ads -- --cliente=Concrenor</code><br>
+            &bull; <strong>Output:</strong> <code>config/ads-copy-{cliente}.json</code> &mdash; nomenclatura CLIENTE_ABORDAGEM_FORMATO_V1/V2/V3
+          </div>
+        </div>
+      </div>
+
+      <!-- S8 -->
+      <div class="story" data-status="done">
+        <div class="story-header"><div class="story-status-icon done">&#10003;</div><div class="story-title">S8 &mdash; Criativos (Visuais + Textos)</div></div>
+        <div class="story-detail">
+          <div class="done-block">
+            <strong>Entregue:</strong> <code>docs/playbooks/briefing-criativos.md</code> + <code>config/checklist-fotos-concrenor.json</code> + pastas <code>assets/concrenor/{fotos,videos,aprovados}/</code><br>
+            4 templates documentados: Feed Problema/Solucao, Feed Comparativo, Stories com Hook, Carrossel 5 slides.<br><br>
+            <strong>Acao humana pendente:</strong> Enviar checklist de fotos ao cliente &rarr; criar templates no Canva &rarr; produzir criativos.<br><br>
+            <strong>&#128295; Ferramentas:</strong><br>
+            &bull; <strong>Checklist:</strong> <code>config/checklist-fotos-concrenor.json</code> &mdash; mensagem WhatsApp pronta para solicitar fotos<br>
+            &bull; <strong>Playbook:</strong> <code>docs/playbooks/briefing-criativos.md</code> &mdash; processo de producao em 48h
+          </div>
+        </div>
+      </div>
+
+      <!-- S9 -->
+      <div class="story" data-status="done">
+        <div class="story-header"><div class="story-status-icon done">&#10003;</div><div class="story-title">S9 &mdash; Go-Live e Monitoramento Inicial</div></div>
+        <div class="story-detail">
+          <div class="done-block">
+            <strong>Entregue:</strong> <code>docs/playbooks/go-live-meta-ads.md</code> (checklist 20+ itens em 3 fases) + <code>config/log-ads-concrenor.json</code> (template de log diario)<br>
+            Regras de intervencao documentadas: quando pausar, quando escalar, metas de CPL/CTR/CPM para Concrenor.<br><br>
+            <strong>Acao humana pendente:</strong> Publicar campanha apos criativos aprovados + configurar alertas no Meta Ads Manager.<br><br>
+            <strong>&#128295; Ferramentas:</strong><br>
+            &bull; <strong>Playbook:</strong> <code>docs/playbooks/go-live-meta-ads.md</code> &mdash; checklist pre-publicacao + pos-publicacao 72h<br>
+            &bull; <strong>Log:</strong> <code>config/log-ads-concrenor.json</code> &mdash; preencher diariamente com metricas do Gerenciador
+          </div>
+        </div>
+      </div>
+
+      <!-- S10 -->
+      <div class="story" data-status="done">
+        <div class="story-header"><div class="story-status-icon done">&#10003;</div><div class="story-title">S10 &mdash; Relatorio de Performance</div></div>
+        <div class="story-detail">
+          <div class="done-block">
+            <strong>Entregue:</strong> <code>scripts/relatorio-ads.js</code> + <code>.github/workflows/relatorio-ads.yml</code><br>
+            Gera HTML com 6 KPIs, tabela por anuncio, interpretacao automatica e evolucao diaria. Roda automaticamente nos dias 1 e 16.<br><br>
+            <strong>&#128295; Ferramentas:</strong><br>
+            &bull; <strong>CLI:</strong> <code>npm run relatorio-ads -- --cliente=Concrenor</code><br>
+            &bull; <strong>Fontes:</strong> Meta Marketing API (automatico) ou log manual (fallback)<br>
+            &bull; <strong>GitHub Actions:</strong> <code>.github/workflows/relatorio-ads.yml</code> &mdash; dias 1 e 16 de cada mes
+          </div>
+        </div>
+      </div>
+
+      <!-- S11 -->
+      <div class="story" data-status="done">
+        <div class="story-header"><div class="story-status-icon done">&#10003;</div><div class="story-title">S11 &mdash; Escala e Otimizacao Continua</div></div>
+        <div class="story-detail">
+          <div class="done-block">
+            <strong>Entregue:</strong> <code>docs/playbooks/escala-meta-ads.md</code> + <code>scripts/monitorar-ads.js</code> + <code>.github/workflows/monitorar-ads.yml</code><br>
+            Monitor diario: avalia CPL, CTR, frequencia e cria task no ClickUp se alerta critico. Playbook: 5 fases de escala, metas CPL por produto, ciclo de teste continuo.<br><br>
+            <strong>&#128295; Ferramentas:</strong><br>
+            &bull; <strong>CLI:</strong> <code>npm run monitorar-ads -- --cliente=Concrenor</code><br>
+            &bull; <strong>GitHub Actions:</strong> <code>.github/workflows/monitorar-ads.yml</code> &mdash; diario 08:30 BRT &rarr; alerta critico &rarr; task ClickUp<br>
+            &bull; <strong>Playbook:</strong> <code>docs/playbooks/escala-meta-ads.md</code> &mdash; quando/como escalar, metas CPL Concrenor
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- EP5 -->
+  <div class="ep-card" data-status="pending">
+    <div class="ep-header" onclick="toggleEp(this)">
+      <div class="ep-toggle">&#9654;</div>
+      <div class="ep-info">
+        <div class="ep-title">&#128274; EP5 &mdash; Escala Multi-Cliente</div>
+        <div class="ep-progress-bar"><div class="ep-progress-fill gray" style="width:0%"></div></div>
+      </div>
+      <div class="ep-meta"><span class="ep-count">0/4</span><span class="badge badge-locked">Bloqueado</span></div>
+    </div>
+    <div class="ep-body">
+
+      <div class="ep-lock-notice">
+        <strong>&#128274; Fase bloqueada &mdash; desbloqueia com 5 clientes ativos</strong><br><br>
+        Este epic so faz sentido quando a operacao ja tem escala. Com menos de 5 clientes, o overhead de automacao multi-cliente nao compensa.<br><br>
+        <strong>Gatilho de desbloqueio:</strong> 5 clientes com campanha ativa simultaneamente por pelo menos 30 dias.<br><br>
+        <strong>O que este epic entrega:</strong><br>
+        &bull; Onboarding automatizado do zero &mdash; novo cliente entra sem intervencao manual<br>
+        &bull; Painel da agencia &mdash; visao consolidada de todos os clientes (CPL, leads, gasto, alertas)<br>
+        &bull; Relatorio multi-cliente &mdash; um PDF/HTML por cliente, gerado no mesmo workflow<br>
+        &bull; Precificacao automatica &mdash; calculo de fee baseado em gasto gerenciado + performance
+      </div>
+
+      <div class="story" data-status="pending"><div class="story-header"><div class="story-status-icon pending">&#8230;</div><div class="story-title">S1 &mdash; Onboarding Automatico Completo</div></div></div>
+      <div class="story" data-status="pending"><div class="story-header"><div class="story-status-icon pending">&#8230;</div><div class="story-title">S2 &mdash; Painel da Agencia (visao geral de todos os clientes)</div></div></div>
+      <div class="story" data-status="pending"><div class="story-header"><div class="story-status-icon pending">&#8230;</div><div class="story-title">S3 &mdash; Relatorio Consolidado Multi-Cliente</div></div></div>
+      <div class="story" data-status="pending"><div class="story-header"><div class="story-status-icon pending">&#8230;</div><div class="story-title">S4 &mdash; Sistema de Precificacao Automatica</div></div></div>
+    </div>
+  </div>
+
+
+</div>
+
+<div class="footer">
+  Roadmap atualizado manualmente. Solicite atualizacao quando necessario.
+</div>
+
+<script>
+  function toggleEp(header) {
+    header.closest('.ep-card').classList.toggle('open');
+  }
+
+  function toggleAgents() {
+    document.getElementById('agentsCard').classList.toggle('open');
+  }
+
+  function toggleSl(btn) {
+    var diagram = btn.nextElementSibling;
+    var isOpen = diagram.classList.toggle('open');
+    btn.classList.toggle('open', isOpen);
+    btn.innerHTML = isOpen ? '&#9650; Ocultar fluxo' : '&#9660; Ver fluxo de agentes';
+  }
+
+  // Filter logic
+  document.querySelectorAll('.filter-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.filter-btn').forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      var filter = btn.getAttribute('data-filter');
+      document.querySelectorAll('.ep-card').forEach(function(ep) {
+        if (filter === 'all') {
+          ep.style.display = '';
+          ep.querySelectorAll('.story').forEach(function(s) { s.style.display = ''; });
+        } else {
+          var stories = ep.querySelectorAll('.story');
+          var hasMatch = false;
+          stories.forEach(function(s) {
+            var sStatus = s.getAttribute('data-status');
+            if (sStatus === filter) { s.style.display = ''; hasMatch = true; }
+            else { s.style.display = 'none'; }
+          });
+          if (hasMatch) { ep.style.display = ''; ep.classList.add('open'); }
+          else { ep.style.display = 'none'; }
+        }
+      });
+    });
+  });
+</script>
+
+</body>
+</html>

@@ -1,8 +1,8 @@
 # Story EP2-S1 — Planilha Mestre de Leads
-**Epic:** Epic 2 — Sistema de Leads
+**Epic:** EP2 — CRM & Automação de Leads
 **Prioridade:** P1
 **Responsável:** @data-engineer
-**Status:** Pending
+**Status:** Done (aguardando deploy humano da planilha)
 **Estimativa:** 1 sprint
 
 ---
@@ -57,23 +57,23 @@ Antes de adotar um CRM pago, a Escalando Premoldados precisa de uma planilha Goo
 
 ## Tarefas Técnicas
 
-- [ ] Criar estrutura da planilha no Google Sheets
-- [ ] Configurar validações e formatações condicionais
-- [ ] Configurar Apps Script ou Zapier para receber leads do formulário LP
-- [ ] Integrar com Tintim (via webhook ou exportação)
-- [ ] Criar template de aba por cliente (duplicável para cada novo cliente)
-- [ ] Testar fluxo completo: lead entra no formulário → aparece na planilha
-- [ ] Documentar como adicionar novo cliente (pasta docs/playbooks/)
+- [x] Criar estrutura da planilha no Google Sheets (`scripts/setup-crm.gs`)
+- [x] Configurar validações e formatações condicionais (dropdown + cores por status)
+- [x] Configurar Apps Script para receber leads do formulário LP (`scripts/webhook-leads.gs`)
+- [ ] Integrar com Tintim — ver EP2-S3
+- [x] Criar template de aba por cliente (duplicável via `adicionarCliente()`)
+- [ ] Testar fluxo completo — tarefa humana (requer planilha no ar)
+- [x] Documentar como adicionar novo cliente (`docs/playbooks/crm-planilha.md`)
 
 ---
 
 ## Definition of Done
 
-- [ ] Planilha criada e compartilhada com link documentado
-- [ ] Webhook do formulário funcionando (lead de teste registrado)
-- [ ] Aba de template de cliente funcionando
-- [ ] Dashboard com fórmulas corretas
-- [ ] Documentação de uso disponível
+- [ ] Planilha criada e compartilhada — tarefa humana (rodar `setupCRM()` no Sheets)
+- [ ] Webhook do formulário funcionando — tarefa humana (implantar Web App + testar)
+- [x] Aba de template de cliente funcionando (`adicionarCliente()` no script)
+- [x] Dashboard com fórmulas corretas (MESTRE + por canal + por status)
+- [x] Documentação de uso disponível (`docs/playbooks/crm-planilha.md`)
 
 ---
 

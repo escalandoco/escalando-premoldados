@@ -36,6 +36,21 @@ export default async function handler(req, res) {
       return res.status(200).json({ success: true, ...resultado });
     }
 
+    if (dados.action === 'novo-lead') {
+      const resultado = await processarNovoLead(dados);
+      return res.status(200).json({ success: true, ...resultado });
+    }
+
+    if (dados.action === 'novo-orcamento') {
+      const resultado = await processarNovoOrcamento(dados);
+      return res.status(200).json({ success: true, ...resultado });
+    }
+
+    if (dados.action === 'lp-briefing') {
+      const resultado = await processarLpBriefing(dados);
+      return res.status(200).json({ success: true, ...resultado });
+    }
+
     return res.status(400).json({ error: 'action inválida' });
 
   } catch (err) {
@@ -178,6 +193,133 @@ async function processarKickoff(d) {
   await cu('post', `/task/${kickoffTask.id}/comment`, { comment_text: comentario });
 
   return { msg: `Briefing registrado para ${d.empresa}` };
+}
+
+// ============================================================
+// NOVO LEAD — Registra lead na planilha do cliente
+// ============================================================
+async function processarNovoLead(d) {
+  if (!GOOGLE_WORKSPACE) throw new Error('Google Workspace não configurado.');
+  const res = await fetch(GOOGLE_WORKSPACE, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'novo-lead', ...d }),
+  });
+  const json = await res.json();
+  if (!json.success) throw new Error(json.error || 'Erro ao registrar lead.');
+  return { msg: json.msg };
+}
+
+// ============================================================
+// LP BRIEFING — Salva briefing no Drive + cria task no ClickUp
+// ============================================================
+async function processarLpBriefing(d) {
+  // 1. Salva dados no Drive via Apps Script
+  if (GOOGLE_WORKSPACE) {
+    try {
+      await fetch(GOOGLE_WORKSPACE, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'salvar-lp-briefing', ...d }),
+      });
+    } catch (_) {}
+  }
+
+  // 2. Busca folder do cliente no ClickUp
+  const { folders } = await cu('get', `/space/${SPACE_CLIENTES}/folder?archived=false`);
+  const folder = folders.find(f => f.name.toLowerCase() === d.empresa.toLowerCase());
+  if (!folder) throw new Error(`Folder "${d.empresa}" não encontrado no ClickUp.`);
+
+  // 3. Busca lista Onboarding
+  const { lists } = await cu('get', `/folder/${folder.id}/list?archived=false`);
+  const onboarding = lists.find(l => l.name === 'Onboarding');
+  if (!onboarding) throw new Error('Lista Onboarding não encontrada.');
+
+  // 4. Monta descrição da task
+  const produtos = (d.produtos || []).map((p, i) =>
+    `**Produto ${i+1}:** ${p.nome}${p.preco ? ` — ${p.preco}` : ''}\n${p.aplicacao ? `Aplicação: ${p.aplicacao}\n` : ''}${p.desc || ''}`
+  ).join('\n\n');
+
+  const diferenciais = (d.diferenciais || []).map((d, i) => `${i+1}. ${d}`).join('\n');
+  const depoimentos  = (d.depoimentos  || []).map(d => `"${d.texto}" — ${d.nome}${d.cidade ? `, ${d.cidade}` : ''}`).join('\n');
+
+  const desc = [
+    `📋 **Briefing de LP — ${d.empresa}**`,
+    ``,
+    `**Slogan:** ${d.slogan || '—'}`,
+    `**Estilo visual:** ${d.estilo || '—'}`,
+    `**Cor principal:** ${d.cor_primaria || '—'}`,
+    `**Cor secundária:** ${d.cor_secundaria || '—'}`,
+    ``,
+    `**WhatsApp:** ${d.whatsapp}`,
+    `**Cidade sede:** ${d.cidade || '—'}`,
+    `**Regiões de entrega:** ${d.regioes || '—'}`,
+    ``,
+    `**Headline sugerida:** ${d.headline || '(gerar automaticamente)'}`,
+    ``,
+    `---`,
+    `**PRODUTOS:**`,
+    produtos || '—',
+    ``,
+    `---`,
+    `**DIFERENCIAIS:**`,
+    diferenciais || '—',
+    ``,
+    `---`,
+    `**DEPOIMENTOS:**`,
+    depoimentos || '—',
+    d.obs ? `\n**Obs:** ${d.obs}` : '',
+  ].filter(v => v !== '').join('\n');
+
+  // 5. Cria task no ClickUp
+  const taskName = d.lp_nome
+    ? `Gerar LP — ${d.empresa} — ${d.lp_nome}`
+    : `Gerar LP — ${d.empresa}`;
+
+  const task = await cu('post', `/list/${onboarding.id}/task`, {
+    name: taskName,
+    description: desc,
+    priority: 2,
+  });
+
+  // 6. Salva config JSON como comentário (usado pelo gerador de LP)
+  const configJson = {
+    empresa:       d.empresa,
+    lp_nome:       d.lp_nome || '',
+    whatsapp:      d.whatsapp,
+    cidade:        d.cidade       || '',
+    regioes:       d.regioes      || '',
+    slogan:        d.slogan       || '',
+    estilo:        d.estilo       || 'clean',
+    cor_primaria:  d.cor_primaria  || '#C4B470',
+    cor_secundaria:d.cor_secundaria || '#0D1117',
+    headline:      d.headline     || '',
+    produtos:      d.produtos     || [],
+    diferenciais:  d.diferenciais || [],
+    depoimentos:   d.depoimentos  || [],
+    obs:           d.obs          || '',
+  };
+  await cu('post', `/task/${task.id}/comment`, {
+    comment_text: `\`\`\`json\n${JSON.stringify(configJson, null, 2)}\n\`\`\``,
+  });
+
+  const lpLabel = d.lp_nome ? ` (${d.lp_nome})` : '';
+  return { msg: `Briefing de LP${lpLabel} recebido para ${d.empresa}. Task criada no ClickUp.` };
+}
+
+// ============================================================
+// NOVO ORÇAMENTO — Registra orçamento na planilha do cliente
+// ============================================================
+async function processarNovoOrcamento(d) {
+  if (!GOOGLE_WORKSPACE) throw new Error('Google Workspace não configurado.');
+  const res = await fetch(GOOGLE_WORKSPACE, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'novo-orcamento', ...d }),
+  });
+  const json = await res.json();
+  if (!json.success) throw new Error(json.error || 'Erro ao registrar orçamento.');
+  return { msg: json.msg };
 }
 
 // ============================================================

@@ -1,8 +1,8 @@
 # Story EP1-S1 — Landing Page da Escalando Premoldados
-**Epic:** Epic 1 — Fundação da Agência
+**Epic:** EP1 — Presença Digital Base
 **Prioridade:** P0
 **Responsável:** @dev
-**Status:** Pending
+**Status:** Done
 **Estimativa:** 1 sprint
 
 ---

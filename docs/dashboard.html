@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dashboard — Escalando Premoldados</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0f0f0f; color: #e5e5e5; min-height: 100vh; }
+
+    /* LOGIN */
+    #login-screen { display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+    .login-card { background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 10px; padding: 40px; width: 340px; }
+    .login-card .logo { color: #E85110; font-size: 20px; font-weight: 700; margin-bottom: 6px; }
+    .login-card p { color: #888; font-size: 13px; margin-bottom: 24px; }
+    .login-card input { width: 100%; background: #111; border: 1px solid #333; border-radius: 6px; padding: 10px 14px; color: #fff; font-size: 14px; margin-bottom: 12px; outline: none; }
+    .login-card input:focus { border-color: #E85110; }
+    .login-card button { width: 100%; background: #E85110; color: #fff; border: none; border-radius: 6px; padding: 11px; font-size: 14px; font-weight: 600; cursor: pointer; }
+    .login-card button:hover { background: #c94010; }
+    .login-error { color: #f87171; font-size: 12px; margin-top: 8px; display: none; }
+
+    /* APP */
+    #app { display: none; }
+    .header { background: #1a1a1a; border-bottom: 1px solid #2a2a2a; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 56px; }
+    .header .brand { color: #E85110; font-weight: 700; font-size: 16px; }
+    .header .meta { color: #666; font-size: 12px; }
+    .header button.sair { background: none; border: 1px solid #333; color: #888; padding: 5px 12px; border-radius: 5px; font-size: 12px; cursor: pointer; }
+
+    .container { max-width: 1100px; margin: 0 auto; padding: 28px 20px; }
+    h2 { font-size: 14px; font-weight: 600; color: #aaa; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 16px; }
+
+    /* FILTROS */
+    .filtros { display: flex; gap: 10px; margin-bottom: 28px; flex-wrap: wrap; }
+    .filtros select { background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 6px; color: #e5e5e5; padding: 7px 12px; font-size: 13px; cursor: pointer; }
+    .filtros button.atualizar { background: #E85110; color: #fff; border: none; border-radius: 6px; padding: 7px 14px; font-size: 13px; cursor: pointer; font-weight: 600; }
+
+    /* KPI GRID */
+    .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; margin-bottom: 28px; }
+    .kpi { background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 8px; padding: 18px 16px; }
+    .kpi .label { font-size: 11px; color: #666; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 8px; }
+    .kpi .valor { font-size: 30px; font-weight: 700; }
+    .kpi .sub { font-size: 12px; color: #666; margin-top: 4px; }
+    .kpi.verde .valor { color: #4ade80; }
+    .kpi.laranja .valor { color: #E85110; }
+    .kpi.amarelo .valor { color: #fbbf24; }
+    .kpi.azul .valor { color: #60a5fa; }
+
+    /* TABELA CLIENTES */
+    .card { background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 8px; margin-bottom: 20px; overflow: hidden; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th { padding: 11px 14px; text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: #666; border-bottom: 1px solid #2a2a2a; }
+    td { padding: 11px 14px; border-bottom: 1px solid #1f1f1f; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #1f1f1f; }
+
+    /* BADGES */
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+    .badge-novo     { background: #1e3a5f; color: #60a5fa; }
+    .badge-fechado  { background: #14532d; color: #4ade80; }
+    .badge-perdido  { background: #450a0a; color: #f87171; }
+    .badge-neg      { background: #451a03; color: #fbbf24; }
+
+    /* CANAL BARS */
+    .canal-bar { height: 6px; background: #2a2a2a; border-radius: 3px; margin-top: 4px; }
+    .canal-fill { height: 100%; background: #E85110; border-radius: 3px; transition: width .4s; }
+
+    /* LOADING / EMPTY */
+    .loading { text-align: center; padding: 40px; color: #555; font-size: 14px; }
+    .empty { text-align: center; padding: 32px; color: #555; font-size: 13px; }
+
+    /* RESPONSIVO */
+    @media (max-width: 600px) {
+      .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+      .filtros { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="logo">Escalando Premoldados</div>
+    <p>Dashboard de Resultados</p>
+    <input type="password" id="senha" placeholder="Senha" onkeydown="if(event.key==='Enter')entrar()">
+    <button onclick="entrar()">Entrar</button>
+    <div class="login-error" id="login-error">Senha incorreta.</div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <div class="header">
+    <div class="brand">Escalando Premoldados</div>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <span class="meta" id="ultima-atualizacao">—</span>
+      <button class="sair" onclick="sair()">Sair</button>
+    </div>
+  </div>
+
+  <div class="container">
+
+    <div class="filtros">
+      <select id="filtro-mes" onchange="filtrar()">
+        <!-- preenchido via JS -->
+      </select>
+      <select id="filtro-cliente" onchange="filtrar()">
+        <option value="">Todos os clientes</option>
+      </select>
+      <button class="atualizar" onclick="carregarDados()">↻ Atualizar</button>
+    </div>
+
+    <div class="kpi-grid" id="kpi-grid">
+      <div class="loading">Carregando dados...</div>
+    </div>
+
+    <h2>Por Cliente</h2>
+    <div class="card" id="tabela-clientes">
+      <div class="loading">Carregando...</div>
+    </div>
+
+    <h2>Leads por Canal</h2>
+    <div class="card" id="canais-card" style="padding:20px;">
+      <div class="loading">Carregando...</div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ============================================================
+// CONFIGURAÇÃO — ajustar conforme necessário
+// ============================================================
+const CONFIG = {
+  // Senha de acesso ao dashboard
+  SENHA: 'escalando2026',
+
+  // ID da planilha Google Sheets (da URL: /spreadsheets/d/{ID}/)
+  SHEET_ID: '1ypUuEzLRpXAACLryN530O3yfMicJLqW_FPZM_nlSN-U',
+
+  // Nome da aba mestre
+  ABA: 'MESTRE',
+
+  // Colunas (índice 0 = coluna A)
+  COLS: {
+    DATA:     0,   // A
+    CLIENTE:  1,   // B
+    CANAL:    2,   // C
+    NOME:     3,   // D
+    STATUS:   8,   // I
+    DIAS:     11,  // L
+    VALOR:    12,  // M
+  },
+};
+
+// ============================================================
+// AUTH
+// ============================================================
+function entrar() {
+  const senha = document.getElementById('senha').value;
+  if (senha === CONFIG.SENHA) {
+    sessionStorage.setItem('auth', '1');
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    inicializar();
+  } else {
+    document.getElementById('login-error').style.display = 'block';
+  }
+}
+
+function sair() {
+  sessionStorage.removeItem('auth');
+  location.reload();
+}
+
+// ============================================================
+// DADOS
+// ============================================================
+let dadosRaw = [];
+let dadosFiltrados = [];
+
+async function carregarDados() {
+  const url = `https://docs.google.com/spreadsheets/d/${CONFIG.SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(CONFIG.ABA)}`;
+
+  try {
+    const res  = await fetch(url);
+    const text = await res.text();
+    const json = JSON.parse(text.replace(/^[^{]+/, '').replace(/[^}]+$/, ''));
+
+    const rows = json.table.rows || [];
+    dadosRaw = rows.map(row => row.c.map(cell => {
+      if (!cell) return '';
+      if (cell.v instanceof Object && cell.v.constructor.name !== 'Object') return cell.f || cell.v;
+      return cell.v ?? '';
+    })).filter(r => r[CONFIG.COLS.DATA] && r[CONFIG.COLS.CLIENTE]);
+
+    document.getElementById('ultima-atualizacao').textContent =
+      'Atualizado ' + new Date().toLocaleString('pt-BR', { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit' });
+
+    preencherFiltros();
+    filtrar();
+
+  } catch (err) {
+    document.getElementById('kpi-grid').innerHTML =
+      `<div class="loading" style="color:#f87171;">Erro ao carregar dados da planilha.<br><small>${err.message}</small></div>`;
+  }
+}
+
+function preencherFiltros() {
+  // Meses disponíveis
+  const meses = [...new Set(dadosRaw.map(r => {
+    const d = _parseData(r[CONFIG.COLS.DATA]);
+    return d ? `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}` : null;
+  }).filter(Boolean))].sort().reverse();
+
+  const selMes = document.getElementById('filtro-mes');
+  selMes.innerHTML = '<option value="">Todos os meses</option>' +
+    meses.map(m => {
+      const [ano, mes] = m.split('-');
+      const label = new Date(+ano, +mes-1, 1).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+      return `<option value="${m}">${label}</option>`;
+    }).join('');
+
+  // Marcar mês atual por padrão
+  const mesAtual = new Date();
+  const mesAtualStr = `${mesAtual.getFullYear()}-${String(mesAtual.getMonth()+1).padStart(2,'0')}`;
+  if (meses.includes(mesAtualStr)) selMes.value = mesAtualStr;
+
+  // Clientes
+  const clientes = [...new Set(dadosRaw.map(r => r[CONFIG.COLS.CLIENTE]).filter(Boolean))].sort();
+  const selCli = document.getElementById('filtro-cliente');
+  selCli.innerHTML = '<option value="">Todos os clientes</option>' +
+    clientes.map(c => `<option value="${c}">${c}</option>`).join('');
+}
+
+function filtrar() {
+  const mesFiltro = document.getElementById('filtro-mes').value;
+  const cliFiltro = document.getElementById('filtro-cliente').value;
+
+  dadosFiltrados = dadosRaw.filter(r => {
+    if (cliFiltro && r[CONFIG.COLS.CLIENTE] !== cliFiltro) return false;
+    if (mesFiltro) {
+      const d = _parseData(r[CONFIG.COLS.DATA]);
+      if (!d) return false;
+      const m = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+      if (m !== mesFiltro) return false;
+    }
+    return true;
+  });
+
+  renderizar();
+}
+
+// ============================================================
+// RENDER
+// ============================================================
+function renderizar() {
+  const dados = dadosFiltrados;
+  const total    = dados.length;
+  const fechados = dados.filter(r => r[CONFIG.COLS.STATUS] === 'Fechado').length;
+  const emNeg    = dados.filter(r => ['Contatado','Em negociação'].includes(r[CONFIG.COLS.STATUS])).length;
+  const novos    = dados.filter(r => r[CONFIG.COLS.STATUS] === 'Novo').length;
+  const taxaConv = total > 0 ? (fechados/total*100).toFixed(1) + '%' : '—';
+
+  // KPIs
+  document.getElementById('kpi-grid').innerHTML = [
+    ['Total de Leads', total, '', ''],
+    ['Fechados', fechados, 'verde', `taxa ${taxaConv}`],
+    ['Em andamento', emNeg, 'amarelo', ''],
+    ['Novos (sem contato)', novos, 'azul', ''],
+  ].map(([label, val, cls, sub]) => `
+    <div class="kpi ${cls}">
+      <div class="label">${label}</div>
+      <div class="valor">${val}</div>
+      ${sub ? `<div class="sub">${sub}</div>` : ''}
+    </div>`).join('');
+
+  // Por cliente
+  const porCliente = {};
+  dados.forEach(r => {
+    const cli = r[CONFIG.COLS.CLIENTE] || '—';
+    if (!porCliente[cli]) porCliente[cli] = { total:0, fechados:0, novos:0, em_neg:0, perdidos:0 };
+    porCliente[cli].total++;
+    if (r[CONFIG.COLS.STATUS] === 'Fechado')           porCliente[cli].fechados++;
+    if (r[CONFIG.COLS.STATUS] === 'Novo')              porCliente[cli].novos++;
+    if (['Contatado','Em negociação'].includes(r[CONFIG.COLS.STATUS])) porCliente[cli].em_neg++;
+    if (r[CONFIG.COLS.STATUS] === 'Perdido')           porCliente[cli].perdidos++;
+  });
+
+  const linhasCliente = Object.entries(porCliente)
+    .sort((a,b) => b[1].total - a[1].total)
+    .map(([cli, m]) => `
+      <tr>
+        <td><strong>${cli}</strong></td>
+        <td style="text-align:center;">${m.total}</td>
+        <td style="text-align:center;"><span class="badge badge-novo">${m.novos}</span></td>
+        <td style="text-align:center;"><span class="badge badge-neg">${m.em_neg}</span></td>
+        <td style="text-align:center;"><span class="badge badge-fechado">${m.fechados}</span></td>
+        <td style="text-align:center;"><span class="badge badge-perdido">${m.perdidos}</span></td>
+        <td style="text-align:center;">${m.total > 0 ? (m.fechados/m.total*100).toFixed(0)+'%' : '—'}</td>
+      </tr>`).join('');
+
+  document.getElementById('tabela-clientes').innerHTML = linhasCliente ? `
+    <table>
+      <thead><tr>
+        <th>Cliente</th><th>Total</th><th>Novos</th><th>Em andamento</th><th>Fechados</th><th>Perdidos</th><th>Conv.</th>
+      </tr></thead>
+      <tbody>${linhasCliente}</tbody>
+    </table>` : '<div class="empty">Nenhum dado no período.</div>';
+
+  // Por canal
+  const porCanal = {};
+  dados.forEach(r => {
+    const c = r[CONFIG.COLS.CANAL] || 'Outro';
+    porCanal[c] = (porCanal[c] || 0) + 1;
+  });
+
+  const maxCanal = Math.max(...Object.values(porCanal), 1);
+  const canaisHTML = Object.entries(porCanal)
+    .sort((a,b) => b[1]-a[1])
+    .map(([canal, qtd]) => `
+      <div style="margin-bottom:14px;">
+        <div style="display:flex;justify-content:space-between;margin-bottom:4px;font-size:13px;">
+          <span>${canal}</span>
+          <span style="color:#888;">${qtd} lead${qtd!==1?'s':''} · ${total>0?(qtd/total*100).toFixed(0):'0'}%</span>
+        </div>
+        <div class="canal-bar"><div class="canal-fill" style="width:${(qtd/maxCanal*100).toFixed(0)}%"></div></div>
+      </div>`).join('');
+
+  document.getElementById('canais-card').innerHTML = canaisHTML ||
+    '<div class="empty">Nenhum dado no período.</div>';
+}
+
+// ============================================================
+// UTILS
+// ============================================================
+function _parseData(val) {
+  if (!val) return null;
+  if (val instanceof Date) return val;
+  // Formato DD/MM/YYYY HH:MM ou DD/MM/YYYY
+  const match = String(val).match(/(\d{2})\/(\d{2})\/(\d{4})/);
+  if (match) return new Date(+match[3], +match[2]-1, +match[1]);
+  const d = new Date(val);
+  return isNaN(d) ? null : d;
+}
+
+// ============================================================
+// INIT
+// ============================================================
+function inicializar() {
+  preencherFiltrosMeses();
+  carregarDados();
+}
+
+function preencherFiltrosMeses() {
+  const selMes = document.getElementById('filtro-mes');
+  const meses = [];
+  const hoje = new Date();
+  for (let i = 0; i < 6; i++) {
+    const d = new Date(hoje.getFullYear(), hoje.getMonth() - i, 1);
+    const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+    const label = d.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+    meses.push({ key, label });
+  }
+  selMes.innerHTML = '<option value="">Todos os meses</option>' +
+    meses.map(m => `<option value="${m.key}">${m.label}</option>`).join('');
+  selMes.value = meses[0].key;
+}
+
+// Verificar auth ao carregar
+if (sessionStorage.getItem('auth') === '1') {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  inicializar();
+}
+</script>
+
+</body>
+</html>

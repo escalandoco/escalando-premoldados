@@ -6,5 +6,7 @@
 .github/agents/
 .env
 .DS_Store
+config/deploy-clients.json
 node_modules/
 .vercel
+dist/

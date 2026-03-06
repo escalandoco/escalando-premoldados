@@ -1,0 +1,63 @@
+{
+  "empresa": "Concrenor",
+  "lp_nome": "Mourão Torneado",
+  "segmento": "rural",
+  "whatsapp": "5579999999999",
+  "telefone": "(79) 99999-9999",
+  "cidade": "Itabaiana — SE",
+  "regioes": "Todo Sergipe, Interior de Alagoas, Sul da Bahia",
+  "cor_primaria": "#C4B470",
+  "cor_secundaria": "#0D1117",
+  "estilo": "clean",
+  "slogan": "Qualidade em concreto há mais de 10 anos",
+  "ano_fundacao": "2013",
+  "num_clientes": "500+",
+  "num_cidades": "38 cidades em SE e AL",
+  "producao": "5.000 peças/mês",
+  "prazo_entrega": "48h",
+  "historia_fundacao": "Vi que os fazendeiros da região pagavam caro por mourão de madeira que apodreecia em 5 anos. Decidi fabricar mourão de concreto localmente para resolver isso de vez.",
+  "maior_orgulho": "Cercamos uma fazenda de 1.200 hectares em 45 dias, entregando no prazo e sem uma peça com defeito. O dono nos indicou para mais 6 fazendeiros da região.",
+  "certificacoes": "Laudos de resistência por lote, ABNT NBR 8953",
+  "cliente_ideal": "Pecuarista com propriedade entre 50 e 500 hectares em Sergipe e Alagoas. Já usou mourão de eucalipto e está cansado de repor a cada 5-7 anos. Busca uma solução definitiva.",
+  "dor_cliente": "Gasta R$ 8.000 todo ano repondo mourão de madeira que apodrece, perde dias de trabalho parando a cerca, e ainda corre o risco do gado fugir.",
+  "resultado_cliente": "'Nunca mais precisei repor mourão. Instalei há 8 anos e tá igual.' / 'Entregou no prazo prometido, coisa rara no mercado.'",
+  "diferencial_1": "Fábrica própria em Itabaiana — sem intermediários, preço direto",
+  "diferencial_2": "Entrega em 48h para todo Sergipe e adjacências",
+  "diferencial_3": "Mourão dura 50+ anos — nunca mais troca",
+  "diferencial_4": "Laudo técnico de resistência por lote",
+  "nome_dono": "João Santos, fundador",
+  "tom": "direto-pratico",
+  "proposta_unica": "Sou o único fabricante de mourão de concreto em Sergipe que entrega com laudo técnico e garante reposição gratuita em caso de quebra no transporte.",
+  "pixel_meta": "",
+  "ga4": "",
+  "produtos": [
+    {
+      "nome": "Mourão Torneado",
+      "aplicacao": "Cercas rurais e currais",
+      "preco": "A partir de R$ 18,00",
+      "desc": "Alta resistência e durabilidade para cercamento de propriedades rurais. Disponível em vários comprimentos.",
+      "foto": ""
+    },
+    {
+      "nome": "Bloco de Concreto",
+      "aplicacao": "Construção civil",
+      "preco": "Consulte",
+      "desc": "Bloco estrutural e de vedação com dimensões padronizadas.",
+      "foto": ""
+    },
+    {
+      "nome": "Palanque",
+      "aplicacao": "Cercas e divisórias",
+      "preco": "Consulte",
+      "desc": "Resistente às intempéries, ideal para uso em áreas externas.",
+      "foto": ""
+    },
+    {
+      "nome": "Meio-Fio",
+      "aplicacao": "Obras públicas e privadas",
+      "preco": "Consulte",
+      "desc": "Acabamento perfeito para calçadas e estacionamentos. Padrão ABNT.",
+      "foto": ""
+    }
+  ]
+}

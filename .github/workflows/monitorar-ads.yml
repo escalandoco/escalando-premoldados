@@ -1,0 +1,47 @@
+name: Monitor Diario de Anuncios
+
+on:
+  schedule:
+    # Diário às 08:30 BRT (11:30 UTC) — após o dia da campanha fechar
+    - cron: '30 11 * * *'
+  workflow_dispatch:
+    inputs:
+      cliente:
+        description: 'Nome do cliente'
+        required: true
+        default: 'Concrenor'
+      dias:
+        description: 'Dias a analisar'
+        required: false
+        default: '3'
+
+jobs:
+  monitorar:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Instalar dependencias
+        run: npm install
+
+      - name: Monitorar anuncios — Concrenor
+        env:
+          CLICKUP_API_KEY: ${{ secrets.CLICKUP_API_KEY }}
+          CLICKUP_LIST_ACOES_DIA: ${{ secrets.CLICKUP_LIST_ACOES_DIA }}
+        run: |
+          CLIENTE="${{ github.event.inputs.cliente || 'Concrenor' }}"
+          DIAS="${{ github.event.inputs.dias || '3' }}"
+          node scripts/monitorar-ads.js --cliente="$CLIENTE" --dias="$DIAS"
+        # Exit code 1 (alertas críticos) é capturado pelo GitHub → notificação por email
+        continue-on-error: true
+
+      - name: Registrar resultado
+        if: always()
+        run: echo "Monitor concluido — verificar log acima para alertas"

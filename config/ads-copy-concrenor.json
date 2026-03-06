@@ -1,0 +1,177 @@
+{
+  "cliente": "Concrenor",
+  "gerado_em": "2026-03-06",
+  "modelo": "rascunho-manual",
+  "_obs": "Rascunho para validação. Rodar 'npm run gerar-copy-ads -- --cliente=Concrenor' para versão gerada por IA.",
+  "briefing_fonte": "config/briefing-ads-concrenor.json",
+  "anuncios": [
+    {
+      "abordagem": "A1",
+      "formato": "feed",
+      "variacoes": [
+        {
+          "nome": "CONCRENOR_DORFINANCEIRA_FEED_V1",
+          "hook": "Você sabe quanto está gastando por ano com mourão de madeira?",
+          "copy": "Um sítio de 100 hectares gasta em média R$8.000 por ano repondo mourão de eucalipto. Em 10 anos: R$80.000.\n\nMourão de concreto Concrenor: instala uma vez, dura 50 anos. Sem manutenção, sem reposição, sem dor de cabeça.\n\nFábrica própria em Itabaiana. Entrega em 48h para todo Sergipe.",
+          "cta": "Peça seu orçamento pelo WhatsApp agora."
+        },
+        {
+          "nome": "CONCRENOR_DORFINANCEIRA_FEED_V2",
+          "hook": "Mourão de madeira: R$8.000/ano. Mourão de concreto: uma vez na vida.",
+          "copy": "Já fez a conta de quanto custa repor mourão de eucalipto a cada 5 anos?\n\nEm 20 anos de fazenda, você troca 4 vezes. São R$32.000 que poderiam estar no seu bolso.\n\nConcrenor fabrica mourão de concreto que dura 50+ anos, com laudo técnico por lote.",
+          "cta": "Fale com a gente no WhatsApp e faça a comparação você mesmo."
+        },
+        {
+          "nome": "CONCRENOR_DORFINANCEIRA_FEED_V3",
+          "hook": "Para de jogar dinheiro fora com mourão de madeira.",
+          "copy": "Madeira apodrece. Cede com o peso do arame. Precisa de tratamento. E ainda assim dura no máximo 7 anos.\n\nMourão de concreto não apodrece, não cede, não precisa de manutenção. 50 anos de garantia de fábrica.\n\nDireto de Itabaiana para sua fazenda em 48h.",
+          "cta": "Pede orçamento pelo WhatsApp."
+        }
+      ]
+    },
+    {
+      "abordagem": "A1",
+      "formato": "stories",
+      "variacoes": [
+        {
+          "nome": "CONCRENOR_DORFINANCEIRA_STORIES_V1",
+          "hook": "R$8.000 por ano jogado fora.",
+          "copy": "É quanto você gasta repondo mourão de eucalipto. Todo ano.\n\nMourão de concreto: instala uma vez, dura 50 anos.",
+          "cta": "Chama no WhatsApp agora — orçamento em minutos."
+        },
+        {
+          "nome": "CONCRENOR_DORFINANCEIRA_STORIES_V2",
+          "hook": "Seu mourão vai apodrecer em 5 anos.",
+          "copy": "O de concreto não.\n\n50 anos de durabilidade. Laudo técnico por lote. Entrega em 48h.",
+          "cta": "Concrenor — mourão que você não precisa trocar nunca."
+        },
+        {
+          "nome": "CONCRENOR_DORFINANCEIRA_STORIES_V3",
+          "hook": "Madeira ou concreto?",
+          "copy": "Madeira: troca a cada 5 anos, R$8.000/vez.\nConcreto: instala uma vez, dura 50 anos.",
+          "cta": "Faz a conta e chama a Concrenor no WhatsApp."
+        }
+      ]
+    },
+    {
+      "abordagem": "A2",
+      "formato": "feed",
+      "variacoes": [
+        {
+          "nome": "CONCRENOR_GERACAO_FEED_V1",
+          "hook": "Cerca que você instala hoje, seu filho herda em 30 anos.",
+          "copy": "Mourão de madeira é despesa. Mourão de concreto é investimento.\n\nQuando você instala uma cerca de concreto, está construindo algo que vai durar além de você. Sem reposição, sem manutenção, sem preocupação.\n\nConcrenor — fábrica própria em Itabaiana, entrega 48h.",
+          "cta": "Peça orçamento agora pelo WhatsApp."
+        },
+        {
+          "nome": "CONCRENOR_GERACAO_FEED_V2",
+          "hook": "Meu avô instalou em 1970. Eu nunca troquei um mourão.",
+          "copy": "É assim que os clientes da Concrenor falam.\n\nMourão de concreto não é custo — é a última cerca que você vai instalar na sua fazenda.\n\nDurabilidade de 50+ anos. Laudo técnico por lote. 500 clientes em 38 cidades.",
+          "cta": "Fale com a Concrenor no WhatsApp."
+        },
+        {
+          "nome": "CONCRENOR_GERACAO_FEED_V3",
+          "hook": "O que você está deixando para a próxima geração?",
+          "copy": "Uma fazenda bem cuidada começa pela cerca.\n\nMourão de concreto dura 50 anos. Não apodrece, não cede, não precisa de manutenção. Uma decisão que vale décadas.\n\nConcrenor — direto da fábrica para sua fazenda.",
+          "cta": "Orçamento grátis pelo WhatsApp."
+        }
+      ]
+    },
+    {
+      "abordagem": "A3",
+      "formato": "feed",
+      "variacoes": [
+        {
+          "nome": "CONCRENOR_PROVASOCIAL_FEED_V1",
+          "hook": "8 anos. 300 hectares. Zero reposição.",
+          "copy": "É o que diz Antônio Mendes, produtor rural de Sergipe.\n\n\"Instalei mourão Concrenor em 2018 e nunca precisei trocar uma peça. O pessoal da vizinhança ainda usa madeira e está repondo toda hora.\"\n\nMais de 500 clientes. 38 cidades em SE, AL e BA.",
+          "cta": "Peça seu orçamento pelo WhatsApp."
+        },
+        {
+          "nome": "CONCRENOR_PROVASOCIAL_FEED_V2",
+          "hook": "300 hectares cercados em 45 dias. No prazo. Sem defeito.",
+          "copy": "O Carlos não acreditou quando prometemos. Mas entregamos.\n\nFábrica própria = controle de qualidade + prazo real. Laudo técnico em cada lote.\n\nJá são 500+ clientes em 38 cidades. Por que você ainda usa madeira?",
+          "cta": "Chama no WhatsApp — orçamento em minutos."
+        },
+        {
+          "nome": "CONCRENOR_PROVASOCIAL_FEED_V3",
+          "hook": "Entregou no prazo prometido, coisa rara no mercado.",
+          "copy": "Essa é a avaliação real de um dos nossos clientes.\n\nNa Concrenor, prazo não é promessa — é contrato. Fábrica própria em Itabaiana. Entrega em 48h para todo Sergipe e adjacências.\n\n500+ obras entregues. Laudo técnico por lote.",
+          "cta": "Pede seu orçamento agora pelo WhatsApp."
+        }
+      ]
+    },
+    {
+      "abordagem": "A1",
+      "formato": "search",
+      "variacoes": [
+        {
+          "nome": "CONCRENOR_DORFINANCEIRA_SEARCH_V1",
+          "headlines": [
+            "Mourão Torneado de Concreto",
+            "Entrega 48h — Todo Sergipe",
+            "Direto da Fábrica Itabaiana",
+            "Mourão que Dura 50 Anos",
+            "Peça Orçamento no WhatsApp"
+          ],
+          "descriptions": [
+            "Mourão de concreto com 50 anos de durabilidade. Fábrica própria. Entrega para SE, AL e BA. Peça orçamento agora.",
+            "Pare de repor mourão todo ano. Concreto dura 10x mais. 500+ clientes. Laudo técnico por lote. Peça orçamento."
+          ]
+        },
+        {
+          "nome": "CONCRENOR_DORFINANCEIRA_SEARCH_V2",
+          "headlines": [
+            "Fábrica de Pré-moldados SE",
+            "Preço Direto — Sem Intermediário",
+            "Laudo Técnico em Cada Lote",
+            "Cerca Durável para Fazenda",
+            "500+ Obras em SE e AL"
+          ],
+          "descriptions": [
+            "Cansado de repor mourão de madeira? Concreto Concrenor: uma vez instalado, 50 anos de durabilidade. Orçamento grátis.",
+            "Fábrica própria em Itabaiana. Entrega em 48h para Sergipe, Alagoas e Bahia. Laudo técnico por lote. Fale agora."
+          ]
+        },
+        {
+          "nome": "CONCRENOR_DORFINANCEIRA_SEARCH_V3",
+          "headlines": [
+            "Mourão Concreto Sergipe",
+            "Entrega Rápida Interior SE",
+            "Qualidade com Laudo Técnico",
+            "38 Cidades Atendidas",
+            "Orçamento em Minutos"
+          ],
+          "descriptions": [
+            "R$8.000/ano com mourão de madeira? Concreto Concrenor elimina esse custo. 50 anos de durabilidade. Peça orçamento.",
+            "Direto da fábrica para sua fazenda. Sem intermediários, preço justo, entrega em 48h. Laudo técnico garantido."
+          ]
+        }
+      ]
+    },
+    {
+      "abordagem": "A1",
+      "formato": "retargeting",
+      "variacoes": [
+        {
+          "nome": "CONCRENOR_DORFINANCEIRA_RETARGETING_V1",
+          "hook": "Ainda pensando no mourão de concreto?",
+          "copy": "A conta é simples: uma vez instalado, nunca mais troca.\n\nMadeira: R$8.000/ano. Concreto: zero manutenção por 50 anos.\n\nEntrega em 48h para todo Sergipe.",
+          "cta": "Chama agora no WhatsApp — orçamento em 5 minutos."
+        },
+        {
+          "nome": "CONCRENOR_DORFINANCEIRA_RETARGETING_V2",
+          "hook": "Você visitou a Concrenor. Só falta pedir o orçamento.",
+          "copy": "500+ clientes já fizeram a escolha certa.\n\nSe tiver qualquer dúvida — prazo, preço, quantidade — é só chamar. Respondemos na hora.",
+          "cta": "Pede no WhatsApp agora."
+        },
+        {
+          "nome": "CONCRENOR_DORFINANCEIRA_RETARGETING_V3",
+          "hook": "Última chance antes do preço subir.",
+          "copy": "Material em estoque e entrega garantida em 48h.\n\nGaranta seu orçamento hoje.",
+          "cta": "Fala com a Concrenor no WhatsApp."
+        }
+      ]
+    }
+  ]
+}

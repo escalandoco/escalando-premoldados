@@ -1,0 +1,32 @@
+{
+  "cliente": "Concrenor",
+  "campanha": "CONCRENOR_DISCOVERY_MOURAO_202603",
+  "inicio_campanha": null,
+  "meta_cpl_brl": 50,
+  "orcamento_diario_brl": 50,
+  "registros": [
+    {
+      "_template": true,
+      "_instrucao": "Copie este objeto para registrar cada dia. Remova _template e _instrucao.",
+      "data": "YYYY-MM-DD",
+      "dia_campanha": 1,
+      "gasto_total_brl": 0,
+      "impressoes": 0,
+      "alcance": 0,
+      "cliques": 0,
+      "ctr_pct": 0.0,
+      "cpm_brl": 0.0,
+      "leads": 0,
+      "contatos_whatsapp": 0,
+      "cpl_brl": 0.0,
+      "frequencia": 0.0,
+      "conjuntos": {
+        "INTERESSES_PECUARIA": { "gasto": 0, "leads": 0, "status": "ativo" },
+        "RETARGETING_LP30D": { "gasto": 0, "leads": 0, "status": "ativo" },
+        "LAL1PCT_CLIENTES": { "gasto": 0, "leads": 0, "status": "ativo" }
+      },
+      "observacoes": "",
+      "acoes_tomadas": ""
+    }
+  ]
+}
