@@ -363,7 +363,8 @@ function checkAuth(req, res) {
 // ── HTTP SERVER ──────────────────────────────────────────────
 const server = http.createServer((req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
-  if (!checkAuth(req, res)) return;
+  // /api/run-worker tem autenticação própria (WORKER_SECRET) — exclui do Basic Auth
+  if (req.url !== '/api/run-worker' && !checkAuth(req, res)) return;
 
   // ── GET /api/data ──
   if (req.method === 'GET' && req.url === '/api/data') {
