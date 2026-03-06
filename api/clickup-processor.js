@@ -141,7 +141,10 @@ ${taskDescription ? `\nConteúdo:\n${taskDescription}` : '(sem descrição adici
       messages: [{ role: 'user', content: userMsg }],
     }),
   });
-  if (!r.ok) throw new Error(`Claude API → ${r.status}`);
+  if (!r.ok) {
+    const errBody = await r.text();
+    throw new Error(`Claude API ${r.status}: ${errBody.slice(0, 200)}`);
+  }
   const data = await r.json();
   return data.content?.[0]?.text || '';
 }
