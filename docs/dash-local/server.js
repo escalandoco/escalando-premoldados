@@ -83,7 +83,7 @@ const EPIC_DEFS = [
   { id: 'EP1', name: 'Fundação',             total: 2,  done: 2,  locked: 0, status: 'done'     },
   { id: 'EP2', name: 'CRM & Leads',          total: 5,  done: 5,  locked: 0, status: 'done'     },
   { id: 'EP3', name: 'Landing Pages',        total: 12, done: 10, locked: 2, status: 'progress' },
-  { id: 'EP4', name: 'Anúncios Meta',        total: 11, done: 11, locked: 0, status: 'done'     },
+  { id: 'EP4', name: 'Anúncios Meta',        total: 11, done: 2,  locked: 0, status: 'progress' },
   { id: 'EP5', name: 'Escala Multi-cliente', total: 4,  done: 0,  locked: 4, status: 'locked'   },
 ];
 
