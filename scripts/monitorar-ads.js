@@ -66,13 +66,14 @@ function analisarLog(registros, dias) {
 
   // Médias dos últimos N dias
   const media = recentes.reduce((acc, r) => {
-    acc.cpl  += r.cpl_brl || 0;
-    acc.ctr  += r.ctr_pct || 0;
-    acc.cpm  += r.cpm_brl || 0;
-    acc.freq += r.frequencia || 0;
-    acc.gasto+= r.gasto_total_brl || 0;
+    acc.cpl   += r.cpl_brl || 0;
+    acc.ctr   += r.ctr_pct || 0;
+    acc.cpm   += r.cpm_brl || 0;
+    acc.freq  += r.frequencia || 0;
+    acc.gasto += r.gasto_total_brl || 0;
+    acc.leads += r.leads || 0;
     return acc;
-  }, { cpl: 0, ctr: 0, cpm: 0, freq: 0, gasto: 0 });
+  }, { cpl: 0, ctr: 0, cpm: 0, freq: 0, gasto: 0, leads: 0 });
 
   const n = recentes.length;
   media.cpl  = +(media.cpl  / n).toFixed(2);
@@ -128,26 +129,56 @@ function analisarLog(registros, dias) {
 }
 
 // ---- ClickUp alert (opcional) ----
-async function criarTaskClickUp(cliente, alertas) {
-  const apiKey    = process.env.CLICKUP_API_KEY;
-  const listId    = process.env.CLICKUP_LIST_ACOES_DIA;
+async function criarTaskClickUp(cliente, alertas, dados) {
+  const apiKey = process.env.CLICKUP_API_KEY;
+  const listId = process.env.CLICKUP_LIST_ACOES_DIA;
   if (!apiKey || !listId) return;
 
   const texto = alertas.map(a => `[${a.nivel}] ${a.metrica}: ${a.valor} (limite: ${a.limite})\nAção: ${a.acao}`).join('\n\n');
   const hoje  = new Date().toLocaleDateString('pt-BR');
+  const temCritico = alertas.some(a => a.nivel === 'CRITICO');
+
+  // Custom field IDs — Ações do Dia
+  const CF = {
+    cpl:    'faa57f3f-ec17-4f8c-8982-e39984fb4b78',
+    ctr:    '2b5d6b80-7d78-412e-ae17-865b24c78ba3',
+    cpm:    'ba4c016e-ebda-405f-b815-0ae97ec2605b',
+    leads:  'aa1d596f-ca08-41b4-bbd5-468c58e9a848',
+    status: '630933ea-8521-42ba-b8ca-072d2e0c3710',
+  };
 
   try {
-    await fetch(`https://api.clickup.com/api/v2/list/${listId}/task`, {
+    const resp = await fetch(`https://api.clickup.com/api/v2/list/${listId}/task`, {
       method: 'POST',
       headers: { Authorization: apiKey, 'Content-Type': 'application/json' },
       body: JSON.stringify({
         name: `[ALERTA ADS] ${cliente} — ${hoje}`,
         description: texto,
-        priority: alertas.some(a => a.nivel === 'CRITICO') ? 1 : 2,
+        priority: temCritico ? 1 : 2,
         tags: ['ads', 'alerta'],
       }),
     });
+    const task = await resp.json();
     console.log('  Task de alerta criada no ClickUp.');
+    if (!task.id) return;
+
+    // Popula campos customizados
+    const campos = [
+      { id: CF.status, value: temCritico ? 2 : 1 }, // 0=Normal 1=Atenção 2=Crítico
+    ];
+    if (dados) {
+      if (dados.cpl   > 0) campos.push({ id: CF.cpl,   value: dados.cpl   });
+      if (dados.ctr   > 0) campos.push({ id: CF.ctr,   value: dados.ctr   });
+      if (dados.cpm   > 0) campos.push({ id: CF.cpm,   value: dados.cpm   });
+      if (dados.leads > 0) campos.push({ id: CF.leads, value: dados.leads });
+    }
+    await Promise.all(campos.map(c =>
+      fetch(`https://api.clickup.com/api/v2/task/${task.id}/field/${c.id}`, {
+        method: 'POST',
+        headers: { Authorization: apiKey, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ value: c.value }),
+      })
+    ));
   } catch {
     // silencia erro — alerta no console é suficiente
   }
@@ -202,7 +233,7 @@ async function main() {
   });
 
   // ClickUp alert
-  await criarTaskClickUp(clienteRaw, alertas);
+  await criarTaskClickUp(clienteRaw, alertas, dados);
 
   const temCritico = alertas.some(a => a.nivel === 'CRITICO');
   if (temCritico) {

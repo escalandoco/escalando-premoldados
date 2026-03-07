@@ -202,3 +202,39 @@ print('OK')
 console.log(`\n   URL:     ${urlFinal}`);
 console.log(`\n📋 Smoke test:`);
 console.log(`   curl -s -o /dev/null -w "%{http_code}" ${urlFinal}`);
+
+// ClickUp: atualiza task de LP para Online
+await (async () => {
+  const apiKey = process.env.CLICKUP_API_KEY;
+  const listId = '901326092377'; // Landing Pages
+  if (!apiKey) return;
+  const CF_URL    = '209de5c9-29ad-433e-8763-22feffaeda9b';
+  const CF_STATUS = '0cdc1fa9-d73f-43fa-a9f0-7a6cbc426ca3';
+  const CF_PAGINA = '37b45ffd-28a8-4fcf-8f3a-3b967e920493';
+  try {
+    const r = await fetch(`https://api.clickup.com/api/v2/list/${listId}/task?limit=50&include_closed=true`, {
+      headers: { Authorization: apiKey },
+    });
+    const data = await r.json();
+    const tasks = data.tasks || [];
+    const task = tasks.find(t => t.name.toLowerCase().includes(args.cliente.toLowerCase()));
+    if (!task) { console.log('  ClickUp: nenhuma task de LP encontrada — pulando.'); return; }
+    await Promise.all([
+      fetch(`https://api.clickup.com/api/v2/task/${task.id}/field/${CF_URL}`, {
+        method: 'POST', headers: { Authorization: apiKey, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ value: urlFinal }),
+      }),
+      fetch(`https://api.clickup.com/api/v2/task/${task.id}/field/${CF_STATUS}`, {
+        method: 'POST', headers: { Authorization: apiKey, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ value: 0 }), // Online
+      }),
+      fetch(`https://api.clickup.com/api/v2/task/${task.id}/field/${CF_PAGINA}`, {
+        method: 'POST', headers: { Authorization: apiKey, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ value: args.cliente }),
+      }),
+    ]);
+    console.log(`  ClickUp: LP task atualizada — Status=Online, URL=${urlFinal}`);
+  } catch (err) {
+    console.warn(`  ⚠️  ClickUp update falhou: ${err.message}`);
+  }
+})();

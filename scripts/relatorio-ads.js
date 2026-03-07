@@ -340,6 +340,61 @@ function gerarHTML(dados, cliente, dataInicio, dataFim, fonte) {
 </html>`;
 }
 
+// ---- ClickUp: cria task no Relatórios ----
+async function criarTaskRelatorio(cliente, dados, dataInicio, dataFim) {
+  const apiKey = process.env.CLICKUP_API_KEY;
+  const listId = '901326173211'; // Relatórios
+  if (!apiKey) return;
+
+  const periodo = `${dataInicio} → ${dataFim}`;
+
+  // Custom field IDs — Relatórios
+  const CF = {
+    periodo: '9ce79034-81a4-495f-8785-46b98abdc62e',
+    leads:   'e5e59390-89bf-408c-b88a-39697ee8b963',
+    cpl:     '8a6405e9-dc83-491e-8f8b-0ffeceefa714',
+    gasto:   'afbb2491-a654-4b1d-a489-4daf29a2790b',
+    roas:    'cf3d142c-c448-48ef-8415-7a90dbf1b54e',
+  };
+
+  try {
+    const hoje = new Date().toLocaleDateString('pt-BR');
+    const resp = await fetch(`https://api.clickup.com/api/v2/list/${listId}/task`, {
+      method: 'POST',
+      headers: { Authorization: apiKey, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: `Relatório ${cliente} — ${periodo}`,
+        description: `Gerado em ${hoje} | Leads: ${dados.leads} | CPL: R$${dados.cpl} | Gasto: R$${Number(dados.gasto).toFixed(2)} | CTR: ${dados.ctr}%`,
+        tags: ['relatorio', 'ads'],
+      }),
+    });
+    const task = await resp.json();
+    if (!task.id) return;
+
+    const roas = dados.leads > 0 && dados.gasto > 0
+      ? +((dados.leads * (dados.meta_cpl || 50)) / dados.gasto).toFixed(2)
+      : 0;
+
+    const campos = [
+      { id: CF.periodo, value: periodo },
+      { id: CF.leads,   value: dados.leads || 0 },
+      { id: CF.cpl,     value: parseFloat(dados.cpl) || 0 },
+      { id: CF.gasto,   value: +Number(dados.gasto).toFixed(2) },
+      { id: CF.roas,    value: roas },
+    ];
+    await Promise.all(campos.map(c =>
+      fetch(`https://api.clickup.com/api/v2/task/${task.id}/field/${c.id}`, {
+        method: 'POST',
+        headers: { Authorization: apiKey, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ value: c.value }),
+      })
+    ));
+    console.log(`  Task criada no ClickUp (Relatórios): ${task.id}`);
+  } catch (err) {
+    console.warn(`  ⚠️  Falha ao criar task no ClickUp: ${err.message}`);
+  }
+}
+
 // ---- Main ----
 async function main() {
   console.log(`\n📊 Gerando relatório de anúncios — ${clienteRaw}`);
@@ -395,7 +450,9 @@ async function main() {
 
   console.log(`\n✅ Relatório gerado: dist/${clienteSlug}/relatorio-ads-${periodoSlug}.html`);
   console.log(`   Abrir no browser para visualizar.\n`);
-  console.log(`📋 Próximo passo: enviar link ao cliente + criar task no ClickUp em Sucesso do Cliente.\n`);
+
+  // Cria task no ClickUp com campos preenchidos
+  await criarTaskRelatorio(clienteRaw, dados, dataInicio, dataFim);
 }
 
 main().catch(err => {

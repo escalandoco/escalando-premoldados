@@ -32,6 +32,16 @@ if (!cfg) {
 const CLICKUP_API_KEY        = process.env.CLICKUP_API_KEY;
 const CLICKUP_LIST_ACOES_DIA = process.env.CLICKUP_LIST_ACOES_DIA;
 
+// Custom field IDs
+const CF_ACOES = {
+  status: '630933ea-8521-42ba-b8ca-072d2e0c3710', // Status Alerta (0=Normal,1=Atenção,2=Crítico)
+};
+const CF_LP = {
+  url:    '209de5c9-29ad-433e-8763-22feffaeda9b', // URL LP
+  status: '0cdc1fa9-d73f-43fa-a9f0-7a6cbc426ca3', // Status Deploy (0=Online,1=Offline,2=Pendente)
+};
+const LIST_LANDING_PAGES = '901326092377';
+
 // ── Verifica HTTP ────────────────────────────────────────────
 function checkUrl(url) {
   return new Promise((resolve) => {
@@ -45,32 +55,61 @@ function checkUrl(url) {
   });
 }
 
+// ── Seta campo customizado numa task ────────────────────────
+async function setField(taskId, fieldId, value) {
+  if (!CLICKUP_API_KEY) return;
+  try {
+    await fetch(`https://api.clickup.com/api/v2/task/${taskId}/field/${fieldId}`, {
+      method: 'POST',
+      headers: { Authorization: CLICKUP_API_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ value }),
+    });
+  } catch {}
+}
+
 // ── Cria task de alerta no ClickUp ──────────────────────────
 async function criarAlerta(mensagem) {
   if (!CLICKUP_API_KEY || !CLICKUP_LIST_ACOES_DIA) {
     console.warn('[AVISO] CLICKUP_API_KEY ou CLICKUP_LIST_ACOES_DIA não configurado — alerta não enviado');
     return;
   }
-  const body = JSON.stringify({
-    name: `🚨 LP fora do ar — ${cfg.nome}`,
-    description: mensagem,
-    priority: 1, // urgent
-    tags: ['lp', 'alerta', CLIENTE],
-  });
-  const url = new URL(`https://api.clickup.com/api/v2/list/${CLICKUP_LIST_ACOES_DIA}/task`);
-  return new Promise((resolve) => {
-    const req = https.request(url, {
+  try {
+    const resp = await fetch(`https://api.clickup.com/api/v2/list/${CLICKUP_LIST_ACOES_DIA}/task`, {
       method: 'POST',
-      headers: { Authorization: CLICKUP_API_KEY, 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(body) },
-    }, (res) => {
-      let data = '';
-      res.on('data', c => data += c);
-      res.on('end', () => resolve(JSON.parse(data)));
+      headers: { Authorization: CLICKUP_API_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: `🚨 LP fora do ar — ${cfg.nome}`,
+        description: mensagem,
+        priority: 1,
+        tags: ['lp', 'alerta', CLIENTE],
+      }),
     });
-    req.on('error', resolve);
-    req.write(body);
-    req.end();
-  });
+    const task = await resp.json();
+    if (task.id) await setField(task.id, CF_ACOES.status, 2); // Crítico
+    return task;
+  } catch (err) {
+    console.warn('[AVISO] Falha ao criar alerta no ClickUp:', err.message);
+  }
+}
+
+// ── Atualiza task de LP na lista Landing Pages ───────────────
+async function atualizarStatusLP(statusIdx) {
+  if (!CLICKUP_API_KEY) return;
+  try {
+    const r = await fetch(`https://api.clickup.com/api/v2/list/${LIST_LANDING_PAGES}/task?limit=50&include_closed=true`, {
+      headers: { Authorization: CLICKUP_API_KEY },
+    });
+    const data = await r.json();
+    const tasks = data.tasks || [];
+    const task = tasks.find(t => t.name.toLowerCase().includes(cfg.nome.toLowerCase()));
+    if (!task) return;
+    await Promise.all([
+      setField(task.id, CF_LP.status, statusIdx),
+      setField(task.id, CF_LP.url, cfg.url),
+    ]);
+    const label = statusIdx === 0 ? 'Online' : 'Offline';
+    console.log(`  LP task atualizada no ClickUp: Status=${label}`);
+  } catch {}
 }
 
 // ── Main ─────────────────────────────────────────────────────
@@ -82,12 +121,14 @@ async function criarAlerta(mensagem) {
 
   if (result.ok) {
     console.log(`[${ts}] OK — HTTP ${result.status}`);
+    await atualizarStatusLP(0); // Online
     process.exit(0);
   } else {
     const msg = result.error
       ? `Erro de conexão: ${result.error}`
       : `HTTP ${result.status}`;
     console.error(`[${ts}] ERRO — ${msg} — ${cfg.url}`);
+    await atualizarStatusLP(1); // Offline
     await criarAlerta(`A landing page de ${cfg.nome} retornou: ${msg}\nURL: ${cfg.url}\nTimestamp: ${ts}`);
     console.log(`[${ts}] Alerta criado no ClickUp`);
     process.exit(1);
