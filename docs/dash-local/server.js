@@ -200,15 +200,23 @@ function saveIntegration(source, key, value) {
 
 // ── PENDING TASKS ────────────────────────────────────────────
 const PENDING_TASKS = [
-  { priority: 'high',   story: 'EP2-S1', task: 'Instalar Apps Script CRM na planilha — rodar setupCRM()' },
-  { priority: 'high',   story: 'EP3-S9', task: 'Deploy LP Concrenor — node scripts/deploy-lp.js --cliente=concrenor' },
-  { priority: 'high',   story: 'EP2-S3', task: 'Obter número WhatsApp real da Concrenor e mapear no Tintim' },
-  { priority: 'high',   story: 'EP4',    task: 'Subir primeira campanha Meta Ads para Concrenor' },
-  { priority: 'medium', story: 'EP2-S4', task: 'Criar pasta Google Drive e configurar DRIVE_FOLDER_ID' },
-  { priority: 'medium', story: 'EP3-S8', task: 'Adicionar colunas UTM na planilha Google Sheets' },
-  { priority: 'medium', story: 'LP',     task: 'Preencher pixel_meta e ga4 em config/lp-concrenor.json' },
-  { priority: 'low',    story: 'EP3-S12',task: 'Verificar concrenor.escalando.co no Google Search Console' },
-  { priority: 'low',    story: 'EP3-S12',task: 'Criar/verificar perfil GMB da Concrenor' },
+  // Credenciais bloqueantes — sem elas as campanhas não rodam
+  { priority: 'high',   story: 'EP4',          task: 'Preencher WhatsApp real da Concrenor em config/briefing-concrenor.json e config/lp-concrenor.json (atualmente placeholder 5579999999999)' },
+  { priority: 'high',   story: 'EP4',          task: 'Obter Pixel Meta ID da Concrenor e preencher em config/lp-concrenor.json e config/briefing-ads-concrenor.json' },
+  { priority: 'high',   story: 'EP4',          task: 'Preencher META_CAPI_TOKEN e META_AD_ACCOUNT_ID no dashboard (Ferramentas → Editar) — necessário para monitorar-ads.js ler dados reais' },
+  { priority: 'high',   story: 'EP4',          task: 'Subir primeira campanha Meta Ads para Concrenor no Gerenciador de Anúncios' },
+  { priority: 'high',   story: 'Marketing',    task: 'Preencher WhatsApp real da Escalando em config/briefing-ads-escalando.json (cta_url) — necessário para campanha de captação' },
+  // Segurança
+  { priority: 'high',   story: 'Infra',        task: 'Trocar senha root do VPS (exposta no histórico de chat) — SSH: root@129.121.45.61 -p 22022 → passwd' },
+  // Operacional
+  { priority: 'medium', story: 'EP4',          task: 'Obter fotos reais da Concrenor — enviar checklist-fotos-concrenor para o cliente' },
+  { priority: 'medium', story: 'EP4',          task: 'Realizar call de ideias com Concrenor para validar briefing-ads-concrenor.json' },
+  { priority: 'medium', story: 'EP3',          task: 'Verificar concrenor.escalando.co no Google Search Console' },
+  { priority: 'medium', story: 'EP3',          task: 'Criar/otimizar perfil GMB da Concrenor' },
+  { priority: 'medium', story: 'Marketing',    task: 'Criar Pixel Meta para a Escalando e preencher em config/briefing-ads-escalando.json' },
+  // Baixa prioridade
+  { priority: 'low',    story: 'EP5',          task: 'Iniciar onboarding Brasbloco e Levert — preencher kickoff via formulário' },
+  { priority: 'low',    story: 'EP2-S4',       task: 'Criar pasta Google Drive e configurar DRIVE_FOLDER_ID' },
 ];
 
 // ── COMMANDS ─────────────────────────────────────────────────
