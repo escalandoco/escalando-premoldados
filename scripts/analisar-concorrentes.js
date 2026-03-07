@@ -288,11 +288,37 @@ async function main() {
     cf[f.name] = f.value;
   }
 
-  const concorrentesRaw = cf['Concorrentes'] || '';
+  // Também busca URLs no comentário de briefing (onde ficam as URLs completas)
+  let concorrentesRaw = cf['Concorrentes'] || '';
+  try {
+    const commentsResp = await clickupGet(`/task/${kickoffTask.id}/comment?limit=20`);
+    const briefingComment = (commentsResp.comments || [])
+      .find(c => c.comment_text?.includes('Briefing de Kickoff'));
+    if (briefingComment) {
+      const urlsNoComentario = (briefingComment.comment_text.match(/https?:\/\/[^\s\n]+/g) || [])
+        .filter(u => u.includes('instagram') || u.includes('.com'));
+      if (urlsNoComentario.length > 0) {
+        concorrentesRaw = urlsNoComentario.join(' | ');
+      }
+    }
+  } catch (_) {}
+
+  // Parse URLs — suporta: URL completa, handle @instagram, nome simples
   const urls = concorrentesRaw
-    .split(/[\|\n,]+/)
-    .map(u => u.trim())
-    .filter(u => u.startsWith('http') || u.startsWith('www') || u.includes('.com') || u.includes('.br'));
+    .split(/[\|\n,\s]+/)
+    .map(u => u.trim().replace(/[()]/g, ''))
+    .filter(u => u.length > 3)
+    .map(u => {
+      if (u.startsWith('http')) return u;
+      if (u.startsWith('@')) return `https://www.instagram.com/${u.slice(1)}/`;
+      if (u.includes('instagram.com')) return u.startsWith('http') ? u : `https://${u}`;
+      if (u.includes('.com') || u.includes('.br')) return `https://${u}`;
+      // Trata como handle do Instagram se não reconhecido
+      if (u.length > 3 && !u.includes(' ')) return `https://www.instagram.com/${u}/`;
+      return null;
+    })
+    .filter(Boolean)
+    .filter((u, i, arr) => arr.indexOf(u) === i); // deduplicar
 
   if (urls.length === 0 && !cf['Produtos']) {
     console.log('Nenhum dado de kickoff encontrado. Encerrando.');
