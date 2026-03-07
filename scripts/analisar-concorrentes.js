@@ -85,19 +85,24 @@ Faça uma análise competitiva detalhada deste concorrente. Responda com JSON v�
 
 nota_ameaca: de 1 a 10 (quanto este concorrente é uma ameaça direta ao cliente)`;
 
-  const r = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: {
-      'x-api-key': ANTHROPIC_KEY,
-      'anthropic-version': '2023-06-01',
-      'content-type': 'application/json',
-    },
-    body: JSON.stringify({
-      model: 'claude-haiku-4-5-20251001',
-      max_tokens: 1000,
-      messages: [{ role: 'user', content: prompt }],
-    }),
-  });
+  let r, tentativas = 0;
+  do {
+    if (tentativas > 0) await new Promise(res => setTimeout(res, 3000 * tentativas));
+    r = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'x-api-key': ANTHROPIC_KEY,
+        'anthropic-version': '2023-06-01',
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: prompt }],
+      }),
+    });
+    tentativas++;
+  } while (r.status === 529 && tentativas < 4);
 
   if (!r.ok) throw new Error(`Claude ${r.status}`);
   const data = await r.json();
@@ -143,19 +148,24 @@ Faça uma análise estratégica completa desta empresa como se fosse uma auditor
 
 nota_maturidade_digital: de 1 a 10 (maturidade digital atual da empresa)`;
 
-  const r = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: {
-      'x-api-key': ANTHROPIC_KEY,
-      'anthropic-version': '2023-06-01',
-      'content-type': 'application/json',
-    },
-    body: JSON.stringify({
-      model: 'claude-haiku-4-5-20251001',
-      max_tokens: 1200,
-      messages: [{ role: 'user', content: prompt }],
-    }),
-  });
+  let r, tentativas = 0;
+  do {
+    if (tentativas > 0) await new Promise(res => setTimeout(res, 3000 * tentativas));
+    r = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'x-api-key': ANTHROPIC_KEY,
+        'anthropic-version': '2023-06-01',
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 1200,
+        messages: [{ role: 'user', content: prompt }],
+      }),
+    });
+    tentativas++;
+  } while (r.status === 529 && tentativas < 4);
 
   if (!r.ok) throw new Error(`Claude ${r.status}`);
   const data = await r.json();
