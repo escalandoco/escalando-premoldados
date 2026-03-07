@@ -10,8 +10,9 @@ import path     from 'path';
 import { exec } from 'child_process';
 import { fileURLToPath } from 'url';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const ROOT      = path.join(__dirname, '../..');
+const __dirname  = path.dirname(fileURLToPath(import.meta.url));
+const ROOT       = path.join(__dirname, '../..');
+const QUEUE_FILE = path.join(ROOT, 'data/job-queue.json');
 const PORT          = process.env.DASH_PORT ? parseInt(process.env.DASH_PORT) : 3030;
 const DASH_USER     = process.env.DASH_USER     || '';
 const DASH_PASS     = process.env.DASH_PASS     || '';
@@ -337,6 +338,23 @@ function nextCronRun(cronExpr) {
   return null;
 }
 
+// ── JOB QUEUE ────────────────────────────────────────────────
+function readJobQueue() {
+  try {
+    if (!fs.existsSync(QUEUE_FILE)) return [];
+    return JSON.parse(fs.readFileSync(QUEUE_FILE, 'utf8'));
+  } catch { return []; }
+}
+
+function updateJob(id, updates) {
+  const queue = readJobQueue();
+  const idx = queue.findIndex(j => j.id === id);
+  if (idx >= 0) {
+    queue[idx] = { ...queue[idx], ...updates };
+    fs.writeFileSync(QUEUE_FILE, JSON.stringify(queue, null, 2));
+  }
+}
+
 // ── SAFE COMMAND WHITELIST ───────────────────────────────────
 const SAFE_PATTERNS = [
   /^node scripts\/gerar-lp\.js.*--no-upload/,
@@ -440,7 +458,7 @@ const server = http.createServer((req, res) => {
         }
 
         // Whitelist de scripts permitidos
-        const ALLOWED = ['monitorar-ads','relatorio-ads','exportar-leads-meta','verificar-lp','gerar-lp','deploy-lp','gerar-copy-ads','gerar-copy'];
+        const ALLOWED = ['monitorar-ads','relatorio-ads','exportar-leads-meta','verificar-lp','gerar-lp','deploy-lp','gerar-copy-ads','gerar-copy','analisar-concorrentes'];
         if (!ALLOWED.includes(script)) {
           res.writeHead(400, { 'Content-Type': 'application/json' });
           res.end(JSON.stringify({ error: `Script não permitido: ${script}` }));
@@ -461,6 +479,53 @@ const server = http.createServer((req, res) => {
             exitCode: err?.code ?? 0,
             output:   output.slice(0, 3000),
           }));
+        });
+      } catch (e) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: e.message }));
+      }
+    });
+    return;
+  }
+
+  // ── GET /api/job-queue ──
+  if (req.method === 'GET' && req.url === '/api/job-queue') {
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify(readJobQueue()));
+    return;
+  }
+
+  // ── POST /api/retry-job ──
+  if (req.method === 'POST' && req.url === '/api/retry-job') {
+    let body = '';
+    req.on('data', d => body += d);
+    req.on('end', () => {
+      try {
+        const { id } = JSON.parse(body || '{}');
+        const queue = readJobQueue();
+        const job = queue.find(j => j.id === id);
+        if (!job) {
+          res.writeHead(404, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: 'Job não encontrado' }));
+          return;
+        }
+
+        const attempts = (job.attempts || 0) + 1;
+        updateJob(id, { status: 'running', lastAttempt: new Date().toISOString(), attempts, error: null });
+
+        // Responde imediatamente e roda em background
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ ok: true, id, script: job.script, cliente: job.cliente, message: 'Executando...' }));
+
+        const cmd = `node scripts/${job.script}.js --cliente=${job.cliente}`;
+        const ts  = new Date().toISOString().replace('T',' ').slice(0,19);
+        console.log(`[${ts}] retry-job: ${cmd}`);
+
+        exec(cmd, { cwd: ROOT, timeout: 180000, env: { ...process.env } }, (err, stdout, stderr) => {
+          const status = err ? 'failed' : 'done';
+          const error  = err ? ((stderr || err.message || '').slice(0, 500)) : null;
+          updateJob(id, { status, error, doneAt: new Date().toISOString() });
+          console.log(`[retry-job] ${job.script} → ${status}`);
         });
       } catch (e) {
         res.writeHead(500, { 'Content-Type': 'application/json' });

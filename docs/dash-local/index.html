@@ -240,15 +240,15 @@ section{margin-bottom:36px}
 .term-loader{color:#ffa657;animation:blink .8s infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
 
-/* tasks tab */
-.tasks-list{display:flex;flex-direction:column;gap:6px}
-.task-item{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:11px 14px;display:flex;align-items:flex-start;gap:12px}
-.task-bar{width:4px;border-radius:2px;align-self:stretch;flex-shrink:0;margin-top:1px}
-.p-high{background:var(--red)}
-.p-medium{background:var(--yellow)}
-.p-low{background:var(--green)}
-.task-text{font-size:13px}
-.task-tags{display:flex;gap:6px;margin-top:5px;flex-wrap:wrap}
+/* execuções tab */
+.exec-list{display:flex;flex-direction:column;gap:8px}
+.exec-item{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;display:flex;align-items:flex-start;gap:12px}
+.exec-status-bar{width:4px;border-radius:2px;align-self:stretch;flex-shrink:0}
+.exec-retry-btn{flex-shrink:0;background:var(--orange-l);border:1px solid var(--orange);color:var(--orange);border-radius:var(--radius-sm);padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;transition:all .15s}
+.exec-retry-btn:hover{background:var(--orange);color:#fff}
+.exec-retry-btn:disabled{opacity:.5;cursor:not-allowed}
+.exec-empty{text-align:center;padding:60px;color:var(--muted)}
+.exec-empty-icon{font-size:36px;margin-bottom:12px}
 .tag{font-size:10px;background:var(--bg4);border:1px solid var(--border);border-radius:4px;padding:1px 7px;color:var(--muted)}
 
 /* prd iframe */
@@ -328,7 +328,7 @@ section{margin-bottom:36px}
       <button class="tab" data-tab="stories"><span class="tab-icon">📋</span> Stories</button>
       <button class="tab" data-tab="team"><span class="tab-icon">👥</span> Time</button>
       <button class="tab" data-tab="tools"><span class="tab-icon">⚙️</span> Ferramentas</button>
-      <button class="tab" data-tab="tasks"><span class="tab-icon">🔴</span> Tarefas <span class="tab-badge" id="task-count">9</span></button>
+      <button class="tab" data-tab="execucoes"><span class="tab-icon">⚡</span> Execuções <span class="tab-badge" id="exec-count" style="display:none">0</span></button>
       <button class="tab" data-tab="links"><span class="tab-icon">🔗</span> Links</button>
       <button class="tab" data-tab="workers"><span class="tab-icon">⚡</span> Workers 24/7</button>
       <button class="tab" data-tab="prd"><span class="tab-icon">📄</span> PRD</button>
@@ -361,10 +361,8 @@ section{margin-bottom:36px}
     <div class="loading"><div class="spinner"></div>Carregando...</div>
   </div>
 
-  <!-- TASKS -->
-  <div id="tab-tasks" class="tab-content">
-    <div class="loading"><div class="spinner"></div>Carregando...</div>
-  </div>
+  <!-- EXECUÇÕES -->
+  <div id="tab-execucoes" class="tab-content"></div>
 
   <!-- PRD -->
   <div id="tab-links" class="tab-content"></div>
@@ -450,6 +448,10 @@ document.querySelectorAll('.tab').forEach(btn => {
     // Workers: load fresh data
     if (btn.dataset.tab === 'workers') {
       loadWorkers();
+    }
+    // Execuções: load job queue
+    if (btn.dataset.tab === 'execucoes') {
+      loadExecucoes();
     }
     // Links: render once
     if (btn.dataset.tab === 'links' && !$('tab-links').dataset.rendered) {
@@ -984,37 +986,108 @@ async function runCmd(cmd, idx) {
   }
 }
 
-// ── TASKS ────────────────────────────────────────────────────
-function renderTasks(tasks) {
-  const pLabel = { high:'🔴 Alta', medium:'🟡 Média', low:'🟢 Baixa' };
-  return `
+// ── EXECUÇÕES ─────────────────────────────────────────────────
+function renderExecucoes(jobs) {
+  if (!jobs.length) return `
     <section>
-      <div class="section-title">Tarefas Pendentes — ${tasks.length} no total</div>
-      <div class="tasks-list">
-        ${tasks.map(t=>`
-          <div class="task-item">
-            <div class="task-bar p-${t.priority}"></div>
-            <div style="flex:1">
-              <div class="task-text">${t.task}</div>
-              <div class="task-tags">
-                <span class="tag">${t.story}</span>
-                <span class="tag">${pLabel[t.priority]||t.priority}</span>
-              </div>
-            </div>
-          </div>`).join('')}
+      <div class="section-title">Fila de Execuções</div>
+      <div class="exec-empty">
+        <div class="exec-empty-icon">✅</div>
+        <div>Nenhuma execução pendente</div>
+        <div style="font-size:12px;margin-top:6px;color:var(--muted2)">Os jobs aparecem aqui quando um script falha ou está em execução</div>
       </div>
     </section>`;
+
+  const sIcon  = { running:'🔄', pending:'⏳', done:'✅', failed:'❌' };
+  const sLabel = { running:'Executando', pending:'Pendente', done:'Concluído', failed:'Falhou' };
+  const sColor = { running:'var(--blue)', pending:'var(--yellow)', done:'var(--green)', failed:'var(--red)' };
+
+  return `
+    <section>
+      <div class="section-title">
+        Fila de Execuções — ${jobs.length} no total
+        <button onclick="loadExecucoes()" style="margin-left:8px;background:var(--bg4);border:1px solid var(--border);color:var(--muted);border-radius:6px;padding:2px 10px;cursor:pointer;font-size:11px">↻ Atualizar</button>
+      </div>
+      <div class="exec-list">
+        ${jobs.map(job => {
+          const color = sColor[job.status] || 'var(--muted)';
+          const retry = (job.status === 'failed' || job.status === 'pending')
+            ? `<button class="exec-retry-btn" onclick="retryJob('${job.id}',this)">Tentar Novamente</button>`
+            : '';
+          const error = job.error
+            ? `<div style="font-size:11px;color:var(--red);background:var(--red-l);padding:4px 8px;border-radius:4px;margin-top:6px;word-break:break-word">${job.error.slice(0,250)}</div>`
+            : '';
+          const lastAt = job.lastAttempt && job.lastAttempt !== job.createdAt
+            ? ` · Última: ${new Date(job.lastAttempt).toLocaleString('pt-BR')}`
+            : '';
+          return `
+            <div class="exec-item">
+              <div class="exec-status-bar" style="background:${color}"></div>
+              <div style="flex:1;min-width:0">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:5px;flex-wrap:wrap">
+                  <span style="font-size:15px">${sIcon[job.status]||'❓'}</span>
+                  <span style="font-weight:600;font-size:13px">${job.script}</span>
+                  <span style="font-size:10px;font-weight:700;padding:1px 8px;border-radius:20px;background:${color}1a;color:${color}">${sLabel[job.status]||job.status}</span>
+                  <span class="tag">cliente: ${job.cliente}</span>
+                  <span class="tag">tentativas: ${job.attempts||1}</span>
+                </div>
+                <div style="font-size:11px;color:var(--muted2)">
+                  Criado: ${new Date(job.createdAt).toLocaleString('pt-BR')}${lastAt}
+                </div>
+                ${error}
+              </div>
+              ${retry}
+            </div>`;
+        }).join('')}
+      </div>
+    </section>`;
+}
+
+async function loadExecucoes() {
+  const el = $('tab-execucoes');
+  if (!el) return;
+  el.innerHTML = '<div class="loading"><div class="spinner"></div>Carregando...</div>';
+  try {
+    const res  = await fetch('/api/job-queue');
+    const jobs = await res.json();
+    el.innerHTML = renderExecucoes(jobs);
+    // Atualiza badge
+    const pending = jobs.filter(j => j.status === 'failed' || j.status === 'pending' || j.status === 'running').length;
+    const badge = $('exec-count');
+    if (badge) { badge.textContent = pending; badge.style.display = pending > 0 ? '' : 'none'; }
+  } catch (e) {
+    el.innerHTML = `<div style="text-align:center;padding:60px;color:var(--red)">Erro: ${e.message}<br><small style="color:var(--muted)">server rodando?</small></div>`;
+  }
+}
+
+async function retryJob(id, btn) {
+  btn.disabled = true;
+  btn.textContent = 'Executando...';
+  try {
+    const res  = await fetch('/api/retry-job', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ id }) });
+    const data = await res.json();
+    if (data.ok) {
+      toast('▶️ Job iniciado — aguarde alguns minutos');
+      setTimeout(loadExecucoes, 2000);
+    } else {
+      toast('❌ ' + (data.error || 'Erro desconhecido'), 'var(--red)');
+      btn.disabled = false;
+      btn.textContent = 'Tentar Novamente';
+    }
+  } catch (e) {
+    toast('❌ ' + e.message, 'var(--red)');
+    btn.disabled = false;
+    btn.textContent = 'Tentar Novamente';
+  }
 }
 
 // ── RENDER ACTIVE TABS ───────────────────────────────────────
 function renderActive() {
   if (!DATA) return;
-  $('tab-overview').innerHTML  = renderOverview(DATA);
-  $('tab-stories').innerHTML   = renderStories(DATA);
-  $('tab-team').innerHTML      = renderTeam(DATA.agents);
-  $('tab-tools').innerHTML     = renderTools(DATA);
-  $('tab-tasks').innerHTML     = renderTasks(DATA.pendingTasks);
-  $('task-count').textContent  = DATA.pendingTasks.filter(t=>t.priority==='high').length;
+  $('tab-overview').innerHTML = renderOverview(DATA);
+  $('tab-stories').innerHTML  = renderStories(DATA);
+  $('tab-team').innerHTML     = renderTeam(DATA.agents);
+  $('tab-tools').innerHTML    = renderTools(DATA);
 }
 
 // ── EDIT INTEGRATION MODAL ───────────────────────────────────
@@ -1103,9 +1176,15 @@ async function loadData() {
     lastUpdated = DATA.lastUpdated;
     renderActive();
     $('updated-label').innerHTML = `<span class="pulse"></span>${timeSince(lastUpdated)}`;
+    // Atualiza badge de execuções em background
+    fetch('/api/job-queue').then(r => r.json()).then(jobs => {
+      const n = jobs.filter(j => j.status === 'failed' || j.status === 'pending' || j.status === 'running').length;
+      const b = $('exec-count');
+      if (b) { b.textContent = n; b.style.display = n > 0 ? '' : 'none'; }
+    }).catch(() => {});
   } catch (e) {
     const msg = `<div style="text-align:center;padding:60px;color:var(--red)">Erro: ${e.message}<br><small style="color:var(--muted)">server rodando?</small></div>`;
-    ['overview','stories','team','tools','tasks'].forEach(t => $('tab-'+t).innerHTML = msg);
+    ['overview','stories','team','tools'].forEach(t => $('tab-'+t).innerHTML = msg);
   }
 }
 

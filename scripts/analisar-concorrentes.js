@@ -16,16 +16,40 @@
 import { parseArgs } from 'util';
 import https from 'https';
 import http from 'http';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const QUEUE_FILE = path.join(__dirname, '../data/job-queue.json');
 
 const { values } = parseArgs({
   options: { cliente: { type: 'string', default: 'concrenor' } },
 });
 const CLIENTE = values.cliente;
+const JOB_ID  = `${Date.now()}-analisar-concorrentes-${CLIENTE}`;
 
 const CLICKUP_API_KEY  = process.env.CLICKUP_API_KEY;
 const ANTHROPIC_KEY    = process.env.ANTHROPIC_API_KEY;
 const SPACE_ID         = process.env.CLICKUP_SPACE_ID || '901313553858';
 const LIST_SUCESSO     = '901326173213'; // Sucesso do Cliente
+
+// ── Job queue helpers ─────────────────────────────────────────
+function readQueue() {
+  try {
+    if (!fs.existsSync(QUEUE_FILE)) return [];
+    return JSON.parse(fs.readFileSync(QUEUE_FILE, 'utf8'));
+  } catch { return []; }
+}
+
+function writeQueueEntry(entry) {
+  const queue = readQueue();
+  const idx = queue.findIndex(j => j.id === entry.id);
+  if (idx >= 0) queue[idx] = { ...queue[idx], ...entry };
+  else queue.unshift(entry);
+  fs.mkdirSync(path.dirname(QUEUE_FILE), { recursive: true });
+  fs.writeFileSync(QUEUE_FILE, JSON.stringify(queue.slice(0, 50), null, 2));
+}
 
 // ── Fetch simples de URL pública ──────────────────────────────
 function fetchUrl(url, maxMs = 8000) {
@@ -274,6 +298,18 @@ async function main() {
   const ts = new Date().toISOString().slice(0, 19).replace('T', ' ');
   console.log(`[${ts}] Iniciando análise de concorrentes — ${CLIENTE}`);
 
+  // Registra job na fila
+  writeQueueEntry({
+    id: JOB_ID,
+    script: 'analisar-concorrentes',
+    cliente: CLIENTE,
+    status: 'running',
+    createdAt: new Date().toISOString(),
+    lastAttempt: new Date().toISOString(),
+    attempts: 1,
+    error: null,
+  });
+
   if (!CLICKUP_API_KEY || !ANTHROPIC_KEY) {
     console.error('CLICKUP_API_KEY e ANTHROPIC_API_KEY são obrigatórios.');
     process.exit(1);
@@ -399,10 +435,13 @@ async function main() {
   });
 
   console.log('  ✅ Task criada em Sucesso do Cliente.');
+
+  writeQueueEntry({ id: JOB_ID, status: 'done', doneAt: new Date().toISOString() });
   process.exit(0);
 }
 
 main().catch(err => {
   console.error('❌ Erro:', err.message);
+  try { writeQueueEntry({ id: JOB_ID, status: 'failed', error: err.message, failedAt: new Date().toISOString() }); } catch {}
   process.exit(1);
 });
