@@ -84,40 +84,114 @@
       </div>
     </div>
 
-    <!-- NEGÓCIO -->
+    <!-- OBJETIVOS -->
+    <div class="card">
+      <div class="section-title">Objetivos</div>
+
+      <div class="field">
+        <label>Objetivo principal *</label>
+        <textarea name="objetivoPrincipal" placeholder="Ex: Gerar pelo menos 30 leads por mês para mourões de concreto na região de Aracaju" required></textarea>
+        <div class="hint">O que você quer alcançar nos próximos 60-90 dias?</div>
+      </div>
+
+      <div class="field">
+        <label>Objetivos secundários</label>
+        <textarea name="objetivosSecundarios" placeholder="Ex: Aumentar presença no Instagram, aparecer no Google quando pesquisarem mourão em Sergipe..."></textarea>
+      </div>
+
+      <div class="field">
+        <label>O que está travando as vendas hoje?</label>
+        <textarea name="problemasVendas" placeholder="Ex: Dependemos só de indicação, não temos como escalar. Clientes somem depois de pedir orçamento..."></textarea>
+      </div>
+    </div>
+
+    <!-- O NEGÓCIO -->
     <div class="card">
       <div class="section-title">O Negócio</div>
 
       <div class="field">
-        <label>Produtos principais *</label>
-        <textarea name="produtos" placeholder="Ex: Mourões de concreto, cercas pré-moldadas, postes..." required></textarea>
-        <div class="hint">Liste os produtos em ordem de importância / margem</div>
+        <label>Produtos e serviços *</label>
+        <textarea name="produtos" placeholder="Ex: Mourões torneados, postes de concreto, meio-fio..." required></textarea>
+        <div class="hint">Liste em ordem de importância / margem</div>
+      </div>
+
+      <div class="field">
+        <label>Produto foco para campanha</label>
+        <input type="text" name="produtoFoco" placeholder="Ex: Mourão torneado — maior margem e volume">
+        <div class="hint">Qual produto tem mais saída e melhor margem para anunciar agora</div>
       </div>
 
       <div class="field">
         <label>Principais diferenciais</label>
-        <textarea name="diferenciais" placeholder="Ex: Entrega em 48h, produção própria, 15 anos no mercado..."></textarea>
+        <textarea name="diferenciais" placeholder="Ex: Produção própria, entrega em 48h, 15 anos no mercado, garantia de 30 anos..."></textarea>
       </div>
 
       <div class="row2">
         <div class="field">
           <label>Área de atuação</label>
-          <input type="text" name="areaAtuacao" placeholder="Ex: Ribeirão Preto e região, SP">
+          <input type="text" name="areaAtuacao" placeholder="Ex: Sergipe e Alagoas">
         </div>
+        <div class="field">
+          <label>Raio de entrega</label>
+          <input type="text" name="raioEntrega" placeholder="Ex: até 200km da fábrica">
+        </div>
+      </div>
+
+      <div class="row2">
         <div class="field">
           <label>Ticket médio de venda</label>
           <input type="text" name="ticketMedio" placeholder="Ex: R$ 3.500">
         </div>
+        <div class="field">
+          <label>Volume mensal atual (leads)</label>
+          <input type="text" name="volumeLeads" placeholder="Ex: ~15 orçamentos por mês">
+        </div>
       </div>
 
       <div class="field">
-        <label>Perfil dos principais clientes</label>
-        <textarea name="perfilClientes" placeholder="Ex: Fazendeiros, construtoras pequenas, prefeituras..."></textarea>
+        <label>Como funciona o processo de venda?</label>
+        <textarea name="processoComercial" placeholder="Ex: Cliente liga → orçamos por WhatsApp → combinamos entrega → pagamento na entrega. Prazo médio de 1 semana para fechar..."></textarea>
+        <div class="hint">Do primeiro contato até fechar o pedido</div>
+      </div>
+    </div>
+
+    <!-- CLIENTES -->
+    <div class="card">
+      <div class="section-title">Clientes</div>
+
+      <div class="field">
+        <label>Perfil do cliente ideal *</label>
+        <textarea name="perfilClientes" placeholder="Ex: Fazendeiro, 40-60 anos, tem entre 50 e 500 hectares, interior de SE e AL, compra quando precisa reformar cerca..." required></textarea>
       </div>
 
       <div class="field">
-        <label>Como vendem hoje?</label>
-        <textarea name="comoVendem" placeholder="Ex: Indicação, ligações diretas, WhatsApp, feiras..."></textarea>
+        <label>Maiores dores desse cliente</label>
+        <textarea name="doresCliente" placeholder="Ex: Gasta dinheiro todo ano repondo mourão de madeira que apodrece. Perde tempo parando a cerca. Medo de gado fugir..."></textarea>
+      </div>
+
+      <div class="field">
+        <label>O que esse cliente quer alcançar</label>
+        <textarea name="desejos" placeholder="Ex: Uma cerca que dure para sempre, sem manutenção. Economizar no longo prazo. Não ter que se preocupar com cerca nunca mais..."></textarea>
+      </div>
+
+      <div class="field">
+        <label>O que trava a decisão de compra</label>
+        <textarea name="duvidасCompra" placeholder="Ex: Preço mais caro que madeira, não conhece o concreto, dúvida se entrega chega até a fazenda, não sabe se aguenta o peso do gado..."></textarea>
+      </div>
+    </div>
+
+    <!-- CONCORRENTES E MERCADO -->
+    <div class="card">
+      <div class="section-title">Concorrentes e Mercado</div>
+
+      <div class="field">
+        <label>Concorrentes diretos conhecidos</label>
+        <textarea name="concorrentes" placeholder="Nomes de outras fábricas ou empresas que disputam os mesmos clientes. Se souber o Instagram ou site, coloque também."></textarea>
+      </div>
+
+      <div class="field">
+        <label>Oportunidades que você enxerga no mercado</label>
+        <textarea name="oportunidades" placeholder="Ex: Muita fazenda nova sendo formada no sul da Bahia. Governo está financiando cercamento de propriedades. Concorrentes não têm Instagram..."></textarea>
       </div>
     </div>
 
@@ -125,21 +199,47 @@
     <div class="card">
       <div class="section-title">Campanhas e Verba</div>
 
-      <div class="field">
-        <label>Produto foco para campanha</label>
-        <input type="text" name="produtoFoco" placeholder="Ex: Mourão torneado — maior margem">
-        <div class="hint">Qual produto tem mais saída e melhor margem para anunciar</div>
+      <div class="row2">
+        <div class="field">
+          <label>Verba mensal para anúncios (R$)</label>
+          <input type="number" name="verba" placeholder="Ex: 800">
+        </div>
+        <div class="field">
+          <label>Taxa de conversão atual (estimada)</label>
+          <input type="text" name="taxaConversao" placeholder="Ex: 1 em cada 5 orçamentos fecha">
+        </div>
       </div>
 
       <div class="field">
-        <label>Verba mensal para anúncios (R$)</label>
-        <input type="number" name="verba" placeholder="Ex: 800 (somente plano Pro)">
-        <div class="hint">Starter e Growth: não se aplica</div>
+        <label>Melhor ação de marketing que já funcionou</label>
+        <textarea name="melhorAcaoMarketing" placeholder="Ex: Postagem no grupo de fazendeiros do Facebook gerou 20 pedidos. Panfleto numa feira agropecuária trouxe 8 clientes..."></textarea>
+        <div class="hint">Mesmo que não seja digital — o que já deu resultado real</div>
       </div>
 
       <div class="field">
-        <label>Concorrentes diretos conhecidos</label>
-        <textarea name="concorrentes" placeholder="Nomes de outras fábricas ou empresas que disputam os mesmos clientes"></textarea>
+        <label>O que define sucesso em 60 dias?</label>
+        <textarea name="sucesso60Dias" placeholder="Ex: Ter pelo menos 20 leads qualificados por mês, fechar 5 clientes novos, e ter a LP no ar com visitas chegando..."></textarea>
+      </div>
+    </div>
+
+    <!-- PRESENÇA DIGITAL -->
+    <div class="card">
+      <div class="section-title">Presença Digital</div>
+
+      <div class="row2">
+        <div class="field">
+          <label>Site da empresa</label>
+          <input type="url" name="siteUrl" placeholder="https://...">
+        </div>
+        <div class="field">
+          <label>Instagram</label>
+          <input type="text" name="instagram" placeholder="@nomeempresa ou link completo">
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Como divulga hoje?</label>
+        <textarea name="comoVendem" placeholder="Ex: Indicação de clientes, WhatsApp direto, grupos do Facebook, feiras agro..."></textarea>
       </div>
     </div>
 
@@ -186,7 +286,7 @@
     <div class="card">
       <div class="section-title">Observações</div>
       <div class="field">
-        <textarea name="obs" placeholder="Qualquer informação adicional importante sobre o cliente, mercado local, limitações..."></textarea>
+        <textarea name="obs" placeholder="Qualquer informação adicional importante sobre o cliente, mercado local, limitações, histórico..."></textarea>
       </div>
     </div>
 
@@ -221,23 +321,45 @@
     btn.textContent = 'Salvando...';
 
     const dados = {
-      action:        'kickoff',
-      empresa:       fd.get('empresa'),
-      responsavel:   fd.get('responsavel'),
-      produtos:      fd.get('produtos'),
-      diferenciais:  fd.get('diferenciais'),
-      areaAtuacao:   fd.get('areaAtuacao'),
-      ticketMedio:   fd.get('ticketMedio'),
-      perfilClientes:fd.get('perfilClientes'),
-      comoVendem:    fd.get('comoVendem'),
-      produtoFoco:   fd.get('produtoFoco'),
-      verba:         fd.get('verba'),
-      concorrentes:  fd.get('concorrentes'),
-      acessoMeta:    fd.get('acessoMeta'),
-      acessoGoogle:  fd.get('acessoGoogle'),
-      acessoGmb:     fd.get('acessoGmb'),
-      acessoSite:    fd.get('acessoSite'),
-      obs:           fd.get('obs'),
+      action:               'kickoff',
+      empresa:              fd.get('empresa'),
+      responsavel:          fd.get('responsavel'),
+      // Objetivos
+      objetivoPrincipal:    fd.get('objetivoPrincipal'),
+      objetivosSecundarios: fd.get('objetivosSecundarios'),
+      problemasVendas:      fd.get('problemasVendas'),
+      // Negócio
+      produtos:             fd.get('produtos'),
+      produtoFoco:          fd.get('produtoFoco'),
+      diferenciais:         fd.get('diferenciais'),
+      areaAtuacao:          fd.get('areaAtuacao'),
+      raioEntrega:          fd.get('raioEntrega'),
+      ticketMedio:          fd.get('ticketMedio'),
+      volumeLeads:          fd.get('volumeLeads'),
+      processoComercial:    fd.get('processoComercial'),
+      // Clientes
+      perfilClientes:       fd.get('perfilClientes'),
+      doresCliente:         fd.get('doresCliente'),
+      desejos:              fd.get('desejos'),
+      duvidасCompra:        fd.get('duvidасCompra'),
+      // Mercado
+      concorrentes:         fd.get('concorrentes'),
+      oportunidades:        fd.get('oportunidades'),
+      // Campanha
+      verba:                fd.get('verba'),
+      taxaConversao:        fd.get('taxaConversao'),
+      melhorAcaoMarketing:  fd.get('melhorAcaoMarketing'),
+      sucesso60Dias:        fd.get('sucesso60Dias'),
+      // Presença digital
+      siteUrl:              fd.get('siteUrl'),
+      instagram:            fd.get('instagram'),
+      comoVendem:           fd.get('comoVendem'),
+      // Acessos
+      acessoMeta:           fd.get('acessoMeta'),
+      acessoGoogle:         fd.get('acessoGoogle'),
+      acessoGmb:            fd.get('acessoGmb'),
+      acessoSite:           fd.get('acessoSite'),
+      obs:                  fd.get('obs'),
     };
 
     try {
@@ -252,6 +374,7 @@
         st.className = 'status ok';
         st.textContent = '✅ ' + json.msg;
         e.target.reset();
+        if (clienteParam) document.getElementById('empresa').value = clienteParam;
       } else {
         throw new Error(json.error || 'Erro desconhecido');
       }

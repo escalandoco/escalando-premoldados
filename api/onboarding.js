@@ -209,39 +209,290 @@ async function processarKickoff(d) {
     [CF.acesso_google]: acessoOpt(d.acessoGoogle),
     [CF.acesso_gmb]:    acessoOpt(d.acessoGmb),
     [CF.acesso_site]:   acessoOpt(d.acessoSite),
-    ...(d.diferenciais  ? { [CF.diferenciais]: d.diferenciais.slice(0, 500)  } : {}),
-    ...(d.perfilClientes? { [CF.perfil]:        d.perfilClientes.slice(0, 500)} : {}),
-    ...(d.comoVendem    ? { [CF.como_vendem]:   d.comoVendem.slice(0, 300)   } : {}),
-    ...(d.concorrentes  ? { [CF.concorrentes]:  d.concorrentes.slice(0, 500) } : {}),
-    ...(d.obs           ? { [CF.obs]:           d.obs.slice(0, 500)          } : {}),
+    ...(d.diferenciais   ? { [CF.diferenciais]: d.diferenciais.slice(0, 500)  } : {}),
+    ...(d.perfilClientes ? { [CF.perfil]:        d.perfilClientes.slice(0, 500)} : {}),
+    ...(d.comoVendem     ? { [CF.como_vendem]:   d.comoVendem.slice(0, 300)   } : {}),
+    ...(d.concorrentes   ? { [CF.concorrentes]:  d.concorrentes.slice(0, 500) } : {}),
+    ...(d.obs            ? { [CF.obs]:           d.obs.slice(0, 500)          } : {}),
   });
 
-  // Mantém comentário com detalhes completos (diferenciais, depoimentos, obs)
+  // Comentário completo com todos os campos do formulário
   const comentario = [
     `📋 **Briefing de Kickoff — ${d.empresa}**`,
     ``,
-    `**Produtos:** ${d.produtos}`,
-    d.diferenciais    ? `**Diferenciais:** ${d.diferenciais}` : '',
-    d.perfilClientes  ? `**Perfil dos clientes:** ${d.perfilClientes}` : '',
-    d.comoVendem      ? `**Como vendem hoje:** ${d.comoVendem}` : '',
-    d.concorrentes    ? `**Concorrentes:** ${d.concorrentes}` : '',
-    d.obs             ? `**Observações:** ${d.obs}` : '',
+    `**🎯 Objetivo principal:** ${d.objetivoPrincipal || '—'}`,
+    d.objetivosSecundarios ? `**Objetivos secundários:** ${d.objetivosSecundarios}` : '',
+    d.problemasVendas      ? `**O que trava as vendas:** ${d.problemasVendas}` : '',
+    ``,
+    `**📦 Produtos:** ${d.produtos || '—'}`,
+    d.produtoFoco          ? `**Produto foco:** ${d.produtoFoco}` : '',
+    d.diferenciais         ? `**Diferenciais:** ${d.diferenciais}` : '',
+    d.areaAtuacao          ? `**Área de atuação:** ${d.areaAtuacao}` : '',
+    d.raioEntrega          ? `**Raio de entrega:** ${d.raioEntrega}` : '',
+    d.ticketMedio          ? `**Ticket médio:** R$ ${d.ticketMedio}` : '',
+    d.volumeLeads          ? `**Volume de leads atual:** ${d.volumeLeads}` : '',
+    d.processoComercial    ? `**Processo comercial:** ${d.processoComercial}` : '',
+    ``,
+    `**👥 Perfil dos clientes:** ${d.perfilClientes || '—'}`,
+    d.doresCliente         ? `**Dores:** ${d.doresCliente}` : '',
+    d.desejos              ? `**Desejos:** ${d.desejos}` : '',
+    d.duvidасCompra        ? `**O que trava a compra:** ${d.duvidасCompra}` : '',
+    ``,
+    d.concorrentes         ? `**🏁 Concorrentes:** ${d.concorrentes}` : '',
+    d.oportunidades        ? `**💡 Oportunidades:** ${d.oportunidades}` : '',
+    ``,
+    d.verba                ? `**💰 Verba mensal:** R$ ${d.verba}` : '',
+    d.taxaConversao        ? `**Taxa de conversão atual:** ${d.taxaConversao}` : '',
+    d.melhorAcaoMarketing  ? `**Melhor ação de marketing:** ${d.melhorAcaoMarketing}` : '',
+    d.sucesso60Dias        ? `**Sucesso em 60 dias:** ${d.sucesso60Dias}` : '',
+    ``,
+    d.siteUrl              ? `**🌐 Site:** ${d.siteUrl}` : '',
+    d.instagram            ? `**Instagram:** ${d.instagram}` : '',
+    d.comoVendem           ? `**Como divulga hoje:** ${d.comoVendem}` : '',
+    ``,
+    d.obs                  ? `**📝 Observações:** ${d.obs}` : '',
   ].filter(Boolean).join('\n');
 
   await cu('post', `/task/${kickoffTask.id}/comment`, { comment_text: comentario });
 
-  // Dispara análise de concorrentes + benchmarking da empresa no VPS (async, não bloqueia)
+  // Atualiza Dossiê do cliente (Kickoff + Briefing pages) via ClickUp v3 — async
+  atualizarDossieKickoff(folder.id, d).catch(e =>
+    console.warn('[kickoff] Dossiê não atualizado:', e.message)
+  );
+
+  // Dispara análise de concorrentes no VPS — fire-and-forget
   const VPS_URL       = (process.env.VPS_URL || 'http://129.121.45.61:3030').trim();
   const WORKER_SECRET = (process.env.WORKER_SECRET || 'esc-worker-2026-secret').trim();
-  try {
-    fetch(`${VPS_URL}/api/run-worker`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ secret: WORKER_SECRET, script: 'analisar-concorrentes', cliente: d.empresa }),
-    }).catch(() => {}); // fire-and-forget
-  } catch (_) {}
+  fetch(`${VPS_URL}/api/run-worker`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ secret: WORKER_SECRET, script: 'analisar-concorrentes', cliente: d.empresa }),
+  }).catch(() => {});
 
   return { msg: `Briefing registrado para ${d.empresa}` };
+}
+
+// ============================================================
+// ATUALIZA DOSSIÊ — Kickoff + Briefing pages via ClickUp v3
+// ============================================================
+const WS_ID = '90133050692';
+
+async function cuV3(method, path, body) {
+  const res = await fetch(`https://api.clickup.com/api/v3${path}`, {
+    method: method.toUpperCase(),
+    headers: { Authorization: CLICKUP_API_KEY, 'Content-Type': 'application/json' },
+    ...(body ? { body: JSON.stringify(body) } : {}),
+  });
+  return res.json();
+}
+
+async function atualizarDossieKickoff(folderId, d) {
+  // 1. Lista docs do folder
+  const docsRes = await cuV3('get', `/workspaces/${WS_ID}/docs?parent_id=${folderId}&parent_type=5`);
+  const docs = docsRes.docs || docsRes.data || [];
+  const empresa = d.empresa;
+  const doc = docs.find(dc =>
+    dc.name && dc.name.toLowerCase().includes('dossiê') ||
+    dc.name && dc.name.toLowerCase().includes('dossie')
+  );
+  if (!doc) return; // Dossiê ainda não criado — ok
+
+  // 2. Lista páginas do doc
+  const pagesRes = await cuV3('get', `/workspaces/${WS_ID}/docs/${doc.id}/pages`);
+  const pages = pagesRes.pages || pagesRes.data || [];
+
+  const hoje = new Date().toLocaleDateString('pt-BR');
+
+  // 3. Atualiza página Kickoff
+  const pgKickoff = pages.find(p => p.name && p.name.toLowerCase().includes('kickoff'));
+  if (pgKickoff) {
+    const mdKickoff = `# 📋 Kickoff — ${empresa}
+
+> Atualizado em ${hoje} via formulário de kickoff.
+
+---
+
+## 🎯 Objetivo Principal
+
+${d.objetivoPrincipal || '_Não informado_'}
+
+## 🎯 Objetivos Secundários
+
+${d.objetivosSecundarios || '_Não informado_'}
+
+## ⚠️ O que está travando as vendas hoje
+
+${d.problemasVendas || '_Não informado_'}
+
+---
+
+## 🏢 Negócio
+
+**Produtos/Serviços:** ${d.produtos || '_Não informado_'}
+
+**Produto foco:** ${d.produtoFoco || '_Não informado_'}
+
+**Diferenciais:** ${d.diferenciais || '_Não informado_'}
+
+**Área de Atuação:** ${d.areaAtuacao || '_Não informado_'}
+
+**Raio de Entrega:** ${d.raioEntrega || '_Não informado_'}
+
+**Ticket Médio:** ${d.ticketMedio ? `R$ ${d.ticketMedio}` : '_Não informado_'}
+
+**Volume de Leads Atual:** ${d.volumeLeads || '_Não informado_'}
+
+**Processo Comercial:** ${d.processoComercial || '_Não informado_'}
+
+---
+
+## 👥 Clientes
+
+**Perfil dos Clientes:** ${d.perfilClientes || '_Não informado_'}
+
+**Área de Atuação:** ${d.areaAtuacao || '_Não informado_'}
+
+---
+
+## 🏁 Concorrentes
+
+${d.concorrentes || '_Não informado_'}
+
+---
+
+## 💡 Oportunidades de Mercado
+
+${d.oportunidades || '_Não informado_'}
+
+---
+
+## 🏆 Sucesso em 60 dias
+
+${d.sucesso60Dias || '_Preencher após alinhamento_'}
+
+---
+
+## 💰 Campanha
+
+**Verba Mensal:** ${d.verba ? `R$ ${d.verba}` : '_Não informado_'}
+
+**Taxa de Conversão Atual:** ${d.taxaConversao || '_Não informado_'}
+
+**Melhor Ação de Marketing:** ${d.melhorAcaoMarketing || '_Não informado_'}
+
+---
+
+## 🌐 Presença Digital
+
+**Site:** ${d.siteUrl || '_Não informado_'}
+
+**Instagram:** ${d.instagram || '_Não informado_'}
+
+**Como Divulga Hoje:** ${d.comoVendem || '_Não informado_'}
+
+---
+
+## 📝 Observações
+
+${d.obs || '_Sem observações_'}
+
+---
+
+## 📬 Contato Comercial
+
+**Responsável:** ${d.responsavel || '_Preencher_'}`;
+
+    await cuV3('put', `/workspaces/${WS_ID}/docs/${doc.id}/pages/${pgKickoff.id}`, {
+      content: mdKickoff,
+      content_format: 'text/md',
+    });
+  }
+
+  // 4. Atualiza página Briefing
+  const pgBriefing = pages.find(p => p.name && p.name.toLowerCase().includes('briefing'));
+  if (pgBriefing) {
+    const mdBriefing = `# 🎯 Briefing Criativo — ${empresa}
+
+> Atualizado em ${hoje} via formulário de kickoff.
+> Base para geração de copy, anúncios e landing pages pelos agentes.
+
+---
+
+## 👤 Avatar — Cliente Ideal
+
+**Perfil:** ${d.perfilClientes || '_Descrever o cliente ideal_'}
+
+**Faixa de Idade:** _Preencher_
+
+**Onde Está:** ${d.areaAtuacao || '_Cidade, região, zona rural?_'}
+
+---
+
+## 💥 Dores, Desejos e Dúvidas
+
+### Dores (o que ele sofre hoje)
+${d.doresCliente || '_Preencher_'}
+
+### Desejos (o que ele quer alcançar)
+${d.desejos || '_Preencher_'}
+
+### Dúvidas (o que trava a compra)
+${d.duvidасCompra || '_Preencher_'}
+
+---
+
+## ✍️ Direção de Copy
+
+**Tom de comunicação:** _Direto, técnico, regional?_
+
+**Promessa principal:** _A frase central que gera conversão_
+
+**Principal objeção a superar:** ${d.duvidасCompra ? d.duvidасCompra.split('.')[0] : '_Preencher_'}
+
+**O que o cliente fala ao escolher a empresa:** ${d.diferenciais || '_Preencher_'}
+
+---
+
+## 🏷️ Produto Principal
+
+**Nome:** ${d.produtoFoco || d.produtos?.split(',')[0]?.trim() || '_Preencher_'}
+
+**Diferenciais:**
+${d.diferenciais || '_Preencher_'}
+
+**Preço médio:** ${d.ticketMedio ? `R$ ${d.ticketMedio}` : '_Preencher_'}
+
+**Raio de entrega:** ${d.raioEntrega || '_Preencher_'}
+
+---
+
+## 📣 Como Divulga Hoje
+
+${d.comoVendem || '_Preencher_'}
+
+**Melhor ação já feita:** ${d.melhorAcaoMarketing || '_Preencher_'}`;
+
+    await cuV3('put', `/workspaces/${WS_ID}/docs/${doc.id}/pages/${pgBriefing.id}`, {
+      content: mdBriefing,
+      content_format: 'text/md',
+    });
+  }
+
+  // 5. Atualiza página Estratégia com metas do cliente
+  const pgEstrategia = pages.find(p => p.name && (
+    p.name.toLowerCase().includes('estratégia') ||
+    p.name.toLowerCase().includes('estrategia') ||
+    p.name.toLowerCase().includes('decisões')
+  ));
+  if (pgEstrategia && (d.sucesso60Dias || d.oportunidades)) {
+    const pgAtual = await cuV3('get', `/workspaces/${WS_ID}/docs/${doc.id}/pages/${pgEstrategia.id}`);
+    const conteudoAtual = pgAtual.content || '';
+    const entrada = `\n\n---\n\n**${hoje} — Kickoff preenchido**\n- **Sucesso em 60 dias:** ${d.sucesso60Dias || '—'}\n- **Oportunidades:** ${d.oportunidades || '—'}`;
+    await cuV3('put', `/workspaces/${WS_ID}/docs/${doc.id}/pages/${pgEstrategia.id}`, {
+      content: conteudoAtual + entrada,
+      content_format: 'text/md',
+    });
+  }
 }
 
 // ============================================================
