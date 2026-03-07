@@ -1,0 +1,83 @@
+{
+  "_instrucoes": "Briefing de anúncios da Escalando — captação de clientes (donos de fábrica de pré-moldados)",
+  "_versao": "1.0",
+  "_status": "ativo",
+
+  "cliente": "Escalando",
+  "data_briefing": "2026-03-07",
+  "responsavel": "Jon Godeiro",
+
+  "produto_anunciado": "Gestão de Marketing Digital para Fábricas de Pré-Moldados",
+  "objetivo_campanha": "leads",
+  "orcamento_mensal_brl": 900,
+  "orcamento_obs": "R$900/mês = ~R$30/dia. Fase Discovery: testar 3-4 conjuntos de anúncios. Escalar após CPL validado.",
+  "plataformas": ["Meta Ads"],
+  "duracao_prevista_dias": 30,
+
+  "avatar": {
+    "nome_ficticio": "Marcos, dono de fábrica",
+    "idade": "35-60 anos",
+    "profissao": "Dono de fábrica de pré-moldados de concreto",
+    "regiao": "Interior do Brasil — foco inicial MT, GO, BA, MA, MG interior",
+    "nivel_consciencia": "com_problema",
+    "dor_principal": "Vende por indicação e não tem previsibilidade de receita. Já tentou alguma agência genérica e não funcionou — ou não entenderam o produto, ou prometeram demais.",
+    "desejo_principal": "Receber pedidos de orçamento no WhatsApp de clientes qualificados sem depender de indicação.",
+    "objecoes": [
+      "Já tentei agência antes e não funcionou",
+      "Marketing é muito caro para o que entrega",
+      "Meu produto é técnico, agência não vai entender",
+      "Não tenho tempo para lidar com agência"
+    ],
+    "linguagem": "Direto, empresário prático. Não usa jargão de marketing. Decide rápido quando vê ROI claro. Desconfia de promessa mas respeita resultado.",
+    "onde_passa_tempo": "Facebook, grupos de associações do setor (ABCIC), WhatsApp Business, YouTube"
+  },
+
+  "promessa_principal": "Leads qualificados no seu WhatsApp — de quem quer comprar pré-moldado, não curiosos.",
+  "angulo_criativo": "Especialização no nicho",
+
+  "diferenciais": [
+    "Única agência especializada 100% em pré-moldados — sabemos o que é laje, mourão, palanque",
+    "ROI mensurável: relatório de custo por lead, não de curtidas",
+    "Sistema próprio (AIOS) — automação que agências grandes não têm",
+    "Comunicação via WhatsApp — sem reunião toda semana, sem burocracia",
+    "Criativos com as fotos da fábrica — sem precisar contratar fotógrafo"
+  ],
+
+  "provas_sociais": [
+    "Concrenor (SE): campanha ativa desde março/2026",
+    "Sistema funcionando para 3 clientes piloto"
+  ],
+
+  "planos": [
+    {
+      "nome": "Plano Base",
+      "preco": "R$ 1.500/mês",
+      "inclui": "Tráfego pago (1 plataforma) + Landing Page + GMB + Relatório mensal + CRM simples"
+    },
+    {
+      "nome": "Plano Pro",
+      "preco": "R$ 2.500/mês",
+      "inclui": "Meta Ads + Google Ads + Criativos mensais + Instagram + CRM WhatsApp + 2 reuniões"
+    }
+  ],
+
+  "cta_principal": "Quero leads no meu WhatsApp",
+  "cta_url": "https://wa.me/55XXXXXXXXXXX?text=Oi%21+Vi+o+an%C3%BAncio+da+Escalando+e+quero+saber+mais+sobre+marketing+para+minha+f%C3%A1brica.",
+  "cta_obs": "SUBSTITUIR 55XXXXXXXXXXX pelo WhatsApp real da Escalando antes de subir campanha",
+
+  "restricoes": {
+    "temas_proibidos": ["não prometer número específico de leads sem histórico real"],
+    "tom_proibido": "Sem jargão de marketing digital (funil, engajamento, awareness, KPI). Falar como empresário, não como marqueteiro.",
+    "aprovacao_necessaria": false,
+    "prazo_aprovacao_dias": 0
+  },
+
+  "acessos_necessarios": {
+    "meta_business_manager": false,
+    "meta_ads_manager": false,
+    "pixel_meta_id": "",
+    "google_ads_mcc": false,
+    "gtm_container_id": "",
+    "ga4_measurement_id": ""
+  }
+}

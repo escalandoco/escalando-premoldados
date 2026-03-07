@@ -131,8 +131,18 @@ async function verificarContextoKickoff(cliente) {
   }
 }
 
+// ── HELPER: Detecta cliente a partir do folder da task ───────
+function detectarCliente(folderName = '', listName = '') {
+  const texto = (folderName + ' ' + listName).toLowerCase();
+  if (texto.includes('escalando')) return 'escalando';
+  if (texto.includes('concrenor')) return 'concrenor';
+  if (texto.includes('brasbloco')) return 'brasbloco';
+  if (texto.includes('levert')) return 'levert';
+  return 'concrenor'; // fallback
+}
+
 // ── HELPER: Claude identifica intent ─────────────────────────
-async function identifyIntent(commentText, taskName, listName) {
+async function identifyIntent(commentText, taskName, listName, clienteDetectado) {
   const prompt = `Você é um dispatcher de agentes de automação de marketing digital.
 
 Agentes disponíveis:
@@ -141,17 +151,18 @@ ${AGENTS_LIST}
 Contexto da task:
 - Task: "${taskName}"
 - Lista: "${listName}"
+- Cliente detectado pelo folder: "${clienteDetectado}"
 - Comentário recebido: "${commentText}"
 
 Sua tarefa: identifique se o comentário está pedindo para executar algum agente.
 
 Responda APENAS com JSON válido, sem markdown, sem explicação:
-- Se for um comando: {"agent":"<id-do-agent>","cliente":"concrenor","summary":"<o que foi entendido em 1 frase>"}
+- Se for um comando: {"agent":"<id-do-agent>","cliente":"${clienteDetectado}","summary":"<o que foi entendido em 1 frase>"}
 - Se NÃO for um comando (só uma pergunta, observação, feedback): {"agent":null}
 
 Regras:
 - Seja liberal na interpretação — se parece um pedido de ação, é um comando
-- Sempre use cliente "concrenor" a menos que outro seja mencionado
+- Use sempre o cliente "${clienteDetectado}" a menos que outro seja explicitamente mencionado no comentário
 - Escolha o agente mais adequado ao pedido`;
 
   const r = await fetch('https://api.anthropic.com/v1/messages', {
@@ -246,11 +257,13 @@ export default async function handler(req, res) {
     const task = await clickupGet(`/task/${task_id}`);
     const taskName = task.name || '';
     const listName = task.list?.name || '';
+    const folderName = task.folder?.name || '';
+    const clienteDetectado = detectarCliente(folderName, listName);
 
-    console.log(`[dispatcher] Comentário em "${taskName}" (${listName}): "${commentText.slice(0, 80)}"`);
+    console.log(`[dispatcher] Comentário em "${taskName}" (${listName} / ${folderName}) cliente=${clienteDetectado}: "${commentText.slice(0, 80)}"`);
 
     // 3. Claude identifica o intent
-    const intent = await identifyIntent(commentText, taskName, listName);
+    const intent = await identifyIntent(commentText, taskName, listName, clienteDetectado);
     console.log(`[dispatcher] Intent:`, JSON.stringify(intent));
 
     if (!intent.agent) {

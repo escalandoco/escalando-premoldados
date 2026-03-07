@@ -1,0 +1,21 @@
+[
+  {
+    "_template": true,
+    "_instrucoes": "Cada registro representa um dia de veiculação. Preencha manualmente ou via script de sincronização Meta API.",
+    "data": "YYYY-MM-DD",
+    "campanha": "Captação Clientes",
+    "conjunto": "nome-do-conjunto",
+    "criativo": "nome-do-criativo",
+    "impressoes": 0,
+    "alcance": 0,
+    "cliques": 0,
+    "ctr": 0,
+    "cpm": 0,
+    "cpc": 0,
+    "gasto_brl": 0,
+    "leads": 0,
+    "cpl": 0,
+    "frequencia": 0,
+    "notas": ""
+  }
+]
