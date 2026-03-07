@@ -37,6 +37,30 @@ nav{display:flex;gap:2px;flex:1}
 .tab-icon{font-size:14px}
 .tab-badge{font-size:10px;background:var(--orange-l);color:var(--orange);border-radius:10px;padding:1px 6px;font-weight:700}
 
+/* hamburguer */
+.hamburger{display:none;flex-direction:column;justify-content:center;gap:5px;width:36px;height:36px;padding:6px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;flex-shrink:0}
+.hamburger span{display:block;height:2px;background:var(--text);border-radius:2px;transition:all .2s}
+.hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.hamburger.open span:nth-child(2){opacity:0}
+.hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+
+/* mobile nav dropdown */
+@media(max-width:768px){
+  .hamburger{display:flex}
+  nav{
+    display:none;position:fixed;top:52px;left:0;right:0;bottom:0;
+    background:var(--bg2);border-top:1px solid var(--border);
+    flex-direction:column;gap:4px;padding:12px;overflow-y:auto;
+    z-index:99;
+  }
+  nav.open{display:flex}
+  .tab{padding:12px 16px;font-size:15px;border-radius:var(--radius);border:1px solid transparent}
+  .tab.active{border-color:var(--orange);background:var(--bg3)}
+  .tab:hover{background:var(--bg3)}
+  .header-right .updated{display:none}
+  .logo-sub{display:none}
+}
+
 .header-right{margin-left:auto;display:flex;align-items:center;gap:10px}
 .updated{font-size:11px;color:var(--muted2)}
 .refresh-btn{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:5px 12px;font-size:12px;color:var(--muted);cursor:pointer;transition:all .15s}
@@ -296,6 +320,9 @@ section{margin-bottom:36px}
       <span class="logo-text">Escalando Premoldados</span>
       <span class="logo-sub">· Dashboard</span>
     </div>
+    <button class="hamburger" id="hamburger" aria-label="Menu" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </button>
     <nav id="tabs">
       <button class="tab active" data-tab="overview"><span class="tab-icon">📊</span> Overview</button>
       <button class="tab" data-tab="stories"><span class="tab-icon">📋</span> Stories</button>
@@ -394,6 +421,20 @@ function statusBadge(s) {
   return `<span class="badge badge-pending">Pending</span>`;
 }
 
+// ── MENU MOBILE ──────────────────────────────────────────────
+function toggleMenu(){
+  const nav = $('tabs');
+  const btn = $('hamburger');
+  const open = nav.classList.toggle('open');
+  btn.classList.toggle('open', open);
+  document.body.style.overflow = open ? 'hidden' : '';
+}
+function closeMenu(){
+  $('tabs').classList.remove('open');
+  $('hamburger').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
 // ── TABS ─────────────────────────────────────────────────────
 document.querySelectorAll('.tab').forEach(btn => {
   btn.addEventListener('click', () => {
@@ -401,6 +442,7 @@ document.querySelectorAll('.tab').forEach(btn => {
     document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
     btn.classList.add('active');
     $('tab-' + btn.dataset.tab).classList.add('active');
+    closeMenu(); // fecha menu mobile ao selecionar aba
     // PRD: inject iframe once
     if (btn.dataset.tab === 'prd' && !$('prd-frame')) {
       $('tab-prd').innerHTML = '<iframe id="prd-frame" src="/prd"></iframe>';
