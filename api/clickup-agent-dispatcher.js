@@ -214,10 +214,10 @@ export default async function handler(req, res) {
     if (!intent.agent) {
       // Não entendeu o comando — pede para explicar melhor
       const agentsList = Object.entries(AGENTS)
-        .map(([id, a]) => `• \`${id}\` — ${a.desc}`)
+        .map(([id, a]) => `${a.handle} **${a.agent}** — ${a.desc}`)
         .join('\n');
       await clickupComment(task_id,
-        `🤖 **Dispatcher** não entendeu o pedido: _"${commentText.slice(0, 80)}"_\n\nPode explicar o que precisa? Exemplos do que sei fazer:\n${agentsList}\n\n---\n_Dispatcher — Escalando Premoldados_`
+        `👋 Oi! Não entendi bem o que você precisa.\n\nPode reformular? Aqui está o que consigo fazer:\n\n${agentsList}\n\n_Exemplo: "verifica se a LP tá no ar" ou "gera um relatório de performance"_\n\n---\n_Dispatcher — Escalando Premoldados_`
       );
       return res.status(200).json({ skipped: true, reason: 'not_a_command', comment: commentText.slice(0, 100) });
     }
