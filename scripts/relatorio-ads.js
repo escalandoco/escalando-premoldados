@@ -340,8 +340,54 @@ function gerarHTML(dados, cliente, dataInicio, dataFim, fonte) {
 </html>`;
 }
 
+// ---- Claude: gera "O que fazer agora" ----
+async function gerarRecomendacoesIA(dados, cliente, dataInicio, dataFim) {
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) return null;
+
+  const prompt = `Você é um especialista sênior em tráfego pago para construção civil e pré-moldados no Brasil.
+
+DADOS REAIS DA CAMPANHA — ${cliente} (${dataInicio} a ${dataFim}):
+- Investimento: R$${Number(dados.gasto).toFixed(2)}
+- Leads: ${dados.leads}
+- CPL: R$${dados.cpl} (meta: R$${dados.meta_cpl || 50})
+- CTR: ${dados.ctr}%
+- CPM: R$${dados.cpm}
+- Alcance: ${dados.alcance}
+- Cliques WhatsApp: ${dados.wpp}
+- Dias ativos: ${dados.dias || '?'}
+
+REGRAS INEGOCIÁVEIS:
+- Baseie cada recomendação nos dados acima. Sem generalismo.
+- Se os dados são ruins, diga — e aponte a causa provável real, não genérica.
+- Pense nos dois ângulos: o que o cliente deve fazer E o que a agência deve ajustar na gestão.
+
+Retorne JSON válido sem markdown:
+{
+  "diagnostico": "1 frase honesta sobre o estado atual da campanha",
+  "acoes": [
+    { "prioridade": 1, "acao": "o que fazer", "motivo": "por que — baseado nos dados", "impacto": "resultado esperado" },
+    { "prioridade": 2, "acao": "o que fazer", "motivo": "por que — baseado nos dados", "impacto": "resultado esperado" },
+    { "prioridade": 3, "acao": "o que fazer", "motivo": "por que — baseado nos dados", "impacto": "resultado esperado" }
+  ]
+}`;
+
+  try {
+    const r = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'x-api-key': apiKey, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' },
+      body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 800, messages: [{ role: 'user', content: prompt }] }),
+    });
+    if (!r.ok) return null;
+    const data = await r.json();
+    const text = data.content?.[0]?.text || '';
+    const match = text.match(/\{[\s\S]+\}/);
+    return match ? JSON.parse(match[0]) : null;
+  } catch { return null; }
+}
+
 // ---- ClickUp: cria task no Relatórios ----
-async function criarTaskRelatorio(cliente, dados, dataInicio, dataFim) {
+async function criarTaskRelatorio(cliente, dados, dataInicio, dataFim, recomendacoes = null) {
   const apiKey = process.env.CLICKUP_API_KEY;
   const listId = '901326173211'; // Relatórios
   if (!apiKey) return;
@@ -364,7 +410,11 @@ async function criarTaskRelatorio(cliente, dados, dataInicio, dataFim) {
       headers: { Authorization: apiKey, 'Content-Type': 'application/json' },
       body: JSON.stringify({
         name: `Relatório ${cliente} — ${periodo}`,
-        description: `Gerado em ${hoje} | Leads: ${dados.leads} | CPL: R$${dados.cpl} | Gasto: R$${Number(dados.gasto).toFixed(2)} | CTR: ${dados.ctr}%`,
+        description: [
+          `Gerado em ${hoje} | Leads: ${dados.leads} | CPL: R$${dados.cpl} | Gasto: R$${Number(dados.gasto).toFixed(2)} | CTR: ${dados.ctr}%`,
+          recomendacoes?.diagnostico ? `\n🎯 Diagnóstico: ${recomendacoes.diagnostico}` : '',
+          ...(recomendacoes?.acoes || []).map(a => `\n#${a.prioridade} ${a.acao} — ${a.motivo}`),
+        ].join(''),
         tags: ['relatorio', 'ads'],
       }),
     });
@@ -437,8 +487,30 @@ async function main() {
     console.log(' ✅');
   }
 
+  // Gera "O que fazer agora" via Claude
+  process.stdout.write('  Gerando recomendações com Claude...');
+  const recomendacoes = await gerarRecomendacoesIA(dados, clienteRaw, dataInicio, dataFim);
+  console.log(recomendacoes ? ' ✅' : ' ⚠️  (sem API key ou falha)');
+
+  // Monta bloco HTML das recomendações
+  const recomHtml = recomendacoes ? `
+    <div class="card">
+      <h2>O que fazer agora</h2>
+      ${recomendacoes.diagnostico ? `<div class="insight neutro"><span class="icone">🎯</span><strong>${recomendacoes.diagnostico}</strong></div>` : ''}
+      ${(recomendacoes.acoes || []).map(a => `
+        <div class="insight ${a.prioridade === 1 ? 'atencao' : a.prioridade === 2 ? 'neutro' : 'positivo'}" style="flex-direction:column;gap:4px">
+          <div style="display:flex;gap:8px;align-items:center">
+            <span class="badge ${a.prioridade === 1 ? 'vermelho' : a.prioridade === 2 ? '' : 'verde'}" style="${a.prioridade === 2 ? 'background:#dbeafe;color:#1d4ed8' : ''}">#${a.prioridade}</span>
+            <strong>${a.acao}</strong>
+          </div>
+          <div style="font-size:13px;color:#555;padding-left:36px">${a.motivo}</div>
+          <div style="font-size:12px;color:#888;padding-left:36px">→ ${a.impacto}</div>
+        </div>`).join('')}
+    </div>` : '';
+
   // Gera HTML
-  const html = gerarHTML(dados, clienteRaw, dataInicio, dataFim, fonteUsada);
+  let html = gerarHTML(dados, clienteRaw, dataInicio, dataFim, fonteUsada);
+  if (recomHtml) html = html.replace('</body>', `${recomHtml}</body>`);
 
   // Salva output
   const outDir = path.join(ROOT, 'dist', clienteSlug);
@@ -452,7 +524,7 @@ async function main() {
   console.log(`   Abrir no browser para visualizar.\n`);
 
   // Cria task no ClickUp com campos preenchidos
-  await criarTaskRelatorio(clienteRaw, dados, dataInicio, dataFim);
+  await criarTaskRelatorio(clienteRaw, dados, dataInicio, dataFim, recomendacoes);
 }
 
 main().catch(err => {

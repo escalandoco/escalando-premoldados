@@ -90,7 +90,12 @@ function limparHtml(html) {
 
 // ── Claude: analisa um concorrente ────────────────────────────
 async function analisarConcorrente(nome, url, conteudo, contextoCliente) {
-  const prompt = `Você é um especialista em benchmarking competitivo para agências de marketing digital no Brasil.
+  const prompt = `Você é um especialista sênior em marketing digital e benchmarking competitivo, com foco no setor de construção civil e pré-moldados no Brasil.
+
+REGRAS INEGOCIÁVEIS:
+- Não generalize. Cada ponto deve ser específico para este concorrente e para o mercado de pré-moldados.
+- Se a situação do concorrente é forte, diga. Não suavize ameaças reais.
+- Considere dois ângulos: o que isso significa para o cliente (${contextoCliente}) E como a Escalando pode usar este benchmarking para fortalecer sua posição como agência especializada no setor.
 
 CLIENTE QUE ESTÁ SENDO ANALISADO: ${contextoCliente}
 
@@ -149,7 +154,12 @@ nota_ameaca: de 1 a 10 (quanto este concorrente é uma ameaça direta ao cliente
 
 // ── Claude: analisa a própria empresa ────────────────────────
 async function analisarEmpresa(empresa, dados, conteudoSite) {
-  const prompt = `Você é um especialista sênior em marketing digital para o setor de construção civil e pré-moldados no Brasil.
+  const prompt = `Você é um especialista sênior em marketing digital para o setor de construção civil e pré-moldados no Brasil. Esta é uma auditoria real com impacto direto na estratégia de um cliente pagante.
+
+REGRAS INEGOCIÁVEIS:
+- Não busque agradar. Se o posicionamento está fraco, diga claramente.
+- Zero generalismo — cada ponto precisa ser aplicável especificamente a esta empresa, não a qualquer empresa do setor.
+- Considere dois ângulos: o que é melhor para o crescimento do cliente E como a Escalando pode estruturar um serviço de alto valor com base nessa análise.
 
 DADOS DA EMPRESA:
 - Nome: ${empresa.nome}

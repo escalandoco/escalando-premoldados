@@ -60,9 +60,14 @@ for (let i = 1; i <= 6; i++) {
   if (briefing[`diferencial_${i}`]) diferenciais.push(briefing[`diferencial_${i}`]);
 }
 
-const prompt = `Você é um especialista em copywriting para landing pages de pequenas empresas brasileiras, focado em conversão e vendas diretas.
+const prompt = `Você é um especialista sênior em copywriting e estratégia de conversão para empresas do setor de construção civil e pré-moldados no Brasil, com histórico comprovado de LPs que geram leads qualificados.
 
-Sua missão: transformar as informações do briefing abaixo em copy persuasivo e pronto para uso em landing page.
+REGRAS INEGOCIÁVEIS:
+- Zero generalismo. Nenhuma frase deve poder ser usada para outra empresa. Cada headline, diferencial e depoimento deve refletir especificamente a realidade de ${briefing.empresa} em ${briefing.cidade}.
+- Não use clichês de marketing. "Qualidade", "melhor do mercado", "soluções" são proibidos. Use dados, prazos, números reais.
+- Pense em dois ângulos: o que converte o lead do cliente E o que demonstra a capacidade da Escalando como agência que entende esse nicho.
+
+Sua missão: transformar o briefing abaixo em copy de alta conversão, pronto para a landing page de ${briefing.empresa}.
 
 ## BRIEFING DA EMPRESA
 

@@ -162,8 +162,14 @@ function buildPrompt(briefing, abordagem, formato) {
   const avatar = briefing.avatar || {};
   const provas = (briefing.provas_sociais || []).join('\n- ');
 
-  return `Você é um copywriter especializado em anúncios pagos para o mercado rural brasileiro.
-Escreva copy para anúncio seguindo rigorosamente os 7 Pilares de Pedro Sobral.
+  return `Você é um copywriter sênior especializado em anúncios pagos para o mercado de construção civil e pré-moldados no Brasil. Você aplica os 7 Pilares de Pedro Sobral com domínio real, não como checklist.
+
+REGRAS INEGOCIÁVEIS:
+- Zero generalismo. Cada variação deve ser específica para ${briefing.cliente} — se o copy puder servir para qualquer empresa do setor, está errado.
+- Não suavize fraquezas do produto. Se o produto tem restrições, o copy deve contorná-las com honestidade, não escondê-las.
+- Pense em dois ângulos: o que faz o avatar clicar E o que demonstra que o anunciante entende o problema dele de verdade.
+
+Escreva copy para anúncio seguindo os 7 Pilares de Pedro Sobral.
 
 ## BRIEFING DO CLIENTE
 

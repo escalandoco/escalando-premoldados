@@ -94,6 +94,43 @@ async function clickupComment(taskId, text) {
   if (!r.ok) throw new Error(`ClickUp comment ${r.status}: ${await r.text()}`);
 }
 
+// Agentes que precisam de kickoff preenchido para funcionar
+const AGENTS_REQUIRE_KICKOFF = ['analisar-concorrentes', 'gerar-copy', 'gerar-copy-ads', 'gerar-lp'];
+
+// ── HELPER: Verifica se kickoff do cliente tem dados suficientes ──
+async function verificarContextoKickoff(cliente) {
+  try {
+    const SPACE_ID = process.env.CLICKUP_SPACE_ID || '901313553858';
+    const { folders } = await clickupGet(`/space/${SPACE_ID}/folder?archived=false`);
+    const folder = folders.find(f => f.name.toLowerCase().includes(cliente.toLowerCase()));
+    if (!folder) return { ok: false, motivo: `Pasta do cliente "${cliente}" não encontrada no ClickUp.` };
+
+    const { lists } = await clickupGet(`/folder/${folder.id}/list?archived=false`);
+    const onboarding = lists.find(l => l.name === 'Onboarding');
+    if (!onboarding) return { ok: false, motivo: 'Lista Onboarding não encontrada.' };
+
+    const { tasks } = await clickupGet(`/list/${onboarding.id}/task?include_closed=true`);
+    const kickoff = tasks.find(t => t.name.toLowerCase().includes('kickoff'));
+    if (!kickoff) return { ok: false, motivo: 'Task de Kickoff não encontrada. Peça ao cliente para preencher o formulário.' };
+
+    const cf = {};
+    for (const f of (kickoff.custom_fields || [])) cf[f.name] = f.value;
+
+    const faltando = [];
+    if (!cf['Produtos']) faltando.push('Produtos/Serviços');
+    if (!cf['Concorrentes']) faltando.push('Concorrentes');
+    if (!cf['Perfil dos Clientes']) faltando.push('Perfil dos Clientes');
+
+    if (faltando.length > 0) {
+      return { ok: false, motivo: `Kickoff incompleto. Campos faltando: ${faltando.join(', ')}.` };
+    }
+
+    return { ok: true };
+  } catch (e) {
+    return { ok: true }; // Em caso de erro na verificação, deixa executar
+  }
+}
+
 // ── HELPER: Claude identifica intent ─────────────────────────
 async function identifyIntent(commentText, taskName, listName) {
   const prompt = `Você é um dispatcher de agentes de automação de marketing digital.
@@ -227,7 +264,18 @@ export default async function handler(req, res) {
       return res.status(200).json({ skipped: true, reason: 'not_a_command', comment: commentText.slice(0, 100) });
     }
 
-    // 4. Feedback imediato: "entendi, executando..."
+    // 4. Verifica contexto se agente analítico
+    if (AGENTS_REQUIRE_KICKOFF.includes(intent.agent)) {
+      const ctx = await verificarContextoKickoff(intent.cliente);
+      if (!ctx.ok) {
+        await clickupComment(task_id,
+          `⚠️ **Contexto insuficiente para executar \`${intent.agent}\`**\n\n${ctx.motivo}\n\nComplete o kickoff e tente novamente.\n\n---\n_Dispatcher — Escalando Premoldados_`
+        );
+        return res.status(200).json({ skipped: true, reason: 'missing_kickoff_context', detail: ctx.motivo });
+      }
+    }
+
+    // 5. Feedback imediato: "entendi, executando..."
     const agentInfo = AGENTS[intent.agent] || {};
     const agentLabel = agentInfo.agent
       ? `**${agentInfo.agent}** (${agentInfo.handle}) — ${agentInfo.role}`
@@ -236,7 +284,7 @@ export default async function handler(req, res) {
       `🤖 **Dispatcher** entendeu: _${intent.summary}_\n\nExecutando ${agentLabel} · script \`${intent.agent}\` · cliente **${intent.cliente}**...\n_Aguarde o resultado._`
     );
 
-    // 5. Executar agente no VPS
+    // 6. Executar agente no VPS
     let result;
     try {
       result = await runAgentOnVPS(intent.agent, intent.cliente);
@@ -246,7 +294,7 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: false, error: vpsErr.message });
     }
 
-    // 6. Postar resultado
+    // 7. Postar resultado
     const statusIcon = result.ok ? '✅' : '⚠️';
     const outputBlock = result.output
       ? `\n\n**Output:**\n\`\`\`\n${result.output.slice(0, 1500)}\n\`\`\``
