@@ -19,6 +19,7 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { appendSection } from './dossie.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, '..');
@@ -525,6 +526,36 @@ async function main() {
 
   // Cria task no ClickUp com campos preenchidos
   await criarTaskRelatorio(clienteRaw, dados, dataInicio, dataFim, recomendacoes);
+
+  // Registra no Dossiê do cliente (página performance)
+  try {
+    const linhasAcoes = (recomendacoes?.acoes || []).map(a =>
+      `**#${a.prioridade} ${a.acao}** — ${a.motivo} → ${a.impacto}`
+    ).join('\n');
+
+    const mdPerformance = `### Período ${dataInicio} → ${dataFim}
+
+| Métrica | Valor |
+|---------|-------|
+| Investimento | R$${Number(dados.gasto).toFixed(2)} |
+| Leads | ${dados.leads} |
+| CPL | R$${dados.cpl} (meta R$${dados.meta_cpl || 50}) |
+| CTR | ${dados.ctr}% |
+| CPM | R$${dados.cpm} |
+| Alcance | ${Number(dados.alcance).toLocaleString('pt-BR')} |
+| WhatsApp | ${dados.wpp} cliques |
+
+${recomendacoes?.diagnostico ? `**Diagnóstico:** ${recomendacoes.diagnostico}` : ''}
+
+${linhasAcoes ? `**Recomendações:**\n${linhasAcoes}` : ''}
+
+_Fonte: ${fonteUsada}_`;
+
+    await appendSection(clienteRaw, 'performance', mdPerformance);
+    console.log('  Dossiê atualizado (performance) ✅');
+  } catch (e) {
+    console.warn(`  ⚠️  Dossiê não atualizado: ${e.message}`);
+  }
 }
 
 main().catch(err => {

@@ -19,6 +19,7 @@ import http from 'http';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { appendSection } from './dossie.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const QUEUE_FILE = path.join(__dirname, '../data/job-queue.json');
@@ -463,6 +464,14 @@ async function main() {
   });
 
   console.log('  ✅ Task criada em Sucesso do Cliente.');
+
+  // Registra no Dossiê do cliente (página benchmarking)
+  try {
+    await appendSection(CLIENTE, 'benchmarking', relatorio);
+    console.log('  ✅ Dossiê atualizado (benchmarking)');
+  } catch (e) {
+    console.warn(`  ⚠️  Dossiê não atualizado: ${e.message}`);
+  }
 
   writeQueueEntry({ id: JOB_ID, status: 'done', progress: 100, step: 'Concluído', doneAt: new Date().toISOString() });
   process.exit(0);
