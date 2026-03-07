@@ -87,7 +87,7 @@ nota_ameaca: de 1 a 10 (quanto este concorrente é uma ameaça direta ao cliente
 
   let r, tentativas = 0;
   do {
-    if (tentativas > 0) await new Promise(res => setTimeout(res, 3000 * tentativas));
+    if (tentativas > 0) await new Promise(res => setTimeout(res, 8000 * tentativas));
     r = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
@@ -102,7 +102,7 @@ nota_ameaca: de 1 a 10 (quanto este concorrente é uma ameaça direta ao cliente
       }),
     });
     tentativas++;
-  } while (r.status === 529 && tentativas < 4);
+  } while (r.status === 529 && tentativas < 5);
 
   if (!r.ok) throw new Error(`Claude ${r.status}`);
   const data = await r.json();
@@ -150,7 +150,7 @@ nota_maturidade_digital: de 1 a 10 (maturidade digital atual da empresa)`;
 
   let r, tentativas = 0;
   do {
-    if (tentativas > 0) await new Promise(res => setTimeout(res, 3000 * tentativas));
+    if (tentativas > 0) await new Promise(res => setTimeout(res, 8000 * tentativas));
     r = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
@@ -165,7 +165,7 @@ nota_maturidade_digital: de 1 a 10 (maturidade digital atual da empresa)`;
       }),
     });
     tentativas++;
-  } while (r.status === 529 && tentativas < 4);
+  } while (r.status === 529 && tentativas < 5);
 
   if (!r.ok) throw new Error(`Claude ${r.status}`);
   const data = await r.json();
@@ -367,13 +367,14 @@ async function main() {
 
   const contextoCliente = `${empresaDados.nome} — ${empresaDados.produtos} — ${empresaDados.area}`;
 
-  const [analiseEmpresa, ...analisesConcorrentes] = await Promise.all([
-    analisarEmpresa(empresaDados, cf, conteudoEmpresa),
-    ...urls.map((url, i) => {
-      const conteudo = concorrentesPages[i]?.ok ? limparHtml(concorrentesPages[i].body) : '';
-      return analisarConcorrente(url, url, conteudo, contextoCliente);
-    }),
-  ]);
+  // Sequencial para não sobrecarregar a API
+  const analiseEmpresa = await analisarEmpresa(empresaDados, cf, conteudoEmpresa);
+  const analisesConcorrentes = [];
+  for (let i = 0; i < urls.length; i++) {
+    const conteudo = concorrentesPages[i]?.ok ? limparHtml(concorrentesPages[i].body) : '';
+    const analise = await analisarConcorrente(urls[i], urls[i], conteudo, contextoCliente);
+    analisesConcorrentes.push(analise);
+  }
 
   const concorrentes = urls.map((url, i) => ({ url, analise: analisesConcorrentes[i] }));
 
