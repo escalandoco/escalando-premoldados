@@ -396,8 +396,9 @@ function checkAuth(req, res) {
 // ── HTTP SERVER ──────────────────────────────────────────────
 const server = http.createServer((req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
-  // /api/run-worker tem autenticação própria (WORKER_SECRET) — exclui do Basic Auth
-  if (req.url !== '/api/run-worker' && !checkAuth(req, res)) return;
+  // /api/run-worker e /api/git-pull têm autenticação própria (WORKER_SECRET)
+  const PUBLIC_ROUTES = ['/api/run-worker', '/api/git-pull'];
+  if (!PUBLIC_ROUTES.includes(req.url) && !checkAuth(req, res)) return;
 
   // ── GET /api/data ──
   if (req.method === 'GET' && req.url === '/api/data') {
@@ -494,6 +495,30 @@ const server = http.createServer((req, res) => {
             exitCode: err?.code ?? 0,
             output:   output.slice(0, 3000),
           }));
+        });
+      } catch (e) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: e.message }));
+      }
+    });
+    return;
+  }
+
+  // ── POST /api/git-pull ──
+  if (req.method === 'POST' && req.url === '/api/git-pull') {
+    let body = '';
+    req.on('data', d => body += d);
+    req.on('end', () => {
+      try {
+        const { secret } = JSON.parse(body || '{}');
+        if (secret !== WORKER_SECRET) {
+          res.writeHead(401, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: 'unauthorized' }));
+          return;
+        }
+        exec('git pull origin main', { cwd: ROOT }, (err, stdout, stderr) => {
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ ok: !err, output: stdout || stderr || '' }));
         });
       } catch (e) {
         res.writeHead(500, { 'Content-Type': 'application/json' });
