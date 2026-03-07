@@ -31,6 +31,11 @@ const CF = {
   acesso_google: '9a775a51-e3b7-45f1-b1d0-3abc74b5a23a',
   acesso_gmb:    '49fdbb26-04d6-4ed9-83bc-6477d455600f',
   acesso_site:   'a66f8163-a649-4b4a-abd1-8226a47314d2',
+  diferenciais:  '229fd762-bde0-4c81-859f-1338e303ae1e',
+  perfil:        '888b4e68-1afd-4643-9ae5-12db57f37b97',
+  como_vendem:   '98f4dc2b-9092-4c22-90b0-ba68d3b98c44',
+  concorrentes:  'b78b2405-78a2-4570-9de0-78fa317ac69e',
+  obs:           'b79ba030-9eaf-4f1f-a5c5-ebc69b9cf245',
   acesso_opts:   { coletado: null, pendente: null, sem: null }, // resolvidos dinamicamente abaixo
 };
 // Opções dos dropdowns de acesso (mesmas para todos os 4 campos)
@@ -196,14 +201,19 @@ async function processarKickoff(d) {
 
   // Seta custom fields com os dados do briefing
   await setFields(kickoffTask.id, {
-    [CF.produtos]:      (d.produtos || '').slice(0, 200),
-    [CF.area_atuacao]:  d.areaAtuacao  || '',
+    [CF.produtos]:      (d.produtos     || '').slice(0, 200),
+    [CF.area_atuacao]:  d.areaAtuacao   || '',
     [CF.ticket_medio]:  parseFloat(String(d.ticketMedio || 0).replace(/[^\d.]/g, '')) || 0,
     [CF.verba_mensal]:  parseFloat(String(d.verba       || 0).replace(/[^\d.]/g, '')) || 0,
     [CF.acesso_meta]:   acessoOpt(d.acessoMeta),
     [CF.acesso_google]: acessoOpt(d.acessoGoogle),
     [CF.acesso_gmb]:    acessoOpt(d.acessoGmb),
     [CF.acesso_site]:   acessoOpt(d.acessoSite),
+    ...(d.diferenciais  ? { [CF.diferenciais]: d.diferenciais.slice(0, 500)  } : {}),
+    ...(d.perfilClientes? { [CF.perfil]:        d.perfilClientes.slice(0, 500)} : {}),
+    ...(d.comoVendem    ? { [CF.como_vendem]:   d.comoVendem.slice(0, 300)   } : {}),
+    ...(d.concorrentes  ? { [CF.concorrentes]:  d.concorrentes.slice(0, 500) } : {}),
+    ...(d.obs           ? { [CF.obs]:           d.obs.slice(0, 500)          } : {}),
   });
 
   // Mantém comentário com detalhes completos (diferenciais, depoimentos, obs)
