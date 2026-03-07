@@ -12,9 +12,10 @@ const BASE_URL           = 'https://api.clickup.com/api/v2';
 const KICKOFF_URL        = (process.env.KICKOFF_URL || 'https://escalando.co/kickoff').trim();
 const GOOGLE_WORKSPACE   = (process.env.GOOGLE_WORKSPACE_URL || '').trim();
 
-// ── CUSTOM FIELD IDs (Onboarding list) ───────────────────────
+// ── CUSTOM FIELD IDs — Onboarding list (campos de AÇÃO apenas) ───────────────
+// Apenas campos relevantes para as tasks de ação (NF, Kickoff, etc.)
+// Campos de perfil do cliente ficam na Ficha do Cliente (lista DADOS)
 const CF = {
-  // Fechamento
   whatsapp:      'c8d8bb6d-656f-4d4b-89c7-d37ce1311bbe',
   cnpj:          '232d32d6-cad3-4bd9-8546-d1b101d795fd',
   responsavel:   '35803d01-c334-4f1a-b402-48c635a53e0b',
@@ -22,24 +23,7 @@ const CF = {
   plano_opts:    { starter: 'f2eac063-f13f-493a-b07f-e7c09b22fa25', growth: '0b0e41c4-fa0c-4f80-8a9d-65ab2e6d9209', pro: '8a724d88-dc3b-42c6-8355-ed4544b37ad8' },
   valor_mensal:  '38bd0f83-b8f0-4e42-9ad7-29d73b861d88',
   data_inicio:   'a8cc4abf-70a0-4fe0-8f55-41ab7c02f27f',
-  // Kickoff
-  produtos:      '2198aba2-bf7d-4f33-b74d-fae51053744f',
-  area_atuacao:  'a7f39530-56ae-44a8-827e-5fe43b02f295',
-  ticket_medio:  'b9bcacfa-fa82-458d-a075-3cd0804d2098',
-  verba_mensal:  '06986839-de08-44d7-b9d3-edb37c93aed8',
-  acesso_meta:   '836718ae-38fb-466b-9106-aa4e884a4536',
-  acesso_google: '9a775a51-e3b7-45f1-b1d0-3abc74b5a23a',
-  acesso_gmb:    '49fdbb26-04d6-4ed9-83bc-6477d455600f',
-  acesso_site:   'a66f8163-a649-4b4a-abd1-8226a47314d2',
-  diferenciais:  '229fd762-bde0-4c81-859f-1338e303ae1e',
-  perfil:        '888b4e68-1afd-4643-9ae5-12db57f37b97',
-  como_vendem:   '98f4dc2b-9092-4c22-90b0-ba68d3b98c44',
-  concorrentes:  'b78b2405-78a2-4570-9de0-78fa317ac69e',
-  obs:           'b79ba030-9eaf-4f1f-a5c5-ebc69b9cf245',
-  acesso_opts:   { coletado: null, pendente: null, sem: null }, // resolvidos dinamicamente abaixo
 };
-// Opções dos dropdowns de acesso (mesmas para todos os 4 campos)
-const ACESSO_OPT = { coletado: 0, pendente: 1, sem: 2 }; // orderindex
 
 // ============================================================
 // HANDLER PRINCIPAL
@@ -89,13 +73,102 @@ export default async function handler(req, res) {
 }
 
 // ============================================================
+// FICHA DO CLIENTE — helper
+// ============================================================
+function buildFichaDesc(empresa, d) {
+  const acesso = v => v === 0 ? '✅ Coletado' : v === 1 ? '⏳ Pendente' : '—';
+  return `## 📋 Ficha do Cliente — ${empresa}
+
+---
+
+### 🏢 Dados Comerciais
+| Campo | Valor |
+|-------|-------|
+| **Responsável** | ${d.responsavel || '—'} |
+| **WhatsApp** | ${d.whatsapp || '—'} |
+| **CNPJ** | ${d.cnpj || '—'} |
+| **Plano** | ${nomePlano(d.plano)} |
+| **Valor Mensal** | ${d.valor ? `R$ ${d.valor}` : '—'} |
+| **Data Início** | ${d.dataInicio || '—'} |
+
+---
+
+### 🔑 Acessos
+| Canal | Status |
+|-------|--------|
+| **Meta Ads** | ${acesso(d.acessoMeta)} |
+| **Google Ads** | ${acesso(d.acessoGoogle)} |
+| **GMB** | ${acesso(d.acessoGmb)} |
+| **Site** | ${acesso(d.acessoSite)} |
+
+---
+
+### 📦 Negócio
+**Produtos/Serviços:** ${d.produtos || '—'}
+
+**Área de Atuação:** ${d.areaAtuacao || '—'}
+
+**Ticket Médio:** ${d.ticketMedio ? `R$ ${d.ticketMedio}` : '—'}
+
+**Verba Mensal (Ads):** ${d.verbaMensal ? `R$ ${d.verbaMensal}` : '—'}
+
+**Diferenciais:** ${d.diferenciais || '—'}
+
+---
+
+### 👥 Mercado
+**Perfil dos Clientes:** ${d.perfilClientes || '—'}
+
+**Como Vendem Hoje:** ${d.comoVendem || '—'}
+
+**Concorrentes:** ${d.concorrentes || '—'}
+
+---
+
+### 📝 Observações
+${d.obs || '—'}
+
+---
+_Atualizado automaticamente pelo sistema Escalando Premoldados_`;
+}
+
+async function criarListaDados(folderId, empresa, dadosIniciais = {}) {
+  const dadosList = await cu('post', `/folder/${folderId}/list`, { name: 'DADOS' });
+  const ficha = await cu('post', `/list/${dadosList.id}/task`, {
+    name: `Ficha do Cliente — ${empresa}`,
+    description: buildFichaDesc(empresa, dadosIniciais),
+    priority: 1,
+  });
+  return { dadosList, ficha };
+}
+
+async function atualizarFichaDesc(folderId, dadosKickoff) {
+  const { lists } = await cu('get', `/folder/${folderId}/list?archived=false`);
+  const dadosList = lists.find(l => l.name === 'DADOS');
+  if (!dadosList) return;
+  const { tasks } = await cu('get', `/list/${dadosList.id}/task?archived=false`);
+  const ficha = tasks.find(t => t.name.toLowerCase().includes('ficha do cliente'));
+  if (!ficha) return;
+  await cu('put', `/task/${ficha.id}`, {
+    description: buildFichaDesc(dadosKickoff.empresa || '', dadosKickoff),
+  });
+  return ficha.id;
+}
+
+// ============================================================
 // FORM 1 — FECHAMENTO
 // ============================================================
 async function processarFechamento(d) {
   // 1. Cria folder do cliente
   const folder = await cu('post', `/space/${SPACE_CLIENTES}/folder`, { name: d.empresa.trim() });
 
-  // 2. Cria listas por plano
+  // 2. Cria lista DADOS + Ficha do Cliente (nova estrutura)
+  await criarListaDados(folder.id, d.empresa.trim(), {
+    responsavel: d.responsavel, whatsapp: d.whatsapp, cnpj: d.cnpj,
+    plano: d.plano, valor: d.valor, dataInicio: d.dataInicio,
+  });
+
+  // 3. Cria listas por plano
   const onboarding = await cu('post', `/folder/${folder.id}/list`, { name: 'Onboarding' });
   await cu('post', `/folder/${folder.id}/list`, { name: 'GMB' });
   await cu('post', `/folder/${folder.id}/list`, { name: 'Landing Pages' });
@@ -108,13 +181,12 @@ async function processarFechamento(d) {
     await cu('post', `/folder/${folder.id}/list`, { name: 'Google Ads' });
   }
 
-  // 3. Task: Emitir NF + Contrato
+  // 4. Task: Emitir NF + Contrato (só campos de ação)
   const nfTask = await cu('post', `/list/${onboarding.id}/task`, {
     name: `Emitir NF + Contrato — ${d.empresa}`,
-    description: `**Plano:** ${nomePlano(d.plano)} — R$ ${d.valor}/mês\n**Início:** ${d.dataInicio}`,
+    description: `**Cliente:** ${d.empresa}\n**CNPJ:** ${d.cnpj || '—'}\n**Responsável:** ${d.responsavel || '—'}\n**WhatsApp:** ${d.whatsapp || '—'}\n**Plano:** ${nomePlano(d.plano)} — R$ ${d.valor}/mês\n**Início:** ${d.dataInicio}`,
     priority: 1,
   });
-  // Popula custom fields
   const tsInicio = toTs(d.dataInicio);
   await setFields(nfTask.id, {
     [CF.whatsapp]:     d.whatsapp    || '',
@@ -125,7 +197,7 @@ async function processarFechamento(d) {
     ...(tsInicio ? { [CF.data_inicio]: tsInicio } : {}),
   });
 
-  // 4. Task: Marcar Kickoff (com link do Form 2)
+  // 5. Task: Marcar Kickoff (com link do Form 2)
   const kickoffLink = `${KICKOFF_URL}?cliente=${encodeURIComponent(d.empresa)}`;
   const kickoffTask = await cu('post', `/list/${onboarding.id}/task`, {
     name: `Marcar Kickoff — ${d.empresa}`,
@@ -189,34 +261,44 @@ async function processarKickoff(d) {
   const folder = folders.find(f => f.name.toLowerCase() === d.empresa.toLowerCase());
   if (!folder) throw new Error(`Folder "${d.empresa}" não encontrado no ClickUp.`);
 
-  // Busca lista Onboarding
   const { lists } = await cu('get', `/folder/${folder.id}/list?archived=false`);
-  const onboarding = lists.find(l => l.name === 'Onboarding');
-  if (!onboarding) throw new Error('Lista Onboarding não encontrada.');
 
-  // Busca task "Marcar Kickoff"
-  const { tasks } = await cu('get', `/list/${onboarding.id}/task?archived=false`);
-  const kickoffTask = tasks.find(t => t.name.toLowerCase().startsWith('marcar kickoff'));
-  if (!kickoffTask) throw new Error('Task "Marcar Kickoff" não encontrada.');
-
-  // Seta custom fields com os dados do briefing
-  await setFields(kickoffTask.id, {
-    [CF.produtos]:      (d.produtos     || '').slice(0, 200),
-    [CF.area_atuacao]:  d.areaAtuacao   || '',
-    [CF.ticket_medio]:  parseFloat(String(d.ticketMedio || 0).replace(/[^\d.]/g, '')) || 0,
-    [CF.verba_mensal]:  parseFloat(String(d.verba       || 0).replace(/[^\d.]/g, '')) || 0,
-    [CF.acesso_meta]:   acessoOpt(d.acessoMeta),
-    [CF.acesso_google]: acessoOpt(d.acessoGoogle),
-    [CF.acesso_gmb]:    acessoOpt(d.acessoGmb),
-    [CF.acesso_site]:   acessoOpt(d.acessoSite),
-    ...(d.diferenciais   ? { [CF.diferenciais]: d.diferenciais.slice(0, 500)  } : {}),
-    ...(d.perfilClientes ? { [CF.perfil]:        d.perfilClientes.slice(0, 500)} : {}),
-    ...(d.comoVendem     ? { [CF.como_vendem]:   d.comoVendem.slice(0, 300)   } : {}),
-    ...(d.concorrentes   ? { [CF.concorrentes]:  d.concorrentes.slice(0, 500) } : {}),
-    ...(d.obs            ? { [CF.obs]:           d.obs.slice(0, 500)          } : {}),
+  // 1. Atualiza Ficha do Cliente na lista DADOS
+  await atualizarFichaDesc(folder.id, {
+    empresa:       d.empresa,
+    responsavel:   d.responsavel,
+    whatsapp:      d.whatsapp,
+    cnpj:          d.cnpj,
+    plano:         d.plano,
+    valor:         d.valor,
+    dataInicio:    d.dataInicio,
+    produtos:      d.produtos,
+    areaAtuacao:   d.areaAtuacao,
+    ticketMedio:   d.ticketMedio,
+    verbaMensal:   d.verba,
+    acessoMeta:    acessoOpt(d.acessoMeta),
+    acessoGoogle:  acessoOpt(d.acessoGoogle),
+    acessoGmb:     acessoOpt(d.acessoGmb),
+    acessoSite:    acessoOpt(d.acessoSite),
+    diferenciais:  d.diferenciais,
+    perfilClientes:d.perfilClientes,
+    comoVendem:    d.comoVendem,
+    concorrentes:  d.concorrentes,
+    obs:           d.obs,
   });
 
-  // Comentário completo com todos os campos do formulário
+  // 2. Busca lista Onboarding + task "Marcar Kickoff" para marcar como concluída
+  const onboarding = lists.find(l => l.name === 'Onboarding');
+  if (onboarding) {
+    const { tasks } = await cu('get', `/list/${onboarding.id}/task?archived=false`);
+    const kickoffTask = tasks.find(t => t.name.toLowerCase().startsWith('marcar kickoff'));
+    if (kickoffTask) {
+      // Marca como concluída
+      await cu('put', `/task/${kickoffTask.id}`, { status: 'complete' }).catch(() => {});
+    }
+  }
+
+  // Comentário completo com todos os campos do formulário (vai na Ficha do Cliente)
   const comentario = [
     `📋 **Briefing de Kickoff — ${d.empresa}**`,
     ``,
@@ -253,7 +335,20 @@ async function processarKickoff(d) {
     d.obs                  ? `**📝 Observações:** ${d.obs}` : '',
   ].filter(Boolean).join('\n');
 
-  await cu('post', `/task/${kickoffTask.id}/comment`, { comment_text: comentario });
+  // Posta comentário de briefing na Ficha do Cliente (lista DADOS)
+  const fichaTaskId = await atualizarFichaDesc(folder.id, {
+    empresa: d.empresa, responsavel: d.responsavel, whatsapp: d.whatsapp,
+    cnpj: d.cnpj, plano: d.plano, valor: d.valor, dataInicio: d.dataInicio,
+    produtos: d.produtos, areaAtuacao: d.areaAtuacao, ticketMedio: d.ticketMedio,
+    verbaMensal: d.verba, acessoMeta: acessoOpt(d.acessoMeta),
+    acessoGoogle: acessoOpt(d.acessoGoogle), acessoGmb: acessoOpt(d.acessoGmb),
+    acessoSite: acessoOpt(d.acessoSite), diferenciais: d.diferenciais,
+    perfilClientes: d.perfilClientes, comoVendem: d.comoVendem,
+    concorrentes: d.concorrentes, obs: d.obs,
+  });
+  if (fichaTaskId) {
+    await cu('post', `/task/${fichaTaskId}/comment`, { comment_text: comentario });
+  }
 
   // Atualiza Dossiê do cliente (Kickoff + Briefing pages) via ClickUp v3 — async
   atualizarDossieKickoff(folder.id, d).catch(e =>
