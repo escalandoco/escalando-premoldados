@@ -230,6 +230,17 @@ async function processarKickoff(d) {
 
   await cu('post', `/task/${kickoffTask.id}/comment`, { comment_text: comentario });
 
+  // Dispara análise de concorrentes + benchmarking da empresa no VPS (async, não bloqueia)
+  const VPS_URL       = (process.env.VPS_URL || 'http://129.121.45.61:3030').trim();
+  const WORKER_SECRET = (process.env.WORKER_SECRET || 'esc-worker-2026-secret').trim();
+  try {
+    fetch(`${VPS_URL}/api/run-worker`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ secret: WORKER_SECRET, script: 'analisar-concorrentes', cliente: d.empresa }),
+    }).catch(() => {}); // fire-and-forget
+  } catch (_) {}
+
   return { msg: `Briefing registrado para ${d.empresa}` };
 }
 

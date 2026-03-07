@@ -65,6 +65,11 @@ const AGENTS = {
     agent: 'Theo', handle: '@theo', role: 'Traffic Manager',
     keywords: ['copy da lp', 'copy da landing', 'texto da página', 'copy completo'],
   },
+  'analisar-concorrentes': {
+    desc: 'Analisa concorrentes e gera benchmarking competitivo completo com análise da própria empresa',
+    agent: 'Alex', handle: '@alex', role: 'Analyst',
+    keywords: ['analisa concorrentes', 'benchmarking', 'concorrentes', 'análise competitiva', 'quem são os concorrentes'],
+  },
 };
 
 const AGENTS_LIST = Object.entries(AGENTS)
