@@ -249,6 +249,8 @@ section{margin-bottom:36px}
 .exec-retry-btn:disabled{opacity:.5;cursor:not-allowed}
 .exec-empty{text-align:center;padding:60px;color:var(--muted)}
 .exec-empty-icon{font-size:36px;margin-bottom:12px}
+.exec-progress{height:3px;background:var(--bg4);border-radius:2px;margin-top:8px;overflow:hidden}
+.exec-progress-fill{height:100%;background:var(--blue);border-radius:2px;transition:width .6s ease}
 .tag{font-size:10px;background:var(--bg4);border:1px solid var(--border);border-radius:4px;padding:1px 7px;color:var(--muted)}
 
 /* prd iframe */
@@ -1034,6 +1036,10 @@ function renderExecucoes(jobs) {
                 <div style="font-size:11px;color:var(--muted2)">
                   Criado: ${new Date(job.createdAt).toLocaleString('pt-BR')}${lastAt}
                 </div>
+                ${job.status === 'running' && job.progress != null ? `
+                  <div class="exec-progress"><div class="exec-progress-fill" style="width:${job.progress}%"></div></div>
+                  <div style="font-size:10px;color:var(--blue);margin-top:3px">${job.progress}% — ${job.step||'Processando...'}</div>
+                ` : ''}
                 ${error}
               </div>
               ${retry}

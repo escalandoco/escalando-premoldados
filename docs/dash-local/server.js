@@ -342,7 +342,22 @@ function nextCronRun(cronExpr) {
 function readJobQueue() {
   try {
     if (!fs.existsSync(QUEUE_FILE)) return [];
-    return JSON.parse(fs.readFileSync(QUEUE_FILE, 'utf8'));
+    const queue = JSON.parse(fs.readFileSync(QUEUE_FILE, 'utf8'));
+    // Auto-expirar jobs "running" com mais de 15 min sem atualização
+    const now = Date.now();
+    let changed = false;
+    for (const job of queue) {
+      if (job.status === 'running') {
+        const age = now - new Date(job.lastAttempt || job.createdAt).getTime();
+        if (age > 15 * 60 * 1000) {
+          job.status = 'failed';
+          job.error = 'Timeout — script não respondeu em 15 minutos';
+          changed = true;
+        }
+      }
+    }
+    if (changed) fs.writeFileSync(QUEUE_FILE, JSON.stringify(queue, null, 2));
+    return queue;
   } catch { return []; }
 }
 

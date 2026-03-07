@@ -27,7 +27,7 @@ const { values } = parseArgs({
   options: { cliente: { type: 'string', default: 'concrenor' } },
 });
 const CLIENTE = values.cliente;
-const JOB_ID  = `${Date.now()}-analisar-concorrentes-${CLIENTE}`;
+const JOB_ID  = `analisar-concorrentes-${CLIENTE.toLowerCase()}`; // ID fixo — reexecuções atualizam o mesmo entry
 
 const CLICKUP_API_KEY  = process.env.CLICKUP_API_KEY;
 const ANTHROPIC_KEY    = process.env.ANTHROPIC_API_KEY;
@@ -45,10 +45,17 @@ function readQueue() {
 function writeQueueEntry(entry) {
   const queue = readQueue();
   const idx = queue.findIndex(j => j.id === entry.id);
-  if (idx >= 0) queue[idx] = { ...queue[idx], ...entry };
-  else queue.unshift(entry);
+  if (idx >= 0) {
+    queue[idx] = { ...queue[idx], ...entry };
+  } else {
+    queue.unshift({ attempts: 1, ...entry });
+  }
   fs.mkdirSync(path.dirname(QUEUE_FILE), { recursive: true });
   fs.writeFileSync(QUEUE_FILE, JSON.stringify(queue.slice(0, 50), null, 2));
+}
+
+function progress(pct, step) {
+  writeQueueEntry({ id: JOB_ID, progress: pct, step });
 }
 
 // ── Fetch simples de URL pública ──────────────────────────────
@@ -298,15 +305,18 @@ async function main() {
   const ts = new Date().toISOString().slice(0, 19).replace('T', ' ');
   console.log(`[${ts}] Iniciando análise de concorrentes — ${CLIENTE}`);
 
-  // Registra job na fila
+  // Registra/atualiza job na fila (ID fixo — incrementa tentativas)
+  const existing = readQueue().find(j => j.id === JOB_ID);
   writeQueueEntry({
     id: JOB_ID,
     script: 'analisar-concorrentes',
     cliente: CLIENTE,
     status: 'running',
-    createdAt: new Date().toISOString(),
+    progress: 0,
+    step: 'Iniciando...',
+    createdAt: existing?.createdAt || new Date().toISOString(),
     lastAttempt: new Date().toISOString(),
-    attempts: 1,
+    attempts: (existing?.attempts || 0) + 1,
     error: null,
   });
 
@@ -327,6 +337,7 @@ async function main() {
   const { tasks } = await clickupGet(`/list/${onboarding.id}/task?include_closed=true`);
   const kickoffTask = tasks.find(t => t.name.toLowerCase().includes('kickoff'));
   if (!kickoffTask) throw new Error('Task de Kickoff não encontrada.');
+  progress(15, 'Kickoff encontrado');
 
   // 2. Extrai dados do briefing
   const cf = {};
@@ -373,6 +384,7 @@ async function main() {
 
   console.log(`  Concorrentes encontrados: ${urls.length}`);
   console.log(`  URLs: ${urls.join(', ')}`);
+  progress(25, `${urls.length} concorrentes encontrados`);
 
   const empresaDados = {
     nome:         CLIENTE,
@@ -397,6 +409,7 @@ async function main() {
   ]);
 
   const conteudoEmpresa = empresaPage.ok ? limparHtml(empresaPage.body) : '';
+  progress(40, 'Páginas coletadas');
 
   // 5. Claude analisa a empresa + cada concorrente
   console.log('  Analisando com Claude...');
@@ -404,12 +417,17 @@ async function main() {
   const contextoCliente = `${empresaDados.nome} — ${empresaDados.produtos} — ${empresaDados.area}`;
 
   // Sequencial para não sobrecarregar a API
+  progress(45, 'Analisando empresa...');
   const analiseEmpresa = await analisarEmpresa(empresaDados, cf, conteudoEmpresa);
+  progress(55, 'Empresa analisada');
+
   const analisesConcorrentes = [];
   for (let i = 0; i < urls.length; i++) {
     const conteudo = concorrentesPages[i]?.ok ? limparHtml(concorrentesPages[i].body) : '';
+    progress(55 + Math.round((i + 0.5) * 35 / urls.length), `Analisando concorrente ${i + 1}/${urls.length}...`);
     const analise = await analisarConcorrente(urls[i], urls[i], conteudo, contextoCliente);
     analisesConcorrentes.push(analise);
+    progress(55 + Math.round((i + 1) * 35 / urls.length), `Concorrente ${i + 1}/${urls.length} analisado`);
   }
 
   const concorrentes = urls.map((url, i) => ({ url, analise: analisesConcorrentes[i] }));
@@ -436,7 +454,7 @@ async function main() {
 
   console.log('  ✅ Task criada em Sucesso do Cliente.');
 
-  writeQueueEntry({ id: JOB_ID, status: 'done', doneAt: new Date().toISOString() });
+  writeQueueEntry({ id: JOB_ID, status: 'done', progress: 100, step: 'Concluído', doneAt: new Date().toISOString() });
   process.exit(0);
 }
 
