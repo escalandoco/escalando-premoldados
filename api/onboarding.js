@@ -155,6 +155,28 @@ async function atualizarFichaDesc(folderId, dadosKickoff) {
   return ficha.id;
 }
 
+// Encontra a task Ficha do Cliente pelo nome da empresa e retorna seu ID
+async function encontrarFichaId(empresa) {
+  try {
+    const { folders } = await cu('get', `/space/${SPACE_CLIENTES}/folder?archived=false`);
+    const folder = folders.find(f => f.name.toLowerCase() === empresa.toLowerCase());
+    if (!folder) return null;
+    const { lists } = await cu('get', `/folder/${folder.id}/list?archived=false`);
+    const dadosList = lists.find(l => l.name === 'DADOS');
+    if (!dadosList) return null;
+    const { tasks } = await cu('get', `/list/${dadosList.id}/task?archived=false`);
+    const ficha = tasks.find(t => t.name.toLowerCase().includes('ficha do cliente'));
+    return ficha?.id || null;
+  } catch { return null; }
+}
+
+async function fichaComment(empresa, text) {
+  const fichaId = await encontrarFichaId(empresa);
+  if (fichaId) {
+    await cu('post', `/task/${fichaId}/comment`, { comment_text: text, notify_all: false });
+  }
+}
+
 // ============================================================
 // FORM 1 — FECHAMENTO
 // ============================================================
@@ -698,7 +720,28 @@ async function processarLpBriefing(d) {
     comment_text: `\`\`\`json\n${JSON.stringify(configJson, null, 2)}\n\`\`\``,
   });
 
-  const lpLabel = d.lp_nome ? ` (${d.lp_nome})` : '';
+  // 7. Posta resumo do LP Briefing na Ficha do Cliente
+  const produtosTexto = (d.produtos || []).map(p => `- ${p.nome}${p.preco ? ` (${p.preco})` : ''}`).join('\n');
+  const diferenciaisTexto = (d.diferenciais || []).map((df, i) => `${i+1}. ${df}`).join('\n');
+  const depoimentosTexto = (d.depoimentos || []).map(dep => `"${dep.texto}" — ${dep.nome}${dep.local ? `, ${dep.local}` : ''}`).join('\n');
+  const lpLabel = d.lp_nome ? ` — ${d.lp_nome}` : '';
+  await fichaComment(d.empresa, [
+    `🎨 **LP Briefing preenchido${lpLabel}**`,
+    ``,
+    `**WhatsApp:** ${d.whatsapp || '—'}`,
+    `**Cidade:** ${d.cidade || '—'} | **Regiões:** ${d.regioes || '—'}`,
+    `**Slogan:** ${d.slogan || '—'}`,
+    `**Estilo visual:** ${d.estilo || '—'} | **Cores:** ${d.cor_primaria || ''} / ${d.cor_secundaria || ''}`,
+    `**Headline:** ${d.headline || '(a gerar)'}`,
+    ``,
+    produtosTexto ? `**Produtos:**\n${produtosTexto}` : '',
+    diferenciaisTexto ? `\n**Diferenciais:**\n${diferenciaisTexto}` : '',
+    depoimentosTexto ? `\n**Depoimentos:**\n${depoimentosTexto}` : '',
+    d.obs ? `\n**Obs:** ${d.obs}` : '',
+    ``,
+    `---\n_LP Briefing — Escalando Premoldados_`,
+  ].filter(v => v !== '').join('\n'));
+
   return { msg: `Briefing de LP${lpLabel} recebido para ${d.empresa}. Task criada no ClickUp.` };
 }
 
@@ -714,6 +757,27 @@ async function processarNovoOrcamento(d) {
   });
   const json = await res.json();
   if (!json.success) throw new Error(json.error || 'Erro ao registrar orçamento.');
+
+  // Posta registro do orçamento na Ficha do Cliente (fire-and-forget)
+  if (d.empresa) {
+    const itensTexto = (d.itens || []).map(item =>
+      `- ${item.nome || item.produto || '?'}: ${item.qtd || 1}x R$ ${item.preco || '—'}`
+    ).join('\n');
+    const total = (d.itens || []).reduce((s, i) => s + ((i.qtd || 1) * (parseFloat(String(i.preco || 0).replace(/[^\d.]/g, '')) || 0)), 0);
+    fichaComment(d.empresa, [
+      `💰 **Orçamento registrado — ${d.data || new Date().toLocaleDateString('pt-BR')}**`,
+      ``,
+      `**Lead:** ${d.nome || '—'} | **Tel:** ${d.telefone || '—'}`,
+      `**Canal:** ${d.canal || '—'} | **Região:** ${d.regiao || '—'}`,
+      itensTexto ? `\n**Itens:**\n${itensTexto}` : '',
+      total ? `\n**Total estimado:** R$ ${total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}` : '',
+      d.prazo ? `**Prazo desejado:** ${d.prazo}` : '',
+      d.obs ? `**Obs:** ${d.obs}` : '',
+      ``,
+      `---\n_Orçamento — Escalando Premoldados_`,
+    ].filter(v => v !== '').join('\n')).catch(() => {});
+  }
+
   return { msg: json.msg };
 }
 
