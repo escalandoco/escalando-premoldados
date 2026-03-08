@@ -423,8 +423,9 @@ async function atualizarDossieKickoff(folderId, d) {
   if (!doc) return; // Dossiê ainda não criado — ok
 
   // 2. Lista páginas do doc
+  // A API v3 retorna array direto (não objeto com chave 'pages')
   const pagesRes = await cuV3('get', `/workspaces/${WS_ID}/docs/${doc.id}/pages`);
-  const pages = pagesRes.pages || pagesRes.data || [];
+  const pages = Array.isArray(pagesRes) ? pagesRes : (pagesRes.pages || pagesRes.data || []);
 
   const hoje = new Date().toLocaleDateString('pt-BR');
 
