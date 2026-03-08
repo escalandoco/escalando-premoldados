@@ -148,13 +148,6 @@ function buildIntegrations(env) {
     { group: 'agency', name: 'ClickUp',             icon: '✅', connected: ok(env.CLICKUP_API_KEY),              detail: env.CLICKUP_API_KEY ? 'Conectado' : '—',     action: 'API Key do ClickUp — gestão de tasks e onboarding',    edit: { source:'env', key:'CLICKUP_API_KEY',       label:'ClickUp API Key',      placeholder:'pk_...' } },
     { group: 'agency', name: 'Vercel (Webhooks)',   icon: '▲',  connected: ok(env.VERCEL_TOKEN),                  detail: env.VERCEL_TOKEN ? 'Conectado' : '—',        action: 'Token do Vercel — hospeda webhooks da agência',        edit: { source:'env', key:'VERCEL_TOKEN',          label:'Vercel Token',         placeholder:'vcp_...' } },
     { group: 'agency', name: 'FTP / HostGator',     icon: '🌐', connected: ok(env.FTP_HOST) && ok(env.FTP_USER), detail: env.FTP_HOST || '—',                         action: 'Host, usuário e senha — deploy de LPs no servidor',    edit: { source:'ftp', key:'FTP',                   label:'FTP',                  placeholder:'' } },
-    // ── Por cliente (Concrenor) ──
-    { group: 'client', name: 'Meta Pixel',          icon: '📘', connected: ok(lp.pixel_meta),                    detail: lp.pixel_meta || '—',                        action: 'Pixel ID do cliente no Meta Business',                 edit: { source:'lp',  key:'pixel_meta',            label:'Pixel ID',             placeholder:'ex: 1234567890123456' } },
-    { group: 'client', name: 'Conversions API',     icon: '🔗', connected: ok(env.META_CAPI_TOKEN),              detail: env.META_CAPI_TOKEN ? mask(env.META_CAPI_TOKEN) : '—', action: 'Token CAPI do cliente (Meta server-side)',    edit: { source:'env', key:'META_CAPI_TOKEN',       label:'Token CAPI',           placeholder:'EAAxxxxxx...' } },
-    { group: 'client', name: 'Google Analytics',    icon: '📊', connected: ok(lp.ga4),                           detail: lp.ga4 || '—',                               action: 'Measurement ID do GA4 do cliente',                     edit: { source:'lp',  key:'ga4',                   label:'GA4 Measurement ID',   placeholder:'G-XXXXXXXXXX' } },
-    { group: 'client', name: 'WhatsApp / Tintim',   icon: '💬', connected: ok(lp.whatsapp, '5579999999999'),     detail: lp.whatsapp || '—',                          action: 'Número WPP do cliente com DDI+DDD',                    edit: { source:'lp',  key:'whatsapp',              label:'Número WPP (DDI+DDD)', placeholder:'5579912345678' } },
-    { group: 'client', name: 'Sheets CRM',          icon: '📋', connected: ok(env.GOOGLE_WORKSPACE_URL),         detail: env.GOOGLE_WORKSPACE_URL ? 'URL OK' : '—',   action: 'URL do Apps Script Web App do cliente',                edit: { source:'env', key:'GOOGLE_WORKSPACE_URL',  label:'URL do Web App',       placeholder:'https://script.google.com/macros/s/...' } },
-    { group: 'client', name: 'Google Drive PDF',    icon: '📁', connected: ok(env.DRIVE_FOLDER_ID),              detail: env.DRIVE_FOLDER_ID || '—',                  action: 'ID da pasta no Drive para relatórios do cliente',      edit: { source:'env', key:'DRIVE_FOLDER_ID',       label:'Drive Folder ID',      placeholder:'1ABC...XYZ' } },
   ];
 }
 
@@ -237,7 +230,7 @@ const WORKERS = [
     name: 'Monitorar Ads',
     desc: 'Verifica CPL/CTR/CPM vs limites e cria alerta no ClickUp se fora do padrão',
     icon: '📊',
-    cron: '0 11 * * *',
+    cron: '0 8 * * *',
     cronHuman: 'Diário · 08h BRT',
     logFile: '/var/log/escalando-monitorar.log',
     script: 'monitorar-ads',
@@ -248,7 +241,7 @@ const WORKERS = [
     name: 'Relatório Ads',
     desc: 'Gera relatório de performance HTML dos anúncios e notifica no ClickUp',
     icon: '📈',
-    cron: '0 11 1,15 * *',
+    cron: '0 8 1,15 * *',
     cronHuman: 'Dias 1 e 15 · 08h BRT',
     logFile: '/var/log/escalando-relatorio.log',
     script: 'relatorio-ads',
@@ -259,7 +252,7 @@ const WORKERS = [
     name: 'Exportar Leads Meta',
     desc: 'Exporta lista de leads do Google Sheets para Custom Audiences do Meta Ads',
     icon: '📤',
-    cron: '0 11 * * 1',
+    cron: '0 8 * * 1',
     cronHuman: 'Toda 2ª feira · 08h BRT',
     logFile: '/var/log/escalando-leads.log',
     script: 'exportar-leads-meta',
@@ -615,10 +608,54 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  // ── GET /prd → prd.html ──
-  if (req.method === 'GET' && req.url === '/prd') {
-    res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
-    res.end(fs.readFileSync(path.join(__dirname, 'prd.html'), 'utf8'));
+  // ── GET /api/clientes ──
+  if (req.method === 'GET' && req.url === '/api/clientes') {
+    const CLIENTES = [
+      {
+        id: 'concrenor',
+        nome: 'Concrenor',
+        segmento: 'Pré-moldados de concreto',
+        cidade: 'Sergipe',
+        plano: 'Essencial',
+        status: 'ativo',
+        lp: 'https://concrenor.escalando.co/',
+        lpStatus: 'online',
+        clickup: 'https://app.clickup.com/90133050692/v/l/901317576140',
+        metaAds: 'aguardando campanha',
+        gmb: 'pendente',
+        cor: '#58A6FF',
+      },
+      {
+        id: 'brasbloco',
+        nome: 'Brasbloco',
+        segmento: 'Blocos e estruturas',
+        cidade: '—',
+        plano: 'Essencial',
+        status: 'onboarding',
+        lp: '',
+        lpStatus: 'pendente',
+        clickup: 'https://app.clickup.com/90133050692/v/l/901317642669',
+        metaAds: 'pendente',
+        gmb: 'pendente',
+        cor: '#3FB950',
+      },
+      {
+        id: 'levert',
+        nome: 'Levert',
+        segmento: 'Pré-moldados',
+        cidade: '—',
+        plano: 'Essencial',
+        status: 'onboarding',
+        lp: '',
+        lpStatus: 'pendente',
+        clickup: 'https://app.clickup.com/90133050692/v/l/901317642685',
+        metaAds: 'pendente',
+        gmb: 'pendente',
+        cor: '#FFA657',
+      },
+    ];
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify(CLIENTES));
     return;
   }
 
