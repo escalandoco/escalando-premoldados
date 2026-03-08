@@ -635,8 +635,6 @@ function renderOverview(data) {
   const totalAll  = data.epics.reduce((a,e)=>a+e.total,0);
   const pctTotal  = totalAll > 0 ? Math.round(totalDone / totalAll * 100) : 0;
 
-  const urgentTasks = data.pendingTasks.filter(t => t.priority === 'high');
-
   return `
     <section>
       <div class="section-title">Progresso dos Epics</div>
@@ -684,20 +682,7 @@ function renderOverview(data) {
       </div>
     </section>
 
-    ${urgentTasks.length > 0 ? `
-    <section>
-      <div class="section-title" style="color:var(--red)">Pendências Urgentes</div>
-      <div style="display:flex;flex-direction:column;gap:8px">
-        ${urgentTasks.map(t => `
-          <div style="background:var(--bg2);border:1px solid rgba(248,81,73,.35);border-left:3px solid var(--red);border-radius:var(--radius);padding:12px 16px;display:flex;gap:12px;align-items:flex-start">
-            <span style="font-size:14px;margin-top:1px">🔴</span>
-            <div>
-              <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px">${t.story}</div>
-              <div style="font-size:12px;line-height:1.5">${t.task}</div>
-            </div>
-          </div>`).join('')}
-      </div>
-    </section>` : ''}`;
+    `;
 }
 
 // ── STORIES ──────────────────────────────────────────────────
