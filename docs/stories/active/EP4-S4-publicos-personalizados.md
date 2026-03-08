@@ -28,7 +28,7 @@ Para pré-moldados, os públicos mais valiosos são: visitantes da LP, cliques n
 
 - [ ] Processo documentado em `docs/playbooks/publicos-personalizados.md`
 - [ ] Todos os públicos seguem a nomenclatura definida em EP4-S3
-- [ ] Público de visitantes da LP criado para Concrenor (CA_CONCRENOR_VISITANTES-LP_30D)
+- [ ] Público de visitantes da LP criado para {cliente} (CA_CONCRENOR_VISITANTES-LP_30D)
 - [ ] Público de cliques no WhatsApp criado (CA_CONCRENOR_CLICOU-WPP_60D)
 - [ ] Lista de clientes/leads existentes importada (CA_CONCRENOR_LISTA-CLIENTES)
 - [ ] Lookalike 1% criado a partir da lista de clientes (LAL_CONCRENOR_CLIENTES_1PCT_BR)
@@ -111,7 +111,7 @@ PASSO 5 — Configurar Exclusões:
 ## Tarefas Técnicas
 
 - [x] Criar `docs/playbooks/publicos-personalizados.md` com processo completo
-- [ ] Criar todos os públicos da Concrenor no Meta Ads Manager
+- [ ] Criar todos os públicos da {cliente} no Meta Ads Manager
 - [x] Script `scripts/exportar-leads-meta.js` — exporta CRM → CSV formato Meta
 - [ ] Criar Lookalike 1% a partir da lista de clientes
 - [ ] Configurar exclusões nas campanhas ativas
@@ -121,7 +121,7 @@ PASSO 5 — Configurar Exclusões:
 
 ## Definition of Done
 
-- [ ] Todos os 6 públicos criados para Concrenor no Meta
+- [ ] Todos os 6 públicos criados para {cliente} no Meta
 - [ ] Nomenclatura seguindo o padrão de EP4-S3
 - [ ] Playbook documentado
 - [ ] Exclusões configuradas

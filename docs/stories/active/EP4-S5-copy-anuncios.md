@@ -39,7 +39,7 @@ Pedro Sobral: "O hook é responsável por 80% do resultado. Se o gancho não par
 
 ```json
 {
-  "cliente": "Concrenor",
+  "cliente": "{cliente}",
   "produto": "Mourão Torneado",
   "variacoes": [
     {
@@ -49,7 +49,7 @@ Pedro Sobral: "O hook é responsável por 80% do resultado. Se o gancho não par
       "dor_desejo": "Uma cerca que dura uma geração. Sem manutenção, sem reposição, sem dor de cabeça.",
       "contra_intuitivo": "O mourão de concreto parece mais caro na compra — mas divide pelo tempo de vida: sai a R$ 0,36/ano por mourão. O de eucalipto? R$ 3,60/ano.",
       "cta": "Peça seu orçamento agora — entrega em 48h para Sergipe, Alagoas e Bahia.",
-      "copy_curto": "Mourão que dura 50 anos. Da Concrenor, direto da fábrica em Itabaiana. Peça pelo WhatsApp ↓",
+      "copy_curto": "Mourão que dura 50 anos. Da {cliente}, direto da fábrica em Itabaiana. Peça pelo WhatsApp ↓",
       "copy_longo": "...",
       "formato": "feed"
     },
@@ -60,7 +60,7 @@ Pedro Sobral: "O hook é responsável por 80% do resultado. Se o gancho não par
     },
     {
       "id": "v3",
-      "hook": "Mourão que passa de geração em geração. Concrenor.",
+      "hook": "Mourão que passa de geração em geração. {cliente}.",
       "formato": "search"
     }
   ],
@@ -84,16 +84,16 @@ Pedro Sobral: "O hook é responsável por 80% do resultado. Se o gancho não par
 
 - [x] Criar `scripts/gerar-copy-ads.js` com prompt estruturado (7 pilares)
 - [x] Adicionar script ao `package.json`: `"gerar-copy-ads": "node --env-file=.env scripts/gerar-copy-ads.js"`
-- [x] Gerar rascunho de copy da Concrenor em `config/ads-copy-concrenor.json`
+- [x] Gerar rascunho de copy da {cliente} em `config/ads-copy-{cliente}.json`
 - [ ] Gerar versão via IA e revisar output (requer ANTHROPIC_API_KEY)
 
 ---
 
 ## Definition of Done
 
-- [x] Script funcionando: `npm run gerar-copy-ads -- --cliente=Concrenor`
+- [x] Script funcionando: `npm run gerar-copy-ads -- --cliente={cliente}`
 - [x] Output com 3+ variações por abordagem × formato (feed, stories, search, retargeting)
-- [x] Rascunho da Concrenor gerado — `config/ads-copy-concrenor.json`
+- [x] Rascunho da {cliente} gerado — `config/ads-copy-{cliente}.json`
 - [ ] Revisar e aprovar copy com o cliente
 - [x] Story atualizada
 

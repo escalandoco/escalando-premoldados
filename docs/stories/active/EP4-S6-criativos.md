@@ -33,7 +33,7 @@ Formatos prioritários para pré-moldados:
 - [ ] Pasta de assets organizada: `assets/{cliente}/fotos/`, `assets/{cliente}/videos/`, `assets/{cliente}/aprovados/`
 - [ ] Checklist de fotos necessárias enviado ao cliente (10 fotos mínimas)
 - [ ] Templates Canva/Figma para feed 1:1 e stories 9:16 criados
-- [ ] Pelo menos 3 criativos (imagem estática) aprovados para Concrenor
+- [ ] Pelo menos 3 criativos (imagem estática) aprovados para {cliente}
 - [ ] Criativo com copy do hook integrado ao visual (texto sobreposto)
 
 ---
@@ -67,7 +67,7 @@ Template 1 — Feed Problema/Solução:
 │ "Mourão que dura    │
 │  50 anos."          │
 │                     │
-│ [Logo Concrenor]    │
+│ [Logo {cliente}]    │
 └─────────────────────┘
 
 Template 2 — Feed Comparativo:
@@ -94,17 +94,17 @@ Template 3 — Stories com Hook:
 ## Tarefas Técnicas
 
 - [x] Criar `docs/playbooks/briefing-criativos.md` com checklist de fotos
-- [x] Criar estrutura de pastas `assets/concrenor/`
+- [x] Criar estrutura de pastas `assets/{cliente}/`
 - [ ] Criar 3 templates no Canva (link compartilhável) — tarefa humana
-- [ ] Produzir criativos da Concrenor assim que fotos chegarem — aguardando F01-F06
-- [x] Criar pasta `assets/concrenor/aprovados/` com criativos finais
+- [ ] Produzir criativos da {cliente} assim que fotos chegarem — aguardando F01-F06
+- [x] Criar pasta `assets/{cliente}/aprovados/` com criativos finais
 
 ---
 
 ## Definition of Done
 
 - [x] Briefing visual documentado (`docs/playbooks/briefing-criativos.md`)
-- [x] Checklist de fotos gerado (`config/checklist-fotos-concrenor.json`)
+- [x] Checklist de fotos gerado (`config/checklist-fotos-{cliente}.json`)
 - [ ] Templates criados no Canva — tarefa humana (aguardando fotos)
 - [x] Processo documentado: como produzir criativo em 48h
 - [x] Story atualizada

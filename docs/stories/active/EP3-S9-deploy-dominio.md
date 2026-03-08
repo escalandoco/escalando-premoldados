@@ -24,8 +24,8 @@ Após aprovação, a LP precisa ir ao ar no domínio/subdomínio do cliente. O p
 ## Acceptance Criteria
 
 - [ ] Script de deploy via FTP ou rsync para o servidor do cliente
-- [ ] Suporte a subdomínio próprio do cliente (ex: lps.concrenor.com.br)
-- [ ] Opção de deploy no subdomínio Escalando (ex: concrenor.escalando.co)
+- [ ] Suporte a subdomínio próprio do cliente (ex: lps.{cliente}.com.br)
+- [ ] Opção de deploy no subdomínio Escalando (ex: {cliente}.escalando.co)
 - [ ] HTTPS configurado (Let's Encrypt ou certificado do cliente)
 - [ ] Redirecionamentos de UTM preservados após deploy
 - [ ] Processo documentado no playbook

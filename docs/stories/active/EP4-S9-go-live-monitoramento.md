@@ -31,7 +31,7 @@ Regra de ouro: não pause anúncio em menos de 48h e menos de R$ 50 gastos.
 - [ ] Regras de intervenção documentadas (quando pausar, quando aumentar orçamento)
 - [ ] Alertas configurados no Meta Ads (custo por resultado > limite)
 - [ ] Log de acompanhamento: planilha ou template ClickUp para registrar métricas diárias
-- [ ] Primeira campanha da Concrenor publicada após checklist
+- [ ] Primeira campanha da {cliente} publicada após checklist
 
 ---
 
@@ -80,9 +80,9 @@ PÓS-PUBLICAÇÃO (24h depois):
 ## Tarefas Técnicas
 
 - [x] Criar `docs/playbooks/go-live-meta-ads.md` com checklist e regras
-- [x] Criar template de log diário (`config/log-ads-concrenor.json`)
+- [x] Criar template de log diário (`config/log-ads-{cliente}.json`)
 - [ ] Configurar alertas no Meta Ads Manager — tarefa humana (ver playbook)
-- [ ] Publicar primeira campanha Concrenor — tarefa humana (aguardando criativos)
+- [ ] Publicar primeira campanha {cliente} — tarefa humana (aguardando criativos)
 
 ---
 
@@ -90,8 +90,8 @@ PÓS-PUBLICAÇÃO (24h depois):
 
 - [x] Checklist documentado (20+ itens em 3 fases)
 - [x] Regras de intervenção escritas e revisadas
-- [x] Template de log criado (`config/log-ads-concrenor.json`)
-- [ ] Campanha Concrenor no ar — aguardando criativos aprovados
+- [x] Template de log criado (`config/log-ads-{cliente}.json`)
+- [ ] Campanha {cliente} no ar — aguardando criativos aprovados
 - [x] Story atualizada
 
 ---

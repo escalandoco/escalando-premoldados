@@ -29,8 +29,8 @@ Metodologia Pedro Sobral: começar sempre pela pesquisa do avatar — entender d
 
 - [ ] Template `config/briefing-ads-{cliente}.json` criado com todos os campos necessários
 - [ ] Campos: avatar (nome, idade, profissão, dores, desejos), produto anunciado, promessa principal, prova social, objeções comuns, orçamento mensal, plataformas (Meta/Google), objetivo (leads/vendas/tráfego)
-- [ ] Briefing da Concrenor preenchido como caso piloto
-- [ ] Call de ideias realizada com o dono/gerente da Concrenor (30-45min)
+- [ ] Briefing da {cliente} preenchido como caso piloto
+- [ ] Call de ideias realizada com o dono/gerente da {cliente} (30-45min)
 - [ ] Referências coletadas: anúncios que o cliente gostou, o que já tentou, o que não funcionou
 - [ ] Documento de processo: roteiro da call de ideias + briefing (45min total)
 
@@ -40,7 +40,7 @@ Metodologia Pedro Sobral: começar sempre pela pesquisa do avatar — entender d
 
 ```json
 {
-  "cliente": "Concrenor",
+  "cliente": "{cliente}",
   "produto_anunciado": "Mourão Torneado de Concreto",
   "avatar": {
     "nome": "Antônio, fazendeiro",
@@ -79,9 +79,9 @@ Metodologia Pedro Sobral: começar sempre pela pesquisa do avatar — entender d
 ## Tarefas Técnicas
 
 - [x] Criar template JSON `config/briefing-ads-template.json`
-- [x] Preencher `config/briefing-ads-concrenor.json`
+- [x] Preencher `config/briefing-ads-{cliente}.json`
 - [x] Criar `docs/playbooks/briefing-ads.md` com roteiro completo (call de ideias + briefing)
-- [ ] Realizar call de ideias com dono/gerente da Concrenor
+- [ ] Realizar call de ideias com dono/gerente da {cliente}
 - [ ] Adicionar ao checklist de onboarding: "call de ideias + briefing de ads completo"
 
 ---
@@ -89,8 +89,8 @@ Metodologia Pedro Sobral: começar sempre pela pesquisa do avatar — entender d
 ## Definition of Done
 
 - [x] Template criado e documentado
-- [ ] Call de ideias realizada com a Concrenor
-- [ ] Briefing da Concrenor preenchido (com referências coletadas)
+- [ ] Call de ideias realizada com a {cliente}
+- [ ] Briefing da {cliente} preenchido (com referências coletadas)
 - [x] Playbook de briefing + call de ideias escrito
 - [x] Story atualizada com checkboxes
 

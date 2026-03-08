@@ -48,7 +48,7 @@ LPs no domínio do cliente podem ranquear organicamente para buscas locais como 
 
 - [x] Meta tags e Schema implementados no template e gerar-lp.js
 - [x] Sitemap e robots.txt gerados automaticamente e deployados
-- [ ] Search Console verificado para Concrenor — tarefa humana
+- [ ] Search Console verificado para {cliente} — tarefa humana
 - [x] Story atualizada
 
 ---

@@ -30,7 +30,7 @@ Ferramenta recomendada: Microsoft Clarity (gratuito, sem limite de sessões).
 - [ ] Script do Clarity adicionado ao config do cliente (campo `clarity_id`)
 - [ ] Gravações de sessão visíveis no painel Clarity
 - [ ] Relatório quinzenal: scroll depth, top clicks, rage clicks
-- [ ] Pelo menos 1 insight de UX identificado e implementado na LP da Concrenor
+- [ ] Pelo menos 1 insight de UX identificado e implementado na LP da {cliente}
 
 ---
 
@@ -38,14 +38,14 @@ Ferramenta recomendada: Microsoft Clarity (gratuito, sem limite de sessões).
 
 - [ ] Adicionar campo `clarity_id` ao config JSON e aos defaults
 - [ ] Adicionar script Clarity ao `template-lp.html` (condicional, só se `clarity_id` estiver preenchido)
-- [ ] Criar conta Clarity e conectar à LP da Concrenor
+- [ ] Criar conta Clarity e conectar à LP da {cliente}
 - [ ] Documentar como interpretar heatmaps para pré-moldados
 
 ---
 
 ## Definition of Done
 
-- [ ] Clarity funcionando na LP da Concrenor
+- [ ] Clarity funcionando na LP da {cliente}
 - [ ] Pelo menos 50 sessões gravadas
 - [ ] Story atualizada
 

@@ -26,12 +26,12 @@ Pedro Sobral: "Estrutura antes de criativo. Quem não organiza a campanha direit
 
 ## Acceptance Criteria
 
-- [ ] Estratégia criativa da Concrenor documentada (ideia central, ângulo principal, 3 variações de abordagem)
+- [ ] Estratégia criativa da {cliente} documentada (ideia central, ângulo principal, 3 variações de abordagem)
 - [ ] Nomenclatura padrão definida para todos os níveis: Campanha, Conjunto, Anúncio, Público, Criativo
 - [ ] Padrão válido para Meta Ads E Google Ads
 - [ ] Documento `docs/playbooks/nomenclatura-ads.md` criado
 - [ ] Template `config/estrutura-campanha-{cliente}.yaml` criado
-- [ ] Estrutura da campanha Discovery da Concrenor documentada
+- [ ] Estrutura da campanha Discovery da {cliente} documentada
 - [ ] Fase Discovery vs Fase Scale definidas com orçamentos
 
 ---
@@ -41,7 +41,7 @@ Pedro Sobral: "Estrutura antes de criativo. Quem não organiza a campanha direit
 ### Definição da Estratégia (preencher por cliente)
 
 ```yaml
-cliente: Concrenor
+cliente: {cliente}
 angulo_principal: "Economia de longo prazo vs mourão de madeira"
 ideia_central: "O mourão de concreto parece mais caro — mas custa 10x menos ao longo da vida"
 abordagens:
@@ -106,8 +106,8 @@ Exemplo: LAL_CONCRENOR_CLIENTES_2PCT_BR
 #### Criativos (arquivos)
 ```
 Formato: {cliente}_{abordagem}_{formato}_{versao}.{ext}
-Exemplo: concrenor_dorfinanceira_feed_v1.jpg
-Exemplo: concrenor_comparativo_stories_v2.mp4
+Exemplo: {cliente}_dorfinanceira_feed_v1.jpg
+Exemplo: {cliente}_comparativo_stories_v2.mp4
 ```
 
 #### Google Ads
@@ -120,7 +120,7 @@ Grupo:     {CLIENTE}_{KEYWORD-TEMA}
 
 ---
 
-## Estrutura de Campanha Discovery — Concrenor
+## Estrutura de Campanha Discovery — {cliente}
 
 ```
 📁 CONCRENOR_MOURAO_DISCOVERY_LEADS_202603
@@ -154,9 +154,9 @@ Grupo:     {CLIENTE}_{KEYWORD-TEMA}
 
 ## Tarefas Técnicas
 
-- [x] Definir estratégia criativa da Concrenor (preencher YAML)
+- [x] Definir estratégia criativa da {cliente} (preencher YAML)
 - [x] Criar `docs/playbooks/nomenclatura-ads.md` com todos os padrões
-- [x] Criar `config/estrutura-campanha-concrenor.yaml`
+- [x] Criar `config/estrutura-campanha-{cliente}.yaml`
 - [ ] Revisar nomenclatura com o cliente (call de 15min)
 - [ ] Criar checklist de configuração no Gerenciador Meta (20 pontos antes de publicar)
 
@@ -164,9 +164,9 @@ Grupo:     {CLIENTE}_{KEYWORD-TEMA}
 
 ## Definition of Done
 
-- [x] Estratégia criativa da Concrenor definida e documentada
+- [x] Estratégia criativa da {cliente} definida e documentada
 - [x] Nomenclatura padrão criada para todos os níveis (Meta + Google)
-- [x] `config/estrutura-campanha-concrenor.yaml` criado
+- [x] `config/estrutura-campanha-{cliente}.yaml` criado
 - [x] Playbook de nomenclatura escrito
 - [x] Story atualizada
 

@@ -45,7 +45,7 @@ PageSpeed afeta diretamente a conversão — cada segundo a mais de carregamento
 
 ## Definition of Done
 
-- [ ] LP da Concrenor com score > 90 no mobile
+- [ ] LP da {cliente} com score > 90 no mobile
 - [ ] Checklist documentado
 - [ ] Story atualizada
 

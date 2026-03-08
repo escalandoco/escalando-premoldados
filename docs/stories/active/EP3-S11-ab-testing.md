@@ -28,7 +28,7 @@ Com UTMs e rastreamento no lugar, podemos testar variações da LP para descobri
 - [ ] `headline_ab` do config usado na versão B
 - [ ] Registro da versão no evento do Pixel Meta (custom parameter)
 - [ ] Relatório simples: taxa de conversão por versão A vs B
-- [ ] Pelo menos 1 teste A/B rodando na LP da Concrenor
+- [ ] Pelo menos 1 teste A/B rodando na LP da {cliente}
 
 ---
 
@@ -43,7 +43,7 @@ Com UTMs e rastreamento no lugar, podemos testar variações da LP para descobri
 
 ## Definition of Done
 
-- [ ] Versão A e B funcionando na LP da Concrenor
+- [ ] Versão A e B funcionando na LP da {cliente}
 - [ ] Conversões por versão rastreadas no Meta Events Manager
 - [ ] Story atualizada
 

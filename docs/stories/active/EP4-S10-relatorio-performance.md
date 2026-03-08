@@ -82,9 +82,9 @@ PRÓXIMOS 15 DIAS:
 
 ## Definition of Done
 
-- [x] Script de relatório funcionando: `npm run relatorio-ads -- --cliente=Concrenor`
+- [x] Script de relatório funcionando: `npm run relatorio-ads -- --cliente={cliente}`
 - [x] Template HTML criado (KPIs com cores, tabela, interpretação automática)
-- [ ] Primeiro relatório gerado para Concrenor — aguardando campanha no ar
+- [ ] Primeiro relatório gerado para {cliente} — aguardando campanha no ar
 - [x] Story atualizada
 
 ---

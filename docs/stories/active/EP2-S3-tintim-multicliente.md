@@ -2,14 +2,14 @@
 **Epic:** EP2 — CRM & Automação de Leads
 **Prioridade:** P1
 **Responsável:** @dev
-**Status:** Done (aguardando número WPP da Concrenor para mapear)
+**Status:** Done (aguardando número WPP da {cliente} para mapear)
 **Estimativa:** 1 sprint
 
 ---
 
 ## Contexto
 
-A integração atual do Tintim está configurada para o Concrenor. Com a expansão multi-cliente, cada cliente precisa ter seus leads do WhatsApp rastreados separadamente na planilha mestre.
+A integração atual do Tintim está configurada para o {cliente}. Com a expansão multi-cliente, cada cliente precisa ter seus leads do WhatsApp rastreados separadamente na planilha mestre.
 
 ---
 

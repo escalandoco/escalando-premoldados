@@ -63,7 +63,7 @@ CICLO DE TESTE CONTÍNUO:
 
 ---
 
-## Metas de CPL por Produto (Concrenor)
+## Metas de CPL por Produto ({cliente})
 
 | Produto | Ticket médio | CPL máximo | Meta CPL |
 |---------|-------------|------------|----------|
@@ -85,7 +85,7 @@ Após 60 dias de Meta com ROAS positivo:
 ## Tarefas Técnicas
 
 - [x] Criar `docs/playbooks/escala-meta-ads.md` com regras e metas
-- [x] Definir CPL máximo e meta para cada produto do cliente (tabela Concrenor)
+- [x] Definir CPL máximo e meta para cada produto do cliente (tabela {cliente})
 - [x] Implementar alerta automático: `scripts/monitorar-ads.js` + GitHub Actions diário
 - [x] Documentar processo de expansão para Google Ads (seção no playbook)
 
@@ -94,7 +94,7 @@ Após 60 dias de Meta com ROAS positivo:
 ## Definition of Done
 
 - [x] Playbook de escala documentado (`docs/playbooks/escala-meta-ads.md`)
-- [x] Metas de CPL definidas por produto (Concrenor: R$40-60 meta, R$100 máximo)
+- [x] Metas de CPL definidas por produto ({cliente}: R$40-60 meta, R$100 máximo)
 - [x] Processo de teste contínuo descrito (ciclo mensal no playbook)
 - [x] Story atualizada
 

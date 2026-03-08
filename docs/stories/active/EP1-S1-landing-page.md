@@ -29,7 +29,7 @@ O posicionamento é claro: não é agência criativa, é estrutura de cresciment
 
 - [ ] **Hero** — Headline impactante alinhada ao posicionamento ("A estrutura que coloca pré-moldado no mercado"), subheadline com tese de vulnerabilidade, CTA principal ("Quero meu diagnóstico")
 - [ ] **Problema** — Seção que articula a vulnerabilidade estrutural (dependência de indicação, oscilação de faturamento, guerra de preço) — sem oferecer solução ainda
-- [ ] **Quem somos** — Jon Godeiro como diferencial: Levert Premoldados + Concrenor + Escalando. Tom: "A autoridade nasce da operação, não da teoria"
+- [ ] **Quem somos** — Jon Godeiro como diferencial: {cliente} Premoldados + {cliente} + Escalando. Tom: "A autoridade nasce da operação, não da teoria"
 - [ ] **Planos** — Cards dos 3 planos (Starter R$997, Growth R$1.497, Pro R$2.500) com entregáveis principais e verba inclusa
 - [ ] **Como funciona** — Processo simplificado: Diagnóstico → Proposta → Kickoff → Operação
 - [ ] **Prova social** — Placeholder para cases futuros (1 case real assim que disponível)

@@ -26,7 +26,7 @@ Para pré-moldados: o evento principal é `Contact` (WhatsApp click) + `Lead` (f
 
 ## Acceptance Criteria
 
-- [ ] Pixel Meta instalado na LP do cliente (verificado no Pixel Helper)
+- [x] Pixel Meta instalado na LP do cliente (verificado no Pixel Helper)
 - [ ] Eventos configurados: `PageView`, `Contact` (click WhatsApp), `Lead` (form submit)
 - [ ] Conversions API configurada via Vercel serverless function
 - [ ] UTMs padronizados para todos os anúncios: `?utm_source=meta&utm_medium=cpc&utm_campaign={campanha}&utm_content={criativo}`
@@ -81,7 +81,7 @@ Algoritmo otimiza para mais "Contacts"
 
 ## Definition of Done
 
-- [ ] Pixel instalado e funcionando na LP da Concrenor
+- [ ] Pixel instalado e funcionando na LP da {cliente}
 - [x] Evento `Contact` disparando ao clicar no WhatsApp
 - [x] Conversions API recebendo eventos — `api/events.js` criado
 - [ ] UTMs aparecendo nas sessões da LP

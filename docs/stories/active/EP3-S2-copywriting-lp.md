@@ -43,7 +43,7 @@ Com o briefing coletado, o próximo passo é transformar as informações em cop
 
 - [ ] Copy aprovado pelo cliente antes de iniciar dev — tarefa humana
 - [x] Template documentado e replicável (`docs/playbooks/copywriting-lp.md`)
-- [x] Pelo menos 1 LP com copy gerado via processo (Concrenor)
+- [x] Pelo menos 1 LP com copy gerado via processo ({cliente})
 
 ---
 

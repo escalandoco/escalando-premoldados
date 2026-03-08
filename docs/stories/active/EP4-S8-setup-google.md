@@ -27,7 +27,7 @@ O Google Tag Manager centraliza todos os tags (Meta Pixel, GA4, Google Ads) em u
 ## Acceptance Criteria
 
 - [ ] Conta Google Ads criada/configurada para a agência (MCC — My Client Center)
-- [ ] Sub-conta do cliente (Concrenor) criada dentro do MCC
+- [ ] Sub-conta do cliente ({cliente}) criada dentro do MCC
 - [ ] Google Tag Manager instalado na LP via código (container snippet no `<head>` e `<body>`)
 - [ ] GA4 Property criada e tag publicada via GTM
 - [ ] Conversão Google Ads configurada: `Contact` (click WhatsApp) + `Lead` (formulário)
@@ -61,7 +61,7 @@ Gatilhos:
 
 ---
 
-## Campanha Google Ads Search — Concrenor
+## Campanha Google Ads Search — {cliente}
 
 ```
 📁 CONCRENOR_SEARCH_MOURAO_202603
@@ -95,7 +95,7 @@ Gatilhos:
 
    Extensões:
    - Chamada: (79) XXXX-XXXX
-   - Sitelinks: Mourão Torneado | Bloco de Concreto | Palanque | Sobre a Concrenor
+   - Sitelinks: Mourão Torneado | Bloco de Concreto | Palanque | Sobre a {cliente}
    - Structured Snippets: Produtos: Mourão, Bloco, Palanque, Pré-laje
 ```
 
@@ -126,12 +126,12 @@ Conversão 3: Chamada (para anúncios com extensão de chamada)
 ## Tarefas Técnicas
 
 - [ ] Criar MCC (Google Ads Manager Account) para a agência
-- [ ] Criar sub-conta Concrenor dentro do MCC
+- [ ] Criar sub-conta {cliente} dentro do MCC
 - [x] Instalar container GTM na LP (snippets head + noscript body via `gtm_id` no config)
 - [ ] Configurar tags no GTM: Pixel Meta, GA4, Conversões Google Ads
 - [ ] Criar GA4 Property e conectar ao GTM
 - [ ] Importar conversões do GA4 no Google Ads
-- [ ] Criar campanha Search da Concrenor com keywords e anúncios responsivos
+- [ ] Criar campanha Search da {cliente} com keywords e anúncios responsivos
 - [x] Criar `docs/playbooks/setup-google-ads.md` com processo de configuração
 - [ ] Testar conversões com Google Tag Assistant
 
@@ -139,7 +139,7 @@ Conversão 3: Chamada (para anúncios com extensão de chamada)
 
 ## Definition of Done
 
-- [ ] MCC criado com sub-conta Concrenor
+- [ ] MCC criado com sub-conta {cliente}
 - [ ] GTM instalado e publicado (GA4 + conversões funcionando)
 - [ ] Conversões aparecendo no Google Ads (verificado com Tag Assistant)
 - [ ] Campanha Search criada e com status "Apto"

@@ -31,7 +31,7 @@ Para pré-moldados, os concorrentes são regionais (Sergipe, Alagoas, Bahia) e g
 - [ ] Identificação dos hooks, formatos e abordagens mais usados no segmento
 - [ ] Identificação de lacunas: o que nenhum concorrente está fazendo (oportunidade)
 - [ ] Análise de criativos benchmarks de outros nichos rurais (fencing, construção civil)
-- [ ] Briefing de benchmarking da Concrenor preenchido como caso piloto
+- [ ] Briefing de benchmarking da {cliente} preenchido como caso piloto
 - [ ] Screenshot/registro dos melhores e piores anúncios encontrados (para referência)
 
 ---
@@ -74,7 +74,7 @@ Para pré-moldados, os concorrentes são regionais (Sergipe, Alagoas, Bahia) e g
 ## Tarefas Técnicas
 
 - [ ] Pesquisar Meta Ad Library: "mourão de concreto" + "bloco de concreto" + "premoldados"
-- [ ] Pesquisar páginas de concorrentes conhecidos da Concrenor (perguntar ao cliente)
+- [ ] Pesquisar páginas de concorrentes conhecidos da {cliente} (perguntar ao cliente)
 - [x] Documentar estrutura de análise em `docs/playbooks/benchmarking-ads.md`
 - [x] Criar pasta `assets/benchmarking/` com README de nomenclatura
 - [x] Identificar 3 oportunidades de diferenciação (via pesquisa de mercado)
