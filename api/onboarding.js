@@ -77,6 +77,10 @@ export default async function handler(req, res) {
 // ============================================================
 function buildFichaDesc(empresa, d) {
   const acesso = v => v === 0 ? '✅ Coletado' : v === 1 ? '⏳ Pendente' : '—';
+  const localidade = [d.cidade, d.estado].filter(Boolean).join(' — ') || '—';
+  const canalTexto = d.indicadoPor
+    ? `${d.canal || '—'} (por ${d.indicadoPor})`
+    : (d.canal || '—');
   return `## 📋 Ficha do Cliente — ${empresa}
 
 ---
@@ -87,9 +91,11 @@ function buildFichaDesc(empresa, d) {
 | **Responsável** | ${d.responsavel || '—'} |
 | **WhatsApp** | ${d.whatsapp || '—'} |
 | **CNPJ** | ${d.cnpj || '—'} |
+| **Localidade** | ${localidade} |
 | **Plano** | ${nomePlano(d.plano)} |
 | **Valor Mensal** | ${d.valor ? `R$ ${d.valor}` : '—'} |
 | **Data Início** | ${d.dataInicio || '—'} |
+| **Canal de Captação** | ${canalTexto} |
 
 ---
 
@@ -188,6 +194,8 @@ async function processarFechamento(d) {
   await criarListaDados(folder.id, d.empresa.trim(), {
     responsavel: d.responsavel, whatsapp: d.whatsapp, cnpj: d.cnpj,
     plano: d.plano, valor: d.valor, dataInicio: d.dataInicio,
+    cidade: d.cidade, estado: d.estado,
+    canal: d.canal, indicadoPor: d.indicadoPor,
   });
 
   // 3. Cria listas por plano

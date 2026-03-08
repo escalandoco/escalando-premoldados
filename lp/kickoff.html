@@ -3,378 +3,534 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Briefing de Kickoff — Escalando Premoldados</title>
+  <title>Kickoff — Escalando Premoldados</title>
   <style>
     :root {
-      --gold: #C4B470; --gold-2: #A89858; --gold-light: #FFFBEB;
-      --dark: #0D1117; --gray-100: #F3F4F6; --gray-200: #E5E7EB;
-      --gray-500: #6B7280; --gray-700: #374151; --gray-900: #111827;
-      --green: #16A34A; --red: #DC2626;
+      --gold: #C4B470; --gold-2: #A89858; --gold-light: #FFFBEF;
+      --dark: #0D1117;
+      --gray-50: #F9FAFB; --gray-100: #F3F4F6; --gray-200: #E5E7EB;
+      --gray-300: #D1D5DB; --gray-400: #9CA3AF; --gray-500: #6B7280;
+      --gray-600: #4B5563; --gray-700: #374151; --gray-900: #111827;
+      --red: #DC2626; --green: #059669;
+      --radius: 10px;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, system-ui, sans-serif; background: #F3F4F6; padding: 32px 24px; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, sans-serif;
+      background: #ECEEF2;
+      min-height: 100vh;
+      padding: 32px 16px 80px;
+    }
+    .wrap { max-width: 600px; margin: 0 auto; }
 
-    .wrap { max-width: 640px; margin: 0 auto; }
-
-    .header { text-align: center; margin-bottom: 32px; }
-    .logo-icon { width: 48px; height: 48px; background: var(--dark); border-radius: 10px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 12px; overflow: hidden; padding: 8px; }
+    /* Page header */
+    .page-header {
+      display: flex; align-items: center; gap: 12px; margin-bottom: 20px;
+    }
+    .logo-icon {
+      width: 36px; height: 36px; background: var(--dark); border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden; padding: 6px; flex-shrink: 0;
+    }
     .logo-icon img { width: 100%; height: 100%; object-fit: contain; }
-    h1 { font-size: 24px; font-weight: 900; color: var(--gray-900); margin-bottom: 6px; }
-    .subtitle { font-size: 14px; color: var(--gray-500); }
+    .page-title { font-size: 18px; font-weight: 900; color: var(--gray-900); }
+    .page-sub { font-size: 12px; color: var(--gray-400); margin-top: 1px; }
+    .empresa-chip {
+      margin-left: auto; background: var(--dark); color: var(--gold);
+      font-size: 11px; font-weight: 700; padding: 5px 12px; border-radius: 20px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;
+      flex-shrink: 0;
+    }
 
-    .card { background: white; border-radius: 14px; padding: 28px; margin-bottom: 16px; border: 1px solid var(--gray-200); }
-    .section-title { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--gold); margin-bottom: 18px; padding-bottom: 10px; border-bottom: 1px solid var(--gold-light); }
+    /* Progress */
+    .progress-wrap { margin-bottom: 16px; }
+    .progress-bar { display: flex; gap: 4px; margin-bottom: 8px; }
+    .pb-seg {
+      flex: 1; height: 3px; border-radius: 2px; background: var(--gray-200);
+      transition: background 0.3s;
+    }
+    .pb-seg.done   { background: var(--gold); }
+    .pb-seg.active { background: var(--gold-2); }
+    .progress-meta {
+      display: flex; justify-content: space-between;
+      font-size: 11px; color: var(--gray-400);
+    }
+    #draft-status { color: var(--green); }
 
-    label { display: block; font-size: 12px; font-weight: 700; color: var(--gray-700); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+    /* Card */
+    .card {
+      background: white; border-radius: 16px; padding: 28px 32px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.07), 0 8px 24px rgba(0,0,0,0.05);
+    }
+    @media (max-width: 480px) { .card { padding: 20px; } }
+
+    .step-title {
+      font-size: 18px; font-weight: 900; color: var(--gray-900);
+      margin-bottom: 4px; letter-spacing: -0.2px;
+    }
+    .step-desc { font-size: 13px; color: var(--gray-400); margin-bottom: 22px; line-height: 1.4; }
+
+    /* Fields */
+    .field { margin-bottom: 14px; }
+    .field:last-child { margin-bottom: 0; }
+    label {
+      display: flex; align-items: center; gap: 4px;
+      font-size: 11px; font-weight: 700; color: var(--gray-600);
+      text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px;
+    }
+    label .req { color: var(--red); font-size: 10px; }
+    label .opt { color: var(--gray-400); font-weight: 400; text-transform: none; letter-spacing: 0; }
     input, select, textarea {
-      width: 100%; padding: 11px 14px; border: 1.5px solid var(--gray-200); border-radius: 8px;
-      font-size: 14px; color: var(--gray-900); background: white; outline: none;
-      transition: border-color 0.15s; font-family: inherit;
+      width: 100%; padding: 10px 13px; border: 1.5px solid var(--gray-200);
+      border-radius: var(--radius); font-size: 14px; color: var(--gray-900);
+      background: white; outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s; font-family: inherit;
+      -webkit-appearance: none; appearance: none;
     }
-    input:focus, select:focus, textarea:focus { border-color: var(--gold-2); box-shadow: 0 0 0 3px rgba(218,165,32,0.12); }
-    textarea { resize: vertical; min-height: 80px; }
-    .field { margin-bottom: 18px; }
-    .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--gold-2);
+      box-shadow: 0 0 0 3px rgba(168,152,88,0.1);
+    }
+    input.err, select.err, textarea.err { border-color: var(--red); }
+    input::placeholder, textarea::placeholder { color: var(--gray-300); }
+    input[readonly] { background: var(--gray-50); color: var(--gray-600); cursor: default; }
+    textarea { resize: vertical; min-height: 90px; }
+    select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath fill='%236B7280' d='M5 7L0 2h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px;
+    }
+    .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     @media (max-width: 480px) { .row2 { grid-template-columns: 1fr; } }
-    .hint { font-size: 11px; color: var(--gray-500); margin-top: 4px; font-style: italic; }
+    .hint { font-size: 11px; color: var(--gray-400); margin-top: 4px; font-style: italic; }
 
-    .acesso-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    @media (max-width: 480px) { .acesso-grid { grid-template-columns: 1fr; } }
-    .acesso-item { background: var(--gray-100); border-radius: 8px; padding: 12px; }
-    .acesso-nome { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--gray-700); margin-bottom: 6px; }
-    .acesso-item select { background: white; padding: 7px 10px; font-size: 13px; }
-
-    button {
-      width: 100%; padding: 14px; background: var(--dark); color: var(--gold-2); border: none;
-      border-radius: 10px; font-size: 15px; font-weight: 800; cursor: pointer;
-      transition: all 0.15s; letter-spacing: 0.3px;
+    /* Acessos */
+    .acesso-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    @media (max-width: 460px) { .acesso-grid { grid-template-columns: 1fr; } }
+    .acesso-item {
+      background: var(--gray-50); border-radius: 8px; padding: 10px 12px;
+      border: 1px solid var(--gray-100);
     }
-    button:hover { background: #1a1a2e; }
-    button:disabled { opacity: 0.6; cursor: not-allowed; }
+    .acesso-nome {
+      font-size: 10px; font-weight: 800; text-transform: uppercase;
+      letter-spacing: 0.5px; color: var(--gray-500); margin-bottom: 6px;
+    }
+    .acesso-item select { padding: 7px 30px 7px 10px; font-size: 13px; background: white; }
 
-    .status { display: none; padding: 14px 18px; border-radius: 8px; font-size: 13.5px; font-weight: 600; margin-top: 16px; }
-    .status.ok  { background: #D1FAE5; color: #065F46; display: block; }
-    .status.err { background: #FEE2E2; color: #7F1D1D; display: block; }
+    /* Steps */
+    .step { display: none; }
+    .step.active { display: block; }
+
+    /* Navigation */
+    .nav { display: flex; gap: 10px; margin-top: 14px; }
+    .btn-prev {
+      padding: 13px 20px; background: white; color: var(--gray-700);
+      border: 1.5px solid var(--gray-200); border-radius: var(--radius);
+      font-size: 14px; font-weight: 700; cursor: pointer; font-family: inherit;
+      transition: all 0.15s; white-space: nowrap; flex-shrink: 0;
+    }
+    .btn-prev:hover { background: var(--gray-50); border-color: var(--gray-300); }
+    .btn-next {
+      flex: 1; padding: 13px; background: var(--dark); color: var(--gold);
+      border: none; border-radius: var(--radius); font-size: 15px; font-weight: 800;
+      cursor: pointer; font-family: inherit; transition: all 0.2s; letter-spacing: 0.2px;
+    }
+    .btn-next:hover:not(:disabled) {
+      background: #1C2333;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.2);
+      transform: translateY(-1px);
+    }
+    .btn-next:disabled { opacity: 0.55; cursor: not-allowed; transform: none; box-shadow: none; }
+
+    /* Status */
+    .status {
+      display: none; padding: 12px 16px; border-radius: 8px;
+      font-size: 13.5px; font-weight: 600; margin-top: 12px; line-height: 1.4;
+    }
+    .status.ok  { background: #ECFDF5; color: #065F46; border: 1px solid #A7F3D0; display: block; }
+    .status.err { background: #FEF2F2; color: #991B1B; border: 1px solid #FECACA; display: block; }
   </style>
 </head>
 <body>
-
 <div class="wrap">
 
-  <div class="header">
+  <!-- Page header -->
+  <div class="page-header">
     <div class="logo-icon"><img src="/logo.png" alt="Escalando"></div>
-    <h1>Briefing de Kickoff</h1>
-    <p class="subtitle">Preencha junto com o cliente durante a reunião de kickoff (Semana 1)</p>
+    <div>
+      <div class="page-title">Briefing de Kickoff</div>
+      <div class="page-sub">Preencha junto ao cliente na reunião de kickoff</div>
+    </div>
+    <div class="empresa-chip" id="empresa-chip" style="display:none"></div>
   </div>
 
-  <form id="form">
-
-    <!-- IDENTIFICAÇÃO -->
-    <div class="card">
-      <div class="section-title">Identificação</div>
-      <div class="row2">
-        <div class="field">
-          <label>Nome da empresa *</label>
-          <input type="text" name="empresa" id="empresa" placeholder="Ex: Premoldados Silva" required>
-        </div>
-        <div class="field">
-          <label>Responsável</label>
-          <input type="text" name="responsavel" placeholder="Nome do contato principal">
-        </div>
-      </div>
+  <!-- Progress -->
+  <div class="progress-wrap">
+    <div class="progress-bar">
+      <div class="pb-seg active" id="pb-1"></div>
+      <div class="pb-seg" id="pb-2"></div>
+      <div class="pb-seg" id="pb-3"></div>
+      <div class="pb-seg" id="pb-4"></div>
+      <div class="pb-seg" id="pb-5"></div>
     </div>
-
-    <!-- OBJETIVOS -->
-    <div class="card">
-      <div class="section-title">Objetivos</div>
-
-      <div class="field">
-        <label>Objetivo principal *</label>
-        <textarea name="objetivoPrincipal" placeholder="Ex: Gerar pelo menos 30 leads por mês para mourões de concreto na região de Aracaju" required></textarea>
-        <div class="hint">O que você quer alcançar nos próximos 60-90 dias?</div>
-      </div>
-
-      <div class="field">
-        <label>Objetivos secundários</label>
-        <textarea name="objetivosSecundarios" placeholder="Ex: Aumentar presença no Instagram, aparecer no Google quando pesquisarem mourão em Sergipe..."></textarea>
-      </div>
-
-      <div class="field">
-        <label>O que está travando as vendas hoje?</label>
-        <textarea name="problemasVendas" placeholder="Ex: Dependemos só de indicação, não temos como escalar. Clientes somem depois de pedir orçamento..."></textarea>
-      </div>
+    <div class="progress-meta">
+      <span id="progress-label">Passo 1 de 5 — Identificação</span>
+      <span id="draft-status"></span>
     </div>
+  </div>
 
-    <!-- O NEGÓCIO -->
-    <div class="card">
-      <div class="section-title">O Negócio</div>
+  <!-- Card -->
+  <div class="card">
+    <form id="form" novalidate>
 
-      <div class="field">
-        <label>Produtos e serviços *</label>
-        <textarea name="produtos" placeholder="Ex: Mourões torneados, postes de concreto, meio-fio..." required></textarea>
-        <div class="hint">Liste em ordem de importância / margem</div>
-      </div>
+      <!-- STEP 1: Identificação -->
+      <div class="step active" id="step-1">
+        <div class="step-title">Identificação</div>
+        <div class="step-desc">Dados básicos e objetivo principal.</div>
 
-      <div class="field">
-        <label>Produto foco para campanha</label>
-        <input type="text" name="produtoFoco" placeholder="Ex: Mourão torneado — maior margem e volume">
-        <div class="hint">Qual produto tem mais saída e melhor margem para anunciar agora</div>
-      </div>
+        <div class="row2">
+          <div class="field">
+            <label>Empresa <span class="req">*</span></label>
+            <input type="text" name="empresa" id="empresa" placeholder="Nome da empresa" required>
+          </div>
+          <div class="field">
+            <label>Responsável</label>
+            <input type="text" name="responsavel" placeholder="Nome do contato">
+          </div>
+        </div>
 
-      <div class="field">
-        <label>Principais diferenciais</label>
-        <textarea name="diferenciais" placeholder="Ex: Produção própria, entrega em 48h, 15 anos no mercado, garantia de 30 anos..."></textarea>
-      </div>
-
-      <div class="row2">
         <div class="field">
-          <label>Área de atuação</label>
-          <input type="text" name="areaAtuacao" placeholder="Ex: Sergipe e Alagoas">
+          <label>Objetivo principal <span class="req">*</span></label>
+          <textarea name="objetivoPrincipal" rows="3"
+            placeholder="Ex: Gerar 30 leads por mês para mourões de concreto em Sergipe. Em 60 dias quero ter a LP no ar, GMB configurado e as primeiras campanhas rodando."
+            required></textarea>
+          <div class="hint">Seja específico: qual resultado você quer em 60–90 dias?</div>
         </div>
+
         <div class="field">
-          <label>Raio de entrega</label>
-          <input type="text" name="raioEntrega" placeholder="Ex: até 200km da fábrica">
+          <label>O que está travando as vendas hoje? <span class="opt">opcional</span></label>
+          <textarea name="problemasVendas" rows="2"
+            placeholder="Ex: Dependemos 100% de indicação. Clientes somem depois de pedir orçamento. Não temos presença online..."></textarea>
         </div>
       </div>
 
-      <div class="row2">
+      <!-- STEP 2: O Negócio -->
+      <div class="step" id="step-2">
+        <div class="step-title">O Negócio</div>
+        <div class="step-desc">Produtos, diferenciais e área de atuação.</div>
+
         <div class="field">
-          <label>Ticket médio de venda</label>
-          <input type="text" name="ticketMedio" placeholder="Ex: R$ 3.500">
+          <label>Produtos e serviços <span class="req">*</span></label>
+          <textarea name="produtos" rows="3"
+            placeholder="Ex: Mourões torneados (principal), postes de concreto, meio-fio, placas de vedação — em ordem de importância e margem."
+            required></textarea>
+          <div class="hint">Liste em ordem de importância / margem</div>
         </div>
+
         <div class="field">
-          <label>Volume mensal atual (leads)</label>
-          <input type="text" name="volumeLeads" placeholder="Ex: ~15 orçamentos por mês">
+          <label>Produto foco para a campanha</label>
+          <input type="text" name="produtoFoco"
+            placeholder="Ex: Mourão torneado 2,5m — maior margem e maior volume de venda">
+          <div class="hint">Qual produto anunciar primeiro?</div>
         </div>
-      </div>
 
-      <div class="field">
-        <label>Como funciona o processo de venda?</label>
-        <textarea name="processoComercial" placeholder="Ex: Cliente liga → orçamos por WhatsApp → combinamos entrega → pagamento na entrega. Prazo médio de 1 semana para fechar..."></textarea>
-        <div class="hint">Do primeiro contato até fechar o pedido</div>
-      </div>
-    </div>
-
-    <!-- CLIENTES -->
-    <div class="card">
-      <div class="section-title">Clientes</div>
-
-      <div class="field">
-        <label>Perfil do cliente ideal *</label>
-        <textarea name="perfilClientes" placeholder="Ex: Fazendeiro, 40-60 anos, tem entre 50 e 500 hectares, interior de SE e AL, compra quando precisa reformar cerca..." required></textarea>
-      </div>
-
-      <div class="field">
-        <label>Maiores dores desse cliente</label>
-        <textarea name="doresCliente" placeholder="Ex: Gasta dinheiro todo ano repondo mourão de madeira que apodrece. Perde tempo parando a cerca. Medo de gado fugir..."></textarea>
-      </div>
-
-      <div class="field">
-        <label>O que esse cliente quer alcançar</label>
-        <textarea name="desejos" placeholder="Ex: Uma cerca que dure para sempre, sem manutenção. Economizar no longo prazo. Não ter que se preocupar com cerca nunca mais..."></textarea>
-      </div>
-
-      <div class="field">
-        <label>O que trava a decisão de compra</label>
-        <textarea name="duvidасCompra" placeholder="Ex: Preço mais caro que madeira, não conhece o concreto, dúvida se entrega chega até a fazenda, não sabe se aguenta o peso do gado..."></textarea>
-      </div>
-    </div>
-
-    <!-- CONCORRENTES E MERCADO -->
-    <div class="card">
-      <div class="section-title">Concorrentes e Mercado</div>
-
-      <div class="field">
-        <label>Concorrentes diretos conhecidos</label>
-        <textarea name="concorrentes" placeholder="Nomes de outras fábricas ou empresas que disputam os mesmos clientes. Se souber o Instagram ou site, coloque também."></textarea>
-      </div>
-
-      <div class="field">
-        <label>Oportunidades que você enxerga no mercado</label>
-        <textarea name="oportunidades" placeholder="Ex: Muita fazenda nova sendo formada no sul da Bahia. Governo está financiando cercamento de propriedades. Concorrentes não têm Instagram..."></textarea>
-      </div>
-    </div>
-
-    <!-- CAMPANHA -->
-    <div class="card">
-      <div class="section-title">Campanhas e Verba</div>
-
-      <div class="row2">
         <div class="field">
-          <label>Verba mensal para anúncios (R$)</label>
-          <input type="number" name="verba" placeholder="Ex: 800">
+          <label>Principais diferenciais</label>
+          <textarea name="diferenciais" rows="3"
+            placeholder="Ex: Produção própria, entrega em 48h, 15 anos no mercado, garantia de 30 anos, único na região com mourão duplo T..."></textarea>
         </div>
+
+        <div class="row2">
+          <div class="field">
+            <label>Área de atuação</label>
+            <input type="text" name="areaAtuacao" placeholder="Ex: Sergipe, Alagoas — raio 300km">
+          </div>
+          <div class="field">
+            <label>Ticket médio</label>
+            <input type="text" name="ticketMedio" placeholder="Ex: R$ 3.500 por pedido">
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 3: Cliente Ideal -->
+      <div class="step" id="step-3">
+        <div class="step-title">Cliente Ideal</div>
+        <div class="step-desc">Quem compra e o que motiva a decisão.</div>
+
         <div class="field">
-          <label>Taxa de conversão atual (estimada)</label>
-          <input type="text" name="taxaConversao" placeholder="Ex: 1 em cada 5 orçamentos fecha">
+          <label>Perfil do cliente ideal <span class="req">*</span></label>
+          <textarea name="perfilClientes" rows="3"
+            placeholder="Ex: Fazendeiro, 40–60 anos, 50–500 hectares no interior de SE e AL. Compra quando precisa reformar cercas. Decide sozinho, pelo WhatsApp."
+            required></textarea>
         </div>
-      </div>
 
-      <div class="field">
-        <label>Melhor ação de marketing que já funcionou</label>
-        <textarea name="melhorAcaoMarketing" placeholder="Ex: Postagem no grupo de fazendeiros do Facebook gerou 20 pedidos. Panfleto numa feira agropecuária trouxe 8 clientes..."></textarea>
-        <div class="hint">Mesmo que não seja digital — o que já deu resultado real</div>
-      </div>
-
-      <div class="field">
-        <label>O que define sucesso em 60 dias?</label>
-        <textarea name="sucesso60Dias" placeholder="Ex: Ter pelo menos 20 leads qualificados por mês, fechar 5 clientes novos, e ter a LP no ar com visitas chegando..."></textarea>
-      </div>
-    </div>
-
-    <!-- PRESENÇA DIGITAL -->
-    <div class="card">
-      <div class="section-title">Presença Digital</div>
-
-      <div class="row2">
         <div class="field">
-          <label>Site da empresa</label>
-          <input type="url" name="siteUrl" placeholder="https://...">
+          <label>Maiores dores desse cliente</label>
+          <textarea name="doresCliente" rows="3"
+            placeholder="Ex: Gasta dinheiro todo ano repondo mourão de madeira que apodrece. Perde tempo parando a cerca. Medo de gado fugir..."></textarea>
         </div>
+
         <div class="field">
-          <label>Instagram</label>
-          <input type="text" name="instagram" placeholder="@nomeempresa ou link completo">
+          <label>Concorrentes diretos</label>
+          <textarea name="concorrentes" rows="2"
+            placeholder="Nomes de outras fábricas ou empresas que disputam os mesmos clientes. Site ou Instagram se souber."></textarea>
         </div>
       </div>
 
-      <div class="field">
-        <label>Como divulga hoje?</label>
-        <textarea name="comoVendem" placeholder="Ex: Indicação de clientes, WhatsApp direto, grupos do Facebook, feiras agro..."></textarea>
-      </div>
-    </div>
+      <!-- STEP 4: Digital & Mercado -->
+      <div class="step" id="step-4">
+        <div class="step-title">Digital & Mercado</div>
+        <div class="step-desc">Como divulga hoje e onde está online.</div>
 
-    <!-- ACESSOS -->
-    <div class="card">
-      <div class="section-title">Acessos Necessários</div>
-      <div class="acesso-grid">
-        <div class="acesso-item">
-          <div class="acesso-nome">Meta Business</div>
-          <select name="acessoMeta">
-            <option value="pendente">Pendente</option>
-            <option value="coletado">Coletado</option>
-            <option value="nao-tem">Não tem conta</option>
-          </select>
+        <div class="field">
+          <label>Como divulga hoje?</label>
+          <textarea name="comoVendem" rows="2"
+            placeholder="Ex: 90% indicação, grupos do Facebook, WhatsApp direto. Não tem Instagram ativo. Nunca fez anúncio pago."></textarea>
         </div>
-        <div class="acesso-item">
-          <div class="acesso-nome">Google Ads</div>
-          <select name="acessoGoogle">
-            <option value="pendente">Pendente</option>
-            <option value="coletado">Coletado</option>
-            <option value="nao-tem">Não tem conta</option>
-          </select>
+
+        <div class="row2">
+          <div class="field">
+            <label>Site da empresa</label>
+            <input type="url" name="siteUrl" placeholder="https://...">
+          </div>
+          <div class="field">
+            <label>Instagram</label>
+            <input type="text" name="instagram" placeholder="@nomeempresa">
+          </div>
         </div>
-        <div class="acesso-item">
-          <div class="acesso-nome">Google Meu Negócio</div>
-          <select name="acessoGmb">
-            <option value="pendente">Pendente</option>
-            <option value="coletado">Coletado</option>
-            <option value="nao-tem">Não tem perfil</option>
-          </select>
-        </div>
-        <div class="acesso-item">
-          <div class="acesso-nome">Site / Hospedagem</div>
-          <select name="acessoSite">
-            <option value="pendente">Pendente</option>
-            <option value="coletado">Coletado</option>
-            <option value="nao-tem">Não tem site</option>
-          </select>
+
+        <div class="field">
+          <label>Melhor ação de marketing que já funcionou</label>
+          <textarea name="melhorAcaoMarketing" rows="2"
+            placeholder="Ex: Post num grupo de fazendeiros do Facebook gerou 20 pedidos em 2 dias. Panfleto em feira agro trouxe 8 clientes..."></textarea>
+          <div class="hint">Mesmo que não seja digital — o que já deu resultado real?</div>
         </div>
       </div>
-    </div>
 
-    <!-- OBSERVAÇÕES -->
-    <div class="card">
-      <div class="section-title">Observações</div>
-      <div class="field">
-        <textarea name="obs" placeholder="Qualquer informação adicional importante sobre o cliente, mercado local, limitações, histórico..."></textarea>
+      <!-- STEP 5: Verba & Acessos -->
+      <div class="step" id="step-5">
+        <div class="step-title">Verba & Acessos</div>
+        <div class="step-desc">Orçamento para anúncios e situação dos acessos necessários.</div>
+
+        <div class="row2">
+          <div class="field">
+            <label>Verba mensal para anúncios (R$)</label>
+            <input type="number" name="verba" placeholder="Ex: 800" min="0">
+          </div>
+          <div class="field">
+            <label>Meta em 90 dias</label>
+            <input type="text" name="sucesso60Dias" placeholder="Ex: 20 leads/mês qualificados">
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Acessos necessários</label>
+          <div class="acesso-grid">
+            <div class="acesso-item">
+              <div class="acesso-nome">Meta Business</div>
+              <select name="acessoMeta">
+                <option value="pendente">⏳ Pendente</option>
+                <option value="coletado">✅ Coletado</option>
+                <option value="nao-tem">Não tem conta</option>
+              </select>
+            </div>
+            <div class="acesso-item">
+              <div class="acesso-nome">Google Ads</div>
+              <select name="acessoGoogle">
+                <option value="pendente">⏳ Pendente</option>
+                <option value="coletado">✅ Coletado</option>
+                <option value="nao-tem">Não tem conta</option>
+              </select>
+            </div>
+            <div class="acesso-item">
+              <div class="acesso-nome">Google Meu Negócio</div>
+              <select name="acessoGmb">
+                <option value="pendente">⏳ Pendente</option>
+                <option value="coletado">✅ Coletado</option>
+                <option value="nao-tem">Não tem perfil</option>
+              </select>
+            </div>
+            <div class="acesso-item">
+              <div class="acesso-nome">Site / Hospedagem</div>
+              <select name="acessoSite">
+                <option value="pendente">⏳ Pendente</option>
+                <option value="coletado">✅ Coletado</option>
+                <option value="nao-tem">Não tem site</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Observações finais <span class="opt">opcional</span></label>
+          <textarea name="obs" rows="2"
+            placeholder="Histórico, limitações, contexto local, decisões tomadas na reunião..."></textarea>
+        </div>
       </div>
-    </div>
 
-    <button type="submit" id="btn">Salvar briefing no ClickUp →</button>
-    <div class="status" id="status"></div>
+    </form>
+  </div>
 
-  </form>
+  <!-- Navigation -->
+  <div class="nav">
+    <button class="btn-prev" id="btn-prev" type="button">← Anterior</button>
+    <button class="btn-next" id="btn-next" type="button">Próximo →</button>
+  </div>
+  <div class="status" id="status"></div>
+
 </div>
 
 <script>
-  const CONFIG = {
-    webhookUrl: 'https://escalando-premoldados.vercel.app/api/onboarding',
-  };
+  const CONFIG    = { webhookUrl: 'https://escalando-premoldados.vercel.app/api/onboarding' };
+  const DRAFT_KEY = 'kickoff_draft_v3';
+  const STEPS     = 5;
+  const LABELS    = ['Identificação', 'O Negócio', 'Cliente Ideal', 'Digital & Mercado', 'Verba & Acessos'];
+  let current     = 1;
 
-  // Pré-preenche empresa se veio via URL ?cliente=Nome
-  const params = new URLSearchParams(window.location.search);
+  // ── Pre-fill empresa from URL ?cliente=
+  const params       = new URLSearchParams(window.location.search);
   const clienteParam = params.get('cliente');
   if (clienteParam) {
-    const input = document.getElementById('empresa');
-    if (input) { input.value = clienteParam; input.readOnly = true; }
+    const el = document.getElementById('empresa');
+    if (el) { el.value = clienteParam; el.readOnly = true; }
+    const chip = document.getElementById('empresa-chip');
+    chip.textContent = clienteParam;
+    chip.style.display = 'block';
   }
 
-  document.getElementById('form').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    const btn = document.getElementById('btn');
-    const st  = document.getElementById('status');
-    const fd  = new FormData(e.target);
+  // ── Draft: load
+  function loadDraft() {
+    try {
+      const raw = localStorage.getItem(DRAFT_KEY);
+      if (!raw) return;
+      const data = JSON.parse(raw);
+      const form = document.getElementById('form');
+      Object.entries(data).forEach(([name, val]) => {
+        if (name === '_saved') return;
+        const el = form.querySelector(`[name="${name}"]`);
+        if (el && !el.readOnly) el.value = val;
+      });
+      const t = new Date(data._saved).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+      document.getElementById('draft-status').textContent = `Rascunho de ${t}`;
+    } catch (_) {}
+  }
 
-    st.className = 'status';
-    st.textContent = '';
-    btn.disabled = true;
-    btn.textContent = 'Salvando...';
+  // ── Draft: save
+  function saveDraft() {
+    try {
+      const fd   = new FormData(document.getElementById('form'));
+      const data = { _saved: Date.now() };
+      for (const [k, v] of fd.entries()) data[k] = v;
+      localStorage.setItem(DRAFT_KEY, JSON.stringify(data));
+      const t = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+      document.getElementById('draft-status').textContent = `Salvo às ${t}`;
+    } catch (_) {}
+  }
+
+  document.getElementById('form').addEventListener('input', saveDraft);
+
+  // ── Progress
+  function updateProgress() {
+    for (let i = 1; i <= STEPS; i++) {
+      const seg = document.getElementById('pb-' + i);
+      if      (i < current)  seg.className = 'pb-seg done';
+      else if (i === current) seg.className = 'pb-seg active';
+      else                    seg.className = 'pb-seg';
+    }
+    document.getElementById('progress-label').textContent =
+      `Passo ${current} de ${STEPS} — ${LABELS[current - 1]}`;
+    document.getElementById('btn-prev').style.display = current > 1 ? '' : 'none';
+    document.getElementById('btn-next').textContent =
+      current === STEPS ? 'Salvar briefing →' : 'Próximo →';
+  }
+
+  // ── Show step
+  function showStep(n) {
+    for (let i = 1; i <= STEPS; i++)
+      document.getElementById('step-' + i).classList.toggle('active', i === n);
+    current = n;
+    updateProgress();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // ── Validate step
+  function validateStep(n) {
+    const step     = document.getElementById('step-' + n);
+    const required = step.querySelectorAll('[required]');
+    let ok = true;
+    required.forEach(el => {
+      const empty = !el.value.trim();
+      el.classList.toggle('err', empty);
+      if (empty && ok) { el.focus(); ok = false; }
+    });
+    return ok;
+  }
+
+  // Remove erro ao digitar
+  document.getElementById('form').addEventListener('input', e => e.target.classList.remove('err'));
+
+  // ── Navigation
+  document.getElementById('btn-prev').addEventListener('click', () => {
+    if (current > 1) showStep(current - 1);
+  });
+
+  document.getElementById('btn-next').addEventListener('click', async () => {
+    if (!validateStep(current)) return;
+    if (current < STEPS) {
+      showStep(current + 1);
+    } else {
+      await submitForm();
+    }
+  });
+
+  // ── Submit
+  async function submitForm() {
+    const btn = document.getElementById('btn-next');
+    const st  = document.getElementById('status');
+    const fd  = new FormData(document.getElementById('form'));
+
+    st.className = 'status'; st.textContent = '';
+    btn.disabled = true; btn.textContent = 'Salvando...';
 
     const dados = {
-      action:               'kickoff',
-      empresa:              fd.get('empresa'),
-      responsavel:          fd.get('responsavel'),
-      // Objetivos
-      objetivoPrincipal:    fd.get('objetivoPrincipal'),
-      objetivosSecundarios: fd.get('objetivosSecundarios'),
-      problemasVendas:      fd.get('problemasVendas'),
-      // Negócio
-      produtos:             fd.get('produtos'),
-      produtoFoco:          fd.get('produtoFoco'),
-      diferenciais:         fd.get('diferenciais'),
-      areaAtuacao:          fd.get('areaAtuacao'),
-      raioEntrega:          fd.get('raioEntrega'),
-      ticketMedio:          fd.get('ticketMedio'),
-      volumeLeads:          fd.get('volumeLeads'),
-      processoComercial:    fd.get('processoComercial'),
-      // Clientes
-      perfilClientes:       fd.get('perfilClientes'),
-      doresCliente:         fd.get('doresCliente'),
-      desejos:              fd.get('desejos'),
-      duvidасCompra:        fd.get('duvidасCompra'),
-      // Mercado
-      concorrentes:         fd.get('concorrentes'),
-      oportunidades:        fd.get('oportunidades'),
-      // Campanha
-      verba:                fd.get('verba'),
-      taxaConversao:        fd.get('taxaConversao'),
-      melhorAcaoMarketing:  fd.get('melhorAcaoMarketing'),
-      sucesso60Dias:        fd.get('sucesso60Dias'),
-      // Presença digital
-      siteUrl:              fd.get('siteUrl'),
-      instagram:            fd.get('instagram'),
-      comoVendem:           fd.get('comoVendem'),
-      // Acessos
-      acessoMeta:           fd.get('acessoMeta'),
-      acessoGoogle:         fd.get('acessoGoogle'),
-      acessoGmb:            fd.get('acessoGmb'),
-      acessoSite:           fd.get('acessoSite'),
-      obs:                  fd.get('obs'),
+      action:              'kickoff',
+      empresa:             fd.get('empresa'),
+      responsavel:         fd.get('responsavel'),
+      objetivoPrincipal:   fd.get('objetivoPrincipal'),
+      problemasVendas:     fd.get('problemasVendas'),
+      produtos:            fd.get('produtos'),
+      produtoFoco:         fd.get('produtoFoco'),
+      diferenciais:        fd.get('diferenciais'),
+      areaAtuacao:         fd.get('areaAtuacao'),
+      ticketMedio:         fd.get('ticketMedio'),
+      perfilClientes:      fd.get('perfilClientes'),
+      doresCliente:        fd.get('doresCliente'),
+      concorrentes:        fd.get('concorrentes'),
+      comoVendem:          fd.get('comoVendem'),
+      siteUrl:             fd.get('siteUrl'),
+      instagram:           fd.get('instagram'),
+      melhorAcaoMarketing: fd.get('melhorAcaoMarketing'),
+      verba:               fd.get('verba'),
+      sucesso60Dias:       fd.get('sucesso60Dias'),
+      acessoMeta:          fd.get('acessoMeta'),
+      acessoGoogle:        fd.get('acessoGoogle'),
+      acessoGmb:           fd.get('acessoGmb'),
+      acessoSite:          fd.get('acessoSite'),
+      obs:                 fd.get('obs'),
     };
 
     try {
-      const res = await fetch(CONFIG.webhookUrl, {
-        method: 'POST',
+      const res  = await fetch(CONFIG.webhookUrl, {
+        method:  'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(dados),
+        body:    JSON.stringify(dados),
       });
       const json = await res.json();
-
       if (json.success) {
         st.className = 'status ok';
-        st.textContent = '✅ ' + json.msg;
-        e.target.reset();
-        if (clienteParam) document.getElementById('empresa').value = clienteParam;
+        st.textContent = '✅ ' + json.msg + ' — Ficha do Cliente atualizada!';
+        localStorage.removeItem(DRAFT_KEY);
+        document.getElementById('draft-status').textContent = '';
+        st.scrollIntoView({ behavior: 'smooth', block: 'center' });
       } else {
         throw new Error(json.error || 'Erro desconhecido');
       }
@@ -383,9 +539,13 @@
       st.textContent = '❌ Erro: ' + err.message;
     } finally {
       btn.disabled = false;
-      btn.textContent = 'Salvar briefing no ClickUp →';
+      btn.textContent = 'Salvar briefing →';
     }
-  });
+  }
+
+  // ── Init
+  loadDraft();
+  updateProgress();
 </script>
 </body>
 </html>

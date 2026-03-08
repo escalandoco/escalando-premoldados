@@ -6,151 +6,314 @@
   <title>Novo Cliente — Escalando Premoldados</title>
   <style>
     :root {
-      --gold: #C4B470; --gold-2: #A89858; --gold-light: #FFFBEB;
-      --dark: #0D1117; --gray-100: #F3F4F6; --gray-200: #E5E7EB;
-      --gray-500: #6B7280; --gray-700: #374151; --gray-900: #111827;
-      --green: #16A34A; --red: #DC2626;
+      --gold: #C4B470; --gold-2: #A89858; --gold-light: #FFFBEF;
+      --dark: #0D1117;
+      --gray-50: #F9FAFB; --gray-100: #F3F4F6; --gray-200: #E5E7EB;
+      --gray-300: #D1D5DB; --gray-400: #9CA3AF; --gray-500: #6B7280;
+      --gray-600: #4B5563; --gray-700: #374151; --gray-900: #111827;
+      --red: #DC2626; --green: #059669;
+      --radius: 10px;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, system-ui, sans-serif; background: #F3F4F6; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px; }
-
-    .card { background: white; border-radius: 16px; padding: 40px; max-width: 560px; width: 100%; box-shadow: 0 4px 24px rgba(0,0,0,0.08); border: 1px solid var(--gray-200); }
-
-    .logo { display: flex; align-items: center; gap: 10px; margin-bottom: 28px; }
-    .logo-icon { width: 36px; height: 36px; background: var(--dark); border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 5px; }
-    .logo-icon img { width: 100%; height: 100%; object-fit: contain; }
-    .logo-text { font-size: 13px; font-weight: 700; color: var(--gray-900); }
-    .logo-sub { font-size: 11px; color: var(--gray-500); }
-
-    h1 { font-size: 22px; font-weight: 900; color: var(--gray-900); margin-bottom: 6px; }
-    .subtitle { font-size: 13.5px; color: var(--gray-500); margin-bottom: 28px; line-height: 1.5; }
-
-    .divider { height: 1px; background: var(--gray-200); margin: 24px 0; }
-
-    label { display: block; font-size: 12px; font-weight: 700; color: var(--gray-700); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
-    input, select, textarea {
-      width: 100%; padding: 11px 14px; border: 1.5px solid var(--gray-200); border-radius: 8px;
-      font-size: 14px; color: var(--gray-900); background: white; outline: none;
-      transition: border-color 0.15s; font-family: inherit;
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, sans-serif;
+      background: #ECEEF2;
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 40px 16px 80px;
     }
-    input:focus, select:focus, textarea:focus { border-color: var(--gold-2); box-shadow: 0 0 0 3px rgba(218,165,32,0.12); }
-    .field { margin-bottom: 18px; }
-    .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-    @media (max-width: 480px) { .row2 { grid-template-columns: 1fr; } }
 
-    .planos { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 18px; }
-    @media (max-width: 460px) { .planos { grid-template-columns: 1fr; } }
+    .card {
+      background: white;
+      border-radius: 18px;
+      max-width: 560px;
+      width: 100%;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.07), 0 8px 32px rgba(0,0,0,0.06);
+      overflow: hidden;
+    }
+
+    .card-header {
+      padding: 28px 32px 24px;
+      background: var(--dark);
+    }
+    .logo {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 16px;
+    }
+    .logo-icon {
+      width: 32px; height: 32px; background: rgba(255,255,255,0.1);
+      border-radius: 7px; display: flex; align-items: center;
+      justify-content: center; overflow: hidden; padding: 5px;
+    }
+    .logo-icon img { width: 100%; height: 100%; object-fit: contain; }
+    .logo-name { font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.7); }
+    .logo-tag {
+      display: inline-block; font-size: 10px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.8px;
+      color: var(--gold); background: rgba(196,180,112,0.12);
+      padding: 2px 8px; border-radius: 4px; margin-top: 2px;
+    }
+    h1 { font-size: 22px; font-weight: 900; color: white; margin-bottom: 4px; letter-spacing: -0.3px; }
+    .subtitle { font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.5; }
+
+    .card-body { padding: 28px 32px; }
+    @media (max-width: 480px) {
+      .card-header, .card-body { padding-left: 20px; padding-right: 20px; }
+    }
+
+    /* Section */
+    .section { margin-bottom: 26px; }
+    .section-label {
+      font-size: 10px; font-weight: 800; text-transform: uppercase;
+      letter-spacing: 1.2px; color: var(--gold-2); margin-bottom: 14px;
+      padding-bottom: 8px; border-bottom: 1px solid var(--gray-100);
+    }
+
+    /* Fields */
+    .field { margin-bottom: 13px; }
+    .field:last-child { margin-bottom: 0; }
+    label {
+      display: flex; align-items: center; gap: 4px;
+      font-size: 11px; font-weight: 700; color: var(--gray-600);
+      text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px;
+    }
+    label .req { color: var(--red); font-size: 10px; }
+    label .opt { color: var(--gray-400); font-weight: 400; text-transform: none; letter-spacing: 0; font-size: 11px; }
+    input, select, textarea {
+      width: 100%; padding: 10px 13px; border: 1.5px solid var(--gray-200);
+      border-radius: var(--radius); font-size: 14px; color: var(--gray-900);
+      background: white; outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s; font-family: inherit;
+      -webkit-appearance: none; appearance: none;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--gold-2);
+      box-shadow: 0 0 0 3px rgba(168,152,88,0.1);
+    }
+    input.err, select.err { border-color: var(--red); }
+    input::placeholder, textarea::placeholder { color: var(--gray-300); }
+    select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath fill='%236B7280' d='M5 7L0 2h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px;
+    }
+    textarea { resize: vertical; min-height: 72px; }
+    .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .row3 { display: grid; grid-template-columns: 2fr 1fr; gap: 12px; }
+    @media (max-width: 480px) { .row2, .row3 { grid-template-columns: 1fr; } }
+    .hint { font-size: 11px; color: var(--gray-400); margin-top: 4px; font-style: italic; }
+
+    /* Planos */
+    .planos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; }
+    @media (max-width: 420px) { .planos { grid-template-columns: 1fr; } }
     .plano-opt { cursor: pointer; }
     .plano-opt input[type="radio"] { display: none; }
-    .plano-box { border: 2px solid var(--gray-200); border-radius: 10px; padding: 14px; text-align: center; transition: all 0.15s; }
-    .plano-opt input:checked + .plano-box { border-color: var(--gold-2); background: var(--gold-light); }
-    .plano-nome { font-size: 13px; font-weight: 800; color: var(--gray-900); }
-    .plano-valor { font-size: 15px; font-weight: 900; color: var(--gold); margin-top: 3px; }
-    .plano-desc { font-size: 10px; color: var(--gray-500); margin-top: 3px; }
-
-    button {
-      width: 100%; padding: 14px; background: var(--dark); color: var(--gold-2); border: none;
-      border-radius: 10px; font-size: 15px; font-weight: 800; cursor: pointer;
-      transition: all 0.15s; letter-spacing: 0.3px; margin-top: 6px;
+    .plano-box {
+      border: 2px solid var(--gray-200); border-radius: var(--radius);
+      padding: 14px 8px; text-align: center; transition: all 0.15s;
+      background: var(--gray-50);
     }
-    button:hover { background: #1a1a2e; }
-    button:disabled { opacity: 0.6; cursor: not-allowed; }
+    .plano-opt:hover .plano-box { border-color: var(--gray-300); }
+    .plano-opt input:checked + .plano-box {
+      border-color: var(--gold-2); background: var(--gold-light);
+    }
+    .plano-nome {
+      font-size: 10px; font-weight: 800; text-transform: uppercase;
+      letter-spacing: 0.8px; color: var(--gray-600);
+    }
+    .plano-valor { font-size: 18px; font-weight: 900; color: var(--dark); margin-top: 5px; }
+    .plano-desc { font-size: 10px; color: var(--gray-500); margin-top: 4px; line-height: 1.4; }
 
-    .status { display: none; padding: 14px 18px; border-radius: 8px; font-size: 13.5px; font-weight: 600; margin-top: 16px; }
-    .status.ok { background: #D1FAE5; color: #065F46; display: block; }
-    .status.err { background: #FEE2E2; color: #7F1D1D; display: block; }
+    /* Valor prefix */
+    .input-wrap { position: relative; }
+    .input-wrap .prefix {
+      position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+      color: var(--gray-400); font-size: 13px; font-weight: 600; pointer-events: none;
+    }
+    .input-wrap input { padding-left: 30px; }
+
+    /* Divider */
+    hr { border: none; border-top: 1px solid var(--gray-100); margin: 22px 0; }
+
+    /* Submit */
+    .btn-submit {
+      width: 100%; padding: 14px; background: var(--dark); color: var(--gold);
+      border: none; border-radius: var(--radius); font-size: 15px; font-weight: 800;
+      cursor: pointer; transition: all 0.2s; letter-spacing: 0.2px;
+      font-family: inherit; margin-top: 4px;
+    }
+    .btn-submit:hover:not(:disabled) {
+      background: #1C2333;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+      transform: translateY(-1px);
+    }
+    .btn-submit:disabled { opacity: 0.55; cursor: not-allowed; transform: none; box-shadow: none; }
+
+    .status {
+      display: none; padding: 12px 16px; border-radius: 8px;
+      font-size: 13.5px; font-weight: 600; margin-top: 12px; line-height: 1.4;
+    }
+    .status.ok  { background: #ECFDF5; color: #065F46; border: 1px solid #A7F3D0; display: block; }
+    .status.err { background: #FEF2F2; color: #991B1B; border: 1px solid #FECACA; display: block; }
   </style>
 </head>
 <body>
 
 <div class="card">
 
-  <div class="logo">
-    <div class="logo-icon"><img src="/logo.png" alt="Escalando"></div>
-    <div>
-      <div class="logo-text">Escalando Premoldados</div>
-      <div class="logo-sub">Uso interno — novo cliente fechado</div>
+  <div class="card-header">
+    <div class="logo">
+      <div class="logo-icon"><img src="/logo.png" alt="Escalando"></div>
+      <div>
+        <div class="logo-name">Escalando Premoldados</div>
+        <div class="logo-tag">Uso interno</div>
+      </div>
     </div>
+    <h1>Novo Cliente Fechado</h1>
+    <p class="subtitle">Preencha logo após fechar o contrato. O ClickUp cria a estrutura completa automaticamente.</p>
   </div>
 
-  <h1>Novo Cliente Fechado</h1>
-  <p class="subtitle">Preencha logo após fechar o contrato. O ClickUp vai criar a estrutura completa automaticamente.</p>
+  <div class="card-body">
+    <form id="form" novalidate>
 
-  <form id="form">
+      <!-- DADOS DO CLIENTE -->
+      <div class="section">
+        <div class="section-label">Dados do Cliente</div>
 
-    <div class="row2">
-      <div class="field">
-        <label>Nome da empresa *</label>
-        <input type="text" name="empresa" placeholder="Ex: Premoldados Silva" required>
-      </div>
-      <div class="field">
-        <label>CNPJ *</label>
-        <input type="text" name="cnpj" placeholder="00.000.000/0001-00" required>
-      </div>
-    </div>
-
-    <div class="row2">
-      <div class="field">
-        <label>Responsável *</label>
-        <input type="text" name="responsavel" placeholder="Nome do dono/contato" required>
-      </div>
-      <div class="field">
-        <label>WhatsApp *</label>
-        <input type="tel" name="whatsapp" placeholder="(00) 00000-0000" required>
-      </div>
-    </div>
-
-    <div class="divider"></div>
-
-    <label style="margin-bottom:12px">Plano contratado *</label>
-    <div class="planos">
-      <label class="plano-opt">
-        <input type="radio" name="plano" value="starter" required>
-        <div class="plano-box">
-          <div class="plano-nome">Starter</div>
-          <div class="plano-valor">R$997</div>
-          <div class="plano-desc">GMB + LP</div>
+        <div class="row2">
+          <div class="field">
+            <label>Empresa <span class="req">*</span></label>
+            <input type="text" name="empresa" placeholder="Ex: Premoldados Silva" required autocomplete="organization">
+          </div>
+          <div class="field">
+            <label>CNPJ <span class="opt">/ CPF</span></label>
+            <input type="text" name="cnpj" placeholder="00.000.000/0001-00" maxlength="18">
+          </div>
         </div>
-      </label>
-      <label class="plano-opt">
-        <input type="radio" name="plano" value="growth">
-        <div class="plano-box">
-          <div class="plano-nome">Growth</div>
-          <div class="plano-valor">R$1.497</div>
-          <div class="plano-desc">+ Meta Ads</div>
+
+        <div class="row2">
+          <div class="field">
+            <label>Responsável <span class="req">*</span></label>
+            <input type="text" name="responsavel" placeholder="Nome do dono/contato" required>
+          </div>
+          <div class="field">
+            <label>WhatsApp <span class="req">*</span></label>
+            <input type="tel" name="whatsapp" placeholder="(79) 99999-9999" required>
+          </div>
         </div>
-      </label>
-      <label class="plano-opt">
-        <input type="radio" name="plano" value="pro">
-        <div class="plano-box">
-          <div class="plano-nome">Pro</div>
-          <div class="plano-valor">R$2.500</div>
-          <div class="plano-desc">+ Google Ads</div>
+
+        <div class="row3">
+          <div class="field">
+            <label>Cidade <span class="req">*</span></label>
+            <input type="text" name="cidade" placeholder="Ex: Aracaju" required>
+          </div>
+          <div class="field">
+            <label>Estado <span class="req">*</span></label>
+            <select name="estado" required>
+              <option value="">UF</option>
+              <option>AC</option><option>AL</option><option>AP</option><option>AM</option>
+              <option>BA</option><option>CE</option><option>DF</option><option>ES</option>
+              <option>GO</option><option>MA</option><option>MT</option><option>MS</option>
+              <option>MG</option><option>PA</option><option>PB</option><option>PR</option>
+              <option>PE</option><option>PI</option><option>RJ</option><option>RN</option>
+              <option>RS</option><option>RO</option><option>RR</option><option>SC</option>
+              <option selected>SE</option><option>SP</option><option>TO</option>
+            </select>
+          </div>
         </div>
-      </label>
-    </div>
-
-    <div class="row2">
-      <div class="field">
-        <label>Valor mensal (R$) *</label>
-        <input type="number" name="valor" placeholder="1497" required>
       </div>
-      <div class="field">
-        <label>Data de início *</label>
-        <input type="date" name="dataInicio" required>
+
+      <hr>
+
+      <!-- PLANO -->
+      <div class="section">
+        <div class="section-label">Plano Contratado</div>
+
+        <div class="planos">
+          <label class="plano-opt">
+            <input type="radio" name="plano" value="starter" data-valor="997" required>
+            <div class="plano-box">
+              <div class="plano-nome">Starter</div>
+              <div class="plano-valor">R$997</div>
+              <div class="plano-desc">GMB + Landing Page</div>
+            </div>
+          </label>
+          <label class="plano-opt">
+            <input type="radio" name="plano" value="growth" data-valor="1497">
+            <div class="plano-box">
+              <div class="plano-nome">Growth</div>
+              <div class="plano-valor">R$1.497</div>
+              <div class="plano-desc">+ Meta Ads</div>
+            </div>
+          </label>
+          <label class="plano-opt">
+            <input type="radio" name="plano" value="pro" data-valor="2500">
+            <div class="plano-box">
+              <div class="plano-nome">Pro</div>
+              <div class="plano-valor">R$2.500</div>
+              <div class="plano-desc">+ Google Ads</div>
+            </div>
+          </label>
+        </div>
+
+        <div class="row2">
+          <div class="field">
+            <label>Valor mensal <span class="req">*</span></label>
+            <div class="input-wrap">
+              <span class="prefix">R$</span>
+              <input type="number" name="valor" id="valor" placeholder="0" min="0" required>
+            </div>
+            <div class="hint">Auto-preenchido — edite se houve negociação</div>
+          </div>
+          <div class="field">
+            <label>Data de início <span class="req">*</span></label>
+            <input type="date" name="dataInicio" required>
+          </div>
+        </div>
       </div>
-    </div>
 
-    <button type="submit" id="btn">Criar estrutura no ClickUp →</button>
-    <div class="status" id="status"></div>
+      <hr>
 
-  </form>
+      <!-- CAPTAÇÃO -->
+      <div class="section">
+        <div class="section-label">Captação</div>
+
+        <div class="row2">
+          <div class="field">
+            <label>Canal de captação <span class="req">*</span></label>
+            <select name="canal" id="canal" required>
+              <option value="">Como chegou até nós?</option>
+              <option value="indicacao">Indicação</option>
+              <option value="instagram">Instagram</option>
+              <option value="whatsapp">WhatsApp direto</option>
+              <option value="google">Google / Pesquisa</option>
+              <option value="feira">Feira / Evento</option>
+              <option value="site">Site</option>
+              <option value="prospeccao">Prospecção ativa</option>
+              <option value="outro">Outro</option>
+            </select>
+          </div>
+          <div class="field" id="indicado-field" style="visibility:hidden">
+            <label>Indicado por</label>
+            <input type="text" name="indicadoPor" placeholder="Nome de quem indicou">
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Observações <span class="opt">opcional</span></label>
+          <textarea name="obs" rows="2" placeholder="Contexto do fechamento, condições especiais, histórico relevante..."></textarea>
+        </div>
+      </div>
+
+      <button type="submit" class="btn-submit" id="btn">Criar estrutura no ClickUp →</button>
+      <div class="status" id="status"></div>
+
+    </form>
+  </div>
 </div>
 
 <script>
-  const CONFIG = {
-    webhookUrl: 'https://escalando-premoldados.vercel.app/api/onboarding',
-  };
+  const CONFIG = { webhookUrl: 'https://escalando-premoldados.vercel.app/api/onboarding' };
 
   // Máscara CNPJ
   document.querySelector('[name="cnpj"]').addEventListener('input', function(e) {
@@ -170,26 +333,52 @@
     e.target.value = v;
   });
 
+  // Auto-fill valor a partir do plano
+  document.querySelectorAll('[name="plano"]').forEach(r => {
+    r.addEventListener('change', () => {
+      document.getElementById('valor').value = r.dataset.valor;
+    });
+  });
+
+  // Show/hide "Indicado por"
+  document.getElementById('canal').addEventListener('change', function() {
+    const el = document.getElementById('indicado-field');
+    el.style.visibility = this.value === 'indicacao' ? 'visible' : 'hidden';
+  });
+
+  // Submit
   document.getElementById('form').addEventListener('submit', async function(e) {
     e.preventDefault();
     const btn = document.getElementById('btn');
     const st  = document.getElementById('status');
     const fd  = new FormData(e.target);
 
-    st.className = 'status';
-    st.textContent = '';
-    btn.disabled = true;
-    btn.textContent = 'Criando estrutura...';
+    // Validação visual
+    let ok = true;
+    e.target.querySelectorAll('[required]').forEach(el => {
+      const empty = !el.value.trim();
+      el.classList.toggle('err', empty);
+      if (empty && ok) { el.focus(); ok = false; }
+    });
+    if (!ok) return;
+
+    st.className = 'status'; st.textContent = '';
+    btn.disabled = true; btn.textContent = 'Criando estrutura...';
 
     const dados = {
-      action:     'fechamento',
-      empresa:    fd.get('empresa'),
-      cnpj:       fd.get('cnpj'),
-      responsavel:fd.get('responsavel'),
-      whatsapp:   fd.get('whatsapp'),
-      plano:      fd.get('plano'),
-      valor:      fd.get('valor'),
-      dataInicio: fd.get('dataInicio'),
+      action:      'fechamento',
+      empresa:     fd.get('empresa'),
+      cnpj:        fd.get('cnpj'),
+      responsavel: fd.get('responsavel'),
+      whatsapp:    fd.get('whatsapp'),
+      cidade:      fd.get('cidade'),
+      estado:      fd.get('estado'),
+      plano:       fd.get('plano'),
+      valor:       fd.get('valor'),
+      dataInicio:  fd.get('dataInicio'),
+      canal:       fd.get('canal'),
+      indicadoPor: fd.get('indicadoPor'),
+      obs:         fd.get('obs'),
     };
 
     try {
@@ -199,11 +388,12 @@
         body: JSON.stringify(dados),
       });
       const json = await res.json();
-
       if (json.success) {
         st.className = 'status ok';
-        st.textContent = '✅ ' + json.msg + ' — ClickUp atualizado!';
+        st.textContent = '✅ ' + json.msg;
         e.target.reset();
+        document.getElementById('indicado-field').style.visibility = 'hidden';
+        st.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       } else {
         throw new Error(json.error || 'Erro desconhecido');
       }
@@ -215,6 +405,9 @@
       btn.textContent = 'Criar estrutura no ClickUp →';
     }
   });
+
+  // Remove classe de erro ao digitar
+  document.getElementById('form').addEventListener('input', e => e.target.classList.remove('err'));
 </script>
 </body>
 </html>
