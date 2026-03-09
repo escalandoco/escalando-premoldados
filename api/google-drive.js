@@ -199,6 +199,63 @@ export async function registrarLead(empresa, d) {
   };
 }
 
+// ── ATUALIZAR STATUS DO LEAD ──────────────────────────────────────────────────
+/**
+ * Atualiza a coluna Status (H) de um lead na aba Leads pelo telefone.
+ * Se novoStatus = "Pagamento Confirmado", preenche também Data Fechamento (J) e Valor (K).
+ */
+export async function atualizarStatusLead(empresa, telefone, novoStatus, valorVenda) {
+  const auth = getAuth();
+  const drive = google.drive({ version: 'v3', auth });
+  const sheets = google.sheets({ version: 'v4', auth });
+
+  const planilhaId = await encontrarPlanilhaId(drive, empresa);
+
+  // Lê todas as linhas da aba Leads
+  const response = await sheets.spreadsheets.values.get({
+    spreadsheetId: planilhaId,
+    range: 'Leads!A:M',
+  });
+
+  const rows = response.data.values || [];
+  const digitos = telefone.replace(/\D/g, '');
+
+  // Busca linha pelo telefone (coluna C = índice 2)
+  let rowIndex = -1;
+  for (let i = 1; i < rows.length; i++) {
+    const celula = (rows[i][2] || '').replace(/\D/g, '');
+    if (celula && (celula === digitos || celula.endsWith(digitos.slice(-9)) || digitos.endsWith(celula.slice(-9)))) {
+      rowIndex = i + 1; // Sheets API usa índice 1-based
+      break;
+    }
+  }
+
+  if (rowIndex === -1) {
+    console.warn(`[sheets] Lead ${telefone} não encontrado em ${empresa} — ignorando update de status`);
+    return { ok: false, reason: 'lead_not_found' };
+  }
+
+  // Monta updates
+  const updates = [
+    { range: `Leads!H${rowIndex}`, values: [[novoStatus]] },
+  ];
+
+  if (novoStatus === 'Pagamento Confirmado') {
+    updates.push({ range: `Leads!J${rowIndex}`, values: [[new Date().toLocaleDateString('pt-BR')]] });
+    if (valorVenda) {
+      updates.push({ range: `Leads!K${rowIndex}`, values: [[valorVenda]] });
+    }
+  }
+
+  await sheets.spreadsheets.values.batchUpdate({
+    spreadsheetId: planilhaId,
+    requestBody: { valueInputOption: 'RAW', data: updates },
+  });
+
+  console.log(`[sheets] Status do lead ${telefone} → "${novoStatus}" (linha ${rowIndex})`);
+  return { ok: true, row: rowIndex, status: novoStatus };
+}
+
 // ── REGISTRAR ORÇAMENTO ───────────────────────────────────────────────────────
 export async function registrarOrcamento(empresa, d) {
   const auth = getAuth();
