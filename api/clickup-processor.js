@@ -10,8 +10,9 @@
  * POST /api/clickup-processor
  */
 
-const CLICKUP_KEY = process.env.CLICKUP_API_KEY;
-const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY;
+const CLICKUP_KEY     = process.env.CLICKUP_API_KEY;
+const CLICKUP_BOT_KEY = process.env.CLICKUP_BOT_API_KEY || CLICKUP_KEY;
+const ANTHROPIC_KEY   = process.env.ANTHROPIC_API_KEY;
 
 // ── CONTEXTO BASE — Concrenor ─────────────────────────────────
 const CONTEXTO_CONCRENOR = `
@@ -136,7 +137,7 @@ async function clickupGet(path) {
 async function clickupComment(taskId, text) {
   const r = await fetch(`https://api.clickup.com/api/v2/task/${taskId}/comment`, {
     method: 'POST',
-    headers: { Authorization: CLICKUP_KEY, 'Content-Type': 'application/json' },
+    headers: { Authorization: CLICKUP_BOT_KEY, 'Content-Type': 'application/json' },
     body: JSON.stringify({ comment_text: text, notify_all: false }),
   });
   if (!r.ok) throw new Error(`ClickUp comment → ${r.status}: ${await r.text()}`);

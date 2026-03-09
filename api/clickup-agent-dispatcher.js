@@ -18,8 +18,9 @@
  *   "Exporta os leads para o Meta"          → exportar-leads-meta
  */
 
-const CLICKUP_KEY   = process.env.CLICKUP_API_KEY;
-const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY;
+const CLICKUP_KEY     = process.env.CLICKUP_API_KEY;
+const CLICKUP_BOT_KEY = process.env.CLICKUP_BOT_API_KEY || CLICKUP_KEY;
+const ANTHROPIC_KEY   = process.env.ANTHROPIC_API_KEY;
 const VPS_URL       = process.env.VPS_URL       || 'http://129.121.45.61:3030';
 const WORKER_SECRET = process.env.WORKER_SECRET  || '';
 
@@ -88,7 +89,7 @@ async function clickupGet(path) {
 async function clickupComment(taskId, text) {
   const r = await fetch(`https://api.clickup.com/api/v2/task/${taskId}/comment`, {
     method: 'POST',
-    headers: { Authorization: CLICKUP_KEY, 'Content-Type': 'application/json' },
+    headers: { Authorization: CLICKUP_BOT_KEY, 'Content-Type': 'application/json' },
     body: JSON.stringify({ comment_text: text, notify_all: false }),
   });
   if (!r.ok) throw new Error(`ClickUp comment ${r.status}: ${await r.text()}`);
