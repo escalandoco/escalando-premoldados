@@ -1,3 +1,6 @@
 {
-  "version": 2
+  "version": 2,
+  "routes": [
+    { "src": "/orcamento", "dest": "/public/orcamento.html" }
+  ]
 }

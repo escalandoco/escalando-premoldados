@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>Orçamento</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f1f5f9;
+      color: #1e293b;
+      min-height: 100vh;
+      padding-bottom: 32px;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: #0f172a;
+      color: #fff;
+      padding: 20px 16px 16px;
+      text-align: center;
+    }
+    header .emoji { font-size: 28px; display: block; margin-bottom: 6px; }
+    header h1 { font-size: 18px; font-weight: 700; letter-spacing: .3px; }
+    header p { font-size: 12px; color: #94a3b8; margin-top: 4px; }
+
+    /* ── CARDS ── */
+    .card {
+      background: #fff;
+      margin: 12px 12px 0;
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,.08);
+    }
+    .card-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .8px;
+      color: #64748b;
+      margin-bottom: 12px;
+    }
+
+    /* ── INPUTS ── */
+    label { display: block; font-size: 13px; font-weight: 500; color: #475569; margin-bottom: 4px; margin-top: 10px; }
+    label:first-of-type { margin-top: 0; }
+    input[type=text], input[type=tel], input[type=number], textarea {
+      width: 100%;
+      padding: 11px 12px;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 15px;
+      color: #1e293b;
+      background: #f8fafc;
+      outline: none;
+      transition: border-color .15s;
+      -webkit-appearance: none;
+    }
+    input:focus, textarea:focus { border-color: #6366f1; background: #fff; }
+    textarea { resize: none; height: 70px; }
+    input[type=number] { -moz-appearance: textfield; }
+    input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+    /* ── ITEM ── */
+    .item-block {
+      border: 1.5px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 12px;
+      margin-bottom: 10px;
+      background: #f8fafc;
+      position: relative;
+    }
+    .item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .item-num {
+      font-size: 11px;
+      font-weight: 700;
+      color: #6366f1;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+    }
+    .btn-remove {
+      background: none;
+      border: none;
+      color: #ef4444;
+      font-size: 18px;
+      cursor: pointer;
+      padding: 2px 6px;
+      border-radius: 6px;
+      line-height: 1;
+    }
+    .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .item-sub {
+      font-size: 12px;
+      color: #64748b;
+      margin-top: 6px;
+      text-align: right;
+    }
+    .item-sub span { font-weight: 700; color: #1e293b; }
+
+    /* ── ADD ITEM ── */
+    .btn-add {
+      width: 100%;
+      padding: 10px;
+      border: 2px dashed #c7d2fe;
+      border-radius: 8px;
+      background: none;
+      color: #6366f1;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 4px;
+      transition: background .15s;
+    }
+    .btn-add:hover { background: #eef2ff; }
+
+    /* ── TOTAIS ── */
+    .totais {
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1.5px solid #e2e8f0;
+    }
+    .total-line {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 14px;
+      color: #64748b;
+      margin-bottom: 6px;
+    }
+    .total-line.grand {
+      font-size: 18px;
+      font-weight: 800;
+      color: #1e293b;
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1.5px solid #e2e8f0;
+    }
+
+    /* ── FRETE ── */
+    .frete-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .frete-row label { margin: 0; white-space: nowrap; flex-shrink: 0; }
+    .frete-prefix {
+      font-size: 13px;
+      color: #64748b;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    /* ── SUBMIT ── */
+    .btn-submit {
+      display: block;
+      width: calc(100% - 24px);
+      margin: 16px 12px 0;
+      padding: 16px;
+      background: #16a34a;
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: center;
+      transition: background .15s;
+      box-shadow: 0 4px 12px rgba(22,163,74,.3);
+    }
+    .btn-submit:hover { background: #15803d; }
+    .btn-submit:disabled { background: #86efac; box-shadow: none; cursor: default; }
+
+    /* ── FEEDBACK ── */
+    #feedback {
+      display: none;
+      margin: 16px 12px 0;
+      border-radius: 12px;
+      padding: 20px 16px;
+      text-align: center;
+    }
+    #feedback.ok { background: #f0fdf4; border: 1.5px solid #86efac; }
+    #feedback.err { background: #fef2f2; border: 1.5px solid #fca5a5; }
+    #feedback .fb-icon { font-size: 32px; margin-bottom: 8px; }
+    #feedback .fb-title { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+    #feedback .fb-sub { font-size: 13px; color: #64748b; }
+    #feedback .btn-novo {
+      margin-top: 14px;
+      padding: 10px 20px;
+      background: #0f172a;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <span class="emoji">🏗️</span>
+  <h1 id="header-title">Registrar Orçamento</h1>
+  <p>Preencha após enviar o orçamento no WhatsApp</p>
+</header>
+
+<!-- CLIENTE -->
+<div class="card">
+  <div class="card-title">Cliente</div>
+  <label for="nome">Nome do lead</label>
+  <input type="text" id="nome" placeholder="Ex: João Silva" autocomplete="name">
+
+  <label for="telefone">Telefone *</label>
+  <input type="tel" id="telefone" placeholder="(79) 99999-9999" autocomplete="tel">
+
+  <label for="regiao">Cidade / Região</label>
+  <input type="text" id="regiao" placeholder="Ex: Itabaiana / SE">
+</div>
+
+<!-- ITENS -->
+<div class="card">
+  <div class="card-title">Itens do Orçamento</div>
+  <div id="itens-container"></div>
+  <button class="btn-add" onclick="addItem()">+ Adicionar item</button>
+
+  <div class="totais">
+    <div class="total-line">
+      <span>Subtotal itens</span>
+      <span id="subtotal-itens">R$ 0,00</span>
+    </div>
+    <div class="frete-row">
+      <label for="frete">Frete</label>
+      <span class="frete-prefix">R$</span>
+      <input type="number" id="frete" placeholder="0,00" min="0" step="0.01"
+             oninput="calcTotal()" style="flex:1; margin:0;">
+    </div>
+    <div class="total-line grand">
+      <span>TOTAL</span>
+      <span id="total-geral">R$ 0,00</span>
+    </div>
+  </div>
+</div>
+
+<!-- DETALHES -->
+<div class="card">
+  <div class="card-title">Detalhes</div>
+  <label for="prazo">Prazo de entrega</label>
+  <input type="text" id="prazo" placeholder="Ex: 10 dias úteis">
+
+  <label for="obs">Observação (opcional)</label>
+  <textarea id="obs" placeholder="Condições especiais, descontos, etc."></textarea>
+</div>
+
+<button class="btn-submit" id="btn-submit" onclick="submitForm()">
+  ✅ Registrar Orçamento
+</button>
+
+<!-- FEEDBACK -->
+<div id="feedback">
+  <div class="fb-icon" id="fb-icon"></div>
+  <div class="fb-title" id="fb-title"></div>
+  <div class="fb-sub" id="fb-sub"></div>
+  <button class="btn-novo" onclick="resetForm()">+ Novo orçamento</button>
+</div>
+
+<script>
+  // ── cliente via URL param ─────────────────────────────────────────
+  const params   = new URLSearchParams(location.search);
+  const clienteSlug = (params.get('c') || 'concrenor').toLowerCase();
+  const nomes = { concrenor: 'Concrenor', brasbloco: 'Brasbloco', levert: 'Levert' };
+  const clienteNome = nomes[clienteSlug] || clienteSlug;
+  document.getElementById('header-title').textContent = `Orçamento — ${clienteNome}`;
+  document.title = `Orçamento ${clienteNome}`;
+
+  // ── itens ─────────────────────────────────────────────────────────
+  let itemCount = 0;
+
+  function addItem() {
+    itemCount++;
+    const div = document.createElement('div');
+    div.className = 'item-block';
+    div.id = `item-${itemCount}`;
+    div.innerHTML = `
+      <div class="item-header">
+        <span class="item-num">Item ${itemCount}</span>
+        ${itemCount > 1 ? `<button class="btn-remove" onclick="removeItem(${itemCount})">✕</button>` : ''}
+      </div>
+      <label>Produto</label>
+      <input type="text" placeholder="Ex: Piso sextavado 6cm" oninput="calcTotal()">
+      <div class="row-2">
+        <div>
+          <label>Quantidade</label>
+          <input type="number" placeholder="0" min="0" step="1" oninput="calcItem(${itemCount})" data-qty>
+        </div>
+        <div>
+          <label>R$ unitário</label>
+          <input type="number" placeholder="0,00" min="0" step="0.01" oninput="calcItem(${itemCount})" data-price>
+        </div>
+      </div>
+      <div class="item-sub">Subtotal: <span id="sub-${itemCount}">R$ 0,00</span></div>
+    `;
+    document.getElementById('itens-container').appendChild(div);
+  }
+
+  function removeItem(n) {
+    document.getElementById(`item-${n}`).remove();
+    calcTotal();
+  }
+
+  function calcItem(n) {
+    const block = document.getElementById(`item-${n}`);
+    if (!block) return;
+    const qty   = parseFloat(block.querySelector('[data-qty]').value)   || 0;
+    const price = parseFloat(block.querySelector('[data-price]').value) || 0;
+    const sub   = qty * price;
+    block.querySelector(`#sub-${n}`).textContent = fmt(sub);
+    calcTotal();
+  }
+
+  function calcTotal() {
+    let sub = 0;
+    document.querySelectorAll('.item-block').forEach(block => {
+      const qty   = parseFloat(block.querySelector('[data-qty]')?.value)   || 0;
+      const price = parseFloat(block.querySelector('[data-price]')?.value) || 0;
+      sub += qty * price;
+    });
+    const frete = parseFloat(document.getElementById('frete').value) || 0;
+    document.getElementById('subtotal-itens').textContent = fmt(sub);
+    document.getElementById('total-geral').textContent    = fmt(sub + frete);
+  }
+
+  function fmt(n) {
+    return 'R$ ' + n.toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  }
+
+  // ── submit ────────────────────────────────────────────────────────
+  async function submitForm() {
+    const telefone = document.getElementById('telefone').value.trim();
+    if (!telefone) { alert('Informe o telefone do lead.'); return; }
+
+    const itens = [];
+    document.querySelectorAll('.item-block').forEach(block => {
+      const produto = block.querySelector('input[type=text]').value.trim();
+      const qty     = parseFloat(block.querySelector('[data-qty]').value)   || 0;
+      const preco   = parseFloat(block.querySelector('[data-price]').value) || 0;
+      if (produto || qty || preco) {
+        itens.push({ produto: produto || '—', qtd: qty, preco });
+      }
+    });
+
+    if (itens.length === 0) { alert('Adicione ao menos 1 item.'); return; }
+
+    const payload = {
+      cliente:  clienteSlug,
+      nome:     document.getElementById('nome').value.trim(),
+      telefone,
+      regiao:   document.getElementById('regiao').value.trim(),
+      itens,
+      frete:    parseFloat(document.getElementById('frete').value) || 0,
+      prazo:    document.getElementById('prazo').value.trim(),
+      obs:      document.getElementById('obs').value.trim(),
+    };
+
+    const btn = document.getElementById('btn-submit');
+    btn.disabled = true;
+    btn.textContent = '⏳ Registrando...';
+
+    try {
+      const res  = await fetch('/api/orcamento', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+
+      if (data.ok) {
+        showFeedback(true, '✅', 'Orçamento registrado!',
+          `${payload.nome || payload.telefone} — ${document.getElementById('total-geral').textContent}`);
+      } else {
+        showFeedback(false, '❌', 'Erro ao registrar', data.error || 'Tente novamente.');
+        btn.disabled = false;
+        btn.textContent = '✅ Registrar Orçamento';
+      }
+    } catch (e) {
+      showFeedback(false, '❌', 'Erro de conexão', 'Verifique sua internet e tente novamente.');
+      btn.disabled = false;
+      btn.textContent = '✅ Registrar Orçamento';
+    }
+  }
+
+  function showFeedback(ok, icon, title, sub) {
+    document.getElementById('btn-submit').style.display = 'none';
+    const fb = document.getElementById('feedback');
+    fb.className = ok ? 'ok' : 'err';
+    fb.style.display = 'block';
+    document.getElementById('fb-icon').textContent  = icon;
+    document.getElementById('fb-title').textContent = title;
+    document.getElementById('fb-sub').textContent   = sub;
+  }
+
+  function resetForm() {
+    document.getElementById('nome').value      = '';
+    document.getElementById('telefone').value  = '';
+    document.getElementById('regiao').value    = '';
+    document.getElementById('frete').value     = '';
+    document.getElementById('prazo').value     = '';
+    document.getElementById('obs').value       = '';
+    document.getElementById('itens-container').innerHTML = '';
+    itemCount = 0;
+    addItem();
+    calcTotal();
+    document.getElementById('feedback').style.display = 'none';
+    document.getElementById('btn-submit').style.display = 'block';
+    document.getElementById('btn-submit').disabled = false;
+    document.getElementById('btn-submit').textContent = '✅ Registrar Orçamento';
+  }
+
+  // inicia com 1 item
+  addItem();
+</script>
+</body>
+</html>

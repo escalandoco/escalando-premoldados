@@ -268,9 +268,11 @@ export async function registrarOrcamento(empresa, d) {
     `${i.nome || i.produto || '?'}: ${i.qtd || 1}x R$${i.preco || '0'}`
   ).join(' | ');
 
-  const total = (d.itens || []).reduce((s, i) =>
+  const subtotalItens = (d.itens || []).reduce((s, i) =>
     s + ((i.qtd || 1) * (parseFloat(String(i.preco || 0).replace(/[^\d.]/g, '')) || 0)), 0
-  ).toFixed(2);
+  );
+  const frete = parseFloat(d.frete) || 0;
+  const total = (subtotalItens + frete).toFixed(2);
 
   // Colunas: Data | Canal | Nome | Telefone | Região | Itens | Total (R$) | Prazo | Status | Observação
   await sheets.spreadsheets.values.append({
