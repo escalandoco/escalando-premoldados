@@ -6,11 +6,12 @@
  * Body: { action: 'fechamento' | 'kickoff', ...dados }
  */
 
+import { criarPastaCliente, registrarLead, registrarOrcamento } from './google-drive.js';
+
 const CLICKUP_API_KEY    = process.env.CLICKUP_API_KEY;
 const SPACE_CLIENTES     = process.env.CLICKUP_SPACE_ID || '901313553858';
 const BASE_URL           = 'https://api.clickup.com/api/v2';
 const KICKOFF_URL        = (process.env.KICKOFF_URL || 'https://escalando.co/kickoff').trim();
-const GOOGLE_WORKSPACE   = (process.env.GOOGLE_WORKSPACE_URL || '').trim();
 
 // ── CUSTOM FIELD IDs — Onboarding list (campos de AÇÃO apenas) ───────────────
 // Apenas campos relevantes para as tasks de ação (NF, Kickoff, etc.)
@@ -248,31 +249,24 @@ async function processarFechamento(d) {
     });
   }
 
-  // Cria estrutura no Drive (pasta + planilha de leads)
+  // Cria estrutura no Drive (pasta + subpasta Fotos + planilha CRM)
   let drive = {};
-  if (GOOGLE_WORKSPACE) {
-    try {
-      const gRes = await fetch(GOOGLE_WORKSPACE, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'criar-cliente', empresa: d.empresa }),
-      });
-      drive = await gRes.json();
+  try {
+    drive = await criarPastaCliente(d.empresa);
 
-      // Salva link da planilha na task de NF+Contrato
-      if (drive.planilhaUrl) {
-        const { tasks: taskList } = await cu('get', `/list/${onboarding.id}/task?archived=false`);
-        const nfTask = taskList.find(t => t.name.startsWith('Emitir NF'));
-        if (nfTask) {
-          const descAtual = nfTask.description || '';
-          await cu('put', `/task/${nfTask.id}`, {
-            description: descAtual + `\n\n📊 **Planilha de Leads:** ${drive.planilhaUrl}\n📁 **Drive:** ${drive.pastaDriveUrl}`,
-          });
-        }
+    // Salva link da planilha na task de NF+Contrato
+    if (drive.planilhaUrl) {
+      const { tasks: taskList } = await cu('get', `/list/${onboarding.id}/task?archived=false`);
+      const nfTask = taskList.find(t => t.name.startsWith('Emitir NF'));
+      if (nfTask) {
+        const descAtual = nfTask.description || '';
+        await cu('put', `/task/${nfTask.id}`, {
+          description: descAtual + `\n\n📊 **Planilha de Leads:** ${drive.planilhaUrl}\n📁 **Drive:** ${drive.pastaUrl}\n📸 **Fotos:** ${drive.fotosUrl}`,
+        });
       }
-    } catch (err) {
-      drive = { error: err.message };
     }
+  } catch (err) {
+    drive = { error: err.message };
   }
 
   const listas = ['Onboarding', 'GMB', 'Landing Pages', 'CRM — Leads',
@@ -625,43 +619,26 @@ ${d.comoVendem || '_Preencher_'}
 // NOVO LEAD — Registra lead na planilha do cliente
 // ============================================================
 async function processarNovoLead(d) {
-  if (!GOOGLE_WORKSPACE) throw new Error('Google Workspace não configurado.');
-  const res = await fetch(GOOGLE_WORKSPACE, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ action: 'novo-lead', ...d }),
-  });
-  const json = await res.json();
-  if (!json.success) throw new Error(json.error || 'Erro ao registrar lead.');
-  return { msg: json.msg };
+  if (!d.empresa) throw new Error('Campo empresa obrigatório.');
+  const result = await registrarLead(d.empresa, d);
+  return { msg: result.msg };
 }
 
 // ============================================================
 // LP BRIEFING — Salva briefing no Drive + cria task no ClickUp
 // ============================================================
 async function processarLpBriefing(d) {
-  // 1. Salva dados no Drive via Apps Script
-  if (GOOGLE_WORKSPACE) {
-    try {
-      await fetch(GOOGLE_WORKSPACE, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'salvar-lp-briefing', ...d }),
-      });
-    } catch (_) {}
-  }
-
-  // 2. Busca folder do cliente no ClickUp
+  // 1. Busca folder do cliente no ClickUp
   const { folders } = await cu('get', `/space/${SPACE_CLIENTES}/folder?archived=false`);
   const folder = folders.find(f => f.name.toLowerCase() === d.empresa.toLowerCase());
   if (!folder) throw new Error(`Folder "${d.empresa}" não encontrado no ClickUp.`);
 
-  // 3. Busca lista Onboarding
+  // 2. Busca lista Onboarding
   const { lists } = await cu('get', `/folder/${folder.id}/list?archived=false`);
   const onboarding = lists.find(l => l.name === 'Onboarding');
   if (!onboarding) throw new Error('Lista Onboarding não encontrada.');
 
-  // 4. Monta descrição da task
+  // 3. Monta descrição da task
   const produtos = (d.produtos || []).map((p, i) =>
     `**Produto ${i+1}:** ${p.nome}${p.preco ? ` — ${p.preco}` : ''}\n${p.aplicacao ? `Aplicação: ${p.aplicacao}\n` : ''}${p.desc || ''}`
   ).join('\n\n');
@@ -758,14 +735,9 @@ async function processarLpBriefing(d) {
 // NOVO ORÇAMENTO — Registra orçamento na planilha do cliente
 // ============================================================
 async function processarNovoOrcamento(d) {
-  if (!GOOGLE_WORKSPACE) throw new Error('Google Workspace não configurado.');
-  const res = await fetch(GOOGLE_WORKSPACE, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ action: 'novo-orcamento', ...d }),
-  });
-  const json = await res.json();
-  if (!json.success) throw new Error(json.error || 'Erro ao registrar orçamento.');
+  if (!d.empresa) throw new Error('Campo empresa obrigatório.');
+  const result = await registrarOrcamento(d.empresa, d);
+  const json = { success: true, msg: result.msg };
 
   // Posta registro do orçamento na Ficha do Cliente (fire-and-forget)
   if (d.empresa) {

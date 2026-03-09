@@ -1077,8 +1077,10 @@ function renderClienteCard(c) {
         ${lpBadge}${adsBadge}${gmbBadge}
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
-        ${c.lp ? `<a href="${c.lp}" target="_blank" rel="noopener" style="font-size:11px;color:var(--blue);text-decoration:none;padding:4px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg3)">🌐 Ver LP</a>` : ''}
+        ${c.lp ? `<a href="${c.lp}" target="_blank" rel="noopener" style="font-size:11px;color:var(--blue);text-decoration:none;padding:4px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg3)">🌐 LP</a>` : ''}
         <a href="${c.clickup}" target="_blank" rel="noopener" style="font-size:11px;color:var(--muted);text-decoration:none;padding:4px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg3)">✅ ClickUp</a>
+        ${c.drive ? `<a href="${c.drive}" target="_blank" rel="noopener" style="font-size:11px;color:var(--muted);text-decoration:none;padding:4px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg3)">📁 Drive</a>` : ''}
+        ${c.crm ? `<a href="${c.crm}" target="_blank" rel="noopener" style="font-size:11px;color:var(--green);text-decoration:none;padding:4px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg3)">📊 CRM Leads</a>` : ''}
       </div>
     </div>`;
 }

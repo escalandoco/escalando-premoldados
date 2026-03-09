@@ -27,7 +27,7 @@ const AGENTS = [
   { id: 'po',               name: 'Pax',    role: 'Product Owner',   color: '#FF7B72', initials: 'PX', executorType: 'Agente',   scope: 'Stories e epics',           desc: 'Define stories, acceptance criteria e backlog — decide o que entra em cada sprint e em que ordem' },
   { id: 'sm',               name: 'River',  role: 'Scrum Master',    color: '#79C0FF', initials: 'RV', executorType: 'Agente',   scope: 'Processos e sprints',       desc: 'Facilita os sprints, remove blockers, atualiza checkboxes das stories e mantém o processo funcionando' },
   { id: 'analyst',          name: 'Alex',   role: 'Analyst',         color: '#A5D6FF', initials: 'AX', executorType: 'Analyst',  scope: 'Pesquisa e análise',        desc: 'Pesquisa keywords de SEO local, analisa mercado de pré-moldados e documenta estratégia de conteúdo e anúncios' },
-  { id: 'data-engineer',    name: 'Dara',   role: 'Data Engineer',   color: '#56D364', initials: 'DR', executorType: 'Analyst',  scope: 'Database e dados',          desc: 'Estrutura o Google Sheets de CRM, define schemas de dados de leads, integrações com Apps Script e Google Drive' },
+  { id: 'data-engineer',    name: 'Dara',   role: 'Data Engineer',   color: '#56D364', initials: 'DR', executorType: 'Analyst',  scope: 'Database e dados',          desc: 'Estrutura o Google Sheets de CRM, define schemas de leads e orçamentos, mantém integração Google Drive via Service Account' },
   { id: 'ux-design-expert', name: 'Uma',    role: 'UX Designer',     color: '#FF9BDD', initials: 'UM', executorType: 'Analyst',  scope: 'UX/UI Design',              desc: 'Cuida do design da landing page, experiência do usuário, hierarquia visual e identidade da marca Escalando' },
   { id: 'devops',           name: 'Gage',   role: 'DevOps',          color: '#F0883E', initials: 'GG', executorType: 'Worker',   scope: 'CI/CD e deploy',            desc: 'Faz o deploy via FTP para HostGator, configura GitHub Actions e gerencia toda a infraestrutura do projeto' },
   { id: 'traffic-manager',  name: 'Theo',   role: 'Traffic Manager', color: '#E85110', initials: 'TH', executorType: 'Agente',   scope: 'Tráfego pago',              desc: 'Estratégia e gestão de Meta Ads e Google Ads — públicos, copy, criativos, budget e otimização de CPL' },
@@ -144,10 +144,11 @@ function buildIntegrations(env) {
   const mask = v => v ? '••••' + v.slice(-4) : '—';
   return [
     // ── Nossas ferramentas (agência) ──
-    { group: 'agency', name: 'Anthropic / Claude', icon: '🤖', connected: ok(env.ANTHROPIC_API_KEY),             detail: env.ANTHROPIC_API_KEY ? 'Conectado' : '—',   action: 'API Key da Anthropic — usada para gerar copy e LPs',   edit: { source:'env', key:'ANTHROPIC_API_KEY',     label:'Anthropic API Key',    placeholder:'sk-ant-...' } },
-    { group: 'agency', name: 'ClickUp',             icon: '✅', connected: ok(env.CLICKUP_API_KEY),              detail: env.CLICKUP_API_KEY ? 'Conectado' : '—',     action: 'API Key do ClickUp — gestão de tasks e onboarding',    edit: { source:'env', key:'CLICKUP_API_KEY',       label:'ClickUp API Key',      placeholder:'pk_...' } },
-    { group: 'agency', name: 'Vercel (Webhooks)',   icon: '▲',  connected: ok(env.VERCEL_TOKEN),                  detail: env.VERCEL_TOKEN ? 'Conectado' : '—',        action: 'Token do Vercel — hospeda webhooks da agência',        edit: { source:'env', key:'VERCEL_TOKEN',          label:'Vercel Token',         placeholder:'vcp_...' } },
-    { group: 'agency', name: 'FTP / HostGator',     icon: '🌐', connected: ok(env.FTP_HOST) && ok(env.FTP_USER), detail: env.FTP_HOST || '—',                         action: 'Host, usuário e senha — deploy de LPs no servidor',    edit: { source:'ftp', key:'FTP',                   label:'FTP',                  placeholder:'' } },
+    { group: 'agency', name: 'Anthropic / Claude', icon: '🤖', connected: ok(env.ANTHROPIC_API_KEY),                detail: env.ANTHROPIC_API_KEY ? 'Conectado' : '—',      action: 'API Key da Anthropic — usada para gerar copy e LPs',                 edit: { source:'env', key:'ANTHROPIC_API_KEY',           label:'Anthropic API Key',       placeholder:'sk-ant-...' } },
+    { group: 'agency', name: 'ClickUp',             icon: '✅', connected: ok(env.CLICKUP_API_KEY),                 detail: env.CLICKUP_API_KEY ? 'Conectado' : '—',        action: 'API Key do ClickUp — gestão de tasks e onboarding',                  edit: { source:'env', key:'CLICKUP_API_KEY',             label:'ClickUp API Key',         placeholder:'pk_...' } },
+    { group: 'agency', name: 'Google Drive',         icon: '📁', connected: ok(env.GOOGLE_SERVICE_ACCOUNT_B64),     detail: env.GOOGLE_SERVICE_ACCOUNT_B64 ? 'Conectado' : '—', action: 'Service Account — cria pastas e registra leads/orçamentos por cliente', edit: null },
+    { group: 'agency', name: 'Vercel (Webhooks)',   icon: '▲',  connected: ok(env.VERCEL_TOKEN),                    detail: env.VERCEL_TOKEN ? 'Conectado' : '—',           action: 'Token do Vercel — hospeda webhooks da agência',                      edit: { source:'env', key:'VERCEL_TOKEN',                label:'Vercel Token',            placeholder:'vcp_...' } },
+    { group: 'agency', name: 'FTP / HostGator',     icon: '🌐', connected: ok(env.FTP_HOST) && ok(env.FTP_USER),   detail: env.FTP_HOST || '—',                            action: 'Host, usuário e senha — deploy de LPs no servidor',                  edit: { source:'ftp', key:'FTP',                         label:'FTP',                     placeholder:'' } },
   ];
 }
 
@@ -195,21 +196,19 @@ function saveIntegration(source, key, value) {
 const PENDING_TASKS = [
   // Credenciais bloqueantes — sem elas as campanhas não rodam
   { priority: 'high',   story: 'EP4',          task: 'Preencher WhatsApp real da Concrenor em config/briefing-concrenor.json e config/lp-concrenor.json (atualmente placeholder 5579999999999)' },
-  { priority: 'high',   story: 'EP4',          task: 'Obter Pixel Meta ID da Concrenor e preencher em config/lp-concrenor.json e config/briefing-ads-concrenor.json' },
-  { priority: 'high',   story: 'EP4',          task: 'Preencher META_CAPI_TOKEN e META_AD_ACCOUNT_ID no dashboard (Ferramentas → Editar) — necessário para monitorar-ads.js ler dados reais' },
-  { priority: 'high',   story: 'EP4',          task: 'Subir primeira campanha Meta Ads para Concrenor no Gerenciador de Anúncios' },
+  { priority: 'high',   story: 'EP4',          task: 'Subir primeira campanha Meta Ads para Concrenor no Gerenciador de Anúncios (Pixel ✅ | CAPI ✅ | Conta ✅)' },
   { priority: 'high',   story: 'Marketing',    task: 'Preencher WhatsApp real da Escalando em config/briefing-ads-escalando.json (cta_url) — necessário para campanha de captação' },
   // Segurança
   { priority: 'high',   story: 'Infra',        task: 'Trocar senha root do VPS (exposta no histórico de chat) — SSH: root@129.121.45.61 -p 22022 → passwd' },
   // Operacional
-  { priority: 'medium', story: 'EP4',          task: 'Obter fotos reais da Concrenor — enviar checklist-fotos-concrenor para o cliente' },
+  { priority: 'medium', story: 'EP4',          task: 'Obter fotos reais da Concrenor — cliente envia para Drive → pasta 05 - Fotos' },
   { priority: 'medium', story: 'EP4',          task: 'Realizar call de ideias com Concrenor para validar briefing-ads-concrenor.json' },
   { priority: 'medium', story: 'EP3',          task: 'Verificar concrenor.escalando.co no Google Search Console' },
   { priority: 'medium', story: 'EP3',          task: 'Criar/otimizar perfil GMB da Concrenor' },
   { priority: 'medium', story: 'Marketing',    task: 'Criar Pixel Meta para a Escalando e preencher em config/briefing-ads-escalando.json' },
+  { priority: 'medium', story: 'EP5',          task: 'Para novos clientes: copiar planilha "Leads — Concrenor" para pasta 06 - CRM Leads do novo cliente (SA não cria planilhas automaticamente)' },
   // Baixa prioridade
-  { priority: 'low',    story: 'EP5',          task: 'Iniciar onboarding Brasbloco e Levert — preencher kickoff via formulário' },
-  { priority: 'low',    story: 'EP2-S4',       task: 'Criar pasta Google Drive e configurar DRIVE_FOLDER_ID' },
+  { priority: 'low',    story: 'EP5',          task: 'Preencher kickoff de Brasbloco e Levert via formulário (escalando.co/kickoff?empresa=brasbloco)' },
 ];
 
 // ── COMMANDS ─────────────────────────────────────────────────
@@ -621,6 +620,8 @@ const server = http.createServer((req, res) => {
         lp: 'https://concrenor.escalando.co/',
         lpStatus: 'online',
         clickup: 'https://app.clickup.com/90133050692/v/l/901317576140',
+        drive: 'https://drive.google.com/drive/folders/1qLhzqMmp_QNEkr5XRoKa7il9WdWr-blZ',
+        crm: 'https://docs.google.com/spreadsheets/d/1q76BCHazHc9YhybnHkKgv32MgrhfpIVnGGkyou-I6RA',
         metaAds: 'aguardando campanha',
         gmb: 'pendente',
         cor: '#58A6FF',
@@ -635,6 +636,8 @@ const server = http.createServer((req, res) => {
         lp: '',
         lpStatus: 'pendente',
         clickup: 'https://app.clickup.com/90133050692/v/l/901317642669',
+        drive: 'https://drive.google.com/drive/folders/1MD0QibTR-T47mu3VHyNemFGVGdFoMND1',
+        crm: '',
         metaAds: 'pendente',
         gmb: 'pendente',
         cor: '#3FB950',
@@ -649,6 +652,8 @@ const server = http.createServer((req, res) => {
         lp: '',
         lpStatus: 'pendente',
         clickup: 'https://app.clickup.com/90133050692/v/l/901317642685',
+        drive: 'https://drive.google.com/drive/folders/1Occ7VSq-4u7Ge0setM4O4LRefGq9N990',
+        crm: '',
         metaAds: 'pendente',
         gmb: 'pendente',
         cor: '#FFA657',
