@@ -247,7 +247,14 @@ export default async function handler(req, res) {
       return res.status(200).json({ skipped: true, reason: 'empty_comment' });
     }
 
-    // Ignorar comentários do próprio bot (múltiplas assinaturas)
+    // Ignorar comentários feitos pelo bot (user ID 284630083 = escalando.contato@gmail.com)
+    const BOT_USER_ID = 284630083;
+    const commentUserId = commentData?.user?.id || commentData?.comment?.user?.id;
+    if (commentUserId && Number(commentUserId) === BOT_USER_ID) {
+      return res.status(200).json({ skipped: true, reason: 'bot_user' });
+    }
+
+    // Ignorar comentários do próprio bot (por assinatura no texto)
     const BOT_SIGNATURES = [
       '_Dispatcher — Escalando Premoldados_',
       '_Gerado automaticamente pelo sistema Escalando',
