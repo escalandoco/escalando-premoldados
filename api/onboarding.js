@@ -840,22 +840,255 @@ function nomePlano(slug) {
 
 function getChecklistTasks(plano) {
   const tasks = [
-    { nome: 'S1 — Enviar roteiro de fotos ao cliente', desc: 'docs/playbooks/roteiro-fotos.md', prioridade: 2 },
-    { nome: 'S1 — Coletar acessos (Meta, Google, GMB, site)' },
-    { nome: 'S2 — Configurar LP', desc: 'Checklist: logo, cores, produto, webhook, mobile' },
-    { nome: 'S2 — Configurar GMB (15 itens)', desc: 'Categoria, fotos, horários, produtos, posts' },
-    { nome: 'S2 — Configurar CRM/Sheets', desc: 'Rodar setup-crm.gs, publicar webhook, testar lead' },
-    { nome: 'S2 — Configurar Tintim', desc: 'Rastreio de leads via WhatsApp' },
-    { nome: 'S2 — Briefing de criativos ao designer' },
-    { nome: 'Go-live — Checklist antes de ligar campanhas', prioridade: 2 },
-    { nome: 'Go-live — Notificar primeiro lead ao cliente' },
+    {
+      nome: 'S1 — Enviar roteiro de fotos ao cliente',
+      prioridade: 2,
+      desc: `📸 **Roteiro de Fotos — enviar ao cliente via WhatsApp**
+
+Sem fotos reais a LP fica com imagens genéricas. Esse passo destrava tudo que vem depois.
+
+**O que pedir:**
+- [ ] Fachada da empresa (externa, com placa visível)
+- [ ] Produtos acabados expostos (vários ângulos, boa luz)
+- [ ] Processo de fabricação / máquinas em operação
+- [ ] Equipe trabalhando (humaniza a marca)
+- [ ] Entrega sendo feita (caminhão, obra, cliente recebendo)
+- [ ] Close nos produtos (textura, detalhe, qualidade)
+
+**Como enviar:**
+Manda por WhatsApp com o texto:
+_"Olá! Para começarmos a montar sua página e os anúncios, preciso de algumas fotos. Manda no WhatsApp mesmo, em boa resolução (sem zoom). Lista aqui: [lista acima]"_
+
+**Prazo sugerido:** pedir para a semana seguinte ao kickoff.`,
+    },
+    {
+      nome: 'S1 — Coletar acessos (Meta, Google, GMB, site)',
+      desc: `🔑 **Coletar todos os acessos necessários para operar a conta**
+
+Sem acessos não conseguimos configurar nem monitorar nada. Prioridade máxima na semana 1.
+
+**Meta Business Manager**
+- [ ] Acessar business.facebook.com → Configurações → Pessoas
+- [ ] Adicionar: jonatas@escalando.co como **Administrador**
+- [ ] Confirmar que a conta de anúncios está vinculada ao BM do cliente
+- [ ] Confirmar acesso ao Pixel (ou criar se não existir)
+
+**Google Meu Negócio (GMB)**
+- [ ] Acessar business.google.com → Gerenciar acesso
+- [ ] Adicionar jonatas@escalando.co como **Gerente**
+- [ ] Aceitar convite (pedir ao cliente para confirmar no e-mail)
+
+**Google Ads** _(plano Pro)_
+- [ ] Acessar ads.google.com → Admin → Acesso e segurança
+- [ ] Convidar jonatas@escalando.co como **Administrador**
+
+**Site (se tiver)**
+- [ ] Pedir login/senha do painel (WordPress, Wix, etc.)
+- [ ] Ou adicionar usuário administrador
+
+**Confirmação final:**
+- [ ] Todos os acessos testados com login da Escalando`,
+    },
+    {
+      nome: 'S2 — Configurar LP',
+      desc: `🌐 **Configurar e publicar a Landing Page do cliente**
+
+A LP é o destino de todos os anúncios. Precisa estar 100% antes do go-live.
+
+**Pré-requisitos:** fotos do cliente recebidas ✓
+
+**Passo a passo:**
+- [ ] Preencher \`lp/lp-briefing.html\` com dados do cliente (ou acessar escalando.co/lp-briefing)
+- [ ] Rodar: \`node scripts/gerar-lp.js --empresa=CLIENTE --config=config/lp-CLIENTE.json --no-upload\`
+- [ ] Revisar LP gerada em \`dist/\` no browser
+- [ ] Verificar: headline clara, produto destacado, WhatsApp funcionando
+- [ ] Verificar: versão mobile (redimensionar janela)
+- [ ] Confirmar Pixel Meta instalado (ver no Meta Pixel Helper)
+- [ ] Rodar deploy: \`node scripts/deploy-lp.js --cliente=CLIENTE\`
+- [ ] Testar URL ao vivo: abrir no celular e no desktop
+- [ ] Enviar link da LP para o cliente aprovar`,
+    },
+    {
+      nome: 'S2 — Configurar GMB (15 itens)',
+      desc: `📍 **Configurar o perfil do Google Meu Negócio — 15 itens obrigatórios**
+
+GMB bem configurado aparece no Google Maps e nas pesquisas locais. É tráfego gratuito.
+
+**Acesso:** business.google.com → perfil do cliente
+
+- [ ] 1. **Categoria principal** — escolher a mais específica possível (ex: "Fabricante de concreto pré-moldado")
+- [ ] 2. **Categorias secundárias** — adicionar 2 a 3 categorias complementares
+- [ ] 3. **Descrição do negócio** — 750 caracteres com palavras-chave locais (ex: "pisos intertravados em Sergipe")
+- [ ] 4. **Endereço completo** — com CEP, bairro e cidade
+- [ ] 5. **Área de atendimento** — cidades/regiões que atendem
+- [ ] 6. **Telefone** — número principal com WhatsApp
+- [ ] 7. **Site** — URL da LP (não do site institucional genérico)
+- [ ] 8. **Horário de funcionamento** — todos os dias preenchidos
+- [ ] 9. **Fotos da fachada** — mínimo 3 fotos externas
+- [ ] 10. **Fotos dos produtos** — mínimo 5 fotos de produtos
+- [ ] 11. **Foto de perfil** — logo em fundo branco ou foto da fachada
+- [ ] 12. **Foto de capa** — melhor foto dos produtos
+- [ ] 13. **Produtos/serviços** — cadastrar produtos com nome, descrição e preço (ou "consulte")
+- [ ] 14. **Primeiro post** — publicar uma novidade ou promoção
+- [ ] 15. **Perguntas frequentes** — adicionar 3 perguntas + respostas comuns
+
+**Resultado esperado:** perfil completo com nota "Excelente" no GMB.`,
+    },
+    {
+      nome: 'S2 — Configurar CRM/Sheets',
+      desc: `📊 **Configurar planilha de CRM e webhook de leads**
+
+Todo lead da LP e do WhatsApp vai para o Sheets. Precisa estar funcionando antes do go-live.
+
+- [ ] Abrir a planilha do cliente no Google Drive
+- [ ] Confirmar que as colunas estão corretas: Data, Nome, Telefone, Produto, Canal, Status
+- [ ] Acessar Apps Script (Extensões → Apps Script) e confirmar que o webhook está publicado
+- [ ] Copiar a URL do Web App e salvar em \`GOOGLE_WORKSPACE_URL\` no Vercel
+- [ ] Testar o webhook: enviar um lead de teste via \`lp/lead.html\`
+- [ ] Confirmar que o lead aparece na planilha em menos de 30s
+- [ ] Testar também via formulário da LP (botão WhatsApp → verificar registro)
+
+**Onde fica:** Google Drive → pasta do cliente → "CRM — Leads — EMPRESA"`,
+    },
+    {
+      nome: 'S2 — Configurar Tintim',
+      desc: `💬 **Conectar Tintim para rastrear leads via WhatsApp**
+
+O Tintim captura quem manda mensagem no WhatsApp da empresa e registra no CRM.
+
+- [ ] Acessar painel do Tintim com login da Escalando
+- [ ] Conectar o número de WhatsApp do cliente (QR Code ou API)
+- [ ] Configurar webhook de saída: \`https://escalando-premoldados.vercel.app/api/tintim\`
+- [ ] Configurar tag automática: "Lead LP" para quem vem via link da LP
+- [ ] Testar: mandar mensagem no WhatsApp do cliente → verificar se aparece no Sheets
+- [ ] Confirmar que nome, telefone e origem estão registrados corretamente
+
+**Número do cliente:** ver campo WhatsApp no Dossiê do ClickUp`,
+    },
+    {
+      nome: 'S2 — Briefing de criativos ao designer',
+      desc: `🎨 **Briefing completo para o designer criar os criativos dos anúncios**
+
+Os criativos são a peça mais importante dos anúncios. Briefing ruim = criativos ruins.
+
+**O que enviar ao designer:**
+
+- [ ] **Fotos** — selecionar as 5 melhores fotos do cliente para usar nos anúncios
+- [ ] **Paleta de cores** — cor primária e secundária da marca (ver Dossiê → Briefing)
+- [ ] **Logo** — arquivo PNG com fundo transparente
+- [ ] **Produto foco** — qual produto será anunciado primeiro
+- [ ] **Headline principal** — frase de impacto (ex: "Piso Intertravado direto da fábrica em Sergipe")
+- [ ] **CTA** — chamada para ação (ex: "Peça seu orçamento no WhatsApp")
+- [ ] **Formatos necessários:**
+  - Feed quadrado (1080x1080)
+  - Stories vertical (1080x1920)
+  - Banner carrossel (1080x1080 × 3 cards)
+- [ ] **Referências visuais** — 2 a 3 anúncios de referência do setor (buscar na Meta Ads Library)
+- [ ] **Prazo** — combinar entrega em no máximo 5 dias úteis`,
+    },
+    {
+      nome: 'Go-live — Checklist antes de ligar campanhas',
+      prioridade: 2,
+      desc: `🚀 **Checklist final antes de ativar os anúncios**
+
+Não ligue as campanhas sem confirmar cada item. Erro aqui = dinheiro perdido.
+
+**LP**
+- [ ] LP está no ar e abrindo rápido (testar no celular com 4G, não Wi-Fi)
+- [ ] Botão de WhatsApp funcionando (abre conversa com mensagem pré-preenchida)
+- [ ] Formulário de lead funcionando (se existir)
+- [ ] LP aprovada pelo cliente
+
+**Rastreamento**
+- [ ] Pixel Meta disparando na LP (verificar com Meta Pixel Helper)
+- [ ] Evento "Lead" configurado (dispara quando clica no WhatsApp)
+- [ ] Lead de teste chegando na planilha Sheets
+
+**Meta Ads**
+- [ ] Campanha criada com objetivo correto (Leads ou Mensagens)
+- [ ] Público configurado (localização, interesse, cargo)
+- [ ] Criativos aprovados e enviados
+- [ ] Orçamento diário definido (R$ verba ÷ 30)
+- [ ] Pixel vinculado à campanha
+- [ ] URL de destino: LP do cliente (não o site)
+
+**Comunicação**
+- [ ] Cliente avisado que os anúncios vão ao ar hoje
+- [ ] Cliente sabe que pode começar a receber leads`,
+    },
+    {
+      nome: 'Go-live — Notificar primeiro lead ao cliente',
+      desc: `🎉 **Celebrar e registrar o primeiro lead com o cliente**
+
+O primeiro lead é um marco importante. Não deixe passar em branco — gera confiança.
+
+- [ ] Aguardar o primeiro lead chegar (via Sheets ou WhatsApp do cliente)
+- [ ] Confirmar dados do lead: nome, telefone, produto de interesse
+- [ ] Mandar mensagem para o cliente no WhatsApp:
+  _"🎉 Primeiro lead chegou! [Nome] entrou em contato interessado em [produto]. Tá na planilha e no WhatsApp de vocês."_
+- [ ] Orientar o cliente a responder em menos de 5 minutos (taxa de conversão cai muito depois disso)
+- [ ] Registrar data/hora do primeiro lead no Dossiê → Histórico de Performance`,
+    },
   ];
 
   if (plano === 'growth' || plano === 'pro') {
-    tasks.splice(4, 0, { nome: 'S2 — Configurar Meta Ads', desc: 'Conta, pixel, públicos, campanha inicial' });
+    tasks.splice(4, 0, {
+      nome: 'S2 — Configurar Meta Ads',
+      desc: `📘 **Configurar conta e estrutura de Meta Ads do cliente**
+
+Essa configuração é feita uma vez e serve de base para todas as campanhas futuras.
+
+**Pré-requisitos:** acesso ao BM do cliente ✓ | Pixel instalado na LP ✓ | Criativos prontos ✓
+
+**Conta e Pixel**
+- [ ] Confirmar que a conta de anúncios está vinculada ao BM da Escalando
+- [ ] Pixel instalado na LP e disparando eventos corretamente
+- [ ] Configurar evento "Lead" (clique no WhatsApp ou envio de formulário)
+- [ ] Criar Custom Audience: visitantes da LP (últimos 30 dias)
+- [ ] Criar Lookalike 1% baseado nos leads do Sheets (quando tiver 100+)
+
+**Campanha inicial — Topo de Funil**
+- [ ] Objetivo: Tráfego ou Leads (testar qual converte melhor)
+- [ ] Público: localização + interesse + cargo (definir no briefing)
+- [ ] Orçamento diário: R$ [verba ÷ 30]
+- [ ] Criativos: mínimo 3 variações (imagem, carrossel, vídeo se disponível)
+- [ ] URL de destino: LP do cliente com UTM (?utm_source=meta&utm_medium=paid)
+- [ ] Período inicial: 7 dias sem otimização (deixar o algoritmo aprender)
+
+**Monitoramento**
+- [ ] Configurar alerta de CPL no sistema (monitorar-ads.js já faz isso)
+- [ ] Definir CPL máximo aceitável com o cliente`,
+    });
   }
+
   if (plano === 'pro') {
-    tasks.splice(5, 0, { nome: 'S2 — Configurar Google Ads', desc: 'Conta, conversões, campanha Search local' });
+    tasks.splice(5, 0, {
+      nome: 'S2 — Configurar Google Ads',
+      desc: `🔍 **Configurar conta e campanha Search no Google Ads**
+
+Google Ads Search captura quem já está procurando ativamente — intenção de compra alta.
+
+**Pré-requisitos:** acesso à conta Google Ads ✓ | LP no ar ✓ | Conversões configuradas ✓
+
+**Configuração inicial**
+- [ ] Vincular conta Google Ads ao MCC da Escalando
+- [ ] Configurar conversão: "Lead" (clique no WhatsApp da LP)
+- [ ] Instalar tag de conversão na LP (via Google Tag Manager ou código direto)
+- [ ] Testar disparando conversão manual
+
+**Pesquisa de palavras-chave**
+- [ ] Levantar 20 a 30 keywords do produto (usar Keyword Planner)
+- [ ] Separar por intenção: compra ("comprar piso intertravado"), informação ("preço piso"), local ("piso intertravado Aracaju")
+- [ ] Negativar termos irrelevantes (DIY, "como fazer", concorrentes)
+
+**Campanha Search**
+- [ ] Criar campanha com objetivo "Leads"
+- [ ] Grupo de anúncio por categoria de produto
+- [ ] 3 anúncios responsivos por grupo (títulos e descrições variados)
+- [ ] Lance: CPC manual no início, mudar para tCPA quando tiver 30+ conversões
+- [ ] Orçamento diário: R$ [verba_google ÷ 30]
+- [ ] Extensões: sitelinks (LP, sobre, contato), chamada (telefone), local`,
+    });
   }
 
   return tasks;
