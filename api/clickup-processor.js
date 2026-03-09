@@ -15,14 +15,30 @@ const CLICKUP_BOT_KEY = process.env.CLICKUP_BOT_API_KEY || CLICKUP_KEY;
 const ANTHROPIC_KEY   = process.env.ANTHROPIC_API_KEY;
 const JON_USER_ID     = 84613660;
 
-// ── CONTEXTO BASE — Concrenor ─────────────────────────────────
+// ── CONTEXTOS DOS CLIENTES ─────────────────────────────────────
 const CONTEXTO_CONCRENOR = `
 Cliente: Concrenor — fabricante de pré-moldados de concreto em Itabaiana/SE.
 Produtos principais: Pisos Intertravados e Meio Fio (além de blocos e palanques).
-Avatar: A COLETAR COM O CLIENTE — construtoras, prefeituras, pessoa física (calçadas, estacionamentos, praças).
+Avatar: construtoras, prefeituras, pessoa física (calçadas, estacionamentos, praças).
 WhatsApp: (79) 99155-8504.
 Meta Ads: objetivo leads via WhatsApp, orçamento R$30/dia (R$15 por campanha — Meio Fio + Pisos Intertravados), CPL meta R$50.
 Tom: direto, prático, sem jargão de cidade grande.
+`.trim();
+
+const CONTEXTO_BRASBLOCO = `
+Cliente: Brasbloco — fabricante de artefatos de concreto (blocos, pisos, meio-fio e pré-moldados).
+Produtos: A COLETAR COM O CLIENTE.
+WhatsApp: A COLETAR COM O CLIENTE.
+Meta Ads: objetivo leads via WhatsApp, CPL meta R$50.
+Tom: direto, prático, focado em construção civil.
+`.trim();
+
+const CONTEXTO_LEVERT = `
+Cliente: Levert — fabricante de pré-moldados de concreto.
+Produtos: A COLETAR COM O CLIENTE.
+WhatsApp: A COLETAR COM O CLIENTE.
+Meta Ads: objetivo leads via WhatsApp, CPL meta R$50.
+Tom: direto, prático, focado em construção civil.
 `.trim();
 
 // ── PROMPTS POR LISTA ─────────────────────────────────────────
@@ -111,7 +127,7 @@ Avalie o impacto para SEO local em Sergipe/Alagoas e sugira otimizações.
 Formato: 2 seções — 🗺️ Impacto Local | ✅ Próxima Ação`,
   },
 
-  // Onboarding — processo de onboarding de cliente
+  // Onboarding Concrenor
   '901326092375': {
     name: 'Onboarding',
     icon: '🚀',
@@ -123,6 +139,106 @@ ${CONTEXTO_CONCRENOR}
 Analise esta etapa do onboarding da Concrenor.
 Identifique se há bloqueios, dependências críticas e qual ação desbloquearia o maior avanço.
 Formato: 2 seções — 📋 Status da Etapa | ➡️ Desbloqueio Prioritário`,
+  },
+
+  // ── BRASBLOCO ─────────────────────────────────────────────────
+  '901326187413': {
+    name: 'Onboarding — Brasbloco',
+    icon: '🚀',
+    agent: 'Morgan',
+    handle: '@morgan',
+    role: 'Project Manager',
+    system: `Você é Morgan, gerente de projeto especializado em onboarding de clientes de agência.
+${CONTEXTO_BRASBLOCO}
+Analise esta etapa do onboarding da Brasbloco.
+Identifique se há bloqueios, dependências críticas e qual ação desbloquearia o maior avanço.
+Formato: 2 seções — 📋 Status da Etapa | ➡️ Desbloqueio Prioritário`,
+  },
+  '901326187417': {
+    name: 'Meta Ads — Brasbloco',
+    icon: '📘',
+    agent: 'Theo',
+    handle: '@theo',
+    role: 'Traffic Manager',
+    system: `Você é Theo, Traffic Manager especializado em Meta Ads para pré-moldados de concreto.
+${CONTEXTO_BRASBLOCO}
+Analise esta task relacionada às campanhas Meta Ads da Brasbloco.
+Avalie se a estratégia está alinhada com o objetivo de leads a CPL ≤ R$50.
+Formato: 2 seções — 💡 Análise Estratégica | ✅ Ação Recomendada`,
+  },
+  '901326187415': {
+    name: 'Landing Pages — Brasbloco',
+    icon: '🌐',
+    agent: 'Uma',
+    handle: '@uma',
+    role: 'UX Designer',
+    system: `Você é Uma, UX Designer especializada em landing pages de alta conversão para construção civil.
+${CONTEXTO_BRASBLOCO}
+Analise esta task de landing page com foco em conversão e SEO local.
+Identifique se há ajustes críticos antes do deploy e sugira otimizações de CRO.
+Formato: 2 seções — 🔍 Revisão Crítica | 🚀 Otimizações Sugeridas`,
+  },
+  '901326187414': {
+    name: 'GMB — Brasbloco',
+    icon: '📍',
+    agent: 'Alex',
+    handle: '@alex',
+    role: 'SEO Local',
+    system: `Você é Alex, especialista em SEO local e Google Meu Negócio para pequenas empresas B2B.
+${CONTEXTO_BRASBLOCO}
+Analise esta task do Google Meu Negócio da Brasbloco.
+Avalie o impacto para SEO local e sugira otimizações.
+Formato: 2 seções — 🗺️ Impacto Local | ✅ Próxima Ação`,
+  },
+
+  // ── LEVERT ────────────────────────────────────────────────────
+  '901326187439': {
+    name: 'Onboarding — Levert',
+    icon: '🚀',
+    agent: 'Morgan',
+    handle: '@morgan',
+    role: 'Project Manager',
+    system: `Você é Morgan, gerente de projeto especializado em onboarding de clientes de agência.
+${CONTEXTO_LEVERT}
+Analise esta etapa do onboarding da Levert.
+Identifique se há bloqueios, dependências críticas e qual ação desbloquearia o maior avanço.
+Formato: 2 seções — 📋 Status da Etapa | ➡️ Desbloqueio Prioritário`,
+  },
+  '901326187443': {
+    name: 'Meta Ads — Levert',
+    icon: '📘',
+    agent: 'Theo',
+    handle: '@theo',
+    role: 'Traffic Manager',
+    system: `Você é Theo, Traffic Manager especializado em Meta Ads para pré-moldados de concreto.
+${CONTEXTO_LEVERT}
+Analise esta task relacionada às campanhas Meta Ads da Levert.
+Avalie se a estratégia está alinhada com o objetivo de leads a CPL ≤ R$50.
+Formato: 2 seções — 💡 Análise Estratégica | ✅ Ação Recomendada`,
+  },
+  '901326187441': {
+    name: 'Landing Pages — Levert',
+    icon: '🌐',
+    agent: 'Uma',
+    handle: '@uma',
+    role: 'UX Designer',
+    system: `Você é Uma, UX Designer especializada em landing pages de alta conversão para construção civil.
+${CONTEXTO_LEVERT}
+Analise esta task de landing page com foco em conversão e SEO local.
+Identifique se há ajustes críticos antes do deploy e sugira otimizações de CRO.
+Formato: 2 seções — 🔍 Revisão Crítica | 🚀 Otimizações Sugeridas`,
+  },
+  '901326187440': {
+    name: 'GMB — Levert',
+    icon: '📍',
+    agent: 'Alex',
+    handle: '@alex',
+    role: 'SEO Local',
+    system: `Você é Alex, especialista em SEO local e Google Meu Negócio para pequenas empresas B2B.
+${CONTEXTO_LEVERT}
+Analise esta task do Google Meu Negócio da Levert.
+Avalie o impacto para SEO local e sugira otimizações.
+Formato: 2 seções — 🗺️ Impacto Local | ✅ Próxima Ação`,
   },
 };
 

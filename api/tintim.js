@@ -13,8 +13,11 @@
 import { registrarLead, atualizarStatusLead } from './google-drive.js';
 
 // Mapa: número WhatsApp do cliente → dados do cliente
+// Para adicionar novo cliente: inserir o número no formato 55 + DDD + número (sem espaços/traços)
 const CLIENTES_MAP = {
-  '5579991558504': { slug: 'concrenor', nome: 'Concrenor', abaSheets: 'CONCRENOR' },
+  '5579991558504': { slug: 'concrenor',  nome: 'Concrenor',  abaSheets: 'CONCRENOR'  },
+  // 'NUMERO_BRASBLOCO': { slug: 'brasbloco', nome: 'Brasbloco', abaSheets: 'BRASBLOCO' },
+  // 'NUMERO_LEVERT':    { slug: 'levert',    nome: 'Levert',    abaSheets: 'LEVERT'    },
 };
 
 const CLIENTE_DEFAULT = {
