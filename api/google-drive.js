@@ -220,10 +220,11 @@ export async function atualizarStatusLead(empresa, telefone, novoStatus, valorVe
   const rows = response.data.values || [];
   const digitos = telefone.replace(/\D/g, '');
 
-  // Busca linha pelo telefone (coluna C = índice 2)
+  // Busca linha pelo telefone (coluna D = índice 3)
+  // Estrutura da planilha: A=Data | B=Canal | C=Nome | D=Telefone | E=Cidade | F=Produto | G=Valor Orç | H=Status | I=Último Contato | J=Dias sem Contato | K=Obs
   let rowIndex = -1;
   for (let i = 1; i < rows.length; i++) {
-    const celula = (rows[i][2] || '').replace(/\D/g, '');
+    const celula = (rows[i][3] || '').replace(/\D/g, '');
     if (celula && (celula === digitos || celula.endsWith(digitos.slice(-9)) || digitos.endsWith(celula.slice(-9)))) {
       rowIndex = i + 1; // Sheets API usa índice 1-based
       break;
@@ -237,14 +238,12 @@ export async function atualizarStatusLead(empresa, telefone, novoStatus, valorVe
 
   // Monta updates
   const updates = [
-    { range: `Leads!H${rowIndex}`, values: [[novoStatus]] },
+    { range: `Leads!H${rowIndex}`, values: [[novoStatus]] },                                    // Status
+    { range: `Leads!I${rowIndex}`, values: [[new Date().toLocaleDateString('pt-BR')]] },        // Último Contato
   ];
 
-  if (novoStatus === 'Pagamento Confirmado') {
-    updates.push({ range: `Leads!J${rowIndex}`, values: [[new Date().toLocaleDateString('pt-BR')]] });
-    if (valorVenda) {
-      updates.push({ range: `Leads!K${rowIndex}`, values: [[valorVenda]] });
-    }
+  if (novoStatus === 'Pagamento Confirmado' && valorVenda) {
+    updates.push({ range: `Leads!G${rowIndex}`, values: [[valorVenda]] });                      // Valor Orçamento
   }
 
   await sheets.spreadsheets.values.batchUpdate({
