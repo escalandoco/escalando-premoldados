@@ -21,6 +21,7 @@
 const CLICKUP_KEY     = process.env.CLICKUP_API_KEY;
 const CLICKUP_BOT_KEY = process.env.CLICKUP_BOT_API_KEY || CLICKUP_KEY;
 const ANTHROPIC_KEY   = process.env.ANTHROPIC_API_KEY;
+const JON_USER_ID     = 84613660;
 const VPS_URL       = process.env.VPS_URL       || 'http://129.121.45.61:3030';
 const WORKER_SECRET = process.env.WORKER_SECRET  || '';
 
@@ -86,11 +87,20 @@ async function clickupGet(path) {
   return r.json();
 }
 
+async function clickupAddWatcher(taskId) {
+  await fetch(`https://api.clickup.com/api/v2/task/${taskId}`, {
+    method: 'PUT',
+    headers: { Authorization: CLICKUP_KEY, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ watchers: { add: [JON_USER_ID] } }),
+  }).catch(() => {});
+}
+
 async function clickupComment(taskId, text) {
+  await clickupAddWatcher(taskId);
   const r = await fetch(`https://api.clickup.com/api/v2/task/${taskId}/comment`, {
     method: 'POST',
     headers: { Authorization: CLICKUP_BOT_KEY, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ comment_text: text, notify_all: false }),
+    body: JSON.stringify({ comment_text: text, notify_all: true }),
   });
   if (!r.ok) throw new Error(`ClickUp comment ${r.status}: ${await r.text()}`);
 }
