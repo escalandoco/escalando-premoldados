@@ -41,7 +41,8 @@ async function updatePage(docId, pageId, content) {
     body: JSON.stringify({ content, content_format: 'text/md' }),
   });
   if (!r.ok) throw new Error(`PUT page ${pageId} → ${r.status}: ${await r.text()}`);
-  return r.json();
+  const text = await r.text();
+  return text ? JSON.parse(text) : { ok: true };
 }
 
 /**

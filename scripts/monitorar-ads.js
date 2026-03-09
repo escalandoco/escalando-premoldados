@@ -24,6 +24,7 @@
 import fs   from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { appendSection } from './dossie.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT      = path.join(__dirname, '..');
@@ -392,6 +393,36 @@ async function main() {
     await criarTaskAlerta(empresa, alertas, metricas);
   } else {
     console.log('  ℹ️  Sem alertas — nenhuma task criada no ClickUp.\n');
+  }
+
+  // Registrar no Dossiê — página Performance
+  try {
+    const m = metricas;
+    const linhasAlerta = alertas.length > 0
+      ? alertas.map(a => `- **${a.nivel}** ${a.metrica}: ${a.valor} → ${a.acao}`).join('\n')
+      : '- Nenhum alerta';
+    const entradaPerformance = [
+      `### 📡 Monitoramento Meta Ads (${periodo})`,
+      '',
+      `| Métrica | Valor |`,
+      `|---------|-------|`,
+      `| Gasto total | R$${m.gasto.toFixed(2)} |`,
+      `| Média/dia ativo | R$${m.gastoMedioDia.toFixed(2)} (${m.diasAtivos} dias) |`,
+      `| Impressões | ${m.impressoes.toLocaleString('pt-BR')} |`,
+      `| CTR | ${m.ctr.toFixed(2)}% |`,
+      `| CPM | R$${m.cpm.toFixed(2)} |`,
+      `| Frequência | ${m.freq.toFixed(1)} |`,
+      `| Leads | ${m.leads} |`,
+      `| CPL | ${m.cpl > 0 ? `R$${m.cpl.toFixed(2)}` : '—'} |`,
+      '',
+      `**Alertas:**`,
+      linhasAlerta,
+    ].join('\n');
+
+    await appendSection(clienteSlug, 'performance', entradaPerformance);
+    console.log(`  📋 Registrado no Dossiê — Performance`);
+  } catch (e) {
+    console.warn(`  ⚠️  Dossiê não atualizado: ${e.message}`);
   }
 
   const temCritico = alertas.some(a => a.nivel === 'CRITICO');
