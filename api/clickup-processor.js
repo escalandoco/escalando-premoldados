@@ -221,6 +221,16 @@ export default async function handler(req, res) {
       return res.status(200).json({ skipped: true, reason: 'bot_task' });
     }
 
+    // 3b. Deduplicação — verificar se já existe análise automática nessa task
+    const { comments: existingComments } = await clickupGet(`/task/${task_id}/comment`).catch(() => ({ comments: [] }));
+    const jaAnalisou = (existingComments || []).some(c =>
+      (c.comment_text || '').includes('Gerado automaticamente pelo sistema Escalando')
+    );
+    if (jaAnalisou) {
+      console.log(`[processor] Task "${taskName}" já foi analisada — pulando`);
+      return res.status(200).json({ skipped: true, reason: 'already_analyzed' });
+    }
+
     // 4. Analisar com Claude
     const analysis = await analyzeWithClaude(listCfg.system, taskName, taskDesc);
     if (!analysis) throw new Error('Claude retornou análise vazia');
