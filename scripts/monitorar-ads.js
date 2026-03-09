@@ -86,31 +86,31 @@ async function metaGet(endpoint, params = {}) {
 }
 
 async function buscarInsights(adAccountId, dias) {
-  const hoje    = new Date();
-  const fim     = hoje.toISOString().slice(0,10);
-  const inicio  = new Date(hoje - dias * 86400000).toISOString().slice(0,10);
+  const hoje   = new Date();
+  const fim    = hoje.toISOString().slice(0,10);
+  const inicio = new Date(hoje - dias * 86400000).toISOString().slice(0,10);
 
-  // Nível campanha — insights agregados dos últimos N dias
-  const data = await metaGet(`act_${adAccountId}/insights`, {
-    fields: [
-      'spend',
-      'impressions',
-      'reach',
-      'clicks',
-      'ctr',
-      'cpm',
-      'frequency',
-      'actions',
-      'cost_per_action_type',
-      'date_start',
-      'date_stop',
-    ].join(','),
+  const FIELDS = ['spend','impressions','reach','clicks','ctr','cpm','frequency','actions','cost_per_action_type','date_start','date_stop'].join(',');
+
+  // Breakdown diário (time_increment=1)
+  const diario = await metaGet(`act_${adAccountId}/insights`, {
+    fields: FIELDS,
+    time_range: JSON.stringify({ since: inicio, until: fim }),
+    time_increment: '1',
+    level: 'account',
+  });
+
+  // Totais agregados
+  const total = await metaGet(`act_${adAccountId}/insights`, {
+    fields: FIELDS,
     time_range: JSON.stringify({ since: inicio, until: fim }),
     level: 'account',
   });
 
-  if (!data.data || data.data.length === 0) return null;
-  return data.data[0];
+  const diasData = diario.data || [];
+  const totalData = total.data?.[0] || null;
+
+  return { diasData, totalData };
 }
 
 async function buscarCampanhas(adAccountId) {
@@ -150,17 +150,32 @@ const LIMITES = {
   frequencia_max:   4.0,
 };
 
-function analisar(insights, orcamentoDiario, dias) {
-  const gasto      = parseFloat(insights.spend       || 0);
-  const impressoes = parseInt(insights.impressions   || 0);
-  const alcance    = parseInt(insights.reach         || 0);
-  const cliques    = parseInt(insights.clicks        || 0);
-  const ctr        = parseFloat(insights.ctr         || 0);
-  const cpm        = parseFloat(insights.cpm         || 0);
-  const freq       = parseFloat(insights.frequency   || 0);
-  const leads      = extrairLeads(insights.actions   || []);
-  const cpl        = extrairCplReal(insights.cost_per_action_type || [], leads);
-  const gastoEsperado = orcamentoDiario * dias;
+function analisar(totalData, diasData, orcamentoDiario) {
+  const gasto      = parseFloat(totalData.spend       || 0);
+  const impressoes = parseInt(totalData.impressions   || 0);
+  const alcance    = parseInt(totalData.reach         || 0);
+  const cliques    = parseInt(totalData.clicks        || 0);
+  const ctr        = parseFloat(totalData.ctr         || 0);
+  const cpm        = parseFloat(totalData.cpm         || 0);
+  const freq       = parseFloat(totalData.frequency   || 0);
+  const leads      = extrairLeads(totalData.actions   || []);
+  const cpl        = extrairCplReal(totalData.cost_per_action_type || [], leads);
+
+  // Dias com gasto efetivo (ignora dias zerados na média)
+  const diasAtivos = diasData.filter(d => parseFloat(d.spend || 0) > 0);
+  const gastoMedioDia = diasAtivos.length > 0
+    ? gasto / diasAtivos.length
+    : 0;
+
+  // Última data com gasto
+  const ultimoDiaAtivo = diasAtivos.length > 0
+    ? diasAtivos[diasAtivos.length - 1].date_start
+    : null;
+
+  // Dias sem gasto no final (campanha parada)
+  const diasSemGasto = diasData.filter(d => parseFloat(d.spend || 0) === 0).length;
+  const campanhaParada = diasSemGasto > 0 && diasAtivos.length > 0 &&
+    diasData[diasData.length - 1].date_start > ultimoDiaAtivo;
 
   const alertas = [];
   const info    = [];
@@ -193,39 +208,61 @@ function analisar(insights, orcamentoDiario, dias) {
     alertas.push({ nivel:'ATENÇÃO', metrica:'CPM', valor:`R$${cpm.toFixed(2)}`, limite:`máx R$${LIMITES.cpm_max}`, acao:'Público saturado. Expandir segmentação.' });
   }
 
-  // Gasto zerado
-  if (gasto < gastoEsperado * 0.5 && gastoEsperado > 0) {
-    alertas.push({ nivel:'CRITICO', metrica:'Gasto', valor:`R$${gasto.toFixed(2)}`, limite:`esperado ~R$${gastoEsperado.toFixed(2)}`, acao:'Campanha pausada ou limite de gasto atingido. Verificar conta.' });
+  // Campanha parada — compara média diária dos dias ativos vs orçamento
+  if (campanhaParada) {
+    alertas.push({ nivel:'CRITICO', metrica:'Campanha parada', valor:`Sem veiculação desde ${ultimoDiaAtivo}`, limite:'', acao:'Verificar se orçamento esgotou, campanha foi pausada ou problema no pagamento.' });
+  } else if (diasAtivos.length > 0 && gastoMedioDia < orcamentoDiario * 0.5) {
+    alertas.push({ nivel:'ATENÇÃO', metrica:'Gasto médio/dia', valor:`R$${gastoMedioDia.toFixed(2)}`, limite:`orçamento R$${orcamentoDiario.toFixed(2)}/dia`, acao:'Entrega abaixo do esperado. Verificar limites de orçamento.' });
   }
 
-  return { alertas, info, metricas: { gasto, impressoes, alcance, cliques, ctr, cpm, freq, leads, cpl } };
+  return { alertas, info, metricas: { gasto, gastoMedioDia, diasAtivos: diasAtivos.length, impressoes, alcance, cliques, ctr, cpm, freq, leads, cpl, campanhaParada, ultimoDiaAtivo } };
 }
 
 // ── FORMATAR COMENTÁRIO ───────────────────────────────────────
-function formatarComentario(empresa, metricas, alertas, info, campanhas, periodo) {
+function formatarComentario(empresa, metricas, alertas, info, campanhas, diasData, periodo) {
   const m = metricas;
   const linhas = [
     `📡 **Monitoramento Meta Ads — ${empresa}** (${periodo})`,
     '',
-    `**Desempenho da conta:**`,
-    `💰 Gasto: R$${m.gasto.toFixed(2)} | 👁️ Impressões: ${m.impressoes.toLocaleString('pt-BR')} | 🎯 Alcance: ${m.alcance.toLocaleString('pt-BR')}`,
+    `**Totais do período:**`,
+    `💰 Gasto total: R$${m.gasto.toFixed(2)} | Média/dia ativo: R$${m.gastoMedioDia.toFixed(2)} (${m.diasAtivos} dias com veiculação)`,
+    `👁️ Impressões: ${m.impressoes.toLocaleString('pt-BR')} | 🎯 Alcance: ${m.alcance.toLocaleString('pt-BR')}`,
     `🖱️ Cliques: ${m.cliques} | CTR: ${m.ctr.toFixed(2)}% | CPM: R$${m.cpm.toFixed(2)} | Freq: ${m.freq.toFixed(1)}`,
     `🎫 Leads: ${m.leads}${m.cpl > 0 ? ` | CPL: R$${m.cpl.toFixed(2)}` : ''}`,
   ];
 
+  // Breakdown diário
+  const diasComDados = diasData.filter(d => parseFloat(d.spend || 0) > 0 || parseInt(d.impressions || 0) > 0);
+  if (diasComDados.length > 0) {
+    linhas.push('', `**Breakdown diário:**`);
+    for (const d of diasData) {
+      const gasto = parseFloat(d.spend || 0);
+      const imp = parseInt(d.impressions || 0);
+      if (gasto === 0 && imp === 0) {
+        linhas.push(`📅 ${d.date_start}: ⛔ Sem veiculação`);
+      } else {
+        const ctr = parseFloat(d.ctr || 0).toFixed(2);
+        const leads = extrairLeads(d.actions || []);
+        linhas.push(`📅 ${d.date_start}: R$${gasto.toFixed(2)} gasto | ${imp.toLocaleString('pt-BR')} imp | CTR ${ctr}%${leads > 0 ? ` | ${leads} lead(s)` : ''}`);
+      }
+    }
+  }
+
+  // Campanhas
   if (campanhas.length > 0) {
     linhas.push('', `**Campanhas:**`);
     for (const c of campanhas) {
       const status = c.effective_status === 'ACTIVE' ? '🟢' : c.effective_status === 'PAUSED' ? '⏸️' : '🔴';
-      linhas.push(`${status} ${c.name} — ${c.effective_status}`);
+      linhas.push(`${status} ${c.name}`);
     }
   }
 
+  // Alertas
   if (alertas.length > 0) {
     linhas.push('', `**⚠️ Alertas (${alertas.length}):**`);
     for (const a of alertas) {
       const icone = a.nivel === 'CRITICO' ? '🔴' : '🟡';
-      linhas.push(`${icone} **${a.metrica}:** ${a.valor} (limite: ${a.limite})`);
+      linhas.push(`${icone} **${a.metrica}:** ${a.valor}${a.limite ? ` (limite: ${a.limite})` : ''}`);
       linhas.push(`   ↳ ${a.acao}`);
     }
   } else {
@@ -297,42 +334,54 @@ async function main() {
   console.log(`   Conta: act_${adAccountId} | Período: últimos ${diasAnalisar} dias\n`);
 
   // Buscar dados da Meta API
-  const [insights, campanhas] = await Promise.all([
+  const [{ diasData, totalData }, campanhas] = await Promise.all([
     buscarInsights(adAccountId, diasAnalisar),
     buscarCampanhas(adAccountId),
   ]);
 
-  if (!insights) {
+  if (!totalData) {
     console.log('  ℹ️  Sem dados de performance para o período. Campanha ainda não veiculou?\n');
     if (taskId) await postarComentario(taskId, `📡 **Monitor Ads — ${empresa}**\n\nNenhum dado disponível para os últimos ${diasAnalisar} dias. A campanha pode não ter veiculado ainda.`);
     process.exit(0);
   }
 
-  const periodo = `${insights.date_start} → ${insights.date_stop}`;
-  const { alertas, info, metricas } = analisar(insights, orcamentoDiario, diasAnalisar);
+  const periodo = `${totalData.date_start} → ${totalData.date_stop}`;
+  const { alertas, info, metricas } = analisar(totalData, diasData, orcamentoDiario);
 
   // Log no console
   console.log(`  Período: ${periodo}`);
-  console.log(`  Gasto: R$${metricas.gasto.toFixed(2)} | Impressões: ${metricas.impressoes.toLocaleString('pt-BR')} | Alcance: ${metricas.alcance.toLocaleString('pt-BR')}`);
+  console.log(`  Gasto total: R$${metricas.gasto.toFixed(2)} | Média/dia ativo: R$${metricas.gastoMedioDia.toFixed(2)} (${metricas.diasAtivos} dias)`);
+  console.log(`  Impressões: ${metricas.impressoes.toLocaleString('pt-BR')} | Alcance: ${metricas.alcance.toLocaleString('pt-BR')}`);
   console.log(`  Cliques: ${metricas.cliques} | CTR: ${metricas.ctr.toFixed(2)}% | CPM: R$${metricas.cpm.toFixed(2)} | Freq: ${metricas.freq.toFixed(1)}`);
   console.log(`  Leads: ${metricas.leads}${metricas.cpl > 0 ? ` | CPL: R$${metricas.cpl.toFixed(2)}` : ''}\n`);
 
-  console.log(`  Campanhas ativas (${campanhas.filter(c => c.effective_status === 'ACTIVE').length}/${campanhas.length}):`);
+  console.log(`  Breakdown diário:`);
+  diasData.forEach(d => {
+    const g = parseFloat(d.spend || 0);
+    const imp = parseInt(d.impressions || 0);
+    if (g === 0 && imp === 0) {
+      console.log(`    ${d.date_start}: ⛔ sem veiculação`);
+    } else {
+      const leads = extrairLeads(d.actions || []);
+      console.log(`    ${d.date_start}: R$${g.toFixed(2)} | ${imp.toLocaleString('pt-BR')} imp | CTR ${parseFloat(d.ctr||0).toFixed(2)}%${leads > 0 ? ` | ${leads} lead(s)` : ''}`);
+    }
+  });
+  console.log('');
+
+  console.log(`  Campanhas (${campanhas.filter(c => c.effective_status === 'ACTIVE').length} ativas / ${campanhas.length} total):`);
   campanhas.forEach(c => console.log(`    ${c.effective_status === 'ACTIVE' ? '🟢' : '⏸️ '} ${c.name}`));
   console.log('');
 
   if (alertas.length > 0) {
     console.log(`  ⚠️  ${alertas.length} alerta(s):`);
-    alertas.forEach(a => {
-      console.log(`  ${a.nivel === 'CRITICO' ? '🔴' : '🟡'} ${a.metrica}: ${a.valor} — ${a.acao}`);
-    });
+    alertas.forEach(a => console.log(`  ${a.nivel === 'CRITICO' ? '🔴' : '🟡'} ${a.metrica}: ${a.valor} — ${a.acao}`));
     console.log('');
   } else {
     console.log('  ✅ Sem alertas. Campanha dentro dos parâmetros.\n');
   }
 
   // Postar no ClickUp
-  const comentario = formatarComentario(empresa, metricas, alertas, info, campanhas, periodo);
+  const comentario = formatarComentario(empresa, metricas, alertas, info, campanhas, diasData, periodo);
 
   if (taskId) {
     // Modo dispatcher: posta comentário na task atual
