@@ -20,8 +20,7 @@
 // Atualizar ao adicionar novo cliente
 const CLIENTES_MAP = {
   // 'numero_completo_com_ddi': { slug, nome, abaSheets }
-  // Exemplo:
-  // '5579999999999': { slug: 'concrenor', nome: 'Concrenor', abaSheets: 'CONCRENOR' },
+  '5579991558504': { slug: 'concrenor', nome: 'Concrenor', abaSheets: 'CONCRENOR' },
 };
 
 // Fallback: se não encontrar o número, usa esse cliente padrão
