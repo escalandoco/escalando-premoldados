@@ -17,12 +17,12 @@ const JON_USER_ID     = 84613660;
 
 // ── CONTEXTO BASE — Concrenor ─────────────────────────────────
 const CONTEXTO_CONCRENOR = `
-Cliente: Concrenor — fabricante de mourão de concreto em Itabaiana/SE.
-Produto principal: Mourão Torneado (dura 50+ anos, substitui eucalipto que apodrece em 5-7 anos).
-Avatar: Antônio, fazendeiro 40-65 anos, Sergipe/Alagoas, 50-500 hectares de propriedade.
-Dor: gasta R$8.000/ano repondo mourão de eucalipto, perde dias de trabalho, risco de gado fugir.
-Meta Ads: objetivo leads, orçamento R$50/dia, CPL meta R$50, campanha CONCRENOR_DISCOVERY_MOURAO.
-Tom: direto, prático, linguagem rural, sem jargão de cidade grande.
+Cliente: Concrenor — fabricante de pré-moldados de concreto em Itabaiana/SE.
+Produtos principais: Pisos Intertravados e Meio Fio (além de blocos e palanques).
+Avatar: A COLETAR COM O CLIENTE — construtoras, prefeituras, pessoa física (calçadas, estacionamentos, praças).
+WhatsApp: (79) 99155-8504.
+Meta Ads: objetivo leads via WhatsApp, orçamento R$30/dia (R$15 por campanha — Meio Fio + Pisos Intertravados), CPL meta R$50.
+Tom: direto, prático, sem jargão de cidade grande.
 `.trim();
 
 // ── PROMPTS POR LISTA ─────────────────────────────────────────

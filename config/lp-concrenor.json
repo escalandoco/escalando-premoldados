@@ -3,23 +3,23 @@
   "url": "https://concrenor.escalando.co/",
   "estado": "SE",
   "gmb_url": "",
-  "slogan": "Cercou uma vez, não troca mais.",
+  "slogan": "Qualidade em concreto há mais de 10 anos",
   "cor_primaria": "#C4B470",
   "cor_secundaria": "#0D1117",
   "estilo": "clean",
-  "whatsapp": "5579999999999",
-  "whatsapp_msg": "Olá Concrenor! Vim pelo site e gostaria de um orçamento para mourão torneado.",
-  "telefone": "(79) 99999-9999",
+  "whatsapp": "5579991558504",
+  "whatsapp_msg": "Olá Concrenor! Vim pelo site e gostaria de um orçamento.",
+  "telefone": "(79) 99155-8504",
   "cidade": "Itabaiana — SE",
   "regioes": [
     "Todo Sergipe",
     "Interior de Alagoas",
     "Sul da Bahia"
   ],
-  "headline": "Cansou de trocar mourão? Esse dura 50 anos.",
-  "headline_ab": "R$ 8.000 por ano em mourão que apodrece? Acabe com isso.",
-  "subheadline": "Mourão torneado de concreto direto da fábrica em Itabaiana, com entrega em 48h para Sergipe, Alagoas e Bahia.",
-  "badge": "Mourão de Concreto",
+  "headline": "A DEFINIR — aguardando call de ideias com cliente",
+  "headline_ab": "A DEFINIR — aguardando call de ideias com cliente",
+  "subheadline": "Pisos intertravados e meio fio direto da fábrica em Itabaiana, com entrega em 48h para Sergipe, Alagoas e Bahia.",
+  "badge": "Pisos e Meio Fio de Concreto",
   "numeros": [
     {
       "valor": "12+",
@@ -36,10 +36,17 @@
   ],
   "produtos": [
     {
-      "nome": "Mourão Torneado",
-      "aplicacao": "Cercas rurais e currais",
-      "preco": "A partir de R$ 18,00",
-      "desc": "Alta resistência e durabilidade para cercamento de propriedades rurais. Disponível em vários comprimentos.",
+      "nome": "Piso Intertravado",
+      "aplicacao": "Calçadas, estacionamentos, praças e áreas externas",
+      "preco": "Consulte",
+      "desc": "Alta resistência e durabilidade para pavimentação. Disponível em vários modelos e espessuras.",
+      "foto": ""
+    },
+    {
+      "nome": "Meio Fio",
+      "aplicacao": "Obras públicas e privadas",
+      "preco": "Consulte",
+      "desc": "Acabamento perfeito para calçadas e estacionamentos. Padrão ABNT.",
       "foto": ""
     },
     {
@@ -54,13 +61,6 @@
       "aplicacao": "Cercas e divisórias",
       "preco": "Consulte",
       "desc": "Resistente às intempéries, ideal para uso em áreas externas.",
-      "foto": ""
-    },
-    {
-      "nome": "Meio-Fio",
-      "aplicacao": "Obras públicas e privadas",
-      "preco": "Consulte",
-      "desc": "Acabamento perfeito para calçadas e estacionamentos. Padrão ABNT.",
       "foto": ""
     }
   ],
@@ -77,8 +77,8 @@
     },
     {
       "icone": "⏳",
-      "titulo": "Dura mais de 50 anos",
-      "desc": "Enquanto mourão de eucalipto apodrece em 5 anos, o de concreto passa de geração em geração."
+      "titulo": "Durabilidade comprovada",
+      "desc": "A DEFINIR COM O CLIENTE — aguardando call de ideias."
     },
     {
       "icone": "📋",
@@ -88,14 +88,9 @@
   ],
   "depoimentos": [
     {
-      "nome": "Antônio Mendes",
-      "local": "Tobias Barreto — SE",
-      "texto": "Instalei o mourão da Concrenor há 8 anos e tá tudo igual, firme no chão. Antes eu gastava quase R$ 8 mil por ano repondo madeira podre e ainda perdia gado pela cerca caída."
-    },
-    {
-      "nome": "Carlos Oliveira",
-      "local": "Arapiraca — AL",
-      "texto": "Cercaram minha fazenda de 300 hectares no prazo certinho, sem uma peça com defeito. Já indiquei pra três vizinhos e todos fecharam. Coisa rara achar fornecedor sério assim."
+      "nome": "A COLETAR COM O CLIENTE",
+      "local": "Sergipe",
+      "texto": "A COLETAR — depoimentos reais de clientes de pisos intertravados e meio fio."
     }
   ],
   "pixel_meta": "766713294039278",

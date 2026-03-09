@@ -1,7 +1,7 @@
 {
   "_instrucoes": "Briefing de anuncios da Concrenor — caso piloto EP4. Call de ideias pendente com o cliente.",
-  "_versao": "1.0",
-  "_status": "rascunho — aguardando call de ideias com cliente para validar referencias e materiais",
+  "_versao": "1.1",
+  "_status": "rascunho — aguardando call de ideias com cliente para validar avatar, dores e materiais",
 
   "cliente": "Concrenor",
   "data_briefing": "2026-03-06",
@@ -15,29 +15,26 @@
   "duracao_prevista_dias": 30,
 
   "avatar": {
-    "nome_ficticio": "Antônio, fazendeiro",
-    "idade": "40-65 anos",
-    "profissao": "Produtor rural / pecuarista",
+    "nome_ficticio": "A COLETAR COM O CLIENTE",
+    "idade": "A COLETAR COM O CLIENTE",
+    "profissao": "A COLETAR — construtora, autônomo, prefeitura, pessoa física",
     "regiao": "Sergipe, Alagoas, Sul da Bahia",
     "nivel_consciencia": "com_problema",
-    "dor_principal": "Gasta R$8.000/ano repondo mourão de eucalipto que apodrece a cada 5-7 anos. Perde dias de trabalho parando a cerca e corre risco do gado fugir.",
-    "desejo_principal": "Cerca durável que não precise de manutenção por décadas — resolver o problema de vez.",
+    "dor_principal": "A COLETAR COM O CLIENTE",
+    "desejo_principal": "A COLETAR COM O CLIENTE",
     "objecoes": [
-      "Preço mais caro que mourão de madeira (não vê o custo total de longo prazo)",
-      "Não sabe se é resistente como madeira (desconhece o concreto)",
-      "Como a entrega chega até minha fazenda no interior"
+      "A COLETAR COM O CLIENTE"
     ],
-    "linguagem": "Direta, sem frescura. Fala em hectare, cabeças de gado, custeio por ano. Desconfia de propaganda mas respeita quem fala com clareza.",
-    "onde_passa_tempo": "Facebook (grupos rurais, leilões de gado), YouTube (conteúdo agro), WhatsApp"
+    "linguagem": "A COLETAR COM O CLIENTE",
+    "onde_passa_tempo": "A COLETAR COM O CLIENTE"
   },
 
-  "promessa_principal": "Mourão que dura 50 anos — uma vez colocado, nunca mais troca.",
-  "angulo_criativo": "Economia",
+  "promessa_principal": "A COLETAR COM O CLIENTE",
+  "angulo_criativo": "A COLETAR COM O CLIENTE",
 
   "provas_sociais": [
-    "Antônio Mendes: 8 anos de cerca sem trocar um mourão",
-    "300 hectares de Carlos entregues no prazo — sem uma peça com defeito",
-    "Mais de 500 clientes em 38 cidades de SE e AL"
+    "Mais de 500 clientes em 38 cidades de SE e AL",
+    "A COLETAR COM O CLIENTE — depoimentos reais"
   ],
 
   "referencias_cliente": {
@@ -47,19 +44,19 @@
     "materiais_disponiveis": {
       "fotos": false,
       "videos": false,
-      "depoimentos_texto": true,
+      "depoimentos_texto": false,
       "depoimentos_video": false,
       "logo": true
     }
   },
 
   "cta_principal": "Peça seu orçamento pelo WhatsApp",
-  "cta_url": "https://wa.me/5579999999999",
+  "cta_url": "https://wa.me/5579991558504",
   "cta_utm_padrao": "?utm_source=meta&utm_medium=cpc&utm_campaign={campanha}&utm_content={criativo}",
 
   "restricoes": {
     "temas_proibidos": ["não mencionar preço exato nos anúncios (variação por quantidade/frete)"],
-    "tom_proibido": "Não usar linguagem de cidade grande. Sem termos como 'inovação', 'disruptivo', 'ecossistema'.",
+    "tom_proibido": "A DEFINIR COM O CLIENTE",
     "aprovacao_necessaria": true,
     "prazo_aprovacao_dias": 2
   },

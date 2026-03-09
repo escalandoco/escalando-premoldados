@@ -7,7 +7,7 @@
   "fotos_obrigatorias": [
     {
       "id": "F01",
-      "descricao": "Mourão instalado no campo — perspectiva diagonal mostrando continuidade da cerca",
+      "descricao": "Piso intertravado instalado — calçada ou estacionamento finalizado, perspectiva mostrando continuidade",
       "quantidade": 3,
       "uso": "feed_v1, carrossel_slide1",
       "recebido": false,
@@ -15,7 +15,7 @@
     },
     {
       "id": "F02",
-      "descricao": "Produto na fábrica — pilha de mourões mostrando quantidade e escala",
+      "descricao": "Produto na fábrica — pilha de pisos intertravados ou meio fio mostrando quantidade e escala",
       "quantidade": 2,
       "uso": "feed_v2, stories",
       "recebido": false,
@@ -23,15 +23,15 @@
     },
     {
       "id": "F03",
-      "descricao": "Comparação visual — mourão de madeira velho/podre ao lado do concreto novo",
+      "descricao": "Obra em andamento — piso sendo assentado ou meio fio sendo instalado",
       "quantidade": 2,
-      "uso": "carrossel_comparativo, feed_v3",
+      "uso": "carrossel_processo, feed_v3",
       "recebido": false,
       "arquivo": null
     },
     {
       "id": "F04",
-      "descricao": "Entrega em andamento — caminhão com produto sendo descarregado na propriedade",
+      "descricao": "Entrega em andamento — caminhão com produto sendo descarregado na obra",
       "quantidade": 1,
       "uso": "feed_prova_entrega",
       "recebido": false,
@@ -58,7 +58,7 @@
   "videos_bonus": [
     {
       "id": "V01",
-      "descricao": "Vídeo 15-30s do mourão sendo instalado no campo",
+      "descricao": "Vídeo 15-30s do piso intertravado sendo assentado ou obra finalizada",
       "uso": "reels, stories",
       "recebido": false,
       "arquivo": null
@@ -73,5 +73,5 @@
     }
   ],
 
-  "mensagem_whatsapp": "Oi [nome]! Para criar os anúncios da Concrenor, preciso de algumas fotos. Pode tirar pelo celular mesmo, qualidade não precisa ser de câmera profissional:\n\n📸 *Fotos obrigatórias:*\n✅ 3x mourão instalado no campo (perspectiva diagonal mostrando a cerca)\n✅ 2x produto na fábrica (pilha de mourões, mostrando quantidade)\n✅ 2x comparação mourão madeira podre ao lado do concreto novo\n✅ 1x entrega sendo feita (caminhão, produto sendo descarregado)\n✅ 1x rosto do dono ou da equipe\n✅ 1x laudo técnico ou certificado\n\n🎥 *Bônus (se tiver)* — converte muito mais:\n⭐ Vídeo 30s do mourão sendo instalado\n⭐ Depoimento em vídeo de algum cliente satisfeito falando naturalmente\n\nQualquer dúvida me chama! Com essas fotos já consigo montar os primeiros anúncios em 48h."
+  "mensagem_whatsapp": "Oi [nome]! Para criar os anúncios da Concrenor, preciso de algumas fotos. Pode tirar pelo celular mesmo, qualidade não precisa ser de câmera profissional:\n\n📸 *Fotos obrigatórias:*\n✅ 3x piso intertravado instalado (calçada ou estacionamento finalizado)\n✅ 2x produto na fábrica (pilha de pisos ou meio fio, mostrando quantidade)\n✅ 2x obra em andamento (piso sendo assentado ou meio fio instalado)\n✅ 1x entrega sendo feita (caminhão, produto sendo descarregado)\n✅ 1x rosto do dono ou da equipe\n✅ 1x laudo técnico ou certificado\n\n🎥 *Bônus (se tiver)* — converte muito mais:\n⭐ Vídeo 30s do piso sendo assentado ou obra finalizada\n⭐ Depoimento em vídeo de algum cliente satisfeito falando naturalmente\n\nQualquer dúvida me chama! Com essas fotos já consigo montar os primeiros anúncios em 48h."
 }
