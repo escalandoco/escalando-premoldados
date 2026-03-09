@@ -1,9 +1,9 @@
 {
   "cliente": "Concrenor",
-  "campanha": "CONCRENOR_DISCOVERY_MOURAO_202603",
-  "inicio_campanha": null,
+  "campanha": "CONCRENOR_MENSAGEM_WHATSAPP_202603",
+  "inicio_campanha": "2026-03-02",
   "meta_cpl_brl": 50,
-  "orcamento_diario_brl": 50,
+  "orcamento_diario_brl": 30,
   "registros": [
     {
       "_template": true,

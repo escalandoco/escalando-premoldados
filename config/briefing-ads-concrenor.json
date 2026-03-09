@@ -7,10 +7,10 @@
   "data_briefing": "2026-03-06",
   "responsavel": "Escalando Premoldados",
 
-  "produto_anunciado": "Mourão Torneado de Concreto",
-  "objetivo_campanha": "leads",
-  "orcamento_mensal_brl": 1500,
-  "orcamento_obs": "R$1.500 aprovados pelo cliente. Com impostos Meta Brasil (+12%): ~R$1.680 consumidos. Fase Discovery: R$50/dia por 30 dias.",
+  "produto_anunciado": "Pisos Intertravados e Meio Fio",
+  "objetivo_campanha": "mensagens_whatsapp",
+  "orcamento_diario_brl": 30,
+  "orcamento_obs": "R$30/dia total — R$15/dia por campanha (Meio Fio + Pisos Intertravados). Atualizado 2026-03-09.",
   "plataformas": ["Meta Ads"],
   "duracao_prevista_dias": 30,
 
