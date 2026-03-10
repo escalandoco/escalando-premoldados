@@ -162,11 +162,15 @@ function analisar(totalData, diasData, orcamentoDiario) {
   const leads      = extrairLeads(totalData.actions   || []);
   const cpl        = extrairCplReal(totalData.cost_per_action_type || [], leads);
 
-  // Dias com gasto efetivo (ignora dias zerados na média)
+  // Dias com gasto efetivo (ignora dias zerados e o dia atual — parcial)
+  const hoje = new Date().toISOString().slice(0, 10);
   const diasAtivos = diasData.filter(d => parseFloat(d.spend || 0) > 0);
-  const gastoMedioDia = diasAtivos.length > 0
-    ? gasto / diasAtivos.length
-    : 0;
+  const diasAtivosCompletos = diasAtivos.filter(d => d.date_start !== hoje);
+  const gastoMedioDia = diasAtivosCompletos.length > 0
+    ? diasAtivosCompletos.reduce((s, d) => s + parseFloat(d.spend || 0), 0) / diasAtivosCompletos.length
+    : diasAtivos.length > 0
+      ? gasto / diasAtivos.length
+      : 0;
 
   // Última data com gasto
   const ultimoDiaAtivo = diasAtivos.length > 0
@@ -216,7 +220,7 @@ function analisar(totalData, diasData, orcamentoDiario) {
     alertas.push({ nivel:'ATENÇÃO', metrica:'Gasto médio/dia', valor:`R$${gastoMedioDia.toFixed(2)}`, limite:`orçamento R$${orcamentoDiario.toFixed(2)}/dia`, acao:'Entrega abaixo do esperado. Verificar limites de orçamento.' });
   }
 
-  return { alertas, info, metricas: { gasto, gastoMedioDia, diasAtivos: diasAtivos.length, impressoes, alcance, cliques, ctr, cpm, freq, leads, cpl, campanhaParada, ultimoDiaAtivo } };
+  return { alertas, info, metricas: { gasto, gastoMedioDia, diasAtivos: diasAtivosCompletos.length, diasAtivosTotal: diasAtivos.length, impressoes, alcance, cliques, ctr, cpm, freq, leads, cpl, campanhaParada, ultimoDiaAtivo } };
 }
 
 // ── FORMATAR COMENTÁRIO ───────────────────────────────────────

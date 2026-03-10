@@ -1,6 +1,7 @@
 {
   "version": 2,
   "routes": [
-    { "src": "/orcamento", "dest": "/public/orcamento.html" }
+    { "src": "/orcamento", "dest": "/public/orcamento.html" },
+    { "src": "/api/clickup-status-change", "dest": "/api/clickup-status-change.js" }
   ]
 }

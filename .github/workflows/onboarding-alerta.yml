@@ -1,0 +1,26 @@
+name: Onboarding — Alerta Clientes Parados
+
+on:
+  schedule:
+    # Roda diariamente às 09:00 BRT (12:00 UTC)
+    - cron: '0 12 * * *'
+  workflow_dispatch:
+
+jobs:
+  alerta:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Instalar dependências
+        run: npm install
+
+      - name: Rodar alerta de onboarding
+        env:
+          CLICKUP_API_KEY:  ${{ secrets.CLICKUP_API_KEY }}
+          CLICKUP_SPACE_ID: ${{ secrets.CLICKUP_SPACE_ID }}
+        run: node scripts/onboarding-alerta.js

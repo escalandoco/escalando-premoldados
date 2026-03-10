@@ -73,8 +73,9 @@
   },
 
   "acessos_necessarios": {
-    "meta_business_manager": false,
-    "meta_ads_manager": false,
+    "meta_business_manager": true,
+    "meta_ads_manager": true,
+    "meta_ad_account_id": "act_1600925480647505",
     "pixel_meta_id": "",
     "google_ads_mcc": false,
     "gtm_container_id": "",

@@ -25,12 +25,9 @@ import { google } from 'googleapis';
 const ROOT_FOLDER_ID = process.env.GOOGLE_DRIVE_CLIENTS_FOLDER_ID || '1MIvzKWOyA875Vvbq3D8P8B0qJb3NseOh';
 
 const SUBFOLDERS = [
-  '01 - Briefing',
-  '02 - Criativos',
-  '03 - Relatórios',
-  '04 - Contratos',
-  '05 - Fotos',
-  '06 - CRM Leads',
+  'Contratos',
+  'Fotos',
+  'CRM — Leads',
 ];
 
 function getAuth() {
@@ -96,10 +93,10 @@ export async function criarPastaCliente(empresa) {
     }
   }
 
-  const fotosId   = subIds['05 - Fotos'];
-  const crmFoldId = subIds['06 - CRM Leads'];
+  const fotosId   = subIds['Fotos'];
+  const crmFoldId = subIds['CRM — Leads'];
 
-  // Planilha CRM dentro de "06 - CRM Leads" — busca qualquer spreadsheet existente
+  // Planilha CRM dentro de "CRM — Leads" — busca qualquer spreadsheet existente
   // (Service Account não pode criar Workspace files — planilha deve ser criada manualmente)
   let planilhaId  = null;
   let planilhaUrl = null;
@@ -142,9 +139,9 @@ async function encontrarPlanilhaId(drive, empresa) {
   if (!pasta.data.files.length) throw new Error(`Pasta do cliente "${empresa}" não encontrada.`);
   const pastaId = pasta.data.files[0].id;
 
-  // Acha "06 - CRM Leads" subfolder
+  // Acha "CRM — Leads" subfolder
   const crm = await drive.files.list({
-    q: `name='06 - CRM Leads' and '${pastaId}' in parents and mimeType='application/vnd.google-apps.folder' and trashed=false`,
+    q: `name='CRM — Leads' and '${pastaId}' in parents and mimeType='application/vnd.google-apps.folder' and trashed=false`,
     fields: 'files(id)',
     spaces: 'drive',
   });

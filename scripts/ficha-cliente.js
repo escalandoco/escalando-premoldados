@@ -152,7 +152,7 @@ function _extrairCampoTabela(desc, campoRegex) {
   const m = desc.match(re);
   if (!m) return null;
   const val = m[1].trim();
-  return (val === '—' || val === '-' || val === '') ? null : val;
+  return (val === '—' || val === '-' || val === '' || val.toLowerCase() === 'undefined') ? null : val;
 }
 
 /**
