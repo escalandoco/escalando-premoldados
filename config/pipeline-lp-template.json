@@ -1,0 +1,76 @@
+{
+  "fases": [
+    {
+      "numero": 1,
+      "nome": "DNA do Cliente",
+      "descricao": "Coleta e validação de todas as informações base do cliente necessárias para construir a LP.",
+      "agente": null,
+      "aprovacao": "manual",
+      "checklist": [
+        "Kickoff preenchido (produtos, avatar, tom de voz)",
+        "WhatsApp validado e testado",
+        "Regiões de entrega definidas",
+        "Concorrentes mapeados",
+        "Fotos dos produtos recebidas"
+      ]
+    },
+    {
+      "numero": 2,
+      "nome": "Copy da LP",
+      "descricao": "Redação de todos os textos da LP: headline, subheadline, diferenciais, depoimentos e CTAs.",
+      "agente": "gerar-copy",
+      "aprovacao": "manual",
+      "checklist": [
+        "Headline principal definida e aprovada",
+        "Subheadline escrita",
+        "Copy dos diferenciais aprovado",
+        "Depoimentos coletados (mínimo 2)",
+        "CTA principal definido"
+      ]
+    },
+    {
+      "numero": 3,
+      "nome": "Identidade Visual",
+      "descricao": "Definição completa da identidade visual: cores, tipografia, logo e estilo de layout.",
+      "agente": null,
+      "aprovacao": "manual",
+      "checklist": [
+        "Cor primária e secundária definidas",
+        "Logo recebido (PNG fundo transparente)",
+        "Fonte escolhida",
+        "Fotos dos produtos tratadas",
+        "Estilo visual aprovado (clean / bold / rustico / industrial)"
+      ]
+    },
+    {
+      "numero": 4,
+      "nome": "Geração da LP",
+      "descricao": "Geração do HTML final da LP com todos os dados do cliente, revisão técnica e aprovação para deploy.",
+      "agente": "gerar-lp",
+      "aprovacao": "automatica",
+      "checklist": [
+        "Config JSON completo (sem campos A DEFINIR)",
+        "LP gerada sem erros",
+        "Mobile responsivo verificado",
+        "Formulário de contato testado",
+        "Botão WhatsApp testado",
+        "Velocidade aceitável (menos de 3s)"
+      ]
+    },
+    {
+      "numero": 5,
+      "nome": "Deploy",
+      "descricao": "Deploy da LP no domínio final, configuração de tracking e verificação de funcionamento.",
+      "agente": "deploy-lp",
+      "aprovacao": "automatica",
+      "checklist": [
+        "LP aprovada pelo cliente",
+        "Pixel Meta configurado",
+        "GA4 ou GTM configurado",
+        "Deploy realizado com sucesso",
+        "URL final verificada (HTTP 200)",
+        "DNS e SSL funcionando"
+      ]
+    }
+  ]
+}

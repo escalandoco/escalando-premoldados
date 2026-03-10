@@ -18,12 +18,22 @@
  *   "Exporta os leads para o Meta"          → exportar-leads-meta
  */
 
+import { verificarGate } from '../scripts/quality-gate.js';
+
 const CLICKUP_KEY     = process.env.CLICKUP_API_KEY;
 const CLICKUP_BOT_KEY = process.env.CLICKUP_BOT_API_KEY || CLICKUP_KEY;
 const ANTHROPIC_KEY   = process.env.ANTHROPIC_API_KEY;
 const JON_USER_ID     = 84613660;
 const VPS_URL       = process.env.VPS_URL       || 'http://129.121.45.61:3030';
 const WORKER_SECRET = process.env.WORKER_SECRET  || '';
+
+// ── MAPEAMENTO AGENTE → FASE DO QUALITY GATE ─────────────────
+// Agente só executa se a fase mapeada estiver aprovada
+const AGENT_GATE_FASE = {
+  'gerar-copy': 1,   // precisa de Fase 1 (DNA) aprovada
+  'gerar-lp':   3,   // precisa de Fase 3 (Identidade Visual) aprovada
+  'deploy-lp':  4,   // precisa de Fase 4 (Geração) aprovada
+};
 
 // ── AGENTES DISPONÍVEIS ───────────────────────────────────────
 const AGENTS = {
@@ -72,6 +82,11 @@ const AGENTS = {
     agent: 'Alex', handle: '@alex', role: 'Analyst',
     keywords: ['analisa concorrentes', 'benchmarking', 'concorrentes', 'análise competitiva', 'quem são os concorrentes'],
   },
+  'aprovar-fase': {
+    desc: 'Aprova a fase atual do pipeline de LP (avança o Quality Gate)',
+    agent: 'Morgan', handle: '@morgan', role: 'PM',
+    keywords: ['aprovado', 'aprovada', 'aprova fase', 'fase aprovada', 'gate ok', 'liberado', 'pode avançar', 'ok, aprovado'],
+  },
 };
 
 const AGENTS_LIST = Object.entries(AGENTS)
@@ -103,6 +118,51 @@ async function clickupComment(taskId, text) {
     body: JSON.stringify({ comment_text: text, notify_all: true }),
   });
   if (!r.ok) throw new Error(`ClickUp comment ${r.status}: ${await r.text()}`);
+}
+
+// ── HELPER: Atualiza status de uma task ──────────────────────
+async function clickupUpdateStatus(taskId, status) {
+  const r = await fetch(`https://api.clickup.com/api/v2/task/${taskId}`, {
+    method: 'PUT',
+    headers: { Authorization: CLICKUP_BOT_KEY, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ status }),
+  });
+  if (!r.ok) console.error(`[dispatcher] Falha ao atualizar status da task ${taskId}: ${r.status}`);
+}
+
+// ── HELPER: Extrai número da fase do nome da task ────────────
+// Ex: "[FASE 3] Identidade Visual" → 3
+function extrairFaseDaTask(taskName = '') {
+  const match = taskName.match(/\[FASE\s+(\d+)\]/i);
+  return match ? parseInt(match[1], 10) : null;
+}
+
+// ── HELPER: Extrai campanha do nome da task ──────────────────
+// Ex: "[FASE 3] Identidade Visual — Mourao Torneado" → "Mourao Torneado"
+// Ex: "[FASE 3] Identidade Visual" → "Geral"
+function extrairCampanhaDaTask(taskName = '') {
+  const match = taskName.match(/—\s*(.+)$/);
+  return match ? match[1].trim() : 'Geral';
+}
+
+// ── HELPER: Busca task de uma fase na lista Landing Pages ────
+async function buscarTaskDeFase(cliente, campanha, fase) {
+  try {
+    const SPACE_ID = process.env.CLICKUP_SPACE_ID || '901313553858';
+    const { folders } = await clickupGet(`/space/${SPACE_ID}/folder?archived=false`);
+    const folder = folders.find(f => f.name.toLowerCase() === cliente.toLowerCase());
+    if (!folder) return null;
+
+    const { lists } = await clickupGet(`/folder/${folder.id}/list?archived=false`);
+    const lista = lists.find(l => l.name.toLowerCase() === 'landing pages');
+    if (!lista) return null;
+
+    const { tasks } = await clickupGet(`/list/${lista.id}/task?archived=false`);
+    const sufixo = campanha !== 'Geral' ? ` — ${campanha}` : '';
+    return tasks.find(t => t.name.startsWith(`[FASE ${fase}]`) && t.name.includes(sufixo || '')) || null;
+  } catch {
+    return null;
+  }
 }
 
 // Agentes que precisam de kickoff preenchido para funcionar
@@ -295,7 +355,7 @@ export default async function handler(req, res) {
       return res.status(200).json({ skipped: true, reason: 'not_a_command', comment: commentText.slice(0, 100) });
     }
 
-    // 4. Verifica contexto se agente analítico
+    // 4a. Verifica contexto se agente analítico
     if (AGENTS_REQUIRE_KICKOFF.includes(intent.agent)) {
       const ctx = await verificarContextoKickoff(intent.cliente);
       if (!ctx.ok) {
@@ -304,6 +364,43 @@ export default async function handler(req, res) {
         );
         return res.status(200).json({ skipped: true, reason: 'missing_kickoff_context', detail: ctx.motivo });
       }
+    }
+
+    // 4b. Quality Gate — verifica fase anterior se agente mapeado
+    const faseGate = AGENT_GATE_FASE[intent.agent];
+    const forceGate = commentText.toLowerCase().includes('--force') || commentText.toLowerCase().includes('--skip-gate');
+
+    if (faseGate && !forceGate) {
+      const campanha = extrairCampanhaDaTask(taskName);
+      const gate = await verificarGate(intent.cliente, campanha, faseGate + 1);
+      if (!gate.ok) {
+        const pendencias = gate.faltando.length > 0
+          ? `\n\n**Pendências:**\n${gate.faltando.map(f => `• ${f}`).join('\n')}`
+          : '';
+        await clickupComment(task_id,
+          `🚫 **Quality Gate bloqueado para \`${intent.agent}\`**\n\n${gate.motivo}${pendencias}\n\n_Adicione \`--force\` ao comentário para ignorar o gate em emergências._\n\n---\n_Dispatcher — Escalando Premoldados_`
+        );
+        return res.status(200).json({ skipped: true, reason: 'quality_gate_blocked', detail: gate.motivo });
+      }
+    }
+
+    // 4c. Tratamento especial: aprovar-fase (não vai para o VPS)
+    if (intent.agent === 'aprovar-fase') {
+      const faseAtual = extrairFaseDaTask(taskName);
+      if (!faseAtual) {
+        await clickupComment(task_id,
+          `⚠️ Não consegui identificar o número da fase nesta task.\n\nCertifique-se de que o nome da task segue o padrão \`[FASE N] Nome\`.\n\n---\n_Dispatcher — Escalando Premoldados_`
+        );
+        return res.status(200).json({ skipped: true, reason: 'phase_not_detected' });
+      }
+
+      await clickupUpdateStatus(task_id, 'complete');
+
+      const proximaFase = faseAtual + 1;
+      await clickupComment(task_id,
+        `✅ **Fase ${faseAtual} aprovada!**\n\nStatus atualizado para **Completo**.\n\n${proximaFase <= 5 ? `▶️ Próxima etapa: **Fase ${proximaFase}** já está liberada.` : '🎉 Pipeline completo!'}\n\n---\n_Dispatcher — Escalando Premoldados_`
+      );
+      return res.status(200).json({ ok: true, agent: 'aprovar-fase', fase: faseAtual });
     }
 
     // 5. Feedback imediato: "entendi, executando..."
@@ -334,6 +431,21 @@ export default async function handler(req, res) {
     await clickupComment(task_id,
       `${statusIcon} ${agentLabel} concluiu \`${intent.agent}\` (exit ${result.exitCode})${outputBlock}\n\n---\n_Dispatcher — Escalando Premoldados_`
     );
+
+    // 8. Atualiza status da task de fase automaticamente se execução foi bem-sucedida
+    if (result.ok || result.exitCode === 0) {
+      const campanha = extrairCampanhaDaTask(taskName);
+      const faseMapa = { 'gerar-lp': 4, 'deploy-lp': 5 };
+      const faseParaAtualizar = faseMapa[intent.agent];
+
+      if (faseParaAtualizar) {
+        const taskFase = await buscarTaskDeFase(intent.cliente, campanha, faseParaAtualizar);
+        if (taskFase) {
+          await clickupUpdateStatus(taskFase.id, 'complete');
+          console.log(`[dispatcher] Fase ${faseParaAtualizar} marcada como complete para ${intent.cliente} — ${campanha}`);
+        }
+      }
+    }
 
     return res.status(200).json({ ok: true, agent: intent.agent, exitCode: result.exitCode });
 

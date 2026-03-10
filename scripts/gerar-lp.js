@@ -18,6 +18,8 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { spawnSync } from 'child_process';
+import { verificarGate } from './quality-gate.js';
+import { validarConfig } from './validar-config-lp.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT      = path.join(__dirname, '..');
@@ -41,6 +43,7 @@ for (const a of process.argv.slice(2)) {
 const empresa  = args.empresa;
 const lpNome   = args.lp || '';          // nome da campanha/LP (opcional)
 const noUpload = args.upload === false;
+const force    = args.force === true || args['skip-gate'] === true;
 
 if (!empresa) {
   console.error('Uso: node scripts/gerar-lp.js --empresa=NomeEmpresa [--lp=NomeCampanha] [--config=arquivo.json] [--no-upload]');
@@ -74,6 +77,42 @@ async function main() {
 
   // 2. Garante campos obrigatórios
   config = preencherDefaults(config, empresa);
+
+  // 2b. Valida config — campos "A DEFINIR" e obrigatórios
+  const validacao = validarConfig(config);
+  if (validacao.avisos.length > 0) {
+    console.log(`⚠️  ${validacao.avisos.length} aviso(s) no config:`);
+    validacao.avisos.forEach(a => console.log(`   ⚠  ${a}`));
+    console.log('');
+  }
+  if (!validacao.valido) {
+    console.log(`❌ Config inválido — ${validacao.erros.length} erro(s):`);
+    validacao.erros.forEach(e => console.log(`   ✗ ${e}`));
+    if (!force) {
+      console.log('\n💡 Use --force para gerar mesmo assim (não recomendado para produção).\n');
+      process.exit(1);
+    }
+    console.log('\n⚠️  --force ativo: gerando mesmo com erros no config.\n');
+  }
+
+  // 2c. Quality Gate — verifica se Fase 3 (Identidade Visual) está aprovada
+  if (!force) {
+    console.log('🔍 Verificando Quality Gate (Fase 4)...');
+    const campanha = lpNome || 'Geral';
+    const gate = await verificarGate(empresa, campanha, 4);
+    if (!gate.ok) {
+      console.log(`\n🚫 BLOQUEADO — ${gate.motivo}`);
+      if (gate.faltando.length > 0) {
+        console.log('\n   Pendências:');
+        gate.faltando.forEach(f => console.log(`   • ${f}`));
+      }
+      console.log('\n💡 Use --force para gerar sem verificar o gate.\n');
+      process.exit(1);
+    }
+    console.log(`✅ Gate OK — ${gate.motivo}\n`);
+  } else {
+    console.log('⚠️  --force ativo: Quality Gate ignorado.\n');
+  }
 
   // 3. Renderiza HTML
   console.log('🖨️  Renderizando template...');
@@ -130,8 +169,16 @@ async function fetchConfigFromClickUp(empresa) {
   if (!folder) throw new Error(`Folder "${empresa}" não encontrado no ClickUp.`);
 
   const { lists } = await cu('get', `/folder/${folder.id}/list?archived=false`);
-  const onboarding = lists.find(l => l.name === 'Onboarding');
-  if (!onboarding) throw new Error('Lista Onboarding não encontrada.');
+
+  // Busca primeiro na lista "Landing Pages" (nova estrutura do pipeline)
+  // Fallback para "Onboarding" (estrutura legada)
+  const landingPages = lists.find(l => l.name.toLowerCase() === 'landing pages');
+  const onboardingList = lists.find(l => l.name === 'Onboarding');
+
+  let onboarding = landingPages || onboardingList;
+  if (!onboarding) throw new Error('Lista "Landing Pages" ou "Onboarding" não encontrada.');
+
+  console.log(`📋 Buscando config na lista: "${onboarding.name}"`);
 
   const { tasks } = await cu('get', `/list/${onboarding.id}/task?archived=false`);
   // Busca pela empresa + campanha se fornecida, senão pega a primeira "Gerar LP"
@@ -187,12 +234,20 @@ function parseDescricao(desc, empresa) {
 // ============================================================
 function preencherDefaults(c, empresa) {
   return {
-    empresa:        c.empresa        || empresa,
-    slogan:         c.slogan         || 'Qualidade em concreto pré-moldado',
-    logo:           '/logo.png',
-    cor_primaria:   c.cor_primaria   || '#C4B470',
-    cor_secundaria: c.cor_secundaria || '#0D1117',
-    estilo:         c.estilo         || 'clean',
+    empresa:          c.empresa          || empresa,
+    slogan:           c.slogan           || 'Qualidade em concreto pré-moldado',
+    logo:             c.logo             || '/logo.png',
+    cor_primaria:     c.cor_primaria     || '#C4B470',
+    cor_secundaria:   c.cor_secundaria   || '#0D1117',
+    estilo:           c.estilo           || 'clean',
+    cor_texto:        c.cor_texto        || '#111827',
+    cor_fundo:        c.cor_fundo        || '#F9FAFB',
+    cor_borda:        c.cor_borda        || '#E5E7EB',
+    cor_primaria_hover: c.cor_primaria_hover || '',
+    fonte:            c.fonte            || 'system',
+    fonte_peso_titulo: c.fonte_peso_titulo || '800',
+    fonte_peso_texto:  c.fonte_peso_texto  || '400',
+    raio_borda:       c.raio_borda       || '12px',
     whatsapp:       c.whatsapp       || '5500000000000',
     whatsapp_msg:   c.whatsapp_msg   || 'Olá! Vim pelo site e gostaria de um orçamento.',
     telefone:       c.telefone       || '',
@@ -233,6 +288,15 @@ function renderTemplate(config) {
 
   // Substitui o bloco "const CONFIG = { ... };"
   html = html.replace(/const CONFIG = \{[\s\S]*?\};/, configStr);
+
+  // Injeta Google Fonts no <head> para SSR/SEO
+  if (config.fonte && config.fonte !== 'system') {
+    const fontUrl = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(config.fonte)}:wght@${config.fonte_peso_texto||400};600;${config.fonte_peso_titulo||800}&display=swap`;
+    html = html.replace(
+      '<link id="google-font" rel="stylesheet" href="">',
+      `<link id="google-font" rel="stylesheet" href="${fontUrl}">`
+    );
+  }
 
   // Atualiza o <title>
   html = html.replace('<title id="page-title">LP</title>', `<title id="page-title">${config.empresa} — Pré-moldados</title>`);

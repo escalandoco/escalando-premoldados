@@ -17,6 +17,12 @@
   <!-- SEO — Schema JSON-LD (LocalBusiness + Product) — injetado pelo gerar-lp.js -->
   <script id="schema-markup" type="application/ld+json"></script>
 
+  <!-- Google Fonts — preenchido pelo CONFIG (fonte) -->
+  <link id="google-font-preconnect-1" rel="preconnect" href="https://fonts.googleapis.com">
+  <link id="google-font-preconnect-2" rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link id="google-font" rel="stylesheet" href="">
+  <style id="estilo-overrides"></style>
+
   <!-- ============================================================
     PIXEL META — substitua pelo ID real do cliente
   ============================================================ -->
@@ -55,12 +61,18 @@
       --gray-900:  #111827;
       --radius:    12px;
       --shadow:    0 4px 24px rgba(0,0,0,0.10);
+
+      /* Identidade visual por cliente */
+      --text:        #111827;
+      --bg:          #F9FAFB;
+      --border:      #E5E7EB;
+      --font-family: 'SF Pro Display', -apple-system, system-ui, sans-serif;
     }
 
     /* ---- RESET ---- */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
-    body { font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; color: var(--gray-900); background: var(--white); line-height: 1.6; }
+    body { font-family: var(--font-family); color: var(--text); background: var(--white); line-height: 1.6; }
     img { max-width: 100%; height: auto; display: block; }
     a { text-decoration: none; color: inherit; }
 
@@ -148,7 +160,7 @@
       font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px;
       color: var(--primary); margin-bottom: 10px;
     }
-    .section-title { font-size: clamp(22px, 4vw, 36px); font-weight: 900; color: var(--gray-900); line-height: 1.2; margin-bottom: 12px; }
+    .section-title { font-size: clamp(22px, 4vw, 36px); font-weight: 900; color: var(--text); line-height: 1.2; margin-bottom: 12px; }
     .section-sub { font-size: 16px; color: var(--gray-600); max-width: 560px; line-height: 1.7; }
     .section-head { margin-bottom: 48px; }
     .section-head.center { text-align: center; }
@@ -156,12 +168,12 @@
     section.bg-dark { background: var(--dark); }
     section.bg-dark .section-title { color: var(--white); }
     section.bg-dark .section-sub { color: rgba(255,255,255,0.6); }
-    section.bg-gray { background: var(--gray-50); }
+    section.bg-gray { background: var(--bg); }
 
     /* ---- PRODUTOS ---- */
     .produtos-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
     .produto-card {
-      background: var(--white); border-radius: var(--radius); border: 1px solid var(--gray-200);
+      background: var(--white); border-radius: var(--radius); border: 1px solid var(--border);
       overflow: hidden; transition: box-shadow 0.2s, transform 0.2s;
     }
     .produto-card:hover { box-shadow: var(--shadow); transform: translateY(-3px); }
@@ -172,10 +184,10 @@
     }
     .produto-img img { width: 100%; height: 100%; object-fit: cover; }
     .produto-body { padding: 20px; }
-    .produto-nome { font-size: 17px; font-weight: 800; color: var(--gray-900); margin-bottom: 6px; }
+    .produto-nome { font-size: 17px; font-weight: 800; color: var(--text); margin-bottom: 6px; }
     .produto-aplicacao { font-size: 12px; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; }
     .produto-desc { font-size: 14px; color: var(--gray-600); line-height: 1.6; margin-bottom: 14px; }
-    .produto-preco { font-size: 15px; font-weight: 800; color: var(--gray-900); }
+    .produto-preco { font-size: 15px; font-weight: 800; color: var(--text); }
 
     /* ---- DIFERENCIAIS ---- */
     .difs-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; }
@@ -189,32 +201,32 @@
 
     /* ---- DEPOIMENTOS ---- */
     .depos-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
-    .depo-card { background: var(--white); border-radius: var(--radius); padding: 28px; border: 1px solid var(--gray-200); }
+    .depo-card { background: var(--white); border-radius: var(--radius); padding: 28px; border: 1px solid var(--border); }
     .depo-stars { color: #FBBF24; font-size: 16px; margin-bottom: 14px; }
     .depo-texto { font-size: 15px; color: var(--gray-600); line-height: 1.7; font-style: italic; margin-bottom: 18px; }
     .depo-autor { display: flex; align-items: center; gap: 12px; }
     .depo-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 900; color: var(--dark); flex-shrink: 0; }
-    .depo-nome { font-size: 14px; font-weight: 800; color: var(--gray-900); }
+    .depo-nome { font-size: 14px; font-weight: 800; color: var(--text); }
     .depo-local { font-size: 12px; color: var(--gray-400); }
 
     /* ---- COBERTURA ---- */
     .regioes-list { display: flex; flex-wrap: wrap; gap: 10px; }
     .regiao-tag {
-      background: var(--gray-100); border: 1px solid var(--gray-200);
+      background: var(--gray-100); border: 1px solid var(--border);
       border-radius: 99px; padding: 8px 18px; font-size: 13px; font-weight: 600;
-      color: var(--gray-700);
+      color: var(--gray-600);
     }
 
     /* ---- FORMULÁRIO CRM ---- */
-    #contato { background: var(--gray-50); }
+    #contato { background: var(--bg); }
     .form-wrap { max-width: 560px; margin: 0 auto; }
-    .form-card { background: var(--white); border-radius: 16px; padding: 40px; border: 1px solid var(--gray-200); box-shadow: var(--shadow); }
+    .form-card { background: var(--white); border-radius: 16px; padding: 40px; border: 1px solid var(--border); box-shadow: var(--shadow); }
     .form-row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
     .form-field { margin-bottom: 16px; }
     .form-field label { display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--gray-600); margin-bottom: 6px; }
     .form-field input, .form-field select, .form-field textarea {
-      width: 100%; padding: 12px 14px; border: 1.5px solid var(--gray-200); border-radius: 8px;
-      font-size: 14px; color: var(--gray-900); background: var(--white); outline: none;
+      width: 100%; padding: 12px 14px; border: 1.5px solid var(--border); border-radius: 8px;
+      font-size: 14px; color: var(--text); background: var(--white); outline: none;
       transition: border-color 0.15s; font-family: inherit;
     }
     .form-field input:focus, .form-field select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(196,180,112,0.15); }
@@ -483,11 +495,73 @@ const CONFIG = {
 
 <script>
 (function() {
+  // ---- Helper: escurece uma cor hex ----
+  function darkenHex(hex, pct) {
+    const n = parseInt(hex.replace('#',''), 16);
+    const r = Math.max(0, (n>>16) - Math.round(((n>>16)*pct)/100));
+    const g = Math.max(0, ((n>>8)&0xff) - Math.round((((n>>8)&0xff)*pct)/100));
+    const b = Math.max(0, (n&0xff) - Math.round(((n&0xff)*pct)/100));
+    return '#' + [r,g,b].map(x=>x.toString(16).padStart(2,'0')).join('');
+  }
+
   // ---- Aplica CSS vars de cor ----
   document.documentElement.style.setProperty('--primary',   CONFIG.cor_primaria   || '#C4B470');
-  document.documentElement.style.setProperty('--primary-d', CONFIG.cor_primaria   || '#A89858');
   document.documentElement.style.setProperty('--dark',      CONFIG.cor_secundaria || '#0D1117');
   document.documentElement.style.setProperty('--dark-2',    CONFIG.cor_secundaria || '#161B22');
+
+  // Novos tokens de identidade
+  if (CONFIG.cor_texto)  document.documentElement.style.setProperty('--text',   CONFIG.cor_texto);
+  if (CONFIG.cor_fundo)  document.documentElement.style.setProperty('--bg',     CONFIG.cor_fundo);
+  if (CONFIG.cor_borda)  document.documentElement.style.setProperty('--border', CONFIG.cor_borda);
+  if (CONFIG.raio_borda) document.documentElement.style.setProperty('--radius', CONFIG.raio_borda);
+
+  // Hover — auto-escurece cor_primaria se não definido
+  const hoverColor = CONFIG.cor_primaria_hover || darkenHex(CONFIG.cor_primaria || '#C4B470', 15);
+  document.documentElement.style.setProperty('--primary-d', hoverColor);
+
+  // Fonte Google Fonts
+  if (CONFIG.fonte && CONFIG.fonte !== 'system') {
+    const fontUrl = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(CONFIG.fonte)}:wght@${CONFIG.fonte_peso_texto||400};600;${CONFIG.fonte_peso_titulo||800}&display=swap`;
+    document.getElementById('google-font').href = fontUrl;
+    document.documentElement.style.setProperty('--font-family', `'${CONFIG.fonte}', system-ui, sans-serif`);
+  }
+
+  // Logo
+  if (CONFIG.logo) {
+    document.getElementById('h-logo').src = CONFIG.logo;
+    const fLogo = document.getElementById('f-logo');
+    if (fLogo) fLogo.src = CONFIG.logo;
+  }
+
+  // CSS do estilo visual
+  const estiloCSS = {
+    bold: `
+      :root { --radius: 6px; }
+      .hero-headline { font-size: clamp(2.2rem, 5vw, 3.8rem) !important; letter-spacing: -1.5px; }
+      .btn-wpp, .btn-wpp-header { border-radius: 6px !important; font-size: 1.05em; }
+      .produto-card, .dif-card { border-radius: 6px !important; border: 2px solid var(--primary); }
+      .hero-num { font-size: 2.4rem !important; }
+    `,
+    rustico: `
+      :root { --radius: 20px; }
+      .hero-headline { font-family: Georgia, 'Times New Roman', serif; }
+      .hero-badge { border-radius: 100px; padding: 8px 20px; }
+      .dif-card { border-radius: 20px !important; }
+      #header { border-bottom: 2px solid var(--primary); }
+      .section-title::after { content: ''; display: block; width: 60px; height: 3px; background: var(--primary); margin: 8px auto 0; border-radius: 3px; }
+    `,
+    industrial: `
+      :root { --radius: 2px; }
+      body { font-family: 'Courier New', monospace, system-ui; }
+      .hero-headline { text-transform: uppercase; letter-spacing: 2px; }
+      .hero-badge { border-radius: 0; border: 2px solid var(--primary); background: transparent; color: var(--primary); }
+      .btn-primary, .btn-wpp-header { border-radius: 0 !important; text-transform: uppercase; letter-spacing: 1px; }
+      .produto-card, .dif-card { border-radius: 0 !important; border-left: 4px solid var(--primary); }
+      #header { border-bottom: 3px solid var(--primary); }
+    `
+  };
+  const overrideCSS = estiloCSS[CONFIG.estilo] || '';
+  if (overrideCSS) document.getElementById('estilo-overrides').textContent = overrideCSS;
 
   // ---- Meta ----
   document.getElementById('page-title').textContent = CONFIG.empresa + ' — ' + (CONFIG.slogan || 'Premoldados');
@@ -498,7 +572,7 @@ const CONFIG = {
 
   // ---- Header ----
   const logo = document.getElementById('h-logo');
-  logo.src = CONFIG.logo || ''; logo.alt = CONFIG.empresa;
+  if (!CONFIG.logo) { logo.src = ''; } logo.alt = CONFIG.empresa;
   document.getElementById('h-nome').textContent    = CONFIG.empresa;
   document.getElementById('h-slogan').textContent  = CONFIG.slogan || '';
   document.getElementById('h-tel').textContent     = CONFIG.telefone || '';
