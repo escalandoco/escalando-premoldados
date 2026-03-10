@@ -6,6 +6,7 @@
  *   node scripts/gerar-lp.js --empresa=Concrenor
  *   node scripts/gerar-lp.js --empresa=Concrenor --config=config/lp-concrenor.json
  *   node scripts/gerar-lp.js --empresa=Concrenor --no-upload
+ *   node scripts/gerar-lp.js --empresa=Concrenor --sync-ficha
  *
  * O script:
  *   1. Lê config JSON (local ou do ClickUp)
@@ -20,6 +21,7 @@ import { fileURLToPath } from 'url';
 import { spawnSync } from 'child_process';
 import { verificarGate } from './quality-gate.js';
 import { validarConfig } from './validar-config-lp.js';
+import { sincronizarFicha } from './sincronizar-ficha.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT      = path.join(__dirname, '..');
@@ -43,10 +45,11 @@ for (const a of process.argv.slice(2)) {
 const empresa  = args.empresa;
 const lpNome   = args.lp || '';          // nome da campanha/LP (opcional)
 const noUpload = args.upload === false;
-const force    = args.force === true || args['skip-gate'] === true;
+const force     = args.force === true || args['skip-gate'] === true;
+const syncFicha = args['sync-ficha'] === true;
 
 if (!empresa) {
-  console.error('Uso: node scripts/gerar-lp.js --empresa=NomeEmpresa [--lp=NomeCampanha] [--config=arquivo.json] [--no-upload]');
+  console.error('Uso: node scripts/gerar-lp.js --empresa=NomeEmpresa [--lp=NomeCampanha] [--config=arquivo.json] [--no-upload] [--sync-ficha]');
   process.exit(1);
 }
 
@@ -64,6 +67,33 @@ const slug          = `${slugCliente}/${slugCampanha}`;
 async function main() {
   const lpLabel = lpNome ? ` — ${lpNome}` : '';
   console.log(`\n🔧 Gerando LP: ${empresa}${lpLabel} → lp.escalando.co/${slug}/\n`);
+
+  // 0. Sync Ficha do Cliente (se --sync-ficha)
+  if (syncFicha) {
+    console.log('Sincronizando Ficha do Cliente antes de gerar...');
+    try {
+      const rel = await sincronizarFicha(empresa, { campanha: lpNome });
+      if (rel.fichaLida) {
+        const total = rel.camposSincronizados.length + rel.camposNovos.length;
+        if (total > 0) {
+          console.log(`Ficha sincronizada: ${total} campo(s) atualizado(s) no config JSON.`);
+        } else {
+          console.log('Ficha sincronizada: config ja estava em dia.');
+        }
+        if (rel.checklistMarcados.length > 0) {
+          console.log(`Checklist [FASE 1]: ${rel.checklistMarcados.length} item(s) marcado(s).`);
+        }
+      } else {
+        console.warn('Ficha nao encontrada — continuando com config existente.');
+      }
+      if (rel.erros.length > 0) {
+        rel.erros.forEach(e => console.warn(`  ${e}`));
+      }
+    } catch (err) {
+      console.warn(`Erro ao sincronizar Ficha: ${err.message} — continuando com config existente.`);
+    }
+    console.log('');
+  }
 
   // 1. Lê config
   let config;
