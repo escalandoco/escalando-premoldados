@@ -134,9 +134,9 @@
 </div>
 
 <script>
-  const CONFIG = { webhookUrl: 'https://escalando-premoldados.vercel.app/api/onboarding' };
+  const CONFIG = { webhookUrl: 'https://escalando-premoldados.vercel.app/api/orcamento' };
   const params  = new URLSearchParams(window.location.search);
-  const cliente = params.get('cliente');
+  const cliente = params.get('c') || params.get('cliente');
   const cont    = document.getElementById('conteudo');
 
   if (!cliente) {
@@ -209,6 +209,11 @@
           <tbody id="itens-body"></tbody>
         </table>
         <button type="button" class="btn-add" id="btn-add">+ Adicionar item</button>
+        <div style="display:flex;align-items:center;justify-content:flex-end;gap:12px;margin-bottom:10px;">
+          <label style="margin:0;font-size:12px;font-weight:700;color:var(--gray-700);text-transform:uppercase;letter-spacing:.5px;">Frete (R$)</label>
+          <input type="number" id="input-frete" min="0" step="0.01" placeholder="0,00"
+                 style="width:140px;margin:0;text-align:right;" oninput="recalcTotal()">
+        </div>
         <div class="total-geral">
           <span class="total-label">Total geral</span>
           <span class="total-valor" id="total-geral">R$ 0,00</span>
@@ -264,15 +269,16 @@
     }
 
     function recalcTotal() {
-      let total = 0;
+      let sub = 0;
       document.querySelectorAll('.item-row').forEach(row => {
         const qtd  = parseFloat(row.querySelector('.input-qtd').value)  || 0;
         const unit = parseFloat(row.querySelector('.input-unit').value) || 0;
         const t    = qtd * unit;
         row.querySelector('.input-total').value = t > 0 ? fmt(t) : '';
-        total += t;
+        sub += t;
       });
-      document.getElementById('total-geral').textContent = fmt(total);
+      const frete = parseFloat(document.getElementById('input-frete')?.value) || 0;
+      document.getElementById('total-geral').textContent = fmt(sub + frete);
     }
 
     function addItem() {
@@ -281,7 +287,7 @@
       tr.className = 'item-row';
       tr.dataset.id = id;
       tr.innerHTML = `
-        <td class="td-produto" data-label="Produto"><input type="text" class="input-produto" placeholder="Ex: Mourão torneado"></td>
+        <td class="td-produto" data-label="Produto"><input type="text" class="input-produto" placeholder="Ex: Piso sextavado 6cm"></td>
         <td class="td-qtd" data-label="Quantidade"><input type="number" class="input-qtd" min="1" placeholder="0"></td>
         <td class="td-unit" data-label="Vl. Unitário (R$)"><input type="number" class="input-unit" min="0" step="0.01" placeholder="0,00"></td>
         <td class="td-total" data-label="Total (R$)"><input type="text" class="input-total" readonly placeholder="—"></td>
@@ -321,13 +327,11 @@
 
       // Coleta itens
       const itens = [];
-      let totalGeral = 0;
       document.querySelectorAll('.item-row').forEach(row => {
         const produto = row.querySelector('.input-produto').value.trim();
         const qtd     = parseFloat(row.querySelector('.input-qtd').value)  || 0;
-        const unit    = parseFloat(row.querySelector('.input-unit').value) || 0;
-        const total   = qtd * unit;
-        if (produto) { itens.push({ produto, qtd, unit, total }); totalGeral += total; }
+        const preco   = parseFloat(row.querySelector('.input-unit').value) || 0;
+        if (produto) itens.push({ produto, qtd, preco });
       });
 
       st.className = 'status';
@@ -336,17 +340,15 @@
       btn.textContent = 'Registrando...';
 
       const dados = {
-        action:       'novo-orcamento',
-        empresa:      cliente,
+        cliente:  cliente,
         nome,
         telefone,
-        regiao:       document.querySelector('[name="regiao"]').value.trim(),
+        regiao:   document.querySelector('[name="regiao"]').value.trim(),
         canal,
         itens,
-        totalGeral,
-        prazo:        document.querySelector('[name="prazo"]').value.trim(),
-        data:         document.querySelector('[name="data"]').value,
-        obs:          document.querySelector('[name="obs"]').value.trim(),
+        frete:    parseFloat(document.getElementById('input-frete')?.value) || 0,
+        prazo:    document.querySelector('[name="prazo"]').value.trim(),
+        obs:      document.querySelector('[name="obs"]').value.trim(),
       };
 
       try {
@@ -356,13 +358,14 @@
           body: JSON.stringify(dados),
         });
         const json = await res.json();
-        if (json.success) {
+        if (json.ok) {
           st.className = 'status ok';
-          st.textContent = '✅ ' + json.msg;
+          st.textContent = '✅ ' + (json.msg || 'Orçamento registrado com sucesso!');
           // Limpa form
           ['nome','telefone','regiao','prazo','obs'].forEach(n => document.querySelector(`[name="${n}"]`).value = '');
           document.querySelector('[name="data"]').valueAsDate = new Date();
           document.getElementById('canal').value = '';
+          const fi = document.getElementById('input-frete'); if (fi) fi.value = '';
           document.getElementById('itens-body').innerHTML = '';
           itemCount = 0; addItem();
           recalcTotal();
