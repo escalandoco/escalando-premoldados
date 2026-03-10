@@ -330,6 +330,11 @@ export default async function handler(req, res) {
       return res.status(200).json({ skipped: true, reason: 'list_not_monitored', listId });
     }
 
+    // 2b. Ignorar tasks de fase do pipeline (ex: "[FASE 1] DNA do Cliente")
+    if (/^\[FASE\s+\d+\]/i.test(taskName)) {
+      return res.status(200).json({ skipped: true, reason: 'pipeline_phase_task', taskName });
+    }
+
     // 3. Evitar processar tasks criadas pelo próprio bot
     const BOT_SIGS = ['_Dispatcher — Escalando Premoldados_', 'Análise Automática —', '_Gerado automaticamente'];
     const desc = task.description || task.markdown_description || '';
