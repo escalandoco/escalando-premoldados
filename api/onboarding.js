@@ -364,36 +364,36 @@ function buildDescPagamento(empresa, d, drive = {}) {
 ---
 
 **Cliente:** ${empresa}
-**Responsável:** ${d.responsavel || '—'}
-**WhatsApp:** ${d.whatsapp || '—'}
+Responsável: ${d.responsavel || '—'}
+WhatsApp: ${d.whatsapp || '—'}
 CNPJ: ${d.cnpj || '—'}
-**Plano:** ${nomePlano(d.plano)} — R$ ${d.valor}/mês
-**Início:** ${d.dataInicio || '—'}${driveLinks}`;
+Plano: ${nomePlano(d.plano)} — R$ ${d.valor}/mês
+Início: ${d.dataInicio || '—'}${driveLinks}`;
 }
 
 function buildComentarioKickoff(d) {
   return [
-    `📋 **Briefing de Kickoff — ${d.empresa}**`,
+    `📋 Briefing de Kickoff — ${d.empresa}`,
     ``,
-    `**🎯 Objetivo:** ${d.objetivoPrincipal || '—'}`,
-    d.objetivosSecundarios ? `**Objetivos secundários:** ${d.objetivosSecundarios}` : '',
-    d.problemasVendas      ? `**O que trava as vendas:** ${d.problemasVendas}` : '',
+    `🎯 Objetivo: ${d.objetivoPrincipal || '—'}`,
+    d.objetivosSecundarios ? `Objetivos secundários: ${d.objetivosSecundarios}` : '',
+    d.problemasVendas      ? `O que trava as vendas: ${d.problemasVendas}` : '',
     ``,
-    `**📦 Produto foco:** ${d.produtoFoco || d.produtos || '—'}`,
-    d.diferenciais         ? `**Diferenciais:** ${d.diferenciais}` : '',
-    d.areaAtuacao          ? `**Área de atuação:** ${d.areaAtuacao}` : '',
-    d.raioEntrega          ? `**Raio de entrega:** ${d.raioEntrega}` : '',
-    d.ticketMedio          ? `**Ticket médio:** R$ ${d.ticketMedio}` : '',
+    `📦 Produto foco: ${d.produtoFoco || d.produtos || '—'}`,
+    d.diferenciais         ? `Diferenciais: ${d.diferenciais}` : '',
+    d.areaAtuacao          ? `Área de atuação: ${d.areaAtuacao}` : '',
+    d.raioEntrega          ? `Raio de entrega: ${d.raioEntrega}` : '',
+    d.ticketMedio          ? `Ticket médio: R$ ${d.ticketMedio}` : '',
     ``,
-    `**👥 Perfil:** ${d.perfilClientes || '—'}`,
-    d.doresCliente         ? `**Dores:** ${d.doresCliente}` : '',
-    d.desejos              ? `**Desejos:** ${d.desejos}` : '',
+    `👥 Perfil: ${d.perfilClientes || '—'}`,
+    d.doresCliente         ? `Dores: ${d.doresCliente}` : '',
+    d.desejos              ? `Desejos: ${d.desejos}` : '',
     ``,
-    d.concorrentes         ? `**🏁 Concorrentes:** ${d.concorrentes}` : '',
-    d.oportunidades        ? `**💡 Oportunidades:** ${d.oportunidades}` : '',
+    d.concorrentes         ? `🏁 Concorrentes: ${d.concorrentes}` : '',
+    d.oportunidades        ? `💡 Oportunidades: ${d.oportunidades}` : '',
     ``,
-    d.verba                ? `**💰 Verba:** R$ ${d.verba}` : '',
-    d.sucesso60Dias        ? `**Sucesso em 60 dias:** ${d.sucesso60Dias}` : '',
+    d.verba                ? `💰 Verba: R$ ${d.verba}` : '',
+    d.sucesso60Dias        ? `Sucesso em 60 dias: ${d.sucesso60Dias}` : '',
   ].filter(Boolean).join('\n');
 }
 
