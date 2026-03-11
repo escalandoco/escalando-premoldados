@@ -339,19 +339,19 @@ async function processarNovoOrcamento(d) {
 function buildFichaDesc(empresa, d) {
   const local = [d.cidade, d.estado].filter(Boolean).join(' — ') || '—';
   const lines = [
-    `CNPJ: ${d.cnpj || '—'}`,
-    `Localidade: ${local}`,
-    `Data Início: ${d.dataInicio || '—'}`,
+    `**CNPJ:** ${d.cnpj || '—'}`,
+    `**Localidade:** ${local}`,
+    `**Data Início:** ${d.dataInicio || '—'}`,
   ];
 
   // Campos do kickoff — só aparecem quando preenchidos
-  if (d.produtos)        lines.push(`Produtos: ${d.produtos}`);
-  if (d.ticketMedio)     lines.push(`Ticket Médio: R$ ${d.ticketMedio}`);
-  if (d.diferenciais)    lines.push(`Diferenciais: ${d.diferenciais}`);
-  if (d.perfilClientes)  lines.push(`Perfil dos Clientes: ${d.perfilClientes}`);
-  if (d.comoVendem)      lines.push(`Como Vendem Hoje: ${d.comoVendem}`);
-  if (d.concorrentes)    lines.push(`Concorrentes: ${d.concorrentes}`);
-  if (d.obs)             lines.push(`Observações: ${d.obs}`);
+  if (d.produtos)        lines.push(`**Produtos:** ${d.produtos}`);
+  if (d.ticketMedio)     lines.push(`**Ticket Médio:** R$ ${d.ticketMedio}`);
+  if (d.diferenciais)    lines.push(`**Diferenciais:** ${d.diferenciais}`);
+  if (d.perfilClientes)  lines.push(`**Perfil dos Clientes:** ${d.perfilClientes}`);
+  if (d.comoVendem)      lines.push(`**Como Vendem Hoje:** ${d.comoVendem}`);
+  if (d.concorrentes)    lines.push(`**Concorrentes:** ${d.concorrentes}`);
+  if (d.obs)             lines.push(`**Observações:** ${d.obs}`);
 
   return lines.join('\n');
 }
