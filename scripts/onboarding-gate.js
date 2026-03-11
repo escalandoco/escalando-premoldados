@@ -18,6 +18,28 @@ const SPACE_CLIENTES  = process.env.CLICKUP_SPACE_ID || '901313553858';
 const SPACE_OPERACAO  = process.env.CLICKUP_SPACE_OPERACAO || '901313601522';
 const BASE_URL        = 'https://api.clickup.com/api/v2';
 const KICKOFF_URL     = (process.env.KICKOFF_URL || 'https://escalando.co/kickoff').trim();
+const VPS_URL         = (process.env.VPS_URL || 'http://129.121.45.61:3030').trim();
+const WORKER_SECRET   = (process.env.WORKER_SECRET || '').trim();
+
+// ── Log de execução no dashboard ───────────────────────────────────────────
+async function logJob(script, cliente, status, step, error = null) {
+  const empresa = cliente.toLowerCase();
+  const entry = {
+    secret: WORKER_SECRET,
+    id:     `${script}-${empresa}-${Date.now()}`,
+    script,
+    cliente: empresa,
+    status,
+    progress: status === 'completed' ? 100 : 0,
+    step,
+    error,
+  };
+  await fetch(`${VPS_URL}/api/log-job`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(entry),
+  }).catch(() => {});
+}
 
 // Status que significam "concluído" no ClickUp
 const STATUS_DONE = ['complete', 'done', 'concluído', 'concluida', 'aprovado'];
@@ -118,6 +140,7 @@ export async function gateA(empresa, whatsappCliente) {
         priority: 1,
       });
       console.log('[Gate A] Task de Kickoff criada.');
+      await logJob('gate-a-criar-kickoff', empresa, 'completed', `Task Kickoff criada — ${kickoffLink}`);
     }
 
     // Notifica Jon
@@ -160,6 +183,7 @@ export async function gateB(empresa, dadosKickoff, whatsappCliente) {
         const kickoffTask = await encontrarTask(onboarding.id, '📋 Kickoff');
         if (kickoffTask && !isDone(kickoffTask.status?.status)) {
           await cu('put', `/task/${kickoffTask.id}`, { status: 'complete' }).catch(() => {});
+          await logJob('gate-b-kickoff-complete', empresa, 'completed', 'Kickoff marcado como concluído no ClickUp');
         }
       }
     }
@@ -189,7 +213,7 @@ export async function gateC(empresa) {
     const onboarding = await encontrarLista(folder.id, 'Onboarding');
     if (!onboarding) throw new Error('Lista Onboarding não encontrada.');
 
-    const { tasks } = await cu('get', `/list/${onboarding.id}/task?archived=false`);
+    const { tasks } = await cu('get', `/list/${onboarding.id}/task?archived=false&include_closed=true`);
 
     const faltando = [];
 
@@ -245,6 +269,7 @@ export async function gateC(empresa) {
           priority: 1,
         });
         console.log('[Gate C] Task LP Briefing criada.');
+        await logJob('gate-c-criar-lp-briefing', empresa, 'completed', 'Task LP Briefing criada em Landing Pages');
       }
     }
 
@@ -260,6 +285,7 @@ export async function gateC(empresa) {
             priority: 1,
           });
           console.log('[Gate C] Task Coletar Acessos criada.');
+          await logJob('gate-c-criar-coletar-acessos', empresa, 'completed', `Task Coletar Acessos criada em Meta Ads (plano ${plano})`);
         }
       }
     }

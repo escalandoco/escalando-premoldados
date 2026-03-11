@@ -370,6 +370,19 @@ function updateJob(id, updates) {
   }
 }
 
+function addJob(entry) {
+  const queue = readJobQueue();
+  const idx = queue.findIndex(j => j.id === entry.id);
+  const now = new Date().toISOString();
+  if (idx >= 0) {
+    queue[idx] = { ...queue[idx], ...entry, lastAttempt: now };
+  } else {
+    queue.unshift({ attempts: 1, createdAt: now, lastAttempt: now, error: null, ...entry });
+  }
+  fs.mkdirSync(path.dirname(QUEUE_FILE), { recursive: true });
+  fs.writeFileSync(QUEUE_FILE, JSON.stringify(queue.slice(0, 50), null, 2));
+}
+
 // ── SAFE COMMAND WHITELIST ───────────────────────────────────
 const SAFE_PATTERNS = [
   /^node scripts\/gerar-lp\.js.*--no-upload/,
@@ -397,7 +410,7 @@ function checkAuth(req, res) {
 const server = http.createServer((req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   // /api/run-worker e /api/git-pull têm autenticação própria (WORKER_SECRET)
-  const PUBLIC_ROUTES = ['/api/run-worker', '/api/git-pull'];
+  const PUBLIC_ROUTES = ['/api/run-worker', '/api/git-pull', '/api/log-job'];
   if (!PUBLIC_ROUTES.includes(req.url) && !checkAuth(req, res)) return;
 
   // ── GET /api/data ──
@@ -532,6 +545,34 @@ const server = http.createServer((req, res) => {
   if (req.method === 'GET' && req.url === '/api/job-queue') {
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify(readJobQueue()));
+    return;
+  }
+
+  // ── POST /api/log-job (chamado pelo Vercel — loga execuções dos gates) ──
+  if (req.method === 'POST' && req.url === '/api/log-job') {
+    let body = '';
+    req.on('data', d => body += d);
+    req.on('end', () => {
+      try {
+        const { secret, ...entry } = JSON.parse(body || '{}');
+        if (!WORKER_SECRET || secret !== WORKER_SECRET) {
+          res.writeHead(401, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: 'unauthorized' }));
+          return;
+        }
+        if (!entry.id || !entry.script || !entry.cliente) {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: 'id, script e cliente são obrigatórios' }));
+          return;
+        }
+        addJob(entry);
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ ok: true, id: entry.id }));
+      } catch (e) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: e.message }));
+      }
+    });
     return;
   }
 
