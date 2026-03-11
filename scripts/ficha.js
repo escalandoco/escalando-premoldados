@@ -22,16 +22,27 @@ async function cuGet(path) {
 }
 
 /**
- * Extrai campos do formato "CAMPO: valor\n" da description da Ficha
+ * Extrai campos do formato "CAMPO: valor\n" da description da Ficha.
+ * Suporta valores em múltiplas linhas (linhas sem chave são continuação do campo anterior).
  */
 function parseDesc(description = '') {
   const result = {};
+  let currentKey = null;
   for (const line of description.split('\n')) {
     const idx = line.indexOf(':');
-    if (idx < 0) continue;
-    const key = line.slice(0, idx).trim();
-    const val = line.slice(idx + 1).trim();
-    if (key && val && val !== '—') result[key] = val;
+    if (idx > 0) {
+      const key = line.slice(0, idx).trim();
+      const val = line.slice(idx + 1).trim();
+      if (key && val !== '—') {
+        result[key] = val || '';
+        currentKey = key;
+      }
+    } else if (currentKey && line.trim() && line.trim() !== '—') {
+      // Linha de continuação — anexa ao campo atual separado por " / "
+      result[currentKey] = (result[currentKey] ? result[currentKey] + ' / ' : '') + line.trim();
+    } else if (!line.trim()) {
+      currentKey = null; // linha em branco encerra continuação
+    }
   }
   return result;
 }
