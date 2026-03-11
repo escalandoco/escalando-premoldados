@@ -24,6 +24,58 @@ const SPACE_OPERACAO  = process.env.CLICKUP_SPACE_OPERACAO || '901313601522';
 const BASE_URL        = 'https://api.clickup.com/api/v2';
 const WS_ID           = '90133050692';
 
+// Custom field IDs da lista OPERAÇÃO/Fichas
+const CF = {
+  responsavel:       'd1009da6-09ef-424e-b971-2fa7fd7321bb',
+  whatsapp:          'c8d8bb6d-656f-4d4b-89c7-d37ce1311bbe',
+  plano:             'b01d0f39-4e74-4c0c-a063-48cdd866915a',  // dropdown: 0=Starter 1=Growth 2=Pro
+  valorMensal:       '38bd0f83-b8f0-4e42-9ad7-29d73b861d88',
+  canalContato:      '78383f59-9fd3-4ab5-9dee-bc6c916d0886',  // dropdown: 0=WhatsApp 1=Indicação 2=Instagram 3=Google
+  b2bOuB2c:         '3b325843-7f8b-4f80-ab0a-fe1eaf77697a',  // dropdown: 0=B2B 1=B2C 2=Ambos
+  produtoFoco:       'f819f0d8-489f-4550-a203-e4179df94ed8',
+  areaAtuacao:       'f4099bbb-3850-4734-a6f6-6fbc40aa0d9d',
+  verbaAds:          'ff097df2-d88f-428f-bd3e-f6a4196e5b5a',
+  objetivoPrincipal: 'b0252a10-e4aa-4c25-a6db-bfd7594d7656',
+  sucesso60dias:     '5972830e-fab4-4ecf-ab37-1bdc0dee0f31',
+  tomDeVoz:          '2087bfc7-6889-40a9-a7d4-0e03dd567775', // dropdown: 0=Técnico 1=Direto 2=Próximo
+};
+
+// Mapas dropdown → orderindex
+const PLANO_IDX   = { starter: 0, growth: 1, pro: 2 };
+const CANAL_IDX   = { whatsapp: 0, indicação: 1, indicacao: 1, instagram: 2, google: 3 };
+const B2B_IDX     = { b2b: 0, b2c: 1, ambos: 2 };
+const TOM_IDX     = { 'técnico': 0, 'tecnico': 0, 'direto': 1, 'próximo': 2, 'proximo': 2 };
+
+function buildCustomFields(d) {
+  const fields = [];
+  const add = (id, value) => { if (value !== undefined && value !== null && value !== '') fields.push({ id, value }); };
+
+  add(CF.responsavel,       d.responsavel || null);
+  add(CF.whatsapp,          d.whatsapp    || null);
+  add(CF.produtoFoco,       d.produtoFoco || null);
+  add(CF.areaAtuacao,       d.areaAtuacao || null);
+  add(CF.objetivoPrincipal, d.objetivoPrincipal || null);
+  add(CF.sucesso60dias,     d.sucesso60Dias || null);
+
+  if (d.valor)        add(CF.valorMensal, parseFloat(String(d.valor).replace(/[^\d.,]/g, '').replace(',', '.')) || null);
+  if (d.verba)        add(CF.verbaAds,    parseFloat(String(d.verba).replace(/[^\d.,]/g, '').replace(',', '.')) || null);
+  if (d.verbaMensal)  add(CF.verbaAds,    parseFloat(String(d.verbaMensal).replace(/[^\d.,]/g, '').replace(',', '.')) || null);
+
+  const planoIdx = PLANO_IDX[(d.plano || '').toLowerCase()];
+  if (planoIdx !== undefined) add(CF.plano, planoIdx);
+
+  const canalIdx = CANAL_IDX[(d.canal || '').toLowerCase()];
+  if (canalIdx !== undefined) add(CF.canalContato, canalIdx);
+
+  const b2bIdx = B2B_IDX[(d.b2b || '').toLowerCase()];
+  if (b2bIdx !== undefined) add(CF.b2bOuB2c, b2bIdx);
+
+  const tomIdx = TOM_IDX[(d.tom || '').toLowerCase()];
+  if (tomIdx !== undefined) add(CF.tomDeVoz, tomIdx);
+
+  return fields;
+}
+
 // ── Fichas (OPERAÇÃO) ─────────────────────────────────────────────────────────
 // Encontra ou cria a lista "Fichas" no espaço OPERAÇÃO
 async function getFichasList() {
@@ -84,9 +136,10 @@ async function processarFechamento(d) {
   // 2. Ficha do Cliente na lista centralizada OPERAÇÃO/Fichas
   const fichasList = await getFichasList();
   await cu('post', `/list/${fichasList.id}/task`, {
-    name: `Ficha — ${empresa}`,
-    description: buildFichaDesc(empresa, d),
-    priority: 2,
+    name:          `Ficha — ${empresa}`,
+    description:   buildFichaDesc(empresa, d),
+    priority:      2,
+    custom_fields: buildCustomFields(d),
   });
 
   // 3. Lista Onboarding + 2 tasks (Kickoff criado pelo Gate A)
@@ -149,14 +202,16 @@ async function processarKickoff(d) {
   // 1. Atualiza Ficha do Cliente em OPERAÇÃO/Fichas
   const ficha = await encontrarFichaOperacao(d.empresa).catch(() => null);
   if (ficha) {
+    const dadosCompletos = {
+      ...d,
+      acessoMeta:   acessoOpt(d.acessoMeta),
+      acessoGoogle: acessoOpt(d.acessoGoogle),
+      acessoGmb:    acessoOpt(d.acessoGmb),
+      acessoSite:   acessoOpt(d.acessoSite),
+    };
     await cu('put', `/task/${ficha.id}`, {
-      description: buildFichaDesc(d.empresa, {
-        ...d,
-        acessoMeta:   acessoOpt(d.acessoMeta),
-        acessoGoogle: acessoOpt(d.acessoGoogle),
-        acessoGmb:    acessoOpt(d.acessoGmb),
-        acessoSite:   acessoOpt(d.acessoSite),
-      }),
+      description:   buildFichaDesc(d.empresa, dadosCompletos),
+      custom_fields: buildCustomFields(dadosCompletos),
     });
 
     // Posta briefing narrativo completo como comentário na Ficha
