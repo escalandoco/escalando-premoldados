@@ -20,8 +20,29 @@ import { gateB }                                                 from '../script
 
 const CLICKUP_API_KEY = process.env.CLICKUP_API_KEY;
 const SPACE_CLIENTES  = process.env.CLICKUP_SPACE_ID || '901313553858';
+const SPACE_OPERACAO  = process.env.CLICKUP_SPACE_OPERACAO || '901313601522';
 const BASE_URL        = 'https://api.clickup.com/api/v2';
 const WS_ID           = '90133050692';
+
+// ── Fichas (OPERAÇÃO) ─────────────────────────────────────────────────────────
+// Encontra ou cria a lista "Fichas" no espaço OPERAÇÃO
+async function getFichasList() {
+  const listId = process.env.CLICKUP_LIST_FICHAS;
+  if (listId) return { id: listId };
+
+  const data = await cu('get', `/space/${SPACE_OPERACAO}/list?archived=false`).catch(() => ({ lists: [] }));
+  const fichas = (data.lists || []).find(l => l.name === 'Fichas');
+  if (fichas) return fichas;
+
+  return cu('post', `/space/${SPACE_OPERACAO}/list`, { name: 'Fichas' });
+}
+
+// Encontra a task Ficha de um cliente na lista OPERAÇÃO/Fichas
+async function encontrarFichaOperacao(empresa) {
+  const lista = await getFichasList();
+  const { tasks } = await cu('get', `/list/${lista.id}/task?archived=false`);
+  return (tasks || []).find(t => t.name.toLowerCase() === `ficha — ${empresa.toLowerCase()}`) || null;
+}
 
 // ============================================================
 // HANDLER PRINCIPAL
@@ -57,15 +78,15 @@ export default async function handler(req, res) {
 async function processarFechamento(d) {
   const empresa = d.empresa.trim();
 
-  // 1. Folder do cliente
+  // 1. Folder do cliente no espaço CLIENTES
   const folder = await cu('post', `/space/${SPACE_CLIENTES}/folder`, { name: empresa });
 
-  // 2. Lista DADOS + Ficha do Cliente
-  const dadosList = await cu('post', `/folder/${folder.id}/list`, { name: 'DADOS' });
-  await cu('post', `/list/${dadosList.id}/task`, {
+  // 2. Ficha do Cliente na lista centralizada OPERAÇÃO/Fichas
+  const fichasList = await getFichasList();
+  await cu('post', `/list/${fichasList.id}/task`, {
     name: `Ficha — ${empresa}`,
     description: buildFichaDesc(empresa, d),
-    priority: 1,
+    priority: 2,
   });
 
   // 3. Lista Onboarding + 2 tasks (Kickoff criado pelo Gate A)
@@ -85,7 +106,7 @@ async function processarFechamento(d) {
 
   // 4. Listas dos squads (vazias — cada squad popula)
   await cu('post', `/folder/${folder.id}/list`, { name: 'Landing Pages' });
-  await cu('post', `/folder/${folder.id}/list`, { name: 'CRM — Leads' });
+  await cu('post', `/folder/${folder.id}/list`, { name: 'Comercial' });
 
   if (d.plano === 'growth' || d.plano === 'pro') {
     await cu('post', `/folder/${folder.id}/list`, { name: 'Meta Ads' });
@@ -109,7 +130,7 @@ async function processarFechamento(d) {
     }).catch(() => {});
   }
 
-  const listas = ['DADOS', 'Onboarding', 'Landing Pages', 'CRM — Leads',
+  const listas = ['Onboarding', 'Landing Pages', 'Comercial',
     ...(d.plano === 'growth' || d.plano === 'pro' ? ['Meta Ads'] : []),
     ...(d.plano === 'pro' ? ['Google Ads'] : [])];
 
@@ -125,28 +146,23 @@ async function processarKickoff(d) {
   const folder = folders.find(f => f.name.toLowerCase() === d.empresa.toLowerCase());
   if (!folder) throw new Error(`Folder "${d.empresa}" não encontrado no ClickUp.`);
 
-  // 1. Atualiza Ficha do Cliente
-  const { lists } = await cu('get', `/folder/${folder.id}/list?archived=false`);
-  const dadosList = lists.find(l => l.name === 'DADOS');
-  if (dadosList) {
-    const { tasks } = await cu('get', `/list/${dadosList.id}/task?archived=false`);
-    const ficha = tasks.find(t => t.name.toLowerCase().startsWith('ficha'));
-    if (ficha) {
-      await cu('put', `/task/${ficha.id}`, {
-        description: buildFichaDesc(d.empresa, {
-          ...d,
-          acessoMeta:   acessoOpt(d.acessoMeta),
-          acessoGoogle: acessoOpt(d.acessoGoogle),
-          acessoGmb:    acessoOpt(d.acessoGmb),
-          acessoSite:   acessoOpt(d.acessoSite),
-        }),
-      });
+  // 1. Atualiza Ficha do Cliente em OPERAÇÃO/Fichas
+  const ficha = await encontrarFichaOperacao(d.empresa).catch(() => null);
+  if (ficha) {
+    await cu('put', `/task/${ficha.id}`, {
+      description: buildFichaDesc(d.empresa, {
+        ...d,
+        acessoMeta:   acessoOpt(d.acessoMeta),
+        acessoGoogle: acessoOpt(d.acessoGoogle),
+        acessoGmb:    acessoOpt(d.acessoGmb),
+        acessoSite:   acessoOpt(d.acessoSite),
+      }),
+    });
 
-      // Posta comentário com briefing completo na Ficha
-      await cu('post', `/task/${ficha.id}/comment`, {
-        comment_text: buildComentarioKickoff(d),
-      });
-    }
+    // Posta briefing narrativo completo como comentário na Ficha
+    await cu('post', `/task/${ficha.id}/comment`, {
+      comment_text: buildComentarioKickoff(d),
+    });
   }
 
   // 2. Atualiza Dossiê (fire-and-forget)
@@ -488,14 +504,7 @@ function acessoOpt(val) {
 
 async function fichaComment(empresa, text) {
   try {
-    const { folders } = await cu('get', `/space/${SPACE_CLIENTES}/folder?archived=false`);
-    const folder = folders.find(f => f.name.toLowerCase() === empresa.toLowerCase());
-    if (!folder) return;
-    const { lists } = await cu('get', `/folder/${folder.id}/list?archived=false`);
-    const dadosList = lists.find(l => l.name === 'DADOS');
-    if (!dadosList) return;
-    const { tasks } = await cu('get', `/list/${dadosList.id}/task?archived=false`);
-    const ficha = tasks.find(t => t.name.toLowerCase().startsWith('ficha'));
+    const ficha = await encontrarFichaOperacao(empresa);
     if (ficha) await cu('post', `/task/${ficha.id}/comment`, { comment_text: text, notify_all: false });
   } catch { /* silencioso */ }
 }

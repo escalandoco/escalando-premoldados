@@ -15,6 +15,7 @@ import { notifyMsg, MSG } from './notify.js';
 
 const CLICKUP_API_KEY = process.env.CLICKUP_API_KEY;
 const SPACE_CLIENTES  = process.env.CLICKUP_SPACE_ID || '901313553858';
+const SPACE_OPERACAO  = process.env.CLICKUP_SPACE_OPERACAO || '901313601522';
 const BASE_URL        = 'https://api.clickup.com/api/v2';
 const KICKOFF_URL     = (process.env.KICKOFF_URL || 'https://escalando.co/kickoff').trim();
 
@@ -55,12 +56,20 @@ async function encontrarTask(listId, prefixo) {
   return tasks.find(t => t.name.toLowerCase().startsWith(prefixo.toLowerCase())) || null;
 }
 
-// ── Lê Ficha do Cliente da lista DADOS ───────────────────────────────────────
-async function lerFicha(folderId) {
-  const lista = await encontrarLista(folderId, 'DADOS');
+// ── Lê Ficha do Cliente em OPERAÇÃO/Fichas ────────────────────────────────────
+async function getFichasList() {
+  const listId = process.env.CLICKUP_LIST_FICHAS;
+  if (listId) return { id: listId };
+
+  const data = await cu('get', `/space/${SPACE_OPERACAO}/list?archived=false`).catch(() => ({ lists: [] }));
+  return (data.lists || []).find(l => l.name === 'Fichas') || null;
+}
+
+async function lerFicha(empresa) {
+  const lista = await getFichasList();
   if (!lista) return null;
   const { tasks } = await cu('get', `/list/${lista.id}/task?archived=false`);
-  return tasks.find(t => t.name.toLowerCase().includes('ficha')) || null;
+  return (tasks || []).find(t => t.name.toLowerCase() === `ficha — ${empresa.toLowerCase()}`) || null;
 }
 
 // ============================================================
@@ -73,8 +82,8 @@ export async function gateA(empresa, whatsappCliente) {
     const folder = await encontrarFolder(empresa);
     if (!folder) throw new Error(`Folder "${empresa}" não encontrado.`);
 
-    // Valida Ficha do Cliente
-    const ficha = await lerFicha(folder.id);
+    // Valida Ficha do Cliente em OPERAÇÃO/Fichas
+    const ficha = await lerFicha(empresa);
     const desc  = ficha?.description || '';
 
     const faltando = [];
@@ -192,10 +201,10 @@ export async function gateC(empresa) {
       faltando.push('Fotos não recebidas');
     }
 
-    // Valida Ficha do Cliente
-    const ficha = await lerFicha(folder.id);
+    // Valida Ficha do Cliente em OPERAÇÃO/Fichas
+    const ficha = await lerFicha(empresa);
     const desc  = ficha?.description || '';
-    if (!desc.includes('objetivoPrincipal') && !desc.includes('Objetivo')) {
+    if (!desc.includes('Objetivo')) {
       faltando.push('Objetivo principal não preenchido na Ficha');
     }
 
