@@ -242,15 +242,37 @@ section{margin-bottom:36px}
 
 /* execuções tab */
 .exec-list{display:flex;flex-direction:column;gap:8px}
-.exec-item{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;display:flex;align-items:flex-start;gap:12px}
+.exec-item{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px}
+.exec-item-top{display:flex;align-items:flex-start;gap:12px}
 .exec-status-bar{width:4px;border-radius:2px;align-self:stretch;flex-shrink:0}
-.exec-retry-btn{flex-shrink:0;background:var(--orange-l);border:1px solid var(--orange);color:var(--orange);border-radius:var(--radius-sm);padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;transition:all .15s}
+.exec-btn-group{display:flex;flex-direction:column;gap:6px;flex-shrink:0}
+.exec-retry-btn{background:var(--orange-l);border:1px solid var(--orange);color:var(--orange);border-radius:var(--radius-sm);padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;transition:all .15s}
 .exec-retry-btn:hover{background:var(--orange);color:#fff}
 .exec-retry-btn:disabled{opacity:.5;cursor:not-allowed}
+.exec-fix-btn{background:var(--bg4);border:1px solid var(--border2);color:var(--muted);border-radius:var(--radius-sm);padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;transition:all .15s}
+.exec-fix-btn:hover{border-color:var(--blue);color:var(--blue)}
+.exec-fix-btn.active{border-color:var(--blue);color:var(--blue);background:var(--blue-l)}
 .exec-empty{text-align:center;padding:60px;color:var(--muted)}
 .exec-empty-icon{font-size:36px;margin-bottom:12px}
 .exec-progress{height:3px;background:var(--bg4);border-radius:2px;margin-top:8px;overflow:hidden}
 .exec-progress-fill{height:100%;background:var(--blue);border-radius:2px;transition:width .6s ease}
+.exec-error-reason{font-size:11px;color:var(--red);font-weight:600;margin-bottom:4px}
+.exec-error-full{font-size:11px;color:var(--red);background:var(--red-l);padding:6px 8px;border-radius:4px;margin-top:4px;word-break:break-all;white-space:pre-wrap;font-family:monospace;max-height:200px;overflow-y:auto}
+.exec-error-full details>summary{cursor:pointer;user-select:none;list-style:none;padding:2px 0}
+.exec-error-full details>summary::before{content:'▶ '}
+.exec-error-full details[open]>summary::before{content:'▼ '}
+.exec-fix-form{display:none;margin-top:10px;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:12px}
+.exec-fix-form.open{display:block}
+.exec-fix-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:8px}
+.exec-fix-input{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:6px 10px;font-size:12px;color:var(--text);font-family:monospace;outline:none;resize:vertical;min-height:80px;line-height:1.5;transition:border-color .15s}
+.exec-fix-input:focus{border-color:var(--blue)}
+.exec-fix-hint{font-size:10px;color:var(--muted2);margin-top:4px}
+.exec-fix-actions{display:flex;gap:8px;margin-top:10px;justify-content:flex-end}
+.exec-fix-cancel{background:var(--bg4);border:1px solid var(--border);border-radius:var(--radius-sm);padding:5px 14px;font-size:12px;color:var(--muted);cursor:pointer;transition:all .15s}
+.exec-fix-cancel:hover{color:var(--text)}
+.exec-fix-save{background:var(--blue-l);border:1px solid var(--blue);border-radius:var(--radius-sm);padding:5px 14px;font-size:12px;font-weight:700;color:var(--blue);cursor:pointer;transition:all .15s}
+.exec-fix-save:hover{background:var(--blue);color:#000}
+.exec-fix-save:disabled{opacity:.5;cursor:not-allowed}
 .tag{font-size:10px;background:var(--bg4);border:1px solid var(--border);border-radius:4px;padding:1px 7px;color:var(--muted)}
 
 /* prd iframe */
@@ -953,6 +975,40 @@ async function runCmd(cmd, idx) {
 }
 
 // ── EXECUÇÕES ─────────────────────────────────────────────────
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function parseErrReason(errText) {
+  if (!errText) return { reason: null, fields: [], prefill: '' };
+  const lower = errText.toLowerCase();
+
+  // Extract "Faltando: Campo1, Campo2"
+  const faltandoM = errText.match(/faltando[:\s]+([^\n.]+)/i);
+  const fields = faltandoM
+    ? faltandoM[1].split(/[,;]/).map(s => s.trim()).filter(Boolean)
+    : [];
+
+  let reason = null;
+  if (lower.includes('não encontrada') || lower.includes('nao encontrada')) {
+    reason = '📁 Ficha do cliente não existe em OPERAÇÃO/Fichas';
+  } else if (lower.includes('kickoff') && (lower.includes('não encontrado') || lower.includes('nenhum dado'))) {
+    reason = '📋 Formulário de kickoff ainda não enviado para este cliente';
+  } else if (lower.includes('timeout')) {
+    reason = '⏱️ Script ultrapassou o tempo limite (15 min)';
+  } else if (lower.includes('401') || lower.includes('unauthorized')) {
+    reason = '🔑 Erro de autenticação na API (verifique CLICKUP_API_KEY)';
+  } else if (fields.length > 0) {
+    reason = `⚠️ Campos obrigatórios não preenchidos na Ficha`;
+  }
+
+  const prefill = fields.length > 0
+    ? fields.map(f => `${f}: `).join('\n')
+    : '';
+
+  return { reason, fields, prefill };
+}
+
 function renderExecucoes(jobs) {
   if (!jobs.length) return `
     <section>
@@ -976,37 +1032,66 @@ function renderExecucoes(jobs) {
       </div>
       <div class="exec-list">
         ${jobs.map(job => {
-          const color = sColor[job.status] || 'var(--muted)';
-          const retry = (job.status === 'failed' || job.status === 'pending')
-            ? `<button class="exec-retry-btn" onclick="retryJob('${job.id}',this)">Tentar Novamente</button>`
-            : '';
-          const error = job.error
-            ? `<div style="font-size:11px;color:var(--red);background:var(--red-l);padding:4px 8px;border-radius:4px;margin-top:6px;word-break:break-word">${job.error.slice(0,250)}</div>`
-            : '';
+          const color    = sColor[job.status] || 'var(--muted)';
+          const isFailed = job.status === 'failed';
+          const fid      = 'fix_' + job.id.replace(/[^a-z0-9]/gi, '_');
+          const { reason, prefill } = parseErrReason(job.error);
           const lastAt = job.lastAttempt && job.lastAttempt !== job.createdAt
             ? ` · Última: ${new Date(job.lastAttempt).toLocaleString('pt-BR')}`
             : '';
+
+          const errorBlock = job.error ? `
+            <div style="margin-top:8px">
+              ${reason ? `<div class="exec-error-reason">${reason}</div>` : ''}
+              <div class="exec-error-full">
+                <details>
+                  <summary style="color:var(--red);font-size:11px">Ver erro completo</summary>
+                  <div style="margin-top:6px">${escHtml(job.error)}</div>
+                </details>
+              </div>
+            </div>` : '';
+
+          const fixForm = isFailed ? `
+            <div id="${fid}" class="exec-fix-form">
+              <div class="exec-fix-label">Corrigir Dados — ${escHtml(job.cliente)}</div>
+              <textarea id="${fid}_ta" class="exec-fix-input" spellcheck="false">${prefill}</textarea>
+              <div class="exec-fix-hint">Uma correção por linha: <code>Nome do Campo: Novo valor</code> — atualiza direto na Ficha do ClickUp</div>
+              <div class="exec-fix-actions">
+                <button class="exec-fix-cancel" onclick="toggleFixForm('${fid}')">Cancelar</button>
+                <button class="exec-fix-save" onclick="fixAndRetry('${job.id}','${fid}',this)">Salvar e Retentar</button>
+              </div>
+            </div>` : '';
+
+          const btnGroup = (isFailed || job.status === 'pending') ? `
+            <div class="exec-btn-group">
+              <button class="exec-retry-btn" onclick="retryJob('${job.id}',this)">Tentar Novamente</button>
+              ${isFailed ? `<button id="${fid}_btn" class="exec-fix-btn" onclick="toggleFixForm('${fid}','${fid}_btn')">Corrigir Dados</button>` : ''}
+            </div>` : '';
+
           return `
             <div class="exec-item">
-              <div class="exec-status-bar" style="background:${color}"></div>
-              <div style="flex:1;min-width:0">
-                <div style="display:flex;align-items:center;gap:8px;margin-bottom:5px;flex-wrap:wrap">
-                  <span style="font-size:15px">${sIcon[job.status]||'❓'}</span>
-                  <span style="font-weight:600;font-size:13px">${job.script}</span>
-                  <span style="font-size:10px;font-weight:700;padding:1px 8px;border-radius:20px;background:${color}1a;color:${color}">${sLabel[job.status]||job.status}</span>
-                  <span class="tag">cliente: ${job.cliente}</span>
-                  <span class="tag">tentativas: ${job.attempts||1}</span>
+              <div class="exec-item-top">
+                <div class="exec-status-bar" style="background:${color}"></div>
+                <div style="flex:1;min-width:0">
+                  <div style="display:flex;align-items:center;gap:8px;margin-bottom:5px;flex-wrap:wrap">
+                    <span style="font-size:15px">${sIcon[job.status]||'❓'}</span>
+                    <span style="font-weight:600;font-size:13px">${escHtml(job.script)}</span>
+                    <span style="font-size:10px;font-weight:700;padding:1px 8px;border-radius:20px;background:${color}1a;color:${color}">${sLabel[job.status]||job.status}</span>
+                    <span class="tag">cliente: ${escHtml(job.cliente)}</span>
+                    <span class="tag">tentativas: ${job.attempts||1}</span>
+                  </div>
+                  <div style="font-size:11px;color:var(--muted2)">
+                    Criado: ${new Date(job.createdAt).toLocaleString('pt-BR')}${lastAt}
+                  </div>
+                  ${job.status === 'running' && job.progress != null ? `
+                    <div class="exec-progress"><div class="exec-progress-fill" style="width:${job.progress}%"></div></div>
+                    <div style="font-size:10px;color:var(--blue);margin-top:3px">${job.progress}% — ${escHtml(job.step||'Processando...')}</div>
+                  ` : ''}
+                  ${errorBlock}
                 </div>
-                <div style="font-size:11px;color:var(--muted2)">
-                  Criado: ${new Date(job.createdAt).toLocaleString('pt-BR')}${lastAt}
-                </div>
-                ${job.status === 'running' && job.progress != null ? `
-                  <div class="exec-progress"><div class="exec-progress-fill" style="width:${job.progress}%"></div></div>
-                  <div style="font-size:10px;color:var(--blue);margin-top:3px">${job.progress}% — ${job.step||'Processando...'}</div>
-                ` : ''}
-                ${error}
+                ${btnGroup}
               </div>
-              ${retry}
+              ${fixForm}
             </div>`;
         }).join('')}
       </div>
@@ -1021,13 +1106,21 @@ async function loadExecucoes() {
     const res  = await fetch('/api/job-queue');
     const jobs = await res.json();
     el.innerHTML = renderExecucoes(jobs);
-    // Atualiza badge
     const pending = jobs.filter(j => j.status === 'failed' || j.status === 'pending' || j.status === 'running').length;
     const badge = $('exec-count');
     if (badge) { badge.textContent = pending; badge.style.display = pending > 0 ? '' : 'none'; }
   } catch (e) {
     el.innerHTML = `<div style="text-align:center;padding:60px;color:var(--red)">Erro: ${e.message}<br><small style="color:var(--muted)">server rodando?</small></div>`;
   }
+}
+
+function toggleFixForm(fid, btnId) {
+  const form = document.getElementById(fid);
+  const btn  = btnId ? document.getElementById(btnId) : null;
+  if (!form) return;
+  const isOpen = form.classList.toggle('open');
+  if (btn) btn.classList.toggle('active', isOpen);
+  if (isOpen) form.querySelector('textarea')?.focus();
 }
 
 async function retryJob(id, btn) {
@@ -1048,6 +1141,49 @@ async function retryJob(id, btn) {
     toast('❌ ' + e.message, 'var(--red)');
     btn.disabled = false;
     btn.textContent = 'Tentar Novamente';
+  }
+}
+
+async function fixAndRetry(id, fid, btn) {
+  const ta = document.getElementById(fid + '_ta');
+  if (!ta) return;
+
+  // Parse textarea: "Campo: Valor" lines → object
+  const corrections = {};
+  for (const line of ta.value.split('\n')) {
+    const idx = line.indexOf(':');
+    if (idx > 0) {
+      const key = line.slice(0, idx).trim();
+      const val = line.slice(idx + 1).trim();
+      if (key && val) corrections[key] = val;
+    }
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Salvando...';
+  try {
+    const res  = await fetch('/api/fix-and-retry', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ id, corrections }),
+    });
+    const data = await res.json();
+    if (data.ok) {
+      const applied = data.applied || [];
+      const msg = applied.length > 0
+        ? `✅ Campos atualizados: ${applied.join(', ')} — job iniciado`
+        : '▶️ Job iniciado (sem campos para corrigir)';
+      toast(msg);
+      setTimeout(loadExecucoes, 2000);
+    } else {
+      toast('❌ ' + (data.error || 'Erro desconhecido'), 'var(--red)');
+      btn.disabled = false;
+      btn.textContent = 'Salvar e Retentar';
+    }
+  } catch (e) {
+    toast('❌ ' + e.message, 'var(--red)');
+    btn.disabled = false;
+    btn.textContent = 'Salvar e Retentar';
   }
 }
 

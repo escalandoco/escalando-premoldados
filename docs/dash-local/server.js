@@ -575,6 +575,80 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  // ── POST /api/fix-and-retry ──
+  if (req.method === 'POST' && req.url === '/api/fix-and-retry') {
+    let body = '';
+    req.on('data', d => body += d);
+    req.on('end', () => {
+      (async () => {
+        try {
+          const { id, corrections } = JSON.parse(body || '{}');
+          const queue = readJobQueue();
+          const job   = queue.find(j => j.id === id);
+          if (!job) {
+            res.writeHead(404, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Job não encontrado' }));
+            return;
+          }
+
+          // Aplica correções na Ficha do cliente via ClickUp API
+          const applied = [];
+          if (corrections && Object.keys(corrections).length > 0) {
+            const KEY         = process.env.CLICKUP_API_KEY;
+            const LIST_FICHAS = process.env.CLICKUP_LIST_FICHAS || '901326308338';
+            const cuBase      = 'https://api.clickup.com/api/v2';
+            try {
+              const tr = await fetch(`${cuBase}/list/${LIST_FICHAS}/task?archived=false`, {
+                headers: { Authorization: KEY },
+              });
+              if (tr.ok) {
+                const { tasks } = await tr.json();
+                const ficha = (tasks || []).find(
+                  t => t.name.toLowerCase() === `ficha — ${job.cliente.toLowerCase()}`
+                );
+                if (ficha) {
+                  for (const [fieldName, value] of Object.entries(corrections)) {
+                    if (!value) continue;
+                    const cf = (ficha.custom_fields || []).find(f => f.name === fieldName);
+                    if (cf) {
+                      await fetch(`${cuBase}/task/${ficha.id}/field/${cf.id}`, {
+                        method:  'POST',
+                        headers: { Authorization: KEY, 'Content-Type': 'application/json' },
+                        body:    JSON.stringify({ value }),
+                      });
+                      applied.push(fieldName);
+                    }
+                  }
+                }
+              }
+            } catch {}
+          }
+
+          const attempts = (job.attempts || 0) + 1;
+          updateJob(id, { status: 'running', lastAttempt: new Date().toISOString(), attempts, error: null });
+
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ ok: true, id, applied, script: job.script, cliente: job.cliente, message: 'Executando...' }));
+
+          const cmd = `node scripts/${job.script}.js --cliente=${job.cliente}`;
+          const ts  = new Date().toISOString().replace('T',' ').slice(0,19);
+          console.log(`[${ts}] fix-and-retry: ${cmd} (campos: ${applied.join(', ') || 'nenhum'})`);
+
+          exec(cmd, { cwd: ROOT, timeout: 180000, env: { ...process.env } }, (err, stdout, stderr) => {
+            const status = err ? 'failed' : 'done';
+            const error  = err ? ((stderr || err.message || '').slice(0, 500)) : null;
+            updateJob(id, { status, error, doneAt: new Date().toISOString() });
+            console.log(`[fix-and-retry] ${job.script} → ${status}`);
+          });
+        } catch (e) {
+          res.writeHead(500, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: e.message }));
+        }
+      })();
+    });
+    return;
+  }
+
   // ── GET /api/workers ──
   if (req.method === 'GET' && req.url === '/api/workers') {
     try {
