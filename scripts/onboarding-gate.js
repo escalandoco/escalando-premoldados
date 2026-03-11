@@ -86,13 +86,17 @@ export async function gateA(empresa, whatsappCliente) {
     const ficha = await lerFicha(empresa);
     const desc  = ficha?.description || '';
 
+    // Checa se campo específico está preenchido (não é "— |" ou vazio)
+    function campoVazio(label) {
+      const re = new RegExp(`\\*\\*${label}\\*\\*\\s*\\|\\s*[—\\-]\\s*\\|`);
+      return re.test(desc);
+    }
+
     const faltando = [];
-    if (!desc.includes('Responsável') || desc.includes('| —'))   faltando.push('Responsável');
-    if (!desc.includes('WhatsApp'))                               faltando.push('WhatsApp');
-    if (!desc.includes('CNPJ'))                                   faltando.push('CNPJ');
-    if (!desc.includes('Plano'))                                  faltando.push('Plano');
-    if (!desc.includes('Valor Mensal') || desc.includes('R$ —')) faltando.push('Valor mensal');
-    if (!desc.includes('Data Início') || desc.includes('| —'))   faltando.push('Data de início');
+    if (!desc.includes('Responsável') || campoVazio('Responsável')) faltando.push('Responsável');
+    if (!desc.includes('WhatsApp')   || campoVazio('WhatsApp'))     faltando.push('WhatsApp');
+    if (!desc.includes('Plano')      || campoVazio('Plano'))        faltando.push('Plano');
+    if (!desc.includes('Data Início')|| campoVazio('Data Início'))  faltando.push('Data de início');
 
     if (faltando.length > 0) {
       console.warn('[Gate A] FALHOU — campos faltando:', faltando);

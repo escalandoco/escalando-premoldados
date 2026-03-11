@@ -50,8 +50,13 @@ function buildCustomFields(d) {
   const fields = [];
   const add = (id, value) => { if (value !== undefined && value !== null && value !== '') fields.push({ id, value }); };
 
-  add(CF.responsavel,       d.responsavel || null);
-  add(CF.whatsapp,          d.whatsapp    || null);
+  add(CF.responsavel, d.responsavel || null);
+  // Phone field aceita apenas dígitos com código do país
+  if (d.whatsapp) {
+    const digits = String(d.whatsapp).replace(/\D/g, '');
+    const formatted = digits.startsWith('55') ? `+${digits}` : `+55${digits}`;
+    add(CF.whatsapp, formatted);
+  }
   add(CF.produtoFoco,       d.produtoFoco || null);
   add(CF.areaAtuacao,       d.areaAtuacao || null);
   add(CF.objetivoPrincipal, d.objetivoPrincipal || null);
