@@ -19,6 +19,7 @@ import { parseArgs } from 'util';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { lerDadosCliente } from './ficha.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, '..');
@@ -311,19 +312,14 @@ async function main() {
   if (!folder) throw new Error(`Pasta "${CLIENTE}" não encontrada no ClickUp.`);
   console.log(`   Pasta: ${folder.name} (${folder.id})`);
 
-  // 2. Busca dados do kickoff
-  const { lists } = await cuGet(`/folder/${folder.id}/list?archived=false`);
-  const onboarding = lists.find(l => l.name === 'Onboarding');
-  const cf = {};
-  if (onboarding) {
-    const { tasks } = await cuGet(`/list/${onboarding.id}/task?include_closed=true`);
-    const kickoff = tasks.find(t => t.name.toLowerCase().includes('kickoff'));
-    if (kickoff) {
-      for (const f of (kickoff.custom_fields || [])) {
-        if (f.value) cf[f.name] = f.value;
-      }
-      console.log(`   Kickoff encontrado: ${Object.keys(cf).length} campos`);
-    }
+  // 2. Busca dados da Ficha em OPERAÇÃO/Fichas
+  let cf = {};
+  try {
+    const dados = await lerDadosCliente(CLIENTE);
+    cf = dados.cf;
+    console.log(`   Ficha encontrada: ${Object.keys(cf).filter(k => cf[k]).length} campos`);
+  } catch (e) {
+    console.warn(`   ⚠️  Ficha não encontrada: ${e.message} — criando Dossiê sem dados`);
   }
 
   // 3. Cria o Doc

@@ -20,6 +20,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { appendSection } from './dossie.js';
+import { lerDadosCliente } from './ficha.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const QUEUE_FILE = path.join(__dirname, '../data/job-queue.json');
@@ -350,11 +351,8 @@ async function main() {
   if (!kickoffTask) throw new Error('Task de Kickoff não encontrada.');
   progress(15, 'Kickoff encontrado');
 
-  // 2. Extrai dados do briefing
-  const cf = {};
-  for (const f of (kickoffTask.custom_fields || [])) {
-    cf[f.name] = f.value;
-  }
+  // 2. Extrai dados do briefing a partir da Ficha em OPERAÇÃO/Fichas
+  const { cf } = await lerDadosCliente(CLIENTE);
 
   // Também busca URLs no comentário de briefing (onde ficam as URLs completas)
   let concorrentesRaw = cf['Concorrentes'] || '';

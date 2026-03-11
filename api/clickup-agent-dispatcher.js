@@ -171,26 +171,33 @@ const AGENTS_REQUIRE_KICKOFF = ['analisar-concorrentes', 'gerar-copy', 'gerar-co
 // ── HELPER: Verifica se kickoff do cliente tem dados suficientes ──
 async function verificarContextoKickoff(cliente) {
   try {
-    const SPACE_ID = process.env.CLICKUP_SPACE_ID || '901313553858';
-    const { folders } = await clickupGet(`/space/${SPACE_ID}/folder?archived=false`);
-    const folder = folders.find(f => f.name.toLowerCase().includes(cliente.toLowerCase()));
-    if (!folder) return { ok: false, motivo: `Pasta do cliente "${cliente}" não encontrada no ClickUp.` };
+    const LIST_FICHAS = process.env.CLICKUP_LIST_FICHAS || '901326308338';
+    const { tasks } = await clickupGet(`/list/${LIST_FICHAS}/task?archived=false`);
+    const ficha = (tasks || []).find(
+      t => t.name.toLowerCase() === `ficha — ${cliente.toLowerCase()}`
+    );
+    if (!ficha) return { ok: false, motivo: `Ficha de "${cliente}" não encontrada em OPERAÇÃO/Fichas.` };
 
-    const { lists } = await clickupGet(`/folder/${folder.id}/list?archived=false`);
-    const onboarding = lists.find(l => l.name === 'Onboarding');
-    if (!onboarding) return { ok: false, motivo: 'Lista Onboarding não encontrada.' };
-
-    const { tasks } = await clickupGet(`/list/${onboarding.id}/task?include_closed=true`);
-    const kickoff = tasks.find(t => t.name.toLowerCase().includes('kickoff'));
-    if (!kickoff) return { ok: false, motivo: 'Task de Kickoff não encontrada. Peça ao cliente para preencher o formulário.' };
-
+    // Lê custom fields
     const cf = {};
-    for (const f of (kickoff.custom_fields || [])) cf[f.name] = f.value;
+    for (const f of (ficha.custom_fields || [])) {
+      if (f.value !== null && f.value !== undefined && f.value !== '') cf[f.name] = f.value;
+    }
+
+    // Lê description (formato "CAMPO: valor")
+    const desc = {};
+    for (const line of (ficha.description || '').split('\n')) {
+      const idx = line.indexOf(':');
+      if (idx < 0) continue;
+      const key = line.slice(0, idx).trim();
+      const val = line.slice(idx + 1).trim();
+      if (key && val && val !== '—') desc[key] = val;
+    }
 
     const faltando = [];
-    if (!cf['Produtos']) faltando.push('Produtos/Serviços');
-    if (!cf['Concorrentes']) faltando.push('Concorrentes');
-    if (!cf['Perfil dos Clientes']) faltando.push('Perfil dos Clientes');
+    if (!cf['Produto Foco'] && !desc['Produtos']) faltando.push('Produtos/Serviços');
+    if (!desc['Concorrentes'])                    faltando.push('Concorrentes');
+    if (!desc['Perfil dos Clientes'])             faltando.push('Perfil dos Clientes');
 
     if (faltando.length > 0) {
       return { ok: false, motivo: `Kickoff incompleto. Campos faltando: ${faltando.join(', ')}.` };
