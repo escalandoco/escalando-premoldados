@@ -353,6 +353,8 @@ async function main() {
 
   // 2. Extrai dados do briefing a partir da Ficha em OPERAÇÃO/Fichas
   const { cf } = await lerDadosCliente(CLIENTE);
+  console.log(`  [debug] Produtos: ${JSON.stringify(cf['Produtos'])}`);
+  console.log(`  [debug] Concorrentes: ${JSON.stringify(cf['Concorrentes'])}`);
 
   // Também busca URLs no comentário de briefing (onde ficam as URLs completas)
   let concorrentesRaw = cf['Concorrentes'] || '';
