@@ -41,6 +41,7 @@ export async function notify(titulo, descricao = '', prioridade = 'normal') {
         name: titulo,
         description: descricao,
         priority: PRIORIDADE[prioridade] ?? 3,
+        assignees: [JON_USER_ID],
         notify_all: true,
       }),
     });
