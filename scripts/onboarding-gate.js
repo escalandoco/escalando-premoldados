@@ -82,21 +82,21 @@ export async function gateA(empresa, whatsappCliente) {
     const folder = await encontrarFolder(empresa);
     if (!folder) throw new Error(`Folder "${empresa}" não encontrado.`);
 
-    // Valida Ficha do Cliente em OPERAÇÃO/Fichas
-    const ficha = await lerFicha(empresa);
-    const desc  = ficha?.description || '';
+    // Valida Ficha do Cliente em OPERAÇÃO/Fichas via custom fields
+    const ficha  = await lerFicha(empresa);
+    const campos = ficha?.custom_fields || [];
 
-    // Checa se campo específico está preenchido (não é "— |" ou vazio)
-    function campoVazio(label) {
-      const re = new RegExp(`\\*\\*${label}\\*\\*\\s*\\|\\s*[—\\-]\\s*\\|`);
-      return re.test(desc);
+    function cfVazio(nome) {
+      const f = campos.find(c => c.name === nome);
+      if (!f) return true;
+      const v = f.value;
+      return v === null || v === undefined || v === '' || v === '—';
     }
 
     const faltando = [];
-    if (!desc.includes('Responsável') || campoVazio('Responsável')) faltando.push('Responsável');
-    if (!desc.includes('WhatsApp')   || campoVazio('WhatsApp'))     faltando.push('WhatsApp');
-    if (!desc.includes('Plano')      || campoVazio('Plano'))        faltando.push('Plano');
-    if (!desc.includes('Data Início')|| campoVazio('Data Início'))  faltando.push('Data de início');
+    if (cfVazio('Responsável')) faltando.push('Responsável');
+    if (cfVazio('WhatsApp'))    faltando.push('WhatsApp');
+    if (cfVazio('Plano'))       faltando.push('Plano');
 
     if (faltando.length > 0) {
       console.warn('[Gate A] FALHOU — campos faltando:', faltando);

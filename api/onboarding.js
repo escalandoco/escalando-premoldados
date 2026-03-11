@@ -337,57 +337,23 @@ async function processarNovoOrcamento(d) {
 // BUILDERS — Ficha do Cliente
 // ============================================================
 function buildFichaDesc(empresa, d) {
-  const acesso = v => v === 0 ? '✅ Coletado' : v === 1 ? '⏳ Pendente' : '—';
-  const local  = [d.cidade, d.estado].filter(Boolean).join(' — ') || '—';
-  return `## 📋 Ficha do Cliente — ${empresa}
+  const local = [d.cidade, d.estado].filter(Boolean).join(' — ') || '—';
+  const lines = [
+    `**CNPJ:** ${d.cnpj || '—'}`,
+    `**Localidade:** ${local}`,
+    `**Data Início:** ${d.dataInicio || '—'}`,
+  ];
 
----
+  // Campos do kickoff — só aparecem quando preenchidos
+  if (d.produtos)        lines.push(`**Produtos:** ${d.produtos}`);
+  if (d.ticketMedio)     lines.push(`**Ticket Médio:** R$ ${d.ticketMedio}`);
+  if (d.diferenciais)    lines.push(`**Diferenciais:** ${d.diferenciais}`);
+  if (d.perfilClientes)  lines.push(`**Perfil dos Clientes:** ${d.perfilClientes}`);
+  if (d.comoVendem)      lines.push(`**Como Vendem Hoje:** ${d.comoVendem}`);
+  if (d.concorrentes)    lines.push(`**Concorrentes:** ${d.concorrentes}`);
+  if (d.obs)             lines.push(`**Observações:** ${d.obs}`);
 
-### 🏢 Dados Comerciais
-| Campo | Valor |
-|-------|-------|
-| **Responsável** | ${d.responsavel || '—'} |
-| **WhatsApp** | ${d.whatsapp || '—'} |
-| **CNPJ** | ${d.cnpj || '—'} |
-| **Localidade** | ${local} |
-| **Plano** | ${nomePlano(d.plano)} |
-| **Valor Mensal** | ${d.valor ? `R$ ${d.valor}` : '—'} |
-| **Data Início** | ${d.dataInicio || '—'} |
-| **Canal** | ${d.canal || '—'} |
-
----
-
-### 🔑 Acessos
-| Canal | Status |
-|-------|--------|
-| **Meta Ads** | ${acesso(d.acessoMeta)} |
-| **Google Ads** | ${acesso(d.acessoGoogle)} |
-| **GMB** | ${acesso(d.acessoGmb)} |
-| **Site** | ${acesso(d.acessoSite)} |
-
----
-
-### 📦 Negócio
-**Produtos:** ${d.produtos || '—'}
-**Área de Atuação:** ${d.areaAtuacao || '—'}
-**Ticket Médio:** ${d.ticketMedio ? `R$ ${d.ticketMedio}` : '—'}
-**Verba Mensal (Ads):** ${d.verbaMensal ? `R$ ${d.verbaMensal}` : '—'}
-**Diferenciais:** ${d.diferenciais || '—'}
-
----
-
-### 👥 Mercado
-**Perfil dos Clientes:** ${d.perfilClientes || '—'}
-**Como Vendem Hoje:** ${d.comoVendem || '—'}
-**Concorrentes:** ${d.concorrentes || '—'}
-
----
-
-### 📝 Observações
-${d.obs || '—'}
-
----
-_Atualizado automaticamente — Escalando Premoldados_`;
+  return lines.join('\n');
 }
 
 function buildDescPagamento(empresa, d, drive = {}) {
