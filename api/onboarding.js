@@ -230,9 +230,18 @@ async function processarKickoff(d) {
     console.warn('[kickoff] Dossiê não atualizado:', e.message)
   );
 
-  // 3. Dispara análise de concorrentes no VPS (fire-and-forget)
+  // 3. Dispara scripts no VPS (fire-and-forget)
   const VPS_URL       = (process.env.VPS_URL || 'http://129.121.45.61:3030').trim();
   const WORKER_SECRET = (process.env.WORKER_SECRET || '').trim();
+
+  // Cria Dossiê se ainda não existe (idempotente — sai cedo se já existir)
+  fetch(`${VPS_URL}/api/run-worker`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ secret: WORKER_SECRET, script: 'criar-dossie', cliente: d.empresa }),
+  }).catch(() => {});
+
+  // Análise de concorrentes
   fetch(`${VPS_URL}/api/run-worker`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

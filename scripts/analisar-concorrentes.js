@@ -371,7 +371,7 @@ async function main() {
 
   // Parse URLs — suporta: URL completa, handle @instagram, nome simples
   const urls = concorrentesRaw
-    .split(/[\|\n,\s]+/)
+    .split(/[\|\/\n,]+/)
     .map(u => u.trim().replace(/[()]/g, ''))
     .filter(u => u.length > 3)
     .map(u => {
@@ -379,9 +379,10 @@ async function main() {
       if (u.startsWith('@')) return `https://www.instagram.com/${u.slice(1)}/`;
       if (u.includes('instagram.com')) return u.startsWith('http') ? u : `https://${u}`;
       if (u.includes('.com') || u.includes('.br')) return `https://${u}`;
-      // Trata como handle do Instagram se não reconhecido
+      // Trata como handle do Instagram se não reconhecido (sem espaços)
       if (u.length > 3 && !u.includes(' ')) return `https://www.instagram.com/${u}/`;
-      return null;
+      // Nome de empresa com espaços — passa direto para Claude analisar pelo nome
+      return u;
     })
     .filter(Boolean)
     .filter((u, i, arr) => arr.indexOf(u) === i); // deduplicar
@@ -414,7 +415,7 @@ async function main() {
 
   const [empresaPage, ...concorrentesPages] = await Promise.all([
     fetchUrl(urlEmpresa),
-    ...urls.map(u => fetchUrl(u.startsWith('http') ? u : `https://${u}`)),
+    ...urls.map(u => u.startsWith('http') ? fetchUrl(u) : Promise.resolve({ ok: false, body: '' })),
   ]);
 
   const conteudoEmpresa = empresaPage.ok ? limparHtml(empresaPage.body) : '';

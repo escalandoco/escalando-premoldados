@@ -206,9 +206,21 @@ export async function gateC(empresa) {
     }
 
     // Valida Ficha do Cliente em OPERAÇÃO/Fichas
-    const ficha = await lerFicha(empresa);
-    const desc  = ficha?.description || '';
-    if (!desc.includes('Objetivo')) {
+    const ficha  = await lerFicha(empresa);
+    const campos = ficha?.custom_fields || [];
+
+    function cfValor(nome) {
+      const f = campos.find(c => c.name === nome);
+      if (!f || f.value === null || f.value === undefined || f.value === '') return null;
+      if (f.type === 'drop_down' && f.type_config?.options) {
+        const opt = f.type_config.options.find(o => o.orderindex === f.value);
+        return opt ? opt.name : String(f.value);
+      }
+      return String(f.value);
+    }
+
+    const objetivo = cfValor('Objetivo Principal');
+    if (!objetivo) {
       faltando.push('Objetivo principal não preenchido na Ficha');
     }
 
@@ -218,8 +230,9 @@ export async function gateC(empresa) {
       return { ok: false, faltando };
     }
 
-    // Descobre plano para criar tasks corretas
-    const plano = desc.includes('Pro') ? 'pro' : desc.includes('Growth') ? 'growth' : 'starter';
+    // Descobre plano a partir do custom field Plano
+    const planoNome = (cfValor('Plano') || '').toLowerCase();
+    const plano = planoNome.includes('pro') ? 'pro' : planoNome.includes('growth') ? 'growth' : 'starter';
 
     // Cria 1ª task no squad LP
     const listaLP = await encontrarLista(folder.id, 'Landing Pages');

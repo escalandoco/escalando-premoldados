@@ -92,7 +92,7 @@ export const MSG = {
   // Gate B passou
   gateBJon: (empresa) => ({
     titulo: `📋 Kickoff concluído — ${empresa}`,
-    descricao: `Briefing registrado com sucesso.\nAguardando recebimento das fotos do cliente para liberar a produção.`,
+    descricao: `Briefing registrado com sucesso.\n\nEm andamento automaticamente:\n• Dossiê criado no ClickUp Docs\n• Análise de concorrentes sendo gerada\n\nPróximo passo: aguardar fotos do cliente para liberar produção.`,
     prioridade: 'normal',
   }),
 
