@@ -200,6 +200,11 @@ const cliente = params.get('cliente');
 const lpNome  = params.get('lp') || '';
 const cont    = document.getElementById('conteudo');
 
+// Contadores globais — necessários pois as funções addProduto/addDepo/addProjeto ficam fora do bloco else
+let prodCount    = 0;
+let depoCount    = 0;
+let projetoCount = 0;
+
 if (!cliente) {
   cont.innerHTML = `
     <div class="card">
@@ -217,10 +222,6 @@ if (!cliente) {
   document.getElementById('prog-lp').textContent = lpNome || 'LP Principal';
   document.getElementById('page-title').textContent = `Briefing de LP — ${cliente}`;
   if (lpNome) document.getElementById('page-sub').textContent = `Campanha: ${lpNome} · Reserve 15–20 minutos para preencher com calma.`;
-
-  let prodCount = 0;
-  let depoCount = 0;
-  let projetoCount = 0;
 
   cont.innerHTML = `
 
