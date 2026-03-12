@@ -267,9 +267,15 @@ async function processarLpBriefing(d) {
   const listaLP = lists.find(l => l.name === 'Landing Pages');
   if (!listaLP) throw new Error('Lista "Landing Pages" não encontrada.');
 
-  const produtos      = (d.produtos     || []).map((p, i) => `**Produto ${i+1}:** ${p.nome}${p.preco ? ` — ${p.preco}` : ''}\n${p.desc || ''}`).join('\n\n');
-  const diferenciais  = (d.diferenciais || []).map((df, i) => `${i+1}. ${df}`).join('\n');
-  const depoimentos   = (d.depoimentos  || []).map(dep => `"${dep.texto}" — ${dep.nome}${dep.cidade ? `, ${dep.cidade}` : ''}`).join('\n');
+  // Normaliza diferenciais: suporte a campos individuais (diferencial_1...4) OU array
+  const dif1 = d.diferencial_1 || (Array.isArray(d.diferenciais) && d.diferenciais[0]) || '';
+  const dif2 = d.diferencial_2 || (Array.isArray(d.diferenciais) && d.diferenciais[1]) || '';
+  const dif3 = d.diferencial_3 || (Array.isArray(d.diferenciais) && d.diferenciais[2]) || '';
+  const dif4 = d.diferencial_4 || (Array.isArray(d.diferenciais) && d.diferenciais[3]) || '';
+
+  const difList = [dif1, dif2, dif3, dif4].filter(Boolean);
+  const produtos    = (d.produtos    || []).map((p, i) => `**Produto ${i+1}:** ${p.nome}${p.preco ? ` — ${p.preco}` : ''}\n${p.desc || ''}`).join('\n\n');
+  const depoimentos = (d.depoimentos || []).map(dep => `"${dep.texto}" — ${dep.nome}${dep.cidade ? `, ${dep.cidade}` : ''}`).join('\n');
 
   const taskName = d.lp_nome ? `📝 LP Briefing — ${d.empresa} — ${d.lp_nome}` : `📝 LP Briefing — ${d.empresa}`;
 
@@ -278,6 +284,8 @@ async function processarLpBriefing(d) {
     description: [
       `📋 **Briefing de LP — ${d.empresa}**`,
       ``,
+      `**Proposta única:** ${d.proposta_unica || '—'}`,
+      `**Tom:** ${d.tom || '—'}`,
       `**Slogan:** ${d.slogan || '—'}`,
       `**Estilo visual:** ${d.estilo || '—'}`,
       `**Cor principal:** ${d.cor_primaria || '—'} | **Cor secundária:** ${d.cor_secundaria || '—'}`,
@@ -285,30 +293,71 @@ async function processarLpBriefing(d) {
       `**WhatsApp:** ${d.whatsapp || '—'}`,
       `**Headline:** ${d.headline || '(gerar automaticamente)'}`,
       ``,
+      `**Cliente ideal:** ${d.cliente_ideal || '—'}`,
+      `**Dor do cliente:** ${d.dor_cliente || '—'}`,
+      `**Resultado esperado:** ${d.resultado_cliente || '—'}`,
+      ``,
       `---\n**PRODUTOS:**\n${produtos || '—'}`,
-      `---\n**DIFERENCIAIS:**\n${diferenciais || '—'}`,
+      `---\n**DIFERENCIAIS:**\n${difList.map((df, i) => `${i+1}. ${df}`).join('\n') || '—'}`,
       `---\n**DEPOIMENTOS:**\n${depoimentos || '—'}`,
       d.obs ? `---\n**Obs:** ${d.obs}` : '',
     ].filter(Boolean).join('\n'),
     priority: 1,
   });
 
-  // Config JSON como comentário (insumo para gerar-lp.js)
-  const configJson = {
-    empresa: d.empresa, lp_nome: d.lp_nome || '',
-    whatsapp: d.whatsapp, cidade: d.cidade || '', regioes: d.regioes || '',
-    slogan: d.slogan || '', estilo: d.estilo || 'clean',
-    cor_primaria: d.cor_primaria || '#C4B470', cor_secundaria: d.cor_secundaria || '#0D1117',
-    headline: d.headline || '',
-    produtos: d.produtos || [], diferenciais: d.diferenciais || [],
-    depoimentos: d.depoimentos || [], obs: d.obs || '',
+  // Monta briefing no formato exato de config/briefing-{slug}.json (insumo para gerar-copy.js)
+  const slug = d.empresa.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  const briefingJson = {
+    empresa:          d.empresa,
+    lp_nome:          d.lp_nome || '',
+    whatsapp:         d.whatsapp || '',
+    cidade:           d.cidade || '',
+    regioes:          d.regioes || '',
+    slogan:           d.slogan || '',
+    estilo:           d.estilo || 'clean',
+    cor_primaria:     d.cor_primaria || '#C4B470',
+    cor_secundaria:   d.cor_secundaria || '#0D1117',
+    headline:         d.headline || '',
+    proposta_unica:   d.proposta_unica || '',
+    tom:              d.tom || 'direto-pratico',
+    cliente_ideal:    d.cliente_ideal || '',
+    dor_cliente:      d.dor_cliente || '',
+    resultado_cliente: d.resultado_cliente || '',
+    historia_fundacao: d.historia_fundacao || '',
+    maior_orgulho:    d.maior_orgulho || '',
+    nome_dono:        d.nome_dono || '',
+    ano_fundacao:     d.ano_fundacao || '',
+    num_clientes:     d.num_clientes || '',
+    producao:         d.producao || '',
+    prazo_entrega:    d.prazo_entrega || '',
+    certificacoes:    d.certificacoes || '',
+    diferencial_1:    dif1,
+    diferencial_2:    dif2,
+    diferencial_3:    dif3,
+    diferencial_4:    dif4,
+    pixel_meta:       d.pixel_meta || '',
+    ga4:              d.ga4 || '',
+    produtos:         d.produtos || [],
+    depoimentos:      d.depoimentos || [],
+    obs:              d.obs || '',
   };
+
+  // Posta briefing JSON como comentário na task (backup/referência)
   await cu('post', `/task/${task.id}/comment`, {
-    comment_text: `\`\`\`json\n${JSON.stringify(configJson, null, 2)}\n\`\`\``,
+    comment_text: `\`\`\`json\n${JSON.stringify(briefingJson, null, 2)}\n\`\`\``,
   });
 
+  // Salva config/briefing-{slug}.json no VPS para gerar-copy.js (fire-and-forget)
+  const VPS_URL       = (process.env.VPS_URL || 'http://129.121.45.61:3030').trim();
+  const WORKER_SECRET = (process.env.WORKER_SECRET || '').trim();
+  fetch(`${VPS_URL}/api/save-briefing`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ secret: WORKER_SECRET, slug, briefing: briefingJson }),
+  }).catch(e => console.warn('[lp-briefing] save-briefing falhou:', e.message));
+
   const lpLabel = d.lp_nome ? ` — ${d.lp_nome}` : '';
-  return { msg: `LP Briefing${lpLabel} recebido para ${d.empresa}. Task criada em Landing Pages.` };
+  return { msg: `LP Briefing${lpLabel} recebido para ${d.empresa}. Task criada e briefing salvo no VPS.` };
 }
 
 // ============================================================

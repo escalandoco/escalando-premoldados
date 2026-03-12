@@ -410,7 +410,7 @@ function checkAuth(req, res) {
 const server = http.createServer((req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   // /api/run-worker e /api/git-pull têm autenticação própria (WORKER_SECRET)
-  const PUBLIC_ROUTES = ['/api/run-worker', '/api/git-pull', '/api/log-job'];
+  const PUBLIC_ROUTES = ['/api/run-worker', '/api/git-pull', '/api/log-job', '/api/save-briefing'];
   if (!PUBLIC_ROUTES.includes(req.url) && !checkAuth(req, res)) return;
 
   // ── GET /api/data ──
@@ -571,6 +571,38 @@ const server = http.createServer((req, res) => {
         addJob(entry);
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ ok: true, id: entry.id }));
+      } catch (e) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: e.message }));
+      }
+    });
+    return;
+  }
+
+  // ── POST /api/save-briefing (chamado pelo Vercel após form LP Briefing) ──
+  if (req.method === 'POST' && req.url === '/api/save-briefing') {
+    let body = '';
+    req.on('data', d => body += d);
+    req.on('end', () => {
+      try {
+        const { secret, slug, briefing } = JSON.parse(body || '{}');
+        if (!WORKER_SECRET || secret !== WORKER_SECRET) {
+          res.writeHead(401, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: 'unauthorized' }));
+          return;
+        }
+        if (!slug || !briefing) {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: 'slug e briefing são obrigatórios' }));
+          return;
+        }
+        const filePath = path.join(ROOT, `config/briefing-${slug}.json`);
+        fs.mkdirSync(path.dirname(filePath), { recursive: true });
+        fs.writeFileSync(filePath, JSON.stringify(briefing, null, 2));
+        const ts = new Date().toISOString().replace('T', ' ').slice(0, 19);
+        console.log(`[${ts}] save-briefing: config/briefing-${slug}.json`);
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ ok: true, path: `config/briefing-${slug}.json` }));
       } catch (e) {
         res.writeHead(500, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ error: e.message }));
