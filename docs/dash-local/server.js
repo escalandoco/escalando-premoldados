@@ -495,7 +495,9 @@ const server = http.createServer((req, res) => {
           return;
         }
 
-        const cmd = `node scripts/${script}.js --cliente=${cliente}`;
+        const empresa = cliente.charAt(0).toUpperCase() + cliente.slice(1);
+        const extraArgs = script === 'gerar-lp' ? ` --config=config/lp-${cliente}.json` : '';
+        const cmd = `node scripts/${script}.js --cliente=${cliente} --empresa=${empresa}${extraArgs}`;
         const ts  = new Date().toISOString().replace('T',' ').slice(0,19);
         console.log(`[${ts}] run-worker: ${cmd}`);
 
