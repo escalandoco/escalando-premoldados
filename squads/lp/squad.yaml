@@ -1,0 +1,77 @@
+name: LP Squad
+id: lp-squad
+description: |
+  Squad responsável pelo pipeline completo de criação e deploy de Landing Pages
+  para os clientes da Escalando Premoldados. Orquestrado via webhooks do ClickUp
+  (5 gates automáticos) ou interativamente via @lp-coordinator.
+
+context:
+  nicho: Pré-moldados de concreto (cerca, laje, bloco, mourão, piso intertravado)
+  regiao: Nordeste e Sudeste do Brasil
+  publico: Pedreiros, proprietários rurais, construtoras
+  objetivo: Landing pages de captação de leads com alta conversão
+
+tiers:
+  tier0:
+    - id: lp-coordinator
+      persona: Leo
+      role: Orquestrador — monitora pipeline, gerencia bloqueios, modo interativo
+
+  tier1:
+    - id: lp-ux
+      persona: Uma
+      role: Estrutura de seções e wireframe da LP
+    - id: lp-copywriter
+      persona: Cora
+      role: Orquestra os 4 copy experts (Tier 2)
+    - id: lp-visual
+      persona: Vera
+      role: Orquestra identidade visual (Tier 2)
+    - id: lp-generator
+      persona: Geno
+      role: Executa gerar-lp.js e valida output
+    - id: lp-deployer
+      persona: Demi
+      role: Executa deploy-lp.js e verifica URL em produção
+
+  tier2_copy:
+    - id: gary-halbert
+      role: Hook emocional + SSS (Star, Story, Solution) — hero section
+    - id: dan-kennedy
+      role: PAS + CTA com urgência — seção de problema
+    - id: claude-hopkins
+      role: Claims específicos com números — diferenciais
+    - id: john-carlton
+      role: Headline definitiva — gun to the head
+
+  tier2_design:
+    - id: visual-generator
+      role: Paleta de cores + prompts AI para fotos de produto
+    - id: brad-frost
+      role: Estrutura atomic do template-lp.html
+
+gates:
+  lp1:
+    trigger: "📝 LP Briefing — {empresa} → complete"
+    agents: [lp-coordinator, lp-ux]
+    output: "5 tasks Fase 1-5 criadas na lista Landing Pages"
+  lp2:
+    trigger: "[FASE 1] DNA do Cliente — {empresa} → complete"
+    agents: [lp-copywriter, gary-halbert, dan-kennedy, claude-hopkins, john-carlton]
+    output: "copy completa postada na Fase 2"
+  lp3:
+    trigger: "[FASE 2] Copy da LP — {empresa} → complete"
+    agents: [lp-visual, visual-generator, brad-frost]
+    output: "identidade visual postada na Fase 3"
+  lp4:
+    trigger: "[FASE 3] Identidade Visual — {empresa} → complete"
+    agents: [lp-generator]
+    output: "LP gerada em dist/{slug}/index.html"
+  lp5:
+    trigger: "[FASE 4] Geração da LP — {empresa} → complete"
+    agents: [lp-deployer]
+    output: "LP no ar — URL verificada HTTP 200"
+
+activation:
+  automatic: "webhook ClickUp → api/clickup-status-change.js → scripts/lp-gate.js"
+  interactive: "@lp-coordinator"
