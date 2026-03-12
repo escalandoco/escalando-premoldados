@@ -130,6 +130,44 @@ export const MSG = {
     descricao: `Erro inesperado:\n${mensagem}`,
     prioridade: 'urgent',
   }),
+
+  // ── LP Gates ──────────────────────────────────────────────
+
+  gateLp1Jon: (empresa) => ({
+    titulo: `📋 Pipeline LP criado — ${empresa}`,
+    descricao: `As 5 fases foram criadas na lista Landing Pages.\n\nPróximo passo: preencha o checklist da Fase 1 (DNA do Cliente) e marque como concluída para liberar a geração de copy.`,
+    prioridade: 'high',
+  }),
+
+  gateLp2Jon: (empresa) => ({
+    titulo: `✍️ Copy em geração — ${empresa}`,
+    descricao: `Fase 1 (DNA) aprovada.\n\nA copy da LP está sendo gerada agora pelo squad de copywriting (Kennedy + Halbert + Hopkins + Carlton).\n\nAcompanhe na aba Execuções do dashboard.`,
+    prioridade: 'normal',
+  }),
+
+  gateLp3Jon: (empresa) => ({
+    titulo: `🎨 Identidade visual gerada — ${empresa}`,
+    descricao: `Fase 2 (Copy) aprovada.\n\nSugestão de identidade visual postada como comentário na Fase 3 (Identidade Visual).\n\nRevise no ClickUp e marque como concluída para liberar a geração da LP.`,
+    prioridade: 'high',
+  }),
+
+  gateLp4Jon: (empresa) => ({
+    titulo: `⚙️ LP em geração — ${empresa}`,
+    descricao: `Fase 3 (Visual) aprovada.\n\nA landing page está sendo gerada agora (gerar-lp.js).\n\nAcompanhe na aba Execuções do dashboard. Após geração, revise e marque a Fase 4 como concluída para liberar o deploy.`,
+    prioridade: 'normal',
+  }),
+
+  gateLp4Falha: (empresa, itens) => ({
+    titulo: `⚠️ Gate LP-4 bloqueado — ${empresa}`,
+    descricao: `Fases pendentes antes de gerar a LP:\n${itens.map(i => `• ${i}`).join('\n')}`,
+    prioridade: 'urgent',
+  }),
+
+  gateLp5Jon: (empresa) => ({
+    titulo: `🚀 Deploy LP disparado — ${empresa}`,
+    descricao: `Fase 4 (Geração) aprovada.\n\nDeploy em andamento (deploy-lp.js).\n\nAcompanhe na aba Execuções. Em minutos a LP estará no ar.`,
+    prioridade: 'high',
+  }),
 };
 
 /**

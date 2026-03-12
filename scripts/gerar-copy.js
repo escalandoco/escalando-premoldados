@@ -31,9 +31,14 @@ for (const a of process.argv.slice(2)) {
   args[k] = v.join('=') || true;
 }
 
+// Aceita --cliente=slug como alias para --briefing=config/briefing-{slug}.json
+if (!args.briefing && args.cliente) {
+  args.briefing = `config/briefing-${args.cliente}.json`;
+}
+
 if (!args.briefing) {
   console.error('Uso: node scripts/gerar-copy.js --briefing=config/briefing-{cliente}.json');
-  console.error('Exemplo: node scripts/gerar-copy.js --briefing=config/briefing-concrenor.json');
+  console.error('     node scripts/gerar-copy.js --cliente=concrenor');
   process.exit(1);
 }
 

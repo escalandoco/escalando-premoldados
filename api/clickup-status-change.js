@@ -15,6 +15,7 @@
  */
 
 import { gateA, gateC } from '../scripts/onboarding-gate.js';
+import { gateLp1, gateLp2, gateLp3, gateLp4, gateLp5 } from '../scripts/lp-gate.js';
 
 const CLICKUP_API_KEY = process.env.CLICKUP_API_KEY;
 const WEBHOOK_SECRET  = process.env.CLICKUP_WEBHOOK_SECRET || '';
@@ -78,6 +79,51 @@ export default async function handler(req, res) {
       return res.status(200).json({ gate: 'C', empresa, ...result });
     }
 
+    // ── Gate LP-1: LP Briefing ──────────────────────────────
+    if (taskName.startsWith('📝 LP Briefing')) {
+      const empresa = extrairEmpresa(taskName, '📝 LP Briefing');
+      if (!empresa) return res.status(200).json({ skip: true, reason: 'Empresa não identificada' });
+      console.log(`[status-change] Disparando Gate LP-1 para: ${empresa}`);
+      const result = await gateLp1(empresa);
+      return res.status(200).json({ gate: 'LP-1', empresa, ...result });
+    }
+
+    // ── Gate LP-2: Fase 1 — DNA do Cliente ─────────────────
+    if (taskName.startsWith('[FASE 1]')) {
+      const empresa = extrairEmpresaFase(taskName);
+      if (!empresa) return res.status(200).json({ skip: true, reason: 'Empresa não identificada' });
+      console.log(`[status-change] Disparando Gate LP-2 para: ${empresa}`);
+      const result = await gateLp2(empresa);
+      return res.status(200).json({ gate: 'LP-2', empresa, ...result });
+    }
+
+    // ── Gate LP-3: Fase 2 — Copy da LP ─────────────────────
+    if (taskName.startsWith('[FASE 2]')) {
+      const empresa = extrairEmpresaFase(taskName);
+      if (!empresa) return res.status(200).json({ skip: true, reason: 'Empresa não identificada' });
+      console.log(`[status-change] Disparando Gate LP-3 para: ${empresa}`);
+      const result = await gateLp3(empresa);
+      return res.status(200).json({ gate: 'LP-3', empresa, ...result });
+    }
+
+    // ── Gate LP-4: Fase 3 — Identidade Visual ──────────────
+    if (taskName.startsWith('[FASE 3]')) {
+      const empresa = extrairEmpresaFase(taskName);
+      if (!empresa) return res.status(200).json({ skip: true, reason: 'Empresa não identificada' });
+      console.log(`[status-change] Disparando Gate LP-4 para: ${empresa}`);
+      const result = await gateLp4(empresa);
+      return res.status(200).json({ gate: 'LP-4', empresa, ...result });
+    }
+
+    // ── Gate LP-5: Fase 4 — Geração da LP ──────────────────
+    if (taskName.startsWith('[FASE 4]')) {
+      const empresa = extrairEmpresaFase(taskName);
+      if (!empresa) return res.status(200).json({ skip: true, reason: 'Empresa não identificada' });
+      console.log(`[status-change] Disparando Gate LP-5 para: ${empresa}`);
+      const result = await gateLp5(empresa);
+      return res.status(200).json({ gate: 'LP-5', empresa, ...result });
+    }
+
     // Task não mapeada para nenhum gate
     return res.status(200).json({ skip: true, reason: 'Task não mapeada para gate de onboarding' });
 
@@ -95,6 +141,15 @@ function extrairEmpresa(taskName, prefixo) {
   const partes = taskName.split(' — ');
   if (partes.length < 2) return null;
   return partes.slice(1).join(' — ').trim();
+}
+
+// Extrai empresa do nome de task de fase
+// Ex: "[FASE 1] DNA do Cliente — Concrenor" → "Concrenor"
+// Ex: "[FASE 1] DNA do Cliente" → null (campanha Geral sem sufixo de empresa)
+function extrairEmpresaFase(taskName) {
+  const partes = taskName.split(' — ');
+  if (partes.length < 2) return null;
+  return partes[partes.length - 1].trim();
 }
 
 // Tenta extrair número de WhatsApp da descrição da task
