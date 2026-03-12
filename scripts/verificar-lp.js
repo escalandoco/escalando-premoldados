@@ -11,10 +11,6 @@
 import https from 'https';
 import http from 'http';
 import { parseArgs } from 'util';
-import { exec as _exec } from 'child_process';
-// TEMP: reinicia escalando-dash após 8s para carregar novo código
-const _r = _exec('sleep 8 && systemctl restart escalando-dash', { detached: true, stdio: 'ignore' });
-_r.unref();
 
 const { values } = parseArgs({ options: { cliente: { type: 'string', default: 'concrenor' } } });
 const CLIENTE = values.cliente;
