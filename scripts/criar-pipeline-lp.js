@@ -34,7 +34,8 @@ for (const a of process.argv.slice(2)) {
 }
 
 const cliente  = args.cliente;
-const campanha = args.campanha || 'Geral';
+// Usa o cliente como campanha padrão para que os gates consigam extrair o nome da empresa
+const campanha = args.campanha || (args.cliente ? args.cliente.charAt(0).toUpperCase() + args.cliente.slice(1) : 'Geral');
 const dryRun   = args['dry-run'] === true;
 
 if (!cliente) {
