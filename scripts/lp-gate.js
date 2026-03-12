@@ -250,7 +250,12 @@ async function gerarCopyCompleta(empresa, config) {
   const numeros    = config?.numeros?.map(n => `${n.valor} ${n.label}`).join(', ') || '';
   const publico    = config?.perfil_clientes || 'pedreiros e construtoras';
 
-  const ctx = `Empresa: ${empresa} | Produto: ${produto} | Cidade: ${cidade} | Diferenciais: ${difs} | Números: ${numeros} | Público: ${publico}`;
+  // Contexto do Gate LP-1: produto foco e estrutura de seções aprovada
+  const uxBlueprint = config?.ux_estrutura
+    ? `\n\nEstrutura de seções aprovada por lp-ux:\n${config.ux_estrutura}`
+    : '';
+
+  const ctx = `Empresa: ${empresa} | Produto: ${produto} | Cidade: ${cidade} | Diferenciais: ${difs} | Números: ${numeros} | Público: ${publico}${uxBlueprint}`;
 
   try {
     // 4 chamadas em paralelo — um expert por vez
@@ -336,14 +341,21 @@ async function gerarSugestaoVisual(empresa, config) {
   const estiloAtual = config?.estilo || 'não definido';
   const corAtual    = config?.cor_primaria || 'não definida';
 
+  // Contexto do Gate LP-2: copy aprovada para alinhar tom visual
+  const headline   = config?.headline && !config.headline.includes('A DEFINIR') ? config.headline : null;
+  const hook       = config?.hook && !config.hook.includes('A DEFINIR') ? config.hook : null;
+  const copyCtx    = headline
+    ? `\nCopy aprovada:\n- Headline: "${headline}"${hook ? `\n- Hook: "${hook}"` : ''}`
+    : '';
+
   const prompt = `Você é um especialista em identidade visual para empresas industriais brasileiras.
 
 A empresa "${empresa}" fabrica pré-moldados de concreto.
 Produto principal: ${produto}
 Estilo atual: ${estiloAtual} | Cor atual: ${corAtual}
-Público: pedreiros, proprietários rurais, construtoras — região Nordeste/Sudeste.
+Público: pedreiros, proprietários rurais, construtoras — região Nordeste/Sudeste.${copyCtx}
 
-Sugira uma identidade visual para a landing page.
+Sugira uma identidade visual para a landing page coerente com o tom da copy acima.
 Responda APENAS com JSON válido (sem markdown, sem texto extra):
 
 {
@@ -447,6 +459,13 @@ export async function gateLp1(empresa) {
       if (estrutura) {
         await postarComentario(fase1.id, estrutura);
         console.log('[Gate LP-1] Estrutura UX postada na Fase 1.');
+
+        // Salva estrutura UX no lp config para uso pelo Gate LP-2 (copywriters)
+        const lpConfig = await readConfig(slug);
+        if (lpConfig) {
+          await saveConfig(slug, 'lp', { ...lpConfig, ux_estrutura: estrutura });
+          console.log('[Gate LP-1] Estrutura UX salva no lp config (ux_estrutura).');
+        }
       }
     }
 
