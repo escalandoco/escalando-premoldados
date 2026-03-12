@@ -42,7 +42,7 @@ for (const a of process.argv.slice(2)) {
   }
 }
 
-const empresa  = args.empresa;
+const empresa  = args.empresa || (args.cliente ? args.cliente.charAt(0).toUpperCase() + args.cliente.slice(1) : null);
 const lpNome   = args.lp || '';          // nome da campanha/LP (opcional)
 const noUpload = args.upload === false;
 const force     = args.force === true || args['skip-gate'] === true;
