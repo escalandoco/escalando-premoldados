@@ -411,7 +411,8 @@ const server = http.createServer((req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   // /api/run-worker e /api/git-pull têm autenticação própria (WORKER_SECRET)
   const PUBLIC_ROUTES = ['/api/run-worker', '/api/git-pull', '/api/log-job', '/api/save-briefing', '/api/read-config', '/api/save-config'];
-  if (!PUBLIC_ROUTES.includes(req.url) && !checkAuth(req, res)) return;
+  const urlPath = req.url.split('?')[0];
+  if (!PUBLIC_ROUTES.includes(urlPath) && !checkAuth(req, res)) return;
 
   // ── GET /api/data ──
   if (req.method === 'GET' && req.url === '/api/data') {
