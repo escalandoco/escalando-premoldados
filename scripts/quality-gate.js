@@ -51,7 +51,7 @@ export async function verificarGate(cliente, campanha = 'Geral', faseAlvo) {
     const listaId  = await encontrarListaLandingPages(folderId, cliente);
 
     // 2. Busca tasks da lista
-    const { tasks } = await cu('get', `/list/${listaId}/task?archived=false`);
+    const { tasks } = await cu('get', `/list/${listaId}/task?archived=false&include_closed=true`);
 
     // 3. Encontra a task da fase anterior
     const sufixo   = campanha !== 'Geral' ? ` — ${campanha}` : '';
