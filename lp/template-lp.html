@@ -6,355 +6,441 @@
   <title id="page-title">LP</title>
   <meta name="description" id="page-desc" content="">
   <link rel="canonical" id="canonical" href="">
-
-  <!-- SEO — Open Graph / WhatsApp / LinkedIn -->
   <meta property="og:type"        content="website">
   <meta property="og:title"       id="og-title"       content="">
   <meta property="og:description" id="og-description" content="">
   <meta property="og:url"         id="og-url"         content="">
   <meta property="og:locale"      content="pt_BR">
-
-  <!-- SEO — Schema JSON-LD (LocalBusiness + Product) — injetado pelo gerar-lp.js -->
   <script id="schema-markup" type="application/ld+json"></script>
-
-  <!-- Google Fonts — preenchido pelo CONFIG (fonte) -->
   <link id="google-font-preconnect-1" rel="preconnect" href="https://fonts.googleapis.com">
   <link id="google-font-preconnect-2" rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link id="google-font" rel="stylesheet" href="">
   <style id="estilo-overrides"></style>
-
-  <!-- ============================================================
-    PIXEL META — substitua pelo ID real do cliente
-  ============================================================ -->
-  <script id="pixel-meta">
-    // !function(f,b,e,v,n,t,s){...} fbq('init', 'PIXEL_ID'); fbq('track','PageView');
-  </script>
-
-  <!-- ============================================================
-    GOOGLE ANALYTICS — substitua pelo Measurement ID real
-  ============================================================ -->
-  <script id="ga4-script">
-    // (function(w,d,s,l,i){...})('GA4_ID')
-  </script>
-
-  <!-- ============================================================
-    GOOGLE TAG MANAGER — substitua pelo Container ID real (GTM-XXXXXXX)
-    Quando presente, gerencia GA4 + Google Ads Conversion via GTM.
-  ============================================================ -->
-  <script id="gtm-head">
-    // (function(w,d,s,l,i){w[l]=w[l]||[]...})('GTM-XXXXXXX')
-  </script>
+  <script id="pixel-meta">/* pixel injetado pelo gerar-lp.js */</script>
+  <script id="ga4-script">/* ga4 injetado pelo gerar-lp.js */</script>
+  <script id="gtm-head">/* gtm injetado pelo gerar-lp.js */</script>
 
   <style>
-    /* ---- TOKENS (sobrescritos pelo CONFIG) ---- */
     :root {
       --primary:   #C4B470;
       --primary-d: #A89858;
       --dark:      #0D1117;
-      --dark-2:    #161B22;
+      --dark-2:    #141A21;
+      --dark-3:    #1C2330;
       --white:     #FFFFFF;
-      --gray-50:   #F9FAFB;
-      --gray-100:  #F3F4F6;
-      --gray-200:  #E5E7EB;
+      --gray-50:   #F8F9FA;
+      --gray-100:  #F1F3F5;
+      --gray-200:  #E9ECEF;
       --gray-400:  #9CA3AF;
       --gray-600:  #4B5563;
       --gray-900:  #111827;
-      --radius:    12px;
-      --shadow:    0 4px 24px rgba(0,0,0,0.10);
-
-      /* Identidade visual por cliente */
-      --text:        #111827;
-      --bg:          #F9FAFB;
-      --border:      #E5E7EB;
+      --text:      #111827;
+      --bg:        #F8F9FA;
+      --border:    #E9ECEF;
       --font-family: 'SF Pro Display', -apple-system, system-ui, sans-serif;
+      --radius: 4px;
     }
 
-    /* ---- RESET ---- */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
     body { font-family: var(--font-family); color: var(--text); background: var(--white); line-height: 1.6; }
     img { max-width: 100%; height: auto; display: block; }
     a { text-decoration: none; color: inherit; }
-
-    /* ---- CONTAINER ---- */
     .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
 
-    /* ---- HEADER ---- */
+    /* ── HEADER ─────────────────────────────────────────────── */
     #header {
       position: sticky; top: 0; z-index: 100;
-      background: var(--dark); border-bottom: 1px solid rgba(255,255,255,0.06);
-      padding: 14px 0;
+      background: var(--dark);
+      border-bottom: 2px solid var(--primary);
+      padding: 12px 0;
     }
     .header-inner { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
-    .header-logo { display: flex; align-items: center; gap: 12px; }
-    .header-logo img { height: 36px; width: auto; }
-    .header-nome { font-size: 15px; font-weight: 800; color: var(--white); letter-spacing: -0.3px; }
-    .header-slogan { font-size: 11px; color: var(--primary); font-weight: 500; }
-    .header-cta {
-      display: flex; align-items: center; gap: 10px;
-    }
-    .header-tel { font-size: 14px; font-weight: 700; color: var(--primary); }
+    .header-logo { display: flex; align-items: center; gap: 14px; }
+    .header-logo img { height: 34px; width: auto; }
+    .header-nome { font-size: 16px; font-weight: 900; color: var(--white); letter-spacing: -0.3px; text-transform: uppercase; }
+    .header-slogan { font-size: 10px; color: var(--primary); font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
+    .header-right { display: flex; align-items: center; gap: 20px; }
+    .header-tel { font-size: 14px; font-weight: 700; color: rgba(255,255,255,0.7); }
     .btn-wpp-header {
-      background: #25D366; color: white; padding: 9px 18px;
-      border-radius: 8px; font-size: 13px; font-weight: 800;
-      display: flex; align-items: center; gap: 6px; white-space: nowrap;
+      background: var(--primary); color: var(--dark);
+      padding: 10px 20px; border-radius: var(--radius);
+      font-size: 13px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.5px;
+      display: flex; align-items: center; gap: 7px;
       transition: background 0.15s;
     }
-    .btn-wpp-header:hover { background: #1ebe5c; }
+    .btn-wpp-header:hover { background: var(--primary-d); }
     @media (max-width: 600px) {
       .header-slogan, .header-tel { display: none; }
-      .btn-wpp-header { padding: 8px 14px; font-size: 12px; }
+      .btn-wpp-header { padding: 9px 14px; font-size: 12px; }
     }
 
-    /* ---- HERO ---- */
+    /* ── HERO ───────────────────────────────────────────────── */
     #hero {
       background: var(--dark);
-      padding: 80px 0 72px;
+      padding: 72px 0 64px;
       position: relative; overflow: hidden;
     }
+    /* grade industrial no fundo */
     #hero::before {
       content: '';
-      position: absolute; top: 0; right: -10%; width: 55%; height: 100%;
-      background: linear-gradient(135deg, transparent 40%, rgba(196,180,112,0.06) 100%);
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(196,180,112,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(196,180,112,0.04) 1px, transparent 1px);
+      background-size: 48px 48px;
       pointer-events: none;
     }
-    .hero-badge {
-      display: inline-block; background: rgba(196,180,112,0.12); color: var(--primary);
-      font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px;
-      padding: 6px 14px; border-radius: 99px; margin-bottom: 20px;
-      border: 1px solid rgba(196,180,112,0.2);
+    #hero::after {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--primary) 0%, transparent 100%);
     }
+    .hero-inner { position: relative; z-index: 1; display: grid; grid-template-columns: 1fr 360px; gap: 64px; align-items: center; }
+    .hero-label {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px;
+      color: var(--primary); margin-bottom: 24px;
+    }
+    .hero-label::before { content: ''; display: block; width: 24px; height: 2px; background: var(--primary); }
     .hero-headline {
-      font-size: clamp(28px, 5vw, 52px); font-weight: 900; color: var(--white);
-      line-height: 1.15; letter-spacing: -0.5px; margin-bottom: 20px;
-      max-width: 680px;
+      font-size: clamp(28px, 4.5vw, 48px); font-weight: 900; color: var(--white);
+      line-height: 1.1; letter-spacing: -0.5px; margin-bottom: 20px;
     }
-    .hero-headline span { color: var(--primary); }
     .hero-sub {
-      font-size: clamp(15px, 2.5vw, 18px); color: rgba(255,255,255,0.65);
-      max-width: 560px; margin-bottom: 36px; line-height: 1.7;
+      font-size: clamp(15px, 2vw, 17px); color: rgba(255,255,255,0.6);
+      max-width: 520px; margin-bottom: 36px; line-height: 1.75;
     }
-    .hero-btns { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 48px; }
+    .hero-btns { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 52px; }
     .btn-primary {
       background: var(--primary); color: var(--dark);
-      padding: 15px 28px; border-radius: 10px; font-size: 15px; font-weight: 900;
-      transition: all 0.15s; display: inline-flex; align-items: center; gap: 8px;
-      box-shadow: 0 4px 14px rgba(196,180,112,0.35);
+      padding: 15px 28px; border-radius: var(--radius);
+      font-size: 14px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.5px;
+      display: inline-flex; align-items: center; gap: 8px;
+      transition: all 0.15s;
     }
     .btn-primary:hover { background: var(--primary-d); transform: translateY(-1px); }
-    .btn-outline {
-      background: transparent; color: var(--white);
-      padding: 15px 28px; border-radius: 10px; font-size: 15px; font-weight: 700;
-      border: 1.5px solid rgba(255,255,255,0.2); transition: all 0.15s;
+    .btn-ghost {
+      background: transparent; color: rgba(255,255,255,0.7);
+      padding: 15px 24px; border-radius: var(--radius);
+      font-size: 14px; font-weight: 700;
+      border: 1px solid rgba(255,255,255,0.15);
       display: inline-flex; align-items: center; gap: 8px;
+      transition: all 0.15s;
     }
-    .btn-outline:hover { border-color: rgba(255,255,255,0.5); background: rgba(255,255,255,0.05); }
-    .hero-nums { display: flex; gap: 36px; flex-wrap: wrap; }
-    .hero-num-item { }
-    .hero-num { font-size: 28px; font-weight: 900; color: var(--primary); }
-    .hero-num-label { font-size: 12px; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.5px; }
+    .btn-ghost:hover { border-color: rgba(255,255,255,0.4); color: var(--white); }
 
-    /* ---- SEÇÕES GENÉRICAS ---- */
-    section { padding: 72px 0; }
-    .section-label {
-      font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px;
-      color: var(--primary); margin-bottom: 10px;
+    /* números hero */
+    .hero-nums { display: flex; gap: 0; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 32px; }
+    .hero-num-item { flex: 1; padding-right: 24px; border-right: 1px solid rgba(255,255,255,0.08); margin-right: 24px; }
+    .hero-num-item:last-child { border-right: none; margin-right: 0; padding-right: 0; }
+    .hero-num { font-size: 32px; font-weight: 900; color: var(--primary); line-height: 1; margin-bottom: 4px; }
+    .hero-num-label { font-size: 11px; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: 0.5px; }
+
+    /* card lateral hero */
+    .hero-card {
+      background: var(--dark-3); border: 1px solid rgba(196,180,112,0.2);
+      border-radius: var(--radius); padding: 32px;
     }
-    .section-title { font-size: clamp(22px, 4vw, 36px); font-weight: 900; color: var(--text); line-height: 1.2; margin-bottom: 12px; }
-    .section-sub { font-size: 16px; color: var(--gray-600); max-width: 560px; line-height: 1.7; }
-    .section-head { margin-bottom: 48px; }
-    .section-head.center { text-align: center; }
-    .section-head.center .section-sub { margin: 0 auto; }
-    section.bg-dark { background: var(--dark); }
-    section.bg-dark .section-title { color: var(--white); }
-    section.bg-dark .section-sub { color: rgba(255,255,255,0.6); }
-    section.bg-gray { background: var(--bg); }
+    .hero-card-title { font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--primary); margin-bottom: 20px; }
+    .hero-card-form { display: flex; flex-direction: column; gap: 12px; }
+    .hero-card-input {
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: var(--radius); padding: 12px 14px;
+      font-size: 14px; color: var(--white); font-family: inherit; outline: none;
+      transition: border-color 0.15s;
+    }
+    .hero-card-input::placeholder { color: rgba(255,255,255,0.3); }
+    .hero-card-input:focus { border-color: var(--primary); }
+    .btn-card {
+      background: var(--primary); color: var(--dark);
+      padding: 14px; border: none; border-radius: var(--radius);
+      font-size: 14px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.5px;
+      cursor: pointer; font-family: inherit; transition: all 0.15s;
+    }
+    .btn-card:hover { background: var(--primary-d); }
+    .btn-card:disabled { opacity: 0.6; cursor: not-allowed; }
+    .hero-card-legal { font-size: 11px; color: rgba(255,255,255,0.3); text-align: center; line-height: 1.5; }
+    .form-status { display: none; padding: 12px; border-radius: var(--radius); font-size: 13px; font-weight: 600; text-align: center; margin-top: 4px; }
+    .form-status.ok  { background: rgba(52,211,153,0.15); color: #34D399; display: block; }
+    .form-status.err { background: rgba(248,113,113,0.15); color: #F87171; display: block; }
 
-    /* ---- PRODUTOS ---- */
-    .produtos-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
+    @media (max-width: 900px) {
+      .hero-inner { grid-template-columns: 1fr; }
+      .hero-card { display: none; }
+    }
+
+    /* ── TRUST BAR ──────────────────────────────────────────── */
+    #trust-bar {
+      background: var(--primary); padding: 0;
+    }
+    .trust-inner { display: flex; }
+    .trust-item {
+      flex: 1; padding: 20px 28px;
+      display: flex; align-items: center; gap: 14px;
+      border-right: 1px solid rgba(13,17,23,0.12);
+    }
+    .trust-item:last-child { border-right: none; }
+    .trust-icon { font-size: 22px; flex-shrink: 0; }
+    .trust-text { font-size: 13px; font-weight: 800; color: var(--dark); line-height: 1.3; }
+    @media (max-width: 768px) {
+      .trust-inner { flex-wrap: wrap; }
+      .trust-item { flex: 1 1 50%; border-bottom: 1px solid rgba(13,17,23,0.12); }
+    }
+    @media (max-width: 480px) {
+      .trust-item { flex: 1 1 100%; }
+    }
+
+    /* ── PROBLEMA / PAS ─────────────────────────────────────── */
+    #sec-problema { background: var(--white); padding: 80px 0; }
+    .pas-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: start; }
+    .pas-left { }
+    .section-eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px;
+      color: var(--primary); margin-bottom: 16px;
+    }
+    .section-eyebrow::before { content: ''; display: block; width: 20px; height: 2px; background: var(--primary); }
+    .pas-headline { font-size: clamp(22px, 3vw, 32px); font-weight: 900; color: var(--dark); line-height: 1.15; margin-bottom: 20px; letter-spacing: -0.3px; }
+    .pas-body { font-size: 16px; color: var(--gray-600); line-height: 1.8; margin-bottom: 16px; }
+    .pas-right { border-left: 3px solid var(--primary); padding-left: 32px; }
+    .pas-block { margin-bottom: 28px; }
+    .pas-block:last-child { margin-bottom: 0; }
+    .pas-block-label { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; color: var(--primary); margin-bottom: 8px; }
+    .pas-block-text { font-size: 15px; color: var(--gray-600); line-height: 1.75; }
+    @media (max-width: 768px) {
+      .pas-grid { grid-template-columns: 1fr; gap: 40px; }
+      .pas-right { border-left: none; border-top: 3px solid var(--primary); padding-left: 0; padding-top: 32px; }
+    }
+
+    /* ── DIFERENCIAIS ───────────────────────────────────────── */
+    #sec-difs { background: var(--dark); padding: 80px 0; }
+    #sec-difs .section-eyebrow { color: var(--primary); }
+    #sec-difs .section-eyebrow::before { background: var(--primary); }
+    .difs-headline { font-size: clamp(22px, 3vw, 32px); font-weight: 900; color: var(--white); line-height: 1.15; margin-bottom: 48px; letter-spacing: -0.3px; }
+    .difs-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2px; background: rgba(255,255,255,0.05); }
+    .dif-item {
+      background: var(--dark); padding: 36px 32px;
+      display: flex; gap: 24px; align-items: flex-start;
+      transition: background 0.2s;
+    }
+    .dif-item:hover { background: var(--dark-3); }
+    .dif-num {
+      font-size: 48px; font-weight: 900; color: rgba(196,180,112,0.15);
+      line-height: 1; flex-shrink: 0; min-width: 52px;
+    }
+    .dif-content { }
+    .dif-titulo { font-size: 16px; font-weight: 900; color: var(--white); margin-bottom: 8px; }
+    .dif-desc { font-size: 14px; color: rgba(255,255,255,0.5); line-height: 1.7; }
+    @media (max-width: 600px) {
+      .difs-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ── PRODUTOS ───────────────────────────────────────────── */
+    #sec-produtos { background: var(--bg); padding: 80px 0; }
+    .produtos-headline { font-size: clamp(22px, 3vw, 32px); font-weight: 900; color: var(--dark); line-height: 1.15; margin-bottom: 8px; letter-spacing: -0.3px; }
+    .produtos-sub { font-size: 15px; color: var(--gray-600); margin-bottom: 48px; }
+    .produtos-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 0; background: var(--border); border: 1px solid var(--border); }
     .produto-card {
-      background: var(--white); border-radius: var(--radius); border: 1px solid var(--border);
-      overflow: hidden; transition: box-shadow 0.2s, transform 0.2s;
+      background: var(--white); padding: 32px;
+      border-right: 1px solid var(--border);
+      display: flex; flex-direction: column;
     }
-    .produto-card:hover { box-shadow: var(--shadow); transform: translateY(-3px); }
-    .produto-img {
-      width: 100%; height: 200px; background: var(--gray-100);
+    .produto-card:last-child { border-right: none; }
+    .produto-img-wrap {
+      width: 100%; height: 180px; background: var(--gray-100);
       display: flex; align-items: center; justify-content: center;
-      font-size: 48px; color: var(--gray-400);
+      font-size: 40px; margin-bottom: 24px; overflow: hidden;
     }
-    .produto-img img { width: 100%; height: 100%; object-fit: cover; }
-    .produto-body { padding: 20px; }
-    .produto-nome { font-size: 17px; font-weight: 800; color: var(--text); margin-bottom: 6px; }
-    .produto-aplicacao { font-size: 12px; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; }
-    .produto-desc { font-size: 14px; color: var(--gray-600); line-height: 1.6; margin-bottom: 14px; }
-    .produto-preco { font-size: 15px; font-weight: 800; color: var(--text); }
-
-    /* ---- DIFERENCIAIS ---- */
-    .difs-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; }
-    .dif-card {
-      background: rgba(196,180,112,0.06); border: 1px solid rgba(196,180,112,0.15);
-      border-radius: var(--radius); padding: 28px 24px;
+    .produto-img-wrap img { width: 100%; height: 100%; object-fit: cover; }
+    .produto-tag { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; color: var(--primary); margin-bottom: 8px; }
+    .produto-nome { font-size: 20px; font-weight: 900; color: var(--dark); margin-bottom: 12px; }
+    .produto-desc { font-size: 14px; color: var(--gray-600); line-height: 1.7; margin-bottom: 20px; flex: 1; }
+    .produto-cta {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 13px; font-weight: 800; color: var(--primary);
+      text-transform: uppercase; letter-spacing: 0.5px;
     }
-    .dif-icon { font-size: 32px; margin-bottom: 14px; }
-    .dif-titulo { font-size: 15px; font-weight: 800; color: var(--white); margin-bottom: 6px; }
-    .dif-desc { font-size: 13px; color: rgba(255,255,255,0.55); line-height: 1.6; }
 
-    /* ---- DEPOIMENTOS ---- */
-    .depos-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
-    .depo-card { background: var(--white); border-radius: var(--radius); padding: 28px; border: 1px solid var(--border); }
-    .depo-stars { color: #FBBF24; font-size: 16px; margin-bottom: 14px; }
-    .depo-texto { font-size: 15px; color: var(--gray-600); line-height: 1.7; font-style: italic; margin-bottom: 18px; }
-    .depo-autor { display: flex; align-items: center; gap: 12px; }
-    .depo-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 900; color: var(--dark); flex-shrink: 0; }
-    .depo-nome { font-size: 14px; font-weight: 800; color: var(--text); }
+    /* ── CTA SECTION ────────────────────────────────────────── */
+    #sec-cta { background: var(--primary); padding: 64px 0; }
+    .cta-inner { display: flex; align-items: center; justify-content: space-between; gap: 32px; flex-wrap: wrap; }
+    .cta-text { }
+    .cta-titulo { font-size: clamp(22px, 3vw, 32px); font-weight: 900; color: var(--dark); line-height: 1.2; margin-bottom: 8px; }
+    .cta-sub { font-size: 16px; color: rgba(13,17,23,0.65); }
+    .btn-cta-dark {
+      background: var(--dark); color: var(--primary);
+      padding: 18px 36px; border-radius: var(--radius);
+      font-size: 15px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.5px;
+      display: inline-flex; align-items: center; gap: 10px;
+      transition: all 0.15s; white-space: nowrap;
+    }
+    .btn-cta-dark:hover { background: var(--dark-3); transform: translateY(-1px); }
+
+    /* ── DEPOIMENTOS ────────────────────────────────────────── */
+    #sec-depos { background: var(--white); padding: 80px 0; }
+    .depos-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; margin-top: 48px; }
+    .depo-card {
+      border: 1px solid var(--border); padding: 32px;
+      border-radius: var(--radius); position: relative;
+    }
+    .depo-card::before {
+      content: '"';
+      position: absolute; top: 16px; right: 24px;
+      font-size: 80px; font-weight: 900; color: var(--gray-100);
+      line-height: 1; font-family: Georgia, serif;
+    }
+    .depo-texto { font-size: 15px; color: var(--gray-600); line-height: 1.8; margin-bottom: 24px; position: relative; z-index: 1; }
+    .depo-autor { display: flex; align-items: center; gap: 12px; border-top: 1px solid var(--border); padding-top: 20px; }
+    .depo-avatar {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: var(--dark); display: flex; align-items: center; justify-content: center;
+      font-size: 15px; font-weight: 900; color: var(--primary); flex-shrink: 0;
+    }
+    .depo-nome { font-size: 14px; font-weight: 800; color: var(--dark); }
     .depo-local { font-size: 12px; color: var(--gray-400); }
 
-    /* ---- COBERTURA ---- */
-    .regioes-list { display: flex; flex-wrap: wrap; gap: 10px; }
+    /* ── COBERTURA ──────────────────────────────────────────── */
+    #sec-cobertura { background: var(--bg); padding: 80px 0; }
+    .regioes-list { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 32px; }
     .regiao-tag {
-      background: var(--gray-100); border: 1px solid var(--border);
-      border-radius: 99px; padding: 8px 18px; font-size: 13px; font-weight: 600;
-      color: var(--gray-600);
+      background: var(--white); border: 1px solid var(--border);
+      padding: 10px 20px; font-size: 14px; font-weight: 700;
+      color: var(--dark); border-radius: var(--radius);
     }
 
-    /* ---- FORMULÁRIO CRM ---- */
-    #contato { background: var(--bg); }
-    .form-wrap { max-width: 560px; margin: 0 auto; }
-    .form-card { background: var(--white); border-radius: 16px; padding: 40px; border: 1px solid var(--border); box-shadow: var(--shadow); }
+    /* ── FORMULÁRIO ─────────────────────────────────────────── */
+    #contato { background: var(--dark); padding: 80px 0; }
+    .contato-inner { display: grid; grid-template-columns: 1fr 480px; gap: 64px; align-items: start; }
+    .contato-left { }
+    .contato-eyebrow { color: var(--primary); }
+    .contato-eyebrow::before { background: var(--primary); }
+    .contato-titulo { font-size: clamp(22px, 3vw, 36px); font-weight: 900; color: var(--white); line-height: 1.15; margin-bottom: 16px; letter-spacing: -0.3px; }
+    .contato-sub { font-size: 16px; color: rgba(255,255,255,0.55); line-height: 1.8; margin-bottom: 36px; }
+    .contato-beneficios { display: flex; flex-direction: column; gap: 12px; }
+    .contato-beneficio { display: flex; align-items: flex-start; gap: 12px; }
+    .contato-beneficio-check {
+      width: 20px; height: 20px; background: var(--primary); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 900; color: var(--dark); flex-shrink: 0; margin-top: 1px;
+    }
+    .contato-beneficio-text { font-size: 15px; color: rgba(255,255,255,0.7); }
+    .form-card {
+      background: var(--white); border-radius: var(--radius); padding: 36px;
+    }
     .form-row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-    .form-field { margin-bottom: 16px; }
-    .form-field label { display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--gray-600); margin-bottom: 6px; }
+    .form-field { margin-bottom: 14px; }
+    .form-field label { display: block; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; color: var(--gray-600); margin-bottom: 6px; }
     .form-field input, .form-field select, .form-field textarea {
-      width: 100%; padding: 12px 14px; border: 1.5px solid var(--border); border-radius: 8px;
-      font-size: 14px; color: var(--text); background: var(--white); outline: none;
-      transition: border-color 0.15s; font-family: inherit;
+      width: 100%; padding: 12px 14px; border: 1.5px solid var(--border);
+      border-radius: var(--radius); font-size: 14px; color: var(--text);
+      background: var(--white); outline: none; transition: border-color 0.15s; font-family: inherit;
     }
-    .form-field input:focus, .form-field select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(196,180,112,0.15); }
+    .form-field input:focus, .form-field select:focus, .form-field textarea:focus {
+      border-color: var(--primary);
+    }
     .btn-form {
-      width: 100%; padding: 15px; background: var(--dark); color: var(--primary);
-      border: none; border-radius: 10px; font-size: 15px; font-weight: 800;
+      width: 100%; padding: 16px; background: var(--dark); color: var(--primary);
+      border: none; border-radius: var(--radius); font-size: 14px; font-weight: 900;
+      text-transform: uppercase; letter-spacing: 0.5px;
       cursor: pointer; font-family: inherit; transition: all 0.15s;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.18);
     }
-    .btn-form:hover { background: #1a1a2e; transform: translateY(-1px); }
-    .btn-form:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-    .form-status { display: none; padding: 14px; border-radius: 8px; font-size: 14px; font-weight: 600; margin-top: 14px; text-align: center; }
-    .form-status.ok  { background: #D1FAE5; color: #065F46; display: block; }
-    .form-status.err { background: #FEE2E2; color: #7F1D1D; display: block; }
+    .btn-form:hover { background: var(--dark-3); }
+    .btn-form:disabled { opacity: 0.6; cursor: not-allowed; }
+    @media (max-width: 900px) {
+      .contato-inner { grid-template-columns: 1fr; }
+      .contato-left { display: none; }
+    }
     @media (max-width: 500px) { .form-row2 { grid-template-columns: 1fr; } .form-card { padding: 24px 20px; } }
 
-    /* ---- FOOTER ---- */
-    #footer { background: var(--dark); padding: 40px 0; border-top: 1px solid rgba(255,255,255,0.06); }
+    /* ── PS SECTION ─────────────────────────────────────────── */
+    #sec-ps { background: var(--dark-2); padding: 40px 0; border-top: 1px solid rgba(255,255,255,0.06); }
+    .ps-text { font-size: 15px; color: rgba(255,255,255,0.5); line-height: 1.8; max-width: 720px; }
+    .ps-text strong { color: rgba(255,255,255,0.8); }
+
+    /* ── FOOTER ─────────────────────────────────────────────── */
+    #footer { background: var(--dark); padding: 32px 0; border-top: 1px solid rgba(255,255,255,0.06); }
     .footer-inner { display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
     .footer-logo { display: flex; align-items: center; gap: 10px; }
-    .footer-logo img { height: 32px; }
-    .footer-nome { font-size: 14px; font-weight: 800; color: var(--white); }
-    .footer-info { font-size: 13px; color: rgba(255,255,255,0.45); line-height: 1.8; text-align: right; }
+    .footer-logo img { height: 28px; }
+    .footer-nome { font-size: 13px; font-weight: 900; color: var(--white); text-transform: uppercase; letter-spacing: 0.5px; }
+    .footer-info { font-size: 12px; color: rgba(255,255,255,0.35); line-height: 1.8; text-align: right; }
     @media (max-width: 600px) { .footer-inner { flex-direction: column; align-items: flex-start; } .footer-info { text-align: left; } }
 
-    /* ---- WhatsApp FLOAT ---- */
+    /* ── WhatsApp FLOAT ─────────────────────────────────────── */
     .wpp-float {
       position: fixed; bottom: 24px; right: 24px; z-index: 999;
       width: 56px; height: 56px; background: #25D366; border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 4px 20px rgba(37,211,102,0.45);
-      transition: transform 0.2s; cursor: pointer;
+      box-shadow: 0 4px 20px rgba(37,211,102,0.4); transition: transform 0.2s;
     }
     .wpp-float:hover { transform: scale(1.1); }
     .wpp-float svg { width: 28px; height: 28px; fill: white; }
 
-    /* ---- RESPONSIVO ---- */
     @media (max-width: 768px) {
-      section { padding: 52px 0; }
-      .hero-nums { gap: 24px; }
-      .produtos-grid { grid-template-columns: 1fr; }
-      .difs-grid { grid-template-columns: 1fr 1fr; }
-    }
-    @media (max-width: 480px) {
       #hero { padding: 52px 0 48px; }
-      .hero-btns { flex-direction: column; }
-      .btn-primary, .btn-outline { justify-content: center; }
-      .difs-grid { grid-template-columns: 1fr; }
-      .depos-grid { grid-template-columns: 1fr; }
+      .hero-nums { gap: 0; }
     }
   </style>
 </head>
 <body>
-
-<!-- Google Tag Manager (noscript) — preenchido pelo gerar-lp.js -->
 <noscript id="gtm-noscript"></noscript>
 
-<!-- ============================================================
-  CONFIGURAÇÃO DO CLIENTE — editar aqui
-============================================================ -->
+<!-- CONFIG — injetado pelo gerar-lp.js -->
 <script id="lp-config">
 const CONFIG = {
   empresa:        'Nome da Empresa',
-  slogan:         'Slogan da empresa',
-  logo:           '/logo.png',
+  slogan:         'Fábrica de Pré-Moldados',
+  logo:           '',
   cor_primaria:   '#C4B470',
   cor_secundaria: '#0D1117',
-  estilo:         'clean', // clean | bold | rustico | industrial
+  estilo:         'industrial',
 
-  whatsapp:       '5500000000000',   // DDI+DDD+número, sem espaços
+  whatsapp:       '5500000000000',
   whatsapp_msg:   'Olá! Vim pelo site e gostaria de um orçamento.',
   telefone:       '(00) 00000-0000',
-  cidade:         'Cidade — UF',
-  endereco:       '',
+  cidade:         'Sergipe',
 
-  headline:    'Premoldados de qualidade para sua obra',
-  subheadline: 'Fábrica própria, entrega rápida e preço justo para construtoras, fazendeiros e prefeituras.',
+  headline:    'Há mais de 10 anos fornecendo pisos intertravados para construtoras e engenheiros em Sergipe.',
+  subheadline: 'A Concrenor fabrica e entrega com frota própria em Sergipe. Fale com nosso comercial e receba orçamento no mesmo dia.',
+  hook:        '',
+  problema:    '',
+  agitacao:    '',
+  solucao:     '',
+  cta_principal: 'Solicitar orçamento pelo WhatsApp',
+  claims: [],
+  ps: '',
 
-  badge:   'Fábrica de Premoldados',
+  badge:   'Fábrica de Pré-Moldados',
   numeros: [
-    { valor: '10+',  label: 'Anos de experiência' },
-    { valor: '500+', label: 'Obras atendidas' },
-    { valor: '48h',  label: 'Prazo de entrega' },
+    { valor: '10+', label: 'Anos no mercado' },
+    { valor: 'Frota', label: 'Própria de entrega' },
+    { valor: 'B2B', label: 'e B2C' },
   ],
 
   produtos: [
-    {
-      nome:      'Mourão Torneado',
-      aplicacao: 'Cercas rurais e currais',
-      preco:     'A partir de R$ 18,00',
-      desc:      'Alta resistência e durabilidade para cercamento de propriedades rurais.',
-      foto:      '',
-    },
-    {
-      nome:      'Bloco de Concreto',
-      aplicacao: 'Construção civil',
-      preco:     '',
-      desc:      'Bloco estrutural e de vedação com dimensões padronizadas.',
-      foto:      '',
-    },
-    {
-      nome:      'Palanque',
-      aplicacao: 'Cercas e divisórias',
-      preco:     '',
-      desc:      'Resistente às intempéries, ideal para uso em áreas externas.',
-      foto:      '',
-    },
+    { nome: 'Piso Intertravado', aplicacao: 'Calçadas, estacionamentos e obras públicas', preco: 'Consulte', desc: 'Disponível em múltiplas espessuras para obras residenciais, comerciais e públicas.', foto: '' },
+    { nome: 'Meio Fio', aplicacao: 'Obras públicas e privadas', preco: 'Consulte', desc: 'Padrão DNIT para acabamento de calçadas e estacionamentos.', foto: '' },
   ],
 
   diferenciais: [
-    { icone: '🏭', titulo: 'Fábrica própria',       desc: 'Produção própria garante qualidade controlada e preço direto.' },
-    { icone: '🚚', titulo: 'Entrega rápida',         desc: 'Entregamos em até 48h para as principais regiões.' },
-    { icone: '📐', titulo: 'Medidas personalizadas', desc: 'Produzimos sob medida conforme a necessidade do projeto.' },
-    { icone: '🤝', titulo: 'Atendimento direto',     desc: 'Fale direto com quem produz, sem intermediários.' },
+    { icone: '🏭', titulo: 'Mais de 10 anos no mercado sergipano', desc: 'Reputação construída em Sergipe atendendo engenheiros, construtoras e empreiteiros.' },
+    { icone: '🚚', titulo: 'Entrega com frota própria', desc: 'Sem dependência de transportadora — prazo controlado, sem surpresas.' },
+    { icone: '📋', titulo: 'Linha completa de produtos', desc: 'Pisos intertravados e meio-fio padrão DNIT para qualquer tipo de obra.' },
+    { icone: '🤝', titulo: 'Atendimento comercial direto', desc: 'Sem intermediários — proposta no mesmo dia.' },
   ],
 
   depoimentos: [
-    { nome: 'João Silva',    local: 'Itabaiana — SE', texto: 'Produto de ótima qualidade, entrega no prazo e preço justo. Recomendo!' },
-    { nome: 'Maria Oliveira', local: 'Aracaju — SE',  texto: 'Já comprei diversas vezes e sempre fui muito bem atendida.' },
+    { nome: 'Engenheiro', local: 'Grande Aracaju — SE', texto: 'Trabalho com a Concrenor há anos. Qualidade consistente e entrega própria que não atrasa a obra.' },
+    { nome: 'Empreiteiro', local: 'Interior de Sergipe', texto: 'Atendimento direto e preço justo. Nunca tive problema com prazo ou qualidade.' },
   ],
 
-  regioes: ['Todo Sergipe', 'Interior de Alagoas', 'Sul da Bahia'],
+  regioes: ['Sergipe', 'Grande Aracaju'],
 
   pixel_meta: '',
   ga4:        '',
-  gtm_id:     '',  // GTM-XXXXXXX — quando presente, gerencia GA4 + Google Ads via GTM
-
-  webhook: 'https://escalando-premoldados.vercel.app/api/onboarding',
+  gtm_id:     '',
+  webhook:    'https://escalando-premoldados.vercel.app/api/onboarding',
 };
 </script>
 
@@ -363,17 +449,17 @@ const CONFIG = {
   <div class="container">
     <div class="header-inner">
       <div class="header-logo">
-        <img id="h-logo" src="" alt="">
+        <img id="h-logo" src="" alt="" style="display:none">
         <div>
           <div class="header-nome" id="h-nome"></div>
           <div class="header-slogan" id="h-slogan"></div>
         </div>
       </div>
-      <div class="header-cta">
+      <div class="header-right">
         <span class="header-tel" id="h-tel"></span>
         <a class="btn-wpp-header" id="h-wpp" href="#">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-          Falar agora
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Solicitar orçamento
         </a>
       </div>
     </div>
@@ -383,95 +469,159 @@ const CONFIG = {
 <!-- HERO -->
 <section id="hero">
   <div class="container">
-    <div class="hero-badge" id="hero-badge"></div>
-    <h1 class="hero-headline" id="hero-headline"></h1>
-    <p class="hero-sub" id="hero-sub"></p>
-    <div class="hero-btns">
-      <a class="btn-primary" id="hero-wpp" href="#">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-        Pedir orçamento agora
-      </a>
-      <a class="btn-outline" href="#contato">Ver formulário de contato ↓</a>
+    <div class="hero-inner">
+      <div class="hero-left">
+        <div class="hero-label" id="hero-badge"></div>
+        <h1 class="hero-headline" id="hero-headline"></h1>
+        <p class="hero-sub" id="hero-sub"></p>
+        <div class="hero-btns">
+          <a class="btn-primary" id="hero-wpp" href="#">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            Pedir orçamento agora
+          </a>
+          <a class="btn-ghost" href="#contato">Ver formulário ↓</a>
+        </div>
+        <div class="hero-nums" id="hero-nums"></div>
+      </div>
+      <div class="hero-card">
+        <div class="hero-card-title">Orçamento rápido</div>
+        <div class="hero-card-form">
+          <input class="hero-card-input" type="text" id="hc-nome" placeholder="Seu nome">
+          <input class="hero-card-input" type="tel" id="hc-tel" placeholder="WhatsApp (00) 00000-0000">
+          <input class="hero-card-input" type="text" id="hc-produto" placeholder="Produto de interesse">
+          <input type="hidden" id="hc-utm-source">
+          <input type="hidden" id="hc-utm-medium">
+          <input type="hidden" id="hc-utm-campaign">
+          <button class="btn-card" id="btn-hc-form">Solicitar orçamento →</button>
+          <div class="form-status" id="hc-status"></div>
+          <p class="hero-card-legal">Retorno em até 1 hora no horário comercial</p>
+        </div>
+      </div>
     </div>
-    <div class="hero-nums" id="hero-nums"></div>
   </div>
 </section>
 
-<!-- PRODUTOS -->
-<section id="sec-produtos" class="bg-gray">
+<!-- TRUST BAR -->
+<div id="trust-bar">
+  <div class="container" style="padding:0">
+    <div class="trust-inner" id="trust-inner"></div>
+  </div>
+</div>
+
+<!-- PROBLEMA / PAS -->
+<section id="sec-problema">
   <div class="container">
-    <div class="section-head">
-      <div class="section-label">Produtos</div>
-      <h2 class="section-title">O que fabricamos</h2>
-      <p class="section-sub" id="prod-sub"></p>
+    <div class="pas-grid">
+      <div class="pas-left">
+        <div class="section-eyebrow">O problema</div>
+        <h2 class="pas-headline" id="pas-headline"></h2>
+        <p class="pas-body" id="pas-problema"></p>
+        <p class="pas-body" id="pas-agitacao"></p>
+      </div>
+      <div class="pas-right">
+        <div class="pas-block">
+          <div class="pas-block-label">A solução</div>
+          <p class="pas-block-text" id="pas-solucao"></p>
+        </div>
+        <div class="pas-block" id="claims-block">
+          <div class="pas-block-label">Por que a Concrenor</div>
+          <ul id="claims-list" style="list-style:none;display:flex;flex-direction:column;gap:10px;"></ul>
+        </div>
+      </div>
     </div>
-    <div class="produtos-grid" id="produtos-grid"></div>
   </div>
 </section>
 
 <!-- DIFERENCIAIS -->
-<section id="sec-difs" class="bg-dark">
+<section id="sec-difs">
   <div class="container">
-    <div class="section-head center">
-      <div class="section-label">Por que escolher</div>
-      <h2 class="section-title">Nossos diferenciais</h2>
-    </div>
+    <div class="section-eyebrow">Diferenciais</div>
+    <h2 class="difs-headline">O que nos diferencia no mercado</h2>
     <div class="difs-grid" id="difs-grid"></div>
+  </div>
+</section>
+
+<!-- PRODUTOS -->
+<section id="sec-produtos">
+  <div class="container">
+    <div class="section-eyebrow">Produtos</div>
+    <h2 class="produtos-headline" id="prod-titulo"></h2>
+    <p class="produtos-sub" id="prod-sub"></p>
+    <div class="produtos-grid" id="produtos-grid"></div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="sec-cta">
+  <div class="container">
+    <div class="cta-inner">
+      <div class="cta-text">
+        <h2 class="cta-titulo" id="cta-titulo"></h2>
+        <p class="cta-sub" id="cta-sub"></p>
+      </div>
+      <a class="btn-cta-dark" id="cta-wpp" href="#">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Falar pelo WhatsApp
+      </a>
+    </div>
   </div>
 </section>
 
 <!-- DEPOIMENTOS -->
 <section id="sec-depos">
   <div class="container">
-    <div class="section-head center">
-      <div class="section-label">Depoimentos</div>
-      <h2 class="section-title">O que nossos clientes dizem</h2>
-    </div>
+    <div class="section-eyebrow">Clientes</div>
+    <h2 class="produtos-headline">Quem já trabalhou com a gente</h2>
     <div class="depos-grid" id="depos-grid"></div>
   </div>
 </section>
 
 <!-- COBERTURA -->
-<section id="sec-cobertura" class="bg-gray">
+<section id="sec-cobertura">
   <div class="container">
-    <div class="section-head">
-      <div class="section-label">Atendimento</div>
-      <h2 class="section-title">Regiões que atendemos</h2>
-      <p class="section-sub" id="cob-cidade"></p>
-    </div>
+    <div class="section-eyebrow">Atendimento</div>
+    <h2 class="produtos-headline" id="cob-titulo"></h2>
+    <p class="produtos-sub" id="cob-sub"></p>
     <div class="regioes-list" id="regioes-list"></div>
   </div>
 </section>
 
-<!-- FORMULÁRIO CRM -->
+<!-- FORMULÁRIO -->
 <section id="contato">
   <div class="container">
-    <div class="section-head center">
-      <div class="section-label">Contato</div>
-      <h2 class="section-title">Solicite seu orçamento</h2>
-      <p class="section-sub">Preencha abaixo e entraremos em contato rapidamente.</p>
-    </div>
-    <div class="form-wrap">
+    <div class="contato-inner">
+      <div class="contato-left">
+        <div class="section-eyebrow contato-eyebrow">Contato</div>
+        <h2 class="contato-titulo">Solicite seu orçamento agora</h2>
+        <p class="contato-sub" id="contato-sub"></p>
+        <div class="contato-beneficios" id="contato-beneficios"></div>
+      </div>
       <div class="form-card">
         <div class="form-row2">
-          <div class="form-field"><label>Seu nome *</label><input type="text" id="f-nome" placeholder="Nome completo"></div>
+          <div class="form-field"><label>Nome *</label><input type="text" id="f-nome" placeholder="Nome completo"></div>
           <div class="form-field"><label>WhatsApp *</label><input type="tel" id="f-tel" placeholder="(00) 00000-0000"></div>
         </div>
         <div class="form-row2">
-          <div class="form-field"><label>Produto de interesse</label><input type="text" id="f-produto" placeholder="Ex: Mourão torneado"></div>
-          <div class="form-field"><label>Sua cidade</label><input type="text" id="f-cidade" placeholder="Ex: Aracaju — SE"></div>
+          <div class="form-field"><label>Produto</label><input type="text" id="f-produto" placeholder="Ex: Piso intertravado"></div>
+          <div class="form-field"><label>Cidade</label><input type="text" id="f-cidade" placeholder="Ex: Aracaju — SE"></div>
         </div>
-        <div class="form-field"><label>Mensagem (opcional)</label><input type="text" id="f-obs" placeholder="Quantidade, tamanho, prazo..."></div>
-        <!-- UTM hidden fields — preenchidos via JS -->
-        <input type="hidden" id="utm-source"   name="utm_source">
-        <input type="hidden" id="utm-medium"   name="utm_medium">
-        <input type="hidden" id="utm-campaign" name="utm_campaign">
-        <input type="hidden" id="utm-content"  name="utm_content">
-        <input type="hidden" id="utm-term"     name="utm_term">
-        <button class="btn-form" id="btn-form">Solicitar orçamento grátis →</button>
+        <div class="form-field"><label>Mensagem</label><input type="text" id="f-obs" placeholder="Quantidade, prazo, tipo de obra..."></div>
+        <input type="hidden" id="utm-source">
+        <input type="hidden" id="utm-medium">
+        <input type="hidden" id="utm-campaign">
+        <input type="hidden" id="utm-content">
+        <input type="hidden" id="utm-term">
+        <button class="btn-form" id="btn-form">Solicitar orçamento →</button>
         <div class="form-status" id="form-status"></div>
       </div>
     </div>
+  </div>
+</section>
+
+<!-- P.S. -->
+<section id="sec-ps">
+  <div class="container">
+    <p class="ps-text" id="ps-text"></p>
   </div>
 </section>
 
@@ -480,301 +630,261 @@ const CONFIG = {
   <div class="container">
     <div class="footer-inner">
       <div class="footer-logo">
-        <img id="f-logo" src="" alt="" loading="lazy">
-        <div class="footer-nome" id="f-nome-footer"></div>
+        <img id="f-logo" src="" alt="" style="display:none">
+        <span class="footer-nome" id="f-nome-foot"></span>
       </div>
       <div class="footer-info" id="f-info"></div>
     </div>
   </div>
 </footer>
 
-<!-- WhatsApp Float -->
-<a class="wpp-float" id="wpp-float" href="#" target="_blank" rel="noopener" title="Falar no WhatsApp">
-  <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+<!-- WhatsApp flutuante -->
+<a class="wpp-float" id="wpp-float" href="#" aria-label="WhatsApp">
+  <svg viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
 </a>
 
 <script>
 (function() {
-  // ---- Helper: escurece uma cor hex ----
-  function darkenHex(hex, pct) {
-    const n = parseInt(hex.replace('#',''), 16);
-    const r = Math.max(0, (n>>16) - Math.round(((n>>16)*pct)/100));
-    const g = Math.max(0, ((n>>8)&0xff) - Math.round((((n>>8)&0xff)*pct)/100));
-    const b = Math.max(0, (n&0xff) - Math.round(((n&0xff)*pct)/100));
-    return '#' + [r,g,b].map(x=>x.toString(16).padStart(2,'0')).join('');
+  const C = CONFIG;
+  const wppUrl = `https://wa.me/${C.whatsapp}?text=${encodeURIComponent(C.whatsapp_msg || '')}`;
+
+  // Cores
+  document.documentElement.style.setProperty('--primary',   C.cor_primaria   || '#C4B470');
+  document.documentElement.style.setProperty('--primary-d', (C.cor_primaria   || '#C4B470') + 'cc');
+  document.documentElement.style.setProperty('--dark',      C.cor_secundaria || '#0D1117');
+
+  // Meta
+  document.title = `${C.empresa} — ${C.badge || C.slogan || 'Pré-Moldados'}`;
+  qs('#page-desc').content   = C.subheadline || '';
+  qs('#og-title').content    = document.title;
+  qs('#og-description').content = C.subheadline || '';
+
+  // Pixel Meta
+  if (C.pixel_meta) {
+    qs('#pixel-meta').textContent = `!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','${C.pixel_meta}');fbq('track','PageView');`;
   }
 
-  // ---- Aplica CSS vars de cor ----
-  document.documentElement.style.setProperty('--primary',   CONFIG.cor_primaria   || '#C4B470');
-  document.documentElement.style.setProperty('--dark',      CONFIG.cor_secundaria || '#0D1117');
-  document.documentElement.style.setProperty('--dark-2',    CONFIG.cor_secundaria || '#161B22');
-
-  // Novos tokens de identidade
-  if (CONFIG.cor_texto)  document.documentElement.style.setProperty('--text',   CONFIG.cor_texto);
-  if (CONFIG.cor_fundo)  document.documentElement.style.setProperty('--bg',     CONFIG.cor_fundo);
-  if (CONFIG.cor_borda)  document.documentElement.style.setProperty('--border', CONFIG.cor_borda);
-  if (CONFIG.raio_borda) document.documentElement.style.setProperty('--radius', CONFIG.raio_borda);
-
-  // Hover — auto-escurece cor_primaria se não definido
-  const hoverColor = CONFIG.cor_primaria_hover || darkenHex(CONFIG.cor_primaria || '#C4B470', 15);
-  document.documentElement.style.setProperty('--primary-d', hoverColor);
-
-  // Fonte Google Fonts
-  if (CONFIG.fonte && CONFIG.fonte !== 'system') {
-    const fontUrl = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(CONFIG.fonte)}:wght@${CONFIG.fonte_peso_texto||400};600;${CONFIG.fonte_peso_titulo||800}&display=swap`;
-    document.getElementById('google-font').href = fontUrl;
-    document.documentElement.style.setProperty('--font-family', `'${CONFIG.fonte}', system-ui, sans-serif`);
+  // GA4
+  if (C.ga4) {
+    qs('#ga4-script').textContent = `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','${C.ga4}');`;
+    const s = document.createElement('script'); s.async = true; s.src = `https://www.googletagmanager.com/gtag/js?id=${C.ga4}`; document.head.appendChild(s);
   }
 
-  // Logo
-  if (CONFIG.logo) {
-    document.getElementById('h-logo').src = CONFIG.logo;
-    const fLogo = document.getElementById('f-logo');
-    if (fLogo) fLogo.src = CONFIG.logo;
+  function qs(sel) { return document.querySelector(sel); }
+  function text(sel, val) { const el = qs(sel); if (el && val) el.textContent = val; }
+  function show(sel) { const el = qs(sel); if (el) el.style.display = ''; }
+
+  // Header
+  text('#h-nome', C.empresa);
+  text('#h-slogan', C.badge || C.slogan);
+  text('#h-tel', C.telefone);
+  qs('#h-wpp').href = wppUrl;
+  if (C.logo) { const img = qs('#h-logo'); img.src = C.logo; img.alt = C.empresa; img.style.display = 'block'; }
+
+  // Hero
+  text('#hero-badge', C.badge || C.slogan);
+  text('#hero-headline', C.headline);
+  text('#hero-sub', C.subheadline);
+  qs('#hero-wpp').href = wppUrl;
+  qs('#hero-wpp').querySelector('svg').nextSibling.textContent = ' ' + (C.cta_principal || 'Pedir orçamento agora');
+
+  // Números hero
+  const numsEl = qs('#hero-nums');
+  if (numsEl && C.numeros) {
+    numsEl.innerHTML = C.numeros.map(n =>
+      `<div class="hero-num-item"><div class="hero-num">${n.valor}</div><div class="hero-num-label">${n.label}</div></div>`
+    ).join('');
   }
 
-  // CSS do estilo visual
-  const estiloCSS = {
-    bold: `
-      :root { --radius: 6px; }
-      .hero-headline { font-size: clamp(2.2rem, 5vw, 3.8rem) !important; letter-spacing: -1.5px; }
-      .btn-wpp, .btn-wpp-header { border-radius: 6px !important; font-size: 1.05em; }
-      .produto-card, .dif-card { border-radius: 6px !important; border: 2px solid var(--primary); }
-      .hero-num { font-size: 2.4rem !important; }
-    `,
-    rustico: `
-      :root { --radius: 20px; }
-      .hero-headline { font-family: Georgia, 'Times New Roman', serif; }
-      .hero-badge { border-radius: 100px; padding: 8px 20px; }
-      .dif-card { border-radius: 20px !important; }
-      #header { border-bottom: 2px solid var(--primary); }
-      .section-title::after { content: ''; display: block; width: 60px; height: 3px; background: var(--primary); margin: 8px auto 0; border-radius: 3px; }
-    `,
-    industrial: `
-      :root { --radius: 2px; }
-      body { font-family: 'Courier New', monospace, system-ui; }
-      .hero-headline { text-transform: uppercase; letter-spacing: 2px; }
-      .hero-badge { border-radius: 0; border: 2px solid var(--primary); background: transparent; color: var(--primary); }
-      .btn-primary, .btn-wpp-header { border-radius: 0 !important; text-transform: uppercase; letter-spacing: 1px; }
-      .produto-card, .dif-card { border-radius: 0 !important; border-left: 4px solid var(--primary); }
-      #header { border-bottom: 3px solid var(--primary); }
-    `
-  };
-  const overrideCSS = estiloCSS[CONFIG.estilo] || '';
-  if (overrideCSS) document.getElementById('estilo-overrides').textContent = overrideCSS;
+  // Trust bar — diferenciais resumidos
+  const trustEl = qs('#trust-inner');
+  if (trustEl && C.diferenciais) {
+    trustEl.innerHTML = C.diferenciais.slice(0, 4).map(d =>
+      `<div class="trust-item"><span class="trust-icon">${d.icone || '✓'}</span><span class="trust-text">${d.titulo}</span></div>`
+    ).join('');
+  }
 
-  // ---- Meta ----
-  document.getElementById('page-title').textContent = CONFIG.empresa + ' — ' + (CONFIG.slogan || 'Premoldados');
-  document.getElementById('page-desc').content = CONFIG.subheadline || '';
+  // PAS
+  const hook = C.hook || C.headline || '';
+  const problema = C.problema || '';
+  const agitacao = C.agitacao || '';
+  const solucao  = C.solucao  || '';
 
-  // ---- WPP link ----
-  const wppUrl = `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(CONFIG.whatsapp_msg || '')}`;
+  if (problema || agitacao || solucao) {
+    qs('#sec-problema').style.display = '';
+    text('#pas-headline', hook.length > 80 ? hook.substring(0, 80) + '...' : hook);
+    text('#pas-problema', problema);
+    text('#pas-agitacao', agitacao);
+    text('#pas-solucao', solucao);
+  } else {
+    qs('#sec-problema').style.display = 'none';
+  }
 
-  // ---- Header ----
-  const logo = document.getElementById('h-logo');
-  if (!CONFIG.logo) { logo.src = ''; } logo.alt = CONFIG.empresa;
-  document.getElementById('h-nome').textContent    = CONFIG.empresa;
-  document.getElementById('h-slogan').textContent  = CONFIG.slogan || '';
-  document.getElementById('h-tel').textContent     = CONFIG.telefone || '';
-  document.getElementById('h-wpp').href            = wppUrl;
+  // Claims
+  if (C.claims && C.claims.length) {
+    const list = qs('#claims-list');
+    list.innerHTML = C.claims.map(cl =>
+      `<li style="display:flex;gap:10px;align-items:flex-start;font-size:14px;color:var(--gray-600);line-height:1.6"><span style="color:var(--primary);font-weight:900;flex-shrink:0">→</span>${cl}</li>`
+    ).join('');
+  } else {
+    qs('#claims-block').style.display = 'none';
+  }
 
-  // ---- Hero ----
-  document.getElementById('hero-badge').textContent    = CONFIG.badge || CONFIG.empresa;
-  document.getElementById('hero-headline').innerHTML   = CONFIG.headline || '';
-  document.getElementById('hero-sub').textContent      = CONFIG.subheadline || '';
-  document.getElementById('hero-wpp').href             = wppUrl;
-
-  const numsEl = document.getElementById('hero-nums');
-  (CONFIG.numeros || []).forEach(n => {
-    numsEl.innerHTML += `<div class="hero-num-item"><div class="hero-num">${n.valor}</div><div class="hero-num-label">${n.label}</div></div>`;
-  });
-
-  // ---- Produtos ----
-  const grid = document.getElementById('produtos-grid');
-  document.getElementById('prod-sub').textContent = `Fabricamos com qualidade para ${CONFIG.cidade || 'sua região'}.`;
-  (CONFIG.produtos || []).forEach(p => {
-    grid.innerHTML += `
-      <div class="produto-card">
-        <div class="produto-img">${p.foto ? `<img src="${p.foto}" alt="${p.nome}" loading="lazy">` : '🧱'}</div>
-        <div class="produto-body">
-          ${p.aplicacao ? `<div class="produto-aplicacao">${p.aplicacao}</div>` : ''}
-          <div class="produto-nome">${p.nome}</div>
-          ${p.desc  ? `<div class="produto-desc">${p.desc}</div>` : ''}
-          ${p.preco ? `<div class="produto-preco">${p.preco}</div>` : ''}
+  // Diferenciais
+  const difsEl = qs('#difs-grid');
+  if (difsEl && C.diferenciais) {
+    difsEl.innerHTML = C.diferenciais.map((d, i) =>
+      `<div class="dif-item">
+        <div class="dif-num">${String(i + 1).padStart(2, '0')}</div>
+        <div class="dif-content">
+          <div class="dif-titulo">${d.titulo}</div>
+          <div class="dif-desc">${d.desc}</div>
         </div>
-      </div>`;
-  });
+      </div>`
+    ).join('');
+  }
 
-  // ---- Diferenciais ----
-  const difsGrid = document.getElementById('difs-grid');
-  (CONFIG.diferenciais || []).forEach(d => {
-    difsGrid.innerHTML += `
-      <div class="dif-card">
-        <div class="dif-icon">${d.icone || '✓'}</div>
-        <div class="dif-titulo">${d.titulo}</div>
-        ${d.desc ? `<div class="dif-desc">${d.desc}</div>` : ''}
-      </div>`;
-  });
+  // Produtos
+  text('#prod-titulo', `O que fabricamos`);
+  text('#prod-sub', `Linha de produtos disponíveis para sua obra em ${C.cidade || 'Sergipe'}.`);
+  const prodEl = qs('#produtos-grid');
+  if (prodEl && C.produtos) {
+    prodEl.innerHTML = C.produtos.map(p =>
+      `<div class="produto-card">
+        <div class="produto-img-wrap">${p.foto ? `<img src="${p.foto}" alt="${p.nome}">` : '🏗️'}</div>
+        <div class="produto-tag">${p.aplicacao}</div>
+        <div class="produto-nome">${p.nome}</div>
+        <div class="produto-desc">${p.desc}</div>
+        <a class="produto-cta" href="${wppUrl}">Solicitar orçamento →</a>
+      </div>`
+    ).join('');
+  }
 
-  // ---- Depoimentos ----
-  const deposGrid = document.getElementById('depos-grid');
-  (CONFIG.depoimentos || []).forEach(d => {
-    const inicial = (d.nome || '?')[0].toUpperCase();
-    deposGrid.innerHTML += `
-      <div class="depo-card">
-        <div class="depo-stars">★★★★★</div>
-        <p class="depo-texto">"${d.texto}"</p>
+  // CTA section
+  text('#cta-titulo', C.cta_principal || 'Solicite seu orçamento agora');
+  text('#cta-sub', `Retorno no mesmo dia. Atendimento direto, sem intermediários.`);
+  qs('#cta-wpp').href = wppUrl;
+
+  // Depoimentos
+  const depoEl = qs('#depos-grid');
+  if (depoEl && C.depoimentos && C.depoimentos.length) {
+    depoEl.innerHTML = C.depoimentos.map(d =>
+      `<div class="depo-card">
+        <p class="depo-texto">${d.texto}</p>
         <div class="depo-autor">
-          <div class="depo-avatar">${inicial}</div>
-          <div>
-            <div class="depo-nome">${d.nome}</div>
-            ${d.local ? `<div class="depo-local">${d.local}</div>` : ''}
-          </div>
+          <div class="depo-avatar">${d.nome.charAt(0)}</div>
+          <div><div class="depo-nome">${d.nome}</div><div class="depo-local">${d.local}</div></div>
         </div>
-      </div>`;
+      </div>`
+    ).join('');
+    qs('#sec-depos').style.display = '';
+  } else {
+    qs('#sec-depos').style.display = 'none';
+  }
+
+  // Cobertura
+  text('#cob-titulo', `Atendemos em ${C.cidade || 'Sergipe'}`);
+  text('#cob-sub', `Fabricação e entrega com frota própria.`);
+  const regEl = qs('#regioes-list');
+  if (regEl && C.regioes) {
+    regEl.innerHTML = C.regioes.map(r => `<span class="regiao-tag">${r}</span>`).join('');
+  }
+
+  // Formulário / contato
+  text('#contato-sub', C.subheadline || 'Preencha abaixo e retornamos no mesmo dia.');
+  const beneficios = [
+    'Retorno no mesmo dia',
+    'Atendimento comercial direto',
+    'Orçamento sem compromisso',
+  ];
+  const benefEl = qs('#contato-beneficios');
+  if (benefEl) {
+    benefEl.innerHTML = beneficios.map(b =>
+      `<div class="contato-beneficio"><div class="contato-beneficio-check">✓</div><div class="contato-beneficio-text">${b}</div></div>`
+    ).join('');
+  }
+
+  // P.S.
+  if (C.ps) {
+    text('#ps-text', `P.S. — ${C.ps}`);
+    qs('#sec-ps').style.display = '';
+  } else {
+    qs('#sec-ps').style.display = 'none';
+  }
+
+  // Footer
+  text('#f-nome-foot', C.empresa);
+  if (C.logo) { const img = qs('#f-logo'); img.src = C.logo; img.style.display = 'block'; }
+  const infoEl = qs('#f-info');
+  if (infoEl) {
+    infoEl.innerHTML = [
+      C.telefone ? `📞 ${C.telefone}` : '',
+      C.cidade   ? `📍 ${C.cidade}` : '',
+      `© ${new Date().getFullYear()} ${C.empresa}. Todos os direitos reservados.`,
+    ].filter(Boolean).join('<br>');
+  }
+
+  // WhatsApp float
+  qs('#wpp-float').href = wppUrl;
+
+  // Hero card form
+  qs('#btn-hc-form').addEventListener('click', function() {
+    const nome    = qs('#hc-nome').value.trim();
+    const tel     = qs('#hc-tel').value.trim();
+    const produto = qs('#hc-produto').value.trim();
+    const status  = qs('#hc-status');
+    if (!nome || !tel) { status.textContent = 'Preencha nome e WhatsApp.'; status.className = 'form-status err'; return; }
+    this.disabled = true; this.textContent = 'Enviando...';
+    enviarLead({ nome, tel, produto, origem: 'hero-card' }, status, this, 'Orçamento solicitado! Retorno em breve.');
   });
 
-  // ---- Cobertura ----
-  document.getElementById('cob-cidade').textContent = `Sediados em ${CONFIG.cidade || ''}. Entregamos para:`;
-  const regEl = document.getElementById('regioes-list');
-  (CONFIG.regioes || []).forEach(r => { regEl.innerHTML += `<span class="regiao-tag">📍 ${r}</span>`; });
+  // Formulário principal
+  qs('#btn-form').addEventListener('click', function() {
+    const nome    = qs('#f-nome').value.trim();
+    const tel     = qs('#f-tel').value.trim();
+    const produto = qs('#f-produto').value.trim();
+    const cidade  = qs('#f-cidade').value.trim();
+    const obs     = qs('#f-obs').value.trim();
+    const status  = qs('#form-status');
+    if (!nome || !tel) { status.textContent = 'Preencha nome e WhatsApp.'; status.className = 'form-status err'; return; }
+    this.disabled = true; this.textContent = 'Enviando...';
+    enviarLead({ nome, tel, produto, cidade, obs, origem: 'formulario' }, status, this, 'Orçamento solicitado! Entraremos em contato em breve.');
+  });
 
-  // ---- Footer ----
-  const fLogo = document.getElementById('f-logo');
-  fLogo.src = CONFIG.logo || ''; fLogo.alt = CONFIG.empresa;
-  document.getElementById('f-nome-footer').textContent = CONFIG.empresa;
-  document.getElementById('f-info').innerHTML = [
-    CONFIG.telefone && `📞 ${CONFIG.telefone}`,
-    CONFIG.cidade   && `📍 ${CONFIG.cidade}`,
-    CONFIG.endereco && CONFIG.endereco,
-    `© ${new Date().getFullYear()} ${CONFIG.empresa}`,
-  ].filter(Boolean).join('<br>');
-
-  // ---- WhatsApp float ----
-  document.getElementById('wpp-float').href = wppUrl;
-
-  // ---- Rastreamento Meta ----
-  const CAPI_ENDPOINT = 'https://escalando-premoldados.vercel.app/api/events';
-
-  function getCookie(name) {
-    const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
-    return match ? match[2] : '';
-  }
-
-  function genEventId(name) {
-    return name + '_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8);
-  }
-
-  function sendCAPI(eventName, eventId, extraUserData) {
-    if (!CONFIG.pixel_meta) return;
-    const payload = {
-      event_name:       eventName,
-      event_id:         eventId,
-      pixel_id:         CONFIG.pixel_meta,
-      event_source_url: window.location.href,
-      user_data: {
-        fbc: getCookie('_fbc'),
-        fbp: getCookie('_fbp'),
-        ...extraUserData,
-      },
+  function enviarLead(dados, statusEl, btn, successMsg) {
+    const utms = {
+      utm_source:   qs('#utm-source')?.value   || new URLSearchParams(location.search).get('utm_source')   || '',
+      utm_medium:   qs('#utm-medium')?.value   || new URLSearchParams(location.search).get('utm_medium')   || '',
+      utm_campaign: qs('#utm-campaign')?.value || new URLSearchParams(location.search).get('utm_campaign') || '',
     };
-    fetch(CAPI_ENDPOINT, {
-      method:  'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify(payload),
-    }).catch(() => {}); // silencia erros de rede — não interrompe o usuário
-  }
-
-  // Dispara Contact no clique de qualquer botão WhatsApp
-  function trackWppClick() {
-    const eid = genEventId('Contact');
-    if (typeof fbq !== 'undefined') fbq('track', 'Contact', {}, { eventID: eid });
-    if (typeof gtag !== 'undefined') gtag('event', 'click_whatsapp');
-    sendCAPI('Contact', eid, {});
-  }
-
-  ['h-wpp', 'hero-wpp', 'wpp-float'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.addEventListener('click', trackWppClick);
-  });
-
-  // ---- UTM — popula campos hidden ao carregar ----
-  (function() {
-    const utm = new URLSearchParams(window.location.search);
-    ['source','medium','campaign','content','term'].forEach(p => {
-      const el = document.getElementById('utm-' + p);
-      if (el) el.value = utm.get('utm_' + p) || '';
+    const payload = { ...dados, ...utms, empresa: C.empresa, pagina: location.href, timestamp: new Date().toISOString() };
+    fetch(C.webhook || '', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload),
+    })
+    .then(r => r.json())
+    .then(() => {
+      statusEl.textContent = successMsg;
+      statusEl.className = 'form-status ok';
+      btn.textContent = 'Enviado ✓';
+      if (window.fbq) fbq('track', 'Lead');
+      if (window.gtag) gtag('event', 'generate_lead', { send_to: C.ga4 });
+    })
+    .catch(() => {
+      statusEl.textContent = 'Erro ao enviar. Tente pelo WhatsApp.';
+      statusEl.className = 'form-status err';
+      btn.disabled = false;
+      btn.textContent = 'Solicitar orçamento →';
     });
-  })();
+  }
 
-  // ---- Formulário ----
-  const fTel = document.getElementById('f-tel');
-  fTel.addEventListener('input', function(e) {
-    let v = e.target.value.replace(/\D/g, '').slice(0, 11);
-    if (v.length > 6) v = v.replace(/^(\d{2})(\d{5})(\d{0,4})/, '($1) $2-$3');
-    else if (v.length > 2) v = v.replace(/^(\d{2})(\d{0,5})/, '($1) $2');
-    e.target.value = v;
+  // UTMs da URL
+  const params = new URLSearchParams(location.search);
+  ['source','medium','campaign','content','term'].forEach(k => {
+    const el = qs(`#utm-${k}`);
+    if (el) el.value = params.get(`utm_${k}`) || '';
   });
 
-  document.getElementById('btn-form').addEventListener('click', async function() {
-    const btn  = this;
-    const st   = document.getElementById('form-status');
-    const nome = document.getElementById('f-nome').value.trim();
-    const tel  = document.getElementById('f-tel').value.trim();
-
-    if (!nome || !tel) {
-      st.className = 'form-status err'; st.textContent = '❌ Preencha nome e WhatsApp.'; return;
-    }
-
-    st.className = 'form-status'; st.textContent = '';
-    btn.disabled = true; btn.textContent = 'Enviando...';
-
-    // UTM — captura os 5 parâmetros dos campos hidden (populados no load)
-    const canal = document.getElementById('utm-source').value
-      ? `Site — ${document.getElementById('utm-source').value}`
-      : 'Site';
-
-    try {
-      const res = await fetch(CONFIG.webhook, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action:        'novo-lead',
-          empresa:       CONFIG.empresa,
-          nome,
-          telefone:      tel,
-          cidade:        document.getElementById('f-cidade').value.trim(),
-          canal,
-          produto:       document.getElementById('f-produto').value.trim(),
-          obs:           document.getElementById('f-obs').value.trim(),
-          utm_source:    document.getElementById('utm-source').value,
-          utm_medium:    document.getElementById('utm-medium').value,
-          utm_campaign:  document.getElementById('utm-campaign').value,
-          utm_content:   document.getElementById('utm-content').value,
-          utm_term:      document.getElementById('utm-term').value,
-        }),
-      });
-      const json = await res.json();
-      if (json.success) {
-        st.className = 'form-status ok';
-        st.textContent = '✅ Recebido! Entraremos em contato em breve.';
-        ['f-nome','f-tel','f-produto','f-cidade','f-obs'].forEach(id => document.getElementById(id).value = '');
-        btn.textContent = 'Enviado!';
-        // Pixel evento Lead (browser + CAPI deduplicado)
-        const leadEid = genEventId('Lead');
-        const tel = document.getElementById('f-tel').value.trim();
-        if (typeof fbq !== 'undefined') fbq('track', 'Lead', {}, { eventID: leadEid });
-        if (typeof gtag !== 'undefined') gtag('event', 'generate_lead');
-        sendCAPI('Lead', leadEid, { ph: tel });
-      } else throw new Error(json.error);
-    } catch (err) {
-      st.className = 'form-status err';
-      st.textContent = '❌ Erro ao enviar. Tente pelo WhatsApp.';
-      btn.disabled = false; btn.textContent = 'Solicitar orçamento grátis →';
-    }
-  });
 })();
 </script>
-
 </body>
 </html>

@@ -505,6 +505,14 @@ export async function gateLp2(empresa) {
       await saveConfig(slug, 'copy', copyResult.copy);
       console.log('[Gate LP-2] config/copy-{slug}.json salvo.');
 
+      // Merge copy fields into lp config so gerar-lp.js uses the approved copy
+      const lpConfig = await readConfig(slug, 'lp');
+      if (lpConfig) {
+        const merged = { ...lpConfig, ...copyResult.copy };
+        await saveConfig(slug, 'lp', merged);
+        console.log('[Gate LP-2] Copy merged into lp config.');
+      }
+
       // Posta copy como comentário na [FASE 2]
       const fase2 = await encontrarTaskFase(listaLP.id, 2);
       if (fase2) {
