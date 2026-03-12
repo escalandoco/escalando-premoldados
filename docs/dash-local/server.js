@@ -530,8 +530,11 @@ const server = http.createServer((req, res) => {
           return;
         }
         exec('git pull origin main', { cwd: ROOT }, (err, stdout, stderr) => {
+          const output = stdout || stderr || '';
           res.writeHead(200, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({ ok: !err, output: stdout || stderr || '' }));
+          res.end(JSON.stringify({ ok: !err, output }));
+          // Reinicia o serviço para carregar novo código (fire-and-forget)
+          if (!err) exec('systemctl restart escalando-dash', () => {});
         });
       } catch (e) {
         res.writeHead(500, { 'Content-Type': 'application/json' });
