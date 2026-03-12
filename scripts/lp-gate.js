@@ -588,6 +588,23 @@ export async function gateLp3(empresa) {
     if (visualJson) {
       await saveConfig(slug, 'visual', visualJson);
       console.log('[Gate LP-3] config/visual-{slug}.json salvo.');
+
+      // Merge visual fields into lp config — só preenche campos ainda ausentes
+      // (valores definidos manualmente no lp config têm prioridade)
+      const lpConfig = await readConfig(slug, 'lp');
+      if (lpConfig) {
+        const VISUAL_FIELDS = ['cor_primaria', 'cor_secundaria', 'cor_texto', 'cor_fundo', 'estilo', 'fonte_titulo', 'fonte_corpo'];
+        const patch = {};
+        for (const f of VISUAL_FIELDS) {
+          if (visualJson[f] && !lpConfig[f]) patch[f] = visualJson[f];
+        }
+        if (Object.keys(patch).length > 0) {
+          await saveConfig(slug, 'lp', { ...lpConfig, ...patch });
+          console.log('[Gate LP-3] Visual merged into lp config (campos faltantes preenchidos):', Object.keys(patch).join(', '));
+        } else {
+          console.log('[Gate LP-3] lp config já tem todos os campos visuais — nenhum patch necessário.');
+        }
+      }
     }
 
     await logJob('gate-lp3-visual-gerado', empresa, 'completed', 'Sugestão visual gerada e postada na Fase 3');
