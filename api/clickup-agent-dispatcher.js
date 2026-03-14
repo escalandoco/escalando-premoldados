@@ -107,6 +107,11 @@ const AGENTS = {
     agent: 'Theo', handle: '@theo', role: 'Traffic Manager',
     keywords: ['go-live', 'golive', 'campanha no ar', 'anúncio no ar', 'subiu a campanha', 'campanha ativa', 'campanha rodando', 'ativei a campanha', 'campanha está rodando'],
   },
+  'aprovar-gate': {
+    desc: 'Aprova um gate do pipeline Meta Ads (copy, criativos, briefing, estrategia, golive) — marca o subtask como completo no ClickUp',
+    agent: 'Theo', handle: '@theo', role: 'Traffic Manager',
+    keywords: ['copy aprovada', 'copy aprovado', 'cliente aprovou a copy', 'copy ok', 'criativos aprovados', 'criativo aprovado', 'arte aprovada', 'cliente aprovou', 'briefing aprovado', 'estrategia aprovada', 'go-live autorizado', 'pode ir ao ar', 'autorizado para ir ao ar'],
+  },
   'aprovar-fase': {
     desc: 'Aprova a fase atual do pipeline de LP (avança o Quality Gate)',
     agent: 'Morgan', handle: '@morgan', role: 'PM',
@@ -261,12 +266,14 @@ Sua tarefa: identifique se o comentário está pedindo para executar algum agent
 
 Responda APENAS com JSON válido, sem markdown, sem explicação:
 - Se for um comando: {"agent":"<id-do-agent>","cliente":"${clienteDetectado}","summary":"<o que foi entendido em 1 frase>"}
+- Se agente for "aprovar-gate": inclua também "gate":"<copy|criativos|golive|briefing|estrategia>" conforme o contexto do comentário
 - Se NÃO for um comando (só uma pergunta, observação, feedback): {"agent":null}
 
 Regras:
 - Seja liberal na interpretação — se parece um pedido de ação, é um comando
 - Use sempre o cliente "${clienteDetectado}" a menos que outro seja explicitamente mencionado no comentário
-- Escolha o agente mais adequado ao pedido`;
+- Escolha o agente mais adequado ao pedido
+- Para "aprovar-gate": copy = copy aprovada | criativos = artes/criativos aprovados | golive = go-live autorizado | briefing = briefing aprovado | estrategia = estratégia aprovada`;
 
   const r = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
@@ -301,11 +308,11 @@ Regras:
 }
 
 // ── HELPER: Executa agente no VPS ────────────────────────────
-async function runAgentOnVPS(script, cliente) {
+async function runAgentOnVPS(script, cliente, extraPayload = {}) {
   const r = await fetch(`${VPS_URL}/api/run-worker`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ secret: WORKER_SECRET, script, cliente }),
+    body: JSON.stringify({ secret: WORKER_SECRET, script, cliente, ...extraPayload }),
   });
   if (!r.ok) throw new Error(`VPS run-worker ${r.status}: ${await r.text()}`);
   return r.json();
@@ -435,6 +442,31 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true, agent: 'aprovar-fase', fase: faseAtual });
     }
 
+    // 4d. Tratamento especial: aprovar-gate — passa o gate como extra arg no VPS
+    if (intent.agent === 'aprovar-gate') {
+      if (!intent.gate) {
+        await clickupComment(task_id,
+          `⚠️ Não consegui identificar qual gate aprovar.\n\nUse uma das frases:\n• "copy aprovada" → Gate MA-D\n• "criativos aprovados" → Gate MA-E\n• "go-live autorizado" → Gate MA-G\n• "briefing aprovado" → Gate MA-B\n• "estratégia aprovada" → Gate MA-C\n\n---\n_Dispatcher — Escalando Premoldados_`
+        );
+        return res.status(200).json({ skipped: true, reason: 'gate_not_identified' });
+      }
+
+      await clickupComment(task_id,
+        `✅ Registrando aprovação do gate **${intent.gate}** para **${intent.cliente}**...\n_Aguarde o resultado._`
+      );
+
+      try {
+        const result = await runAgentOnVPS('aprovar-gate', intent.cliente, { gate: intent.gate, task_id });
+        const saida = result.output?.slice(0, 300) || '';
+        await clickupComment(task_id,
+          `✅ **Gate aprovado!**\n\n${saida}\n\n---\n_Dispatcher — Escalando Premoldados_`
+        );
+      } catch (e) {
+        console.error('[dispatcher] aprovar-gate error:', e.message);
+      }
+      return res.status(200).json({ ok: true, agent: 'aprovar-gate', gate: intent.gate });
+    }
+
     // 5. Feedback imediato: "entendi, executando..."
     const agentInfo = AGENTS[intent.agent] || {};
     const agentLabel = agentInfo.agent
@@ -447,7 +479,11 @@ export default async function handler(req, res) {
     // 6. Executar agente no VPS
     let result;
     try {
-      result = await runAgentOnVPS(intent.agent, intent.cliente);
+      // Agentes que precisam do task_id atual para comentar no card correto
+      const taskIdPayload = ['registrar-golive', 'setup-campanha-meta'].includes(intent.agent)
+        ? { task_id }
+        : {};
+      result = await runAgentOnVPS(intent.agent, intent.cliente, taskIdPayload);
     } catch (vpsErr) {
       // NÃO posta no ClickUp — causaria loop de webhook
       console.error(`[dispatcher] VPS error for ${intent.agent}:`, vpsErr.message);

@@ -489,7 +489,7 @@ const server = http.createServer((req, res) => {
     req.on('data', d => body += d);
     req.on('end', () => {
       try {
-        const { secret, script, cliente = 'concrenor' } = JSON.parse(body || '{}');
+        const { secret, script, cliente = 'concrenor', gate, task_id: bodyTaskId } = JSON.parse(body || '{}');
 
         // Auth por token secreto
         if (!WORKER_SECRET || secret !== WORKER_SECRET) {
@@ -499,7 +499,7 @@ const server = http.createServer((req, res) => {
         }
 
         // Whitelist de scripts permitidos
-        const ALLOWED = ['monitorar-ads','relatorio-ads','exportar-leads-meta','verificar-lp','gerar-lp','deploy-lp','gerar-copy-ads','gerar-copy','analisar-concorrentes','criar-pipeline-lp','setup-campanha-meta','novo-criativo','escalar-campanha','pausar-campanha','registrar-golive','verificar-ciclo-campanha','adicionar-cron-ciclo'];
+        const ALLOWED = ['monitorar-ads','relatorio-ads','exportar-leads-meta','verificar-lp','gerar-lp','deploy-lp','gerar-copy-ads','gerar-copy','analisar-concorrentes','criar-pipeline-lp','setup-campanha-meta','novo-criativo','escalar-campanha','pausar-campanha','registrar-golive','verificar-ciclo-campanha','adicionar-cron-ciclo','aprovar-gate'];
         if (!ALLOWED.includes(script)) {
           res.writeHead(400, { 'Content-Type': 'application/json' });
           res.end(JSON.stringify({ error: `Script não permitido: ${script}` }));
@@ -507,7 +507,11 @@ const server = http.createServer((req, res) => {
         }
 
         const empresa = cliente.charAt(0).toUpperCase() + cliente.slice(1);
-        const extraArgs = script === 'gerar-lp' ? ` --config=config/lp-${cliente}.json` : '';
+        let extraArgs = script === 'gerar-lp' ? ` --config=config/lp-${cliente}.json` : '';
+        if (script === 'aprovar-gate' && gate)           extraArgs += ` --gate=${gate}`;
+        if (script === 'aprovar-gate' && bodyTaskId)     extraArgs += ` --task=${bodyTaskId}`;
+        if (script === 'registrar-golive' && bodyTaskId) extraArgs += ` --task=${bodyTaskId}`;
+        if (script === 'setup-campanha-meta' && bodyTaskId) extraArgs += ` --task=${bodyTaskId}`;
         const cmd = `node scripts/${script}.js --cliente=${cliente} --empresa=${empresa}${extraArgs}`;
         const ts  = new Date().toISOString().replace('T',' ').slice(0,19);
         console.log(`[${ts}] run-worker: ${cmd}`);

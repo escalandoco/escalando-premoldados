@@ -319,11 +319,38 @@ PIXEL [XXXX] [{TAG}] [LEAD] 180D
 
 ---
 
+## Fluxo de Aprovacao pelo Cliente
+
+### Copy (Gate MA-D)
+1. Sistema gera copy via `setup-campanha-meta` e posta no card
+2. Jon envia copy para o cliente via **WhatsApp**
+3. Cliente aprova ou pede ajuste
+4. Jon comenta no card ClickUp: **"copy aprovada"**
+5. Sistema marca gate MA-D como completo automaticamente
+
+### Criativos (Gate MA-E)
+1. Jon (ou designer) produz os criativos no **Canva** a partir do brief visual do sistema
+2. Jon envia as artes para o cliente via WhatsApp (ou link do Canva/Drive)
+3. Cliente aprova
+4. Jon comenta no card: **"criativos aprovados"**
+5. Sistema marca gate MA-E como completo automaticamente
+
+### Go-Live (Gate MA-G)
+1. Jon confere checklist de go-live (reputacao da conta, budget, publicos)
+2. Comenta no card: **"go-live autorizado"** (ou "pode ir ao ar")
+3. Sistema marca MA-G como completo + registra data de go-live + agenda D+7/D+15 automaticamente
+
+---
+
 ## ClickUp — Comandos via Comentario
 
 | Comentario | Acao |
 |------------|------|
 | `cria a campanha` | Gera briefing + copy + nomenclatura + publicos + checklist |
+| `copy aprovada` | Marca gate MA-D como completo |
+| `criativos aprovados` | Marca gate MA-E como completo |
+| `go-live autorizado` | Marca MA-G + registra data + agenda D+7/D+15 |
+| `campanha no ar` | Registra go-live e agenda ciclo de monitoramento |
 | `novo criativo` | Gera nova variacao de copy + brief visual |
 | `escalar campanha` | Gera plano de escala baseado nos dados |
 | `pausa campanha` | Pausa e registra motivo |
