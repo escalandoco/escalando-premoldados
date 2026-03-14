@@ -281,7 +281,7 @@ export async function gateC(empresa) {
         if (!metaExiste) {
           await cu('post', `/list/${listaMeta.id}/task`, {
             name: `🔑 Coletar Acessos — ${empresa}`,
-            description: `Primeira task do squad de Tráfego Pago.\n\nSolicitar ao cliente:\n- Meta Business Manager (admin: jonatas@escalando.co)\n- Google Meu Negócio (gerente: jonatas@escalando.co)\n${plano === 'pro' ? '- Google Ads (admin: jonatas@escalando.co)' : ''}`,
+            description: `Primeira task do squad de Tráfego Pago.\n\nSolicitar ao cliente:\n- Meta Business Manager (admin: jotagodeiro16@gmail.com)\n- Google Meu Negócio (gerente: jotagodeiro16@gmail.com)\n${plano === 'pro' ? '- Google Ads (admin: jotagodeiro16@gmail.com)' : ''}`,
             priority: 1,
           });
           console.log('[Gate C] Task Coletar Acessos criada.');
