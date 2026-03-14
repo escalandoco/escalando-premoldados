@@ -28,7 +28,7 @@ const ROOT = path.join(__dirname, '..');
 const CLICKUP_KEY   = process.env.CLICKUP_API_KEY;
 const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY;
 const LIST_FICHAS   = process.env.CLICKUP_LIST_FICHAS || '901326308338';
-const LIST_META_ADS = '901326306627';
+const LIST_META_ADS = '901326390593';
 
 // ── CLI args ─────────────────────────────────────────────────
 const args = {};

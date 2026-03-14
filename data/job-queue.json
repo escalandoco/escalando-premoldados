@@ -1,0 +1,14 @@
+[
+  {
+    "attempts": 1,
+    "id": "analisar-concorrentes-concrenor",
+    "script": "analisar-concorrentes",
+    "cliente": "concrenor",
+    "status": "running",
+    "progress": 25,
+    "step": "4 concorrentes encontrados",
+    "createdAt": "2026-03-11T01:57:31.203Z",
+    "lastAttempt": "2026-03-11T01:57:31.203Z",
+    "error": null
+  }
+]

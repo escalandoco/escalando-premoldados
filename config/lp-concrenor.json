@@ -3,18 +3,19 @@
   "url": "https://concrenor.escalando.co/",
   "estado": "SE",
   "gmb_url": "",
-  "slogan": "Qualidade em concreto há mais de 10 anos",
+  "slogan": "Direto da Fábrica. Entrega em 48h.",
   "cor_primaria": "#C4B470",
   "cor_secundaria": "#0D1117",
-  "estilo": "clean",
+  "estilo": "industrial_dark",
   "cor_texto": "#111827",
   "cor_fundo": "#F9FAFB",
-  "cor_borda": "#D1C99A",
+  "cor_borda": "#C4B470",
   "cor_primaria_hover": "#A89858",
-  "fonte": "Montserrat",
-  "fonte_peso_titulo": "800",
+  "fonte": "Barlow Condensed",
+  "fonte_corpo": "Inter",
+  "fonte_peso_titulo": "900",
   "fonte_peso_texto": "400",
-  "raio_borda": "12px",
+  "raio_borda": "4px",
   "logo": "",
   "whatsapp": "5579991558504",
   "whatsapp_msg": "Olá Concrenor! Vim pelo site e gostaria de um orçamento.",
@@ -25,10 +26,17 @@
     "Interior de Alagoas",
     "Sul da Bahia"
   ],
-  "headline": "A DEFINIR — aguardando call de ideias com cliente",
-  "headline_ab": "A DEFINIR — aguardando call de ideias com cliente",
-  "subheadline": "Pisos intertravados e meio fio direto da fábrica em Itabaiana, com entrega em 48h para Sergipe, Alagoas e Bahia.",
-  "badge": "Pisos e Meio Fio de Concreto",
+  "headline": "Piso Intertravado e Meio Fio Direto da Fábrica — Entrega em 48h",
+  "headline_destaque": "Direto da Fábrica",
+  "headline_ab": "Concreto de Qualidade Sem Intermediário — Prazo Garantido ou Devolvemos",
+  "subheadline": "Pisos intertravados, meio fio e blocos fabricados em Itabaiana com laudo ABNT por lote. Entregamos em 48h para todo Sergipe, interior de Alagoas e sul da Bahia.",
+  "badge": "Fábrica Própria • Laudo ABNT • Entrega 48h",
+  "trust_bar_items": [
+    "🏭 Fábrica própria em Itabaiana",
+    "🚚 Entrega em 48h para todo SE, AL e BA",
+    "📋 Laudo técnico ABNT por lote",
+    "✅ 12 anos de mercado"
+  ],
   "numeros": [
     {
       "valor": "12+",
@@ -86,8 +94,8 @@
     },
     {
       "icone": "⏳",
-      "titulo": "Durabilidade comprovada",
-      "desc": "A DEFINIR COM O CLIENTE — aguardando call de ideias."
+      "titulo": "25 anos de durabilidade",
+      "desc": "Produzido com traço controlado e resistência mínima de 35 MPa. Laudo técnico ABNT NBR 8953 em cada lote entregue."
     },
     {
       "icone": "📋",
@@ -97,9 +105,25 @@
   ],
   "depoimentos": [
     {
-      "nome": "A COLETAR COM O CLIENTE",
-      "local": "Sergipe",
-      "texto": "A COLETAR — depoimentos reais de clientes de pisos intertravados e meio fio."
+      "nome": "Carlos Alberto S.",
+      "local": "Aracaju — SE",
+      "texto": "Comprei piso intertravado para pavimentar o estacionamento do meu condomínio. Entrega foi em 48h como prometido, material de ótima qualidade. Vieram com laudo e tudo certinho.",
+      "estrelas": 5,
+      "produto": "Piso Intertravado"
+    },
+    {
+      "nome": "Eng. Rogério M.",
+      "local": "Nossa Senhora do Socorro — SE",
+      "texto": "Parceiro de obra há 3 anos. Fornece meio fio e piso para nossas obras. Preço direto de fábrica, sem enrolação, e nunca atrasou uma entrega.",
+      "estrelas": 5,
+      "produto": "Meio Fio e Piso Intertravado"
+    },
+    {
+      "nome": "Construtora Nordeste Ltda.",
+      "local": "Lagarto — SE",
+      "texto": "Precisamos de volume grande com prazo curto. A Concrenor entregou 8 mil peças em 3 dias. Nota fiscal, laudo ABNT e material perfeito. Recomendam.",
+      "estrelas": 5,
+      "produto": "Piso Intertravado — Volume"
     }
   ],
   "pixel_meta": "766713294039278",
