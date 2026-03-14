@@ -1,73 +1,84 @@
 {
-  "_instrucoes": "Preencher este template antes de criar qualquer anuncio. Campos com [] sao obrigatorios. Campos com {} sao opcionais mas recomendados.",
-  "_versao": "1.0",
+  "_instrucoes": "Template para clientes de gestão de anúncios (Meta Ads only). Copie e renomeie para briefing-ads-{cliente}.json. Preencha todos os campos marcados com PREENCHER.",
+  "_versao": "2.0",
 
-  "cliente": "[Nome do cliente]",
-  "data_briefing": "[YYYY-MM-DD]",
-  "responsavel": "[Nome do gestor]",
+  "nicho": "PREENCHER — ex: 'estetica', 'odontologia', 'academia', 'advocacia', 'imobiliaria', 'moda', 'restaurante'. Use 'premoldados' para ativar modo especialista com abordagens hardcoded.",
+  "tipo_cliente": "ads-only",
 
-  "produto_anunciado": "[Produto principal a anunciar]",
-  "objetivo_campanha": "[leads | vendas | trafego | engajamento]",
-  "orcamento_mensal_brl": 0,
-  "orcamento_obs": "{Incluir +12% de impostos Meta Brasil (PIS/COFINS/ISS). Ex: R$1.500 reais = R$1.680 com impostos}",
+  "cliente": "PREENCHER — nome da empresa",
+  "data_briefing": "PREENCHER — AAAA-MM-DD",
+  "responsavel": "Escalando",
+
+  "produto_anunciado": "PREENCHER — o que vai ser anunciado",
+  "objetivo_campanha": "mensagens_whatsapp",
+  "como_converte": "PREENCHER — whatsapp | formulario | ligacao | agendamento | ecommerce",
+  "site_existente": false,
+  "ticket_medio": "PREENCHER — ex: R$ 200, R$ 2.000, R$ 50.000",
+
+  "orcamento_diario_brl": 30,
   "plataformas": ["Meta Ads"],
   "duracao_prevista_dias": 30,
 
   "avatar": {
-    "nome_ficticio": "[Ex: Antônio, fazendeiro]",
-    "idade": "[Ex: 40-65 anos]",
-    "profissao": "[Ex: Produtor rural / pecuarista]",
-    "regiao": "[Estados/cidades onde mora]",
-    "nivel_consciencia": "[sem_problema | com_problema | buscando_solucao | comparando | pronto_para_comprar]",
-    "dor_principal": "[O que mais dói financeira ou emocionalmente]",
-    "desejo_principal": "[O que ele quer alcançar]",
+    "nome_ficticio": "PREENCHER",
+    "idade": "PREENCHER",
+    "profissao": "PREENCHER",
+    "regiao": "PREENCHER — cidade / estado",
+    "nivel_consciencia": "PREENCHER — sem_problema | com_problema | com_solucao | produto_especifico",
+    "dor_principal": "PREENCHER — maior dor/frustração que o produto resolve",
+    "desejo_principal": "PREENCHER — o que o avatar REALMENTE quer",
     "objecoes": [
-      "[Objeção 1]",
-      "[Objeção 2]",
-      "[Objeção 3]"
+      "PREENCHER — objeção 1",
+      "PREENCHER — objeção 2"
     ],
-    "linguagem": "[Como ele fala — ex: direto, usa termos técnicos do campo, fala em reais por hectare]",
-    "onde_passa_tempo": "[Instagram, YouTube, grupos de Facebook, etc]"
+    "linguagem": "PREENCHER — como o avatar fala: formal, informal, técnico, regional",
+    "onde_passa_tempo": "PREENCHER — Instagram, Facebook, TikTok, etc."
   },
 
-  "promessa_principal": "[Uma frase que resume o que o produto entrega]",
-  "angulo_criativo": "[Economia | Tempo | Status | Medo | Prova Social | Contra-intuitivo]",
-
-  "provas_sociais": [
-    "{Depoimento ou caso real com nome + resultado}",
-    "{Foto de obra, entrega ou resultado}"
+  "publico": "PREENCHER — descrição resumida do público-alvo",
+  "promessa_principal": "PREENCHER — benefício central em 1 frase",
+  "angulo_criativo": "PREENCHER — como diferenciar dos concorrentes",
+  "diferenciais": [
+    "PREENCHER — diferencial 1",
+    "PREENCHER — diferencial 2"
   ],
 
+  "provas_sociais": [
+    "PREENCHER — depoimento / resultado real / número"
+  ],
+
+  "linguagem_tom": "PREENCHER — ex: 'direta e informal', 'técnica e confiável', 'empática e acolhedora'",
+  "tom_proibido": ["PREENCHER — ex: muito formal, muito agressivo"],
+
   "referencias_cliente": {
-    "anuncios_que_gostou": ["{URL ou descricao do anuncio}"],
-    "o_que_ja_tentou": "{O que o cliente ja fez de marketing antes}",
-    "o_que_nao_funcionou": "{O que tentou e fracassou — evitar repetir}",
+    "anuncios_que_gostou": ["PREENCHER na call de ideias"],
+    "o_que_ja_tentou": "PREENCHER na call de ideias",
+    "o_que_nao_funcionou": "PREENCHER na call de ideias",
     "materiais_disponiveis": {
       "fotos": false,
       "videos": false,
       "depoimentos_texto": false,
       "depoimentos_video": false,
-      "logo": false
+      "logo": true
     }
   },
 
-  "cta_principal": "[Ex: Peça seu orçamento pelo WhatsApp]",
-  "cta_url": "[Link do WhatsApp ou landing page]",
+  "cta_principal": "PREENCHER — ex: 'Fale pelo WhatsApp', 'Agende sua consulta'",
+  "cta_url": "PREENCHER — https://wa.me/55...",
   "cta_utm_padrao": "?utm_source=meta&utm_medium=cpc&utm_campaign={campanha}&utm_content={criativo}",
 
   "restricoes": {
-    "temas_proibidos": ["{Ex: não mencionar concorrentes pelo nome}"],
-    "tom_proibido": "{Ex: não usar linguagem agressiva}",
+    "temas_proibidos": ["PREENCHER"],
+    "ton_proibido": "PREENCHER",
     "aprovacao_necessaria": true,
     "prazo_aprovacao_dias": 2
   },
 
   "acessos_necessarios": {
-    "meta_business_manager": false,
-    "meta_ads_manager": false,
-    "pixel_meta_id": "",
-    "google_ads_mcc": false,
-    "gtm_container_id": "",
-    "ga4_measurement_id": ""
+    "meta_business_manager": true,
+    "meta_ads_manager": true,
+    "meta_ad_account_id": "PREENCHER — act_...",
+    "meta_bm_id": "PREENCHER",
+    "pixel_meta_id": "PREENCHER (opcional)"
   }
 }

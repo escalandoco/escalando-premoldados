@@ -191,6 +191,12 @@
           </div>
         </div>
 
+        <div class="field">
+          <label>Nicho / Segmento <span class="req">*</span></label>
+          <input type="text" name="nicho" placeholder="Ex: premoldados, estética, odontologia, academia, advocacia..." required>
+          <div class="hint">Use "premoldados" para ativar o modo especialista de copy</div>
+        </div>
+
         <div class="row2">
           <div class="field">
             <label>Responsável <span class="req">*</span></label>
@@ -369,6 +375,7 @@
       action:      'fechamento',
       empresa:     fd.get('empresa'),
       cnpj:        fd.get('cnpj'),
+      nicho:       fd.get('nicho'),
       responsavel: fd.get('responsavel'),
       whatsapp:    fd.get('whatsapp'),
       cidade:      fd.get('cidade'),

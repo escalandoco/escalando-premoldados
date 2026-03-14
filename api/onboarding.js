@@ -173,7 +173,50 @@ async function processarFechamento(d) {
     await cu('post', `/folder/${folder.id}/list`, { name: 'Google Ads' });
   }
 
-  // 5. Estrutura no Drive (3 pastas: Contratos, Fotos, CRM — Leads)
+  // 5. Cria briefing-ads-{slug}.json no VPS com nicho pré-preenchido
+  const slugEmpresa = empresa.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  const VPS_URL       = (process.env.VPS_URL || 'http://129.121.45.61:3030').trim();
+  const WORKER_SECRET = (process.env.WORKER_SECRET || '').trim();
+  const briefingAds = {
+    nicho:             (d.nicho || '').toLowerCase().trim(),
+    tipo_cliente:      'ads-only',
+    cliente:           empresa,
+    data_briefing:     d.dataInicio || new Date().toISOString().slice(0, 10),
+    responsavel:       'Escalando',
+    produto_anunciado: 'PREENCHER',
+    objetivo_campanha: 'mensagens_whatsapp',
+    como_converte:     'whatsapp',
+    site_existente:    false,
+    orcamento_diario_brl: 30,
+    plataformas:       ['Meta Ads'],
+    duracao_prevista_dias: 30,
+    avatar: {
+      profissao:        'PREENCHER',
+      regiao:           [d.cidade, d.estado].filter(Boolean).join(', ') || 'PREENCHER',
+      dor_principal:    'PREENCHER',
+      desejo_principal: 'PREENCHER',
+      objecoes:         ['PREENCHER'],
+      linguagem:        'PREENCHER',
+    },
+    promessa_principal: 'PREENCHER',
+    diferenciais:      ['PREENCHER'],
+    provas_sociais:    ['PREENCHER'],
+    linguagem_tom:     'PREENCHER',
+    cta_principal:     'Fale pelo WhatsApp',
+    cta_url:           d.whatsapp ? `https://wa.me/55${String(d.whatsapp).replace(/\D/g, '')}` : 'PREENCHER',
+    acessos_necessarios: {
+      meta_business_manager: true,
+      meta_ads_manager:      true,
+      meta_ad_account_id:    'PREENCHER — act_...',
+    },
+  };
+  fetch(`${VPS_URL}/api/save-briefing`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ secret: WORKER_SECRET, slug: slugEmpresa, briefing: briefingAds, tipo: 'ads' }),
+  }).catch(() => {});
+
+  // 6. Estrutura no Drive (3 pastas: Contratos, Fotos, CRM — Leads)
   let drive = {};
   try {
     drive = await criarPastaCliente(empresa);
@@ -398,6 +441,7 @@ function buildFichaDesc(empresa, d) {
   const local = [d.cidade, d.estado].filter(Boolean).join(' — ') || '—';
   const lines = [
     `CNPJ: ${d.cnpj || '—'}`,
+    `Nicho: ${d.nicho || '—'}`,
     `Localidade: ${local}`,
     `Data Início: ${d.dataInicio || '—'}`,
   ];

@@ -603,7 +603,7 @@ const server = http.createServer((req, res) => {
     req.on('data', d => body += d);
     req.on('end', () => {
       try {
-        const { secret, slug, briefing } = JSON.parse(body || '{}');
+        const { secret, slug, briefing, tipo } = JSON.parse(body || '{}');
         if (!WORKER_SECRET || secret !== WORKER_SECRET) {
           res.writeHead(401, { 'Content-Type': 'application/json' });
           res.end(JSON.stringify({ error: 'unauthorized' }));
@@ -614,13 +614,15 @@ const server = http.createServer((req, res) => {
           res.end(JSON.stringify({ error: 'slug e briefing são obrigatórios' }));
           return;
         }
-        const filePath = path.join(ROOT, `config/briefing-${slug}.json`);
+        // tipo='ads' → briefing-ads-{slug}.json | default → briefing-{slug}.json
+        const prefix   = tipo === 'ads' ? 'briefing-ads' : 'briefing';
+        const filePath = path.join(ROOT, `config/${prefix}-${slug}.json`);
         fs.mkdirSync(path.dirname(filePath), { recursive: true });
         fs.writeFileSync(filePath, JSON.stringify(briefing, null, 2));
         const ts = new Date().toISOString().replace('T', ' ').slice(0, 19);
-        console.log(`[${ts}] save-briefing: config/briefing-${slug}.json`);
+        console.log(`[${ts}] save-briefing: config/${prefix}-${slug}.json`);
         res.writeHead(200, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ ok: true, path: `config/briefing-${slug}.json` }));
+        res.end(JSON.stringify({ ok: true, path: `config/${prefix}-${slug}.json` }));
       } catch (e) {
         res.writeHead(500, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ error: e.message }));

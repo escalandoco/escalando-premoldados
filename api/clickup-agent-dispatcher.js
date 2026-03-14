@@ -239,14 +239,29 @@ async function verificarContextoKickoff(cliente) {
   }
 }
 
+// ── HELPER: Converte nome para slug ──────────────────────────
+function toSlug(str = '') {
+  return str.toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+}
+
 // ── HELPER: Detecta cliente a partir do folder da task ───────
+// Usa o nome do folder diretamente como slug — funciona para qualquer cliente
+// sem precisar hardcodar nomes. O folder "Concrenor" vira "concrenor",
+// "Restaurante do João" vira "restaurante-do-joao", etc.
 function detectarCliente(folderName = '', listName = '') {
-  const texto = (folderName + ' ' + listName).toLowerCase();
-  if (texto.includes('escalando')) return 'escalando';
-  if (texto.includes('concrenor')) return 'concrenor';
-  if (texto.includes('brasbloco')) return 'brasbloco';
-  if (texto.includes('levert')) return 'levert';
-  return 'concrenor'; // fallback
+  // Ignorar folders genéricos que não são clientes
+  const IGNORAR = ['clientes', 'operacao', 'operação', 'escalando', ''];
+  const slugFolder = toSlug(folderName);
+  if (slugFolder && !IGNORAR.includes(slugFolder)) return slugFolder;
+
+  // Fallback: usar list name
+  const slugList = toSlug(listName);
+  if (slugList && !IGNORAR.includes(slugList)) return slugList;
+
+  return 'concrenor'; // fallback final
 }
 
 // ── HELPER: Claude identifica intent ─────────────────────────
