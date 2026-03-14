@@ -488,7 +488,7 @@ const server = http.createServer((req, res) => {
         }
 
         // Whitelist de scripts permitidos
-        const ALLOWED = ['monitorar-ads','relatorio-ads','exportar-leads-meta','verificar-lp','gerar-lp','deploy-lp','gerar-copy-ads','gerar-copy','analisar-concorrentes','criar-pipeline-lp'];
+        const ALLOWED = ['monitorar-ads','relatorio-ads','exportar-leads-meta','verificar-lp','gerar-lp','deploy-lp','gerar-copy-ads','gerar-copy','analisar-concorrentes','criar-pipeline-lp','setup-campanha-meta','novo-criativo','escalar-campanha','pausar-campanha'];
         if (!ALLOWED.includes(script)) {
           res.writeHead(400, { 'Content-Type': 'application/json' });
           res.end(JSON.stringify({ error: `Script não permitido: ${script}` }));

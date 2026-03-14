@@ -82,6 +82,26 @@ const AGENTS = {
     agent: 'Alex', handle: '@alex', role: 'Analyst',
     keywords: ['analisa concorrentes', 'benchmarking', 'concorrentes', 'análise competitiva', 'quem são os concorrentes'],
   },
+  'setup-campanha-meta': {
+    desc: 'Cria estrutura completa de campanha Meta Ads: briefing, copy (7 pilares Sobral), nomenclatura MAT, públicos e checklist de go-live',
+    agent: 'Theo', handle: '@theo', role: 'Traffic Manager',
+    keywords: ['cria a campanha', 'criar campanha', 'setup campanha', 'nova campanha', 'configurar campanha', 'campanha meta', 'montar campanha'],
+  },
+  'novo-criativo': {
+    desc: 'Gera nova variação de copy e brief visual para campanha existente usando 7 pilares Sobral',
+    agent: 'Theo', handle: '@theo', role: 'Traffic Manager',
+    keywords: ['novo criativo', 'nova copy', 'variação de criativo', 'novo anúncio', 'mais criativos', 'criar variação'],
+  },
+  'escalar-campanha': {
+    desc: 'Gera plano de escala baseado nos dados de performance da campanha ativa',
+    agent: 'Theo', handle: '@theo', role: 'Traffic Manager',
+    keywords: ['escala', 'escalar', 'aumentar budget', 'escalar campanha', 'aumentar verba', 'escala os anúncios'],
+  },
+  'pausar-campanha': {
+    desc: 'Pausa campanha ativa e registra motivo no histórico do card',
+    agent: 'Theo', handle: '@theo', role: 'Traffic Manager',
+    keywords: ['pausa', 'pausar', 'parar campanha', 'pausar campanha', 'desligar anúncio', 'para os anúncios'],
+  },
   'aprovar-fase': {
     desc: 'Aprova a fase atual do pipeline de LP (avança o Quality Gate)',
     agent: 'Morgan', handle: '@morgan', role: 'PM',

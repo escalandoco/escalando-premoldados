@@ -10,6 +10,7 @@
     "exportar-leads-meta": "node --env-file=.env scripts/exportar-leads-meta.js",
     "relatorio-ads": "node --env-file=.env scripts/relatorio-ads.js",
     "monitorar-ads": "node --env-file=.env scripts/monitorar-ads.js",
+    "setup-campanha-meta": "node --env-file=.env scripts/setup-campanha-meta.js",
     "deploy-lp": "node scripts/deploy-lp.js",
     "dash": "node docs/dash-local/server.js"
   },
