@@ -11,6 +11,8 @@
     "relatorio-ads": "node --env-file=.env scripts/relatorio-ads.js",
     "monitorar-ads": "node --env-file=.env scripts/monitorar-ads.js",
     "setup-campanha-meta": "node --env-file=.env scripts/setup-campanha-meta.js",
+    "registrar-golive": "node --env-file=.env scripts/registrar-golive.js",
+    "verificar-ciclo-campanha": "node --env-file=.env scripts/verificar-ciclo-campanha.js",
     "deploy-lp": "node scripts/deploy-lp.js",
     "dash": "node docs/dash-local/server.js"
   },

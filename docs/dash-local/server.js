@@ -268,6 +268,17 @@ const WORKERS = [
     script: 'verificar-lp',
     cliente: 'concrenor',
   },
+  {
+    id: 'verificar-ciclo-campanha',
+    name: 'Ciclo de Campanha',
+    desc: 'Verifica D+7 (monitoramento) e D+15 (relatório) das campanhas Meta Ads ativas',
+    icon: '🔄',
+    cron: '5 8 * * *',
+    cronHuman: 'Diário · 08h05 BRT',
+    logFile: '/var/log/escalando-ciclo-campanha.log',
+    script: 'verificar-ciclo-campanha',
+    cliente: 'concrenor',
+  },
 ];
 
 // ── PARSE WORKER LOGS ─────────────────────────────────────────
@@ -488,7 +499,7 @@ const server = http.createServer((req, res) => {
         }
 
         // Whitelist de scripts permitidos
-        const ALLOWED = ['monitorar-ads','relatorio-ads','exportar-leads-meta','verificar-lp','gerar-lp','deploy-lp','gerar-copy-ads','gerar-copy','analisar-concorrentes','criar-pipeline-lp','setup-campanha-meta','novo-criativo','escalar-campanha','pausar-campanha'];
+        const ALLOWED = ['monitorar-ads','relatorio-ads','exportar-leads-meta','verificar-lp','gerar-lp','deploy-lp','gerar-copy-ads','gerar-copy','analisar-concorrentes','criar-pipeline-lp','setup-campanha-meta','novo-criativo','escalar-campanha','pausar-campanha','registrar-golive','verificar-ciclo-campanha'];
         if (!ALLOWED.includes(script)) {
           res.writeHead(400, { 'Content-Type': 'application/json' });
           res.end(JSON.stringify({ error: `Script não permitido: ${script}` }));

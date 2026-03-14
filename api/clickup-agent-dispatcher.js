@@ -102,6 +102,11 @@ const AGENTS = {
     agent: 'Theo', handle: '@theo', role: 'Traffic Manager',
     keywords: ['pausa', 'pausar', 'parar campanha', 'pausar campanha', 'desligar anúncio', 'para os anúncios'],
   },
+  'registrar-golive': {
+    desc: 'Registra data de go-live da campanha e agenda verificações automáticas D+7 e D+15',
+    agent: 'Theo', handle: '@theo', role: 'Traffic Manager',
+    keywords: ['go-live', 'golive', 'campanha no ar', 'anúncio no ar', 'subiu a campanha', 'campanha ativa', 'campanha rodando', 'ativei a campanha', 'campanha está rodando'],
+  },
   'aprovar-fase': {
     desc: 'Aprova a fase atual do pipeline de LP (avança o Quality Gate)',
     agent: 'Morgan', handle: '@morgan', role: 'PM',
