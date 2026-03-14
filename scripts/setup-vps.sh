@@ -60,13 +60,15 @@ CRON_CMD="$DIR/scripts/cron-runner.sh"
 # Escalando Premoldados — Workers 24/7
 # Monitorar anúncios — todo dia 08h BRT (11h UTC)
 0 11 * * * $CRON_CMD monitorar-ads concrenor >> /var/log/escalando-monitorar.log 2>&1
+# Ciclo de campanha (D+7/D+15) — todo dia 08h05 BRT
+5 11 * * * $CRON_CMD verificar-ciclo-campanha concrenor >> /var/log/escalando-ciclo-campanha.log 2>&1
 # Relatório de performance — dia 1 e 15 às 08h BRT
 0 11 1,15 * * $CRON_CMD relatorio-ads concrenor >> /var/log/escalando-relatorio.log 2>&1
 # Exportar leads — toda segunda 08h BRT
 0 11 * * 1 $CRON_CMD exportar-leads-meta concrenor >> /var/log/escalando-leads.log 2>&1
 CRONS
 ) | crontab -
-echo "        3 cron jobs configurados"
+echo "        4 cron jobs configurados"
 
 chmod +x "$DIR/scripts/cron-runner.sh"
 chmod +x "$DIR/scripts/atualizar-vps.sh"
