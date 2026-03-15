@@ -168,6 +168,56 @@ export const MSG = {
     descricao: `Fase 4 (Geração) aprovada.\n\nDeploy em andamento (deploy-lp.js).\n\nAcompanhe na aba Execuções. Em minutos a LP estará no ar.`,
     prioridade: 'high',
   }),
+
+  // ── Meta Ads Gates ────────────────────────────────────────
+
+  gateMaA: (empresa) => ({
+    titulo: `🔑 Acessos confirmados — ${empresa}`,
+    descricao: `Gate MA-A passou.\n\nSetup de campanha iniciado automaticamente.\n\nPróximo: Briefing + Benchmarking criado no ClickUp.\nRealize a call de ideias com o cliente (30min) e analise concorrentes.`,
+    prioridade: 'high',
+  }),
+
+  gateMaB: (empresa) => ({
+    titulo: `📊 Briefing aprovado — ${empresa}`,
+    descricao: `Gate MA-B passou.\n\nPróximo: Estratégia + Nomenclatura MAT.\n\nDefina ângulo principal, 3 abordagens criativas e aplique a nomenclatura em campanhas e conjuntos.`,
+    prioridade: 'normal',
+  }),
+
+  gateMaC: (empresa) => ({
+    titulo: `📐 Estratégia aprovada — ${empresa}`,
+    descricao: `Gate MA-C passou.\n\nScript gerar-copy-ads disparado automaticamente.\n\nResultado será postado na task Copy dos Anúncios no ClickUp.`,
+    prioridade: 'normal',
+  }),
+
+  gateMaD: (empresa) => ({
+    titulo: `✏️ Copy aprovada — ${empresa}`,
+    descricao: `Gate MA-D passou.\n\nPróximo: Criativos.\n\nCrie as artes nos formatos feed 1:1 e stories 9:16 seguindo a nomenclatura MAT.`,
+    prioridade: 'normal',
+  }),
+
+  gateMaEFluxoA: (empresa) => ({
+    titulo: `🎨 Criativos aprovados — ${empresa} (Fluxo A)`,
+    descricao: `Gate MA-E passou.\n\nFluxo A detectado.\n\nPróximo: Sync LP + Pixel — configure o Pixel, CAPI e eventos antes do Go-Live.`,
+    prioridade: 'high',
+  }),
+
+  gateMaEFluxoB: (empresa) => ({
+    titulo: `🎨 Criativos aprovados — ${empresa} (Fluxo B)`,
+    descricao: `Gate MA-E passou.\n\nFluxo B (direto WhatsApp).\n\nPróximo: Go-Live — verifique a checklist e autorize a subida das campanhas.`,
+    prioridade: 'high',
+  }),
+
+  gateMaF: (empresa) => ({
+    titulo: `🔗 LP + Pixel prontos — ${empresa}`,
+    descricao: `Gate MA-F passou.\n\nPixel, CAPI e eventos validados.\n\nPróximo: Go-Live liberado — autorize a subida das campanhas no ClickUp.`,
+    prioridade: 'high',
+  }),
+
+  gateMaG: (empresa) => ({
+    titulo: `🚀 ${empresa} está NO AR!`,
+    descricao: `Gate MA-G passou — campanhas ativadas!\n\nGo-Live registrado no sistema.\nMonitoramento D+7 criado no ClickUp.\n\nAcompanhe a performance no painel e responda leads em até 2h.`,
+    prioridade: 'urgent',
+  }),
 };
 
 /**

@@ -16,6 +16,7 @@
 
 import { gateA, gateC } from '../scripts/onboarding-gate.js';
 import { gateLp1, gateLp2, gateLp3, gateLp4, gateLp5 } from '../scripts/lp-gate.js';
+import { gateMaA, gateMaB, gateMaC, gateMaD, gateMaE, gateMaF, gateMaG } from '../scripts/meta-ads-gate.js';
 
 const CLICKUP_API_KEY = process.env.CLICKUP_API_KEY;
 const WEBHOOK_SECRET  = process.env.CLICKUP_WEBHOOK_SECRET || '';
@@ -122,6 +123,70 @@ export default async function handler(req, res) {
       console.log(`[status-change] Disparando Gate LP-5 para: ${empresa}`);
       const result = await gateLp5(empresa);
       return res.status(200).json({ gate: 'LP-5', empresa, ...result });
+    }
+
+    // ── Gates Meta Ads ──────────────────────────────────────
+    // MA-A: Coletar Acessos → Briefing + Benchmarking
+    if (taskName.startsWith('🔑 Coletar Acessos')) {
+      const empresa = extrairEmpresa(taskName, '🔑 Coletar Acessos');
+      if (!empresa) return res.status(200).json({ skip: true, reason: 'Empresa não identificada' });
+      console.log(`[status-change] Disparando Gate MA-A para: ${empresa}`);
+      const result = await gateMaA(empresa);
+      return res.status(200).json({ gate: 'MA-A', empresa, ...result });
+    }
+
+    // MA-B: Briefing + Benchmarking → Estratégia + Nomenclatura
+    if (taskName.startsWith('📊 Briefing + Benchmarking')) {
+      const empresa = extrairEmpresa(taskName, '📊 Briefing + Benchmarking');
+      if (!empresa) return res.status(200).json({ skip: true, reason: 'Empresa não identificada' });
+      console.log(`[status-change] Disparando Gate MA-B para: ${empresa}`);
+      const result = await gateMaB(empresa);
+      return res.status(200).json({ gate: 'MA-B', empresa, ...result });
+    }
+
+    // MA-C: Estratégia + Nomenclatura → Copy dos Anúncios
+    if (taskName.startsWith('📐 Estratégia + Nomenclatura')) {
+      const empresa = extrairEmpresa(taskName, '📐 Estratégia + Nomenclatura');
+      if (!empresa) return res.status(200).json({ skip: true, reason: 'Empresa não identificada' });
+      console.log(`[status-change] Disparando Gate MA-C para: ${empresa}`);
+      const result = await gateMaC(empresa);
+      return res.status(200).json({ gate: 'MA-C', empresa, ...result });
+    }
+
+    // MA-D: Copy dos Anúncios → Criativos
+    if (taskName.startsWith('✏️ Copy dos Anúncios')) {
+      const empresa = extrairEmpresa(taskName, '✏️ Copy dos Anúncios');
+      if (!empresa) return res.status(200).json({ skip: true, reason: 'Empresa não identificada' });
+      console.log(`[status-change] Disparando Gate MA-D para: ${empresa}`);
+      const result = await gateMaD(empresa);
+      return res.status(200).json({ gate: 'MA-D', empresa, ...result });
+    }
+
+    // MA-E: Criativos → Go-Live (Fluxo B) ou Sync LP+Pixel (Fluxo A)
+    if (taskName.startsWith('🎨 Criativos')) {
+      const empresa = extrairEmpresa(taskName, '🎨 Criativos');
+      if (!empresa) return res.status(200).json({ skip: true, reason: 'Empresa não identificada' });
+      console.log(`[status-change] Disparando Gate MA-E para: ${empresa}`);
+      const result = await gateMaE(empresa);
+      return res.status(200).json({ gate: 'MA-E', empresa, ...result });
+    }
+
+    // MA-F: Sync LP + Pixel → Go-Live (Fluxo A)
+    if (taskName.startsWith('🔗 Sync LP + Pixel')) {
+      const empresa = extrairEmpresa(taskName, '🔗 Sync LP + Pixel');
+      if (!empresa) return res.status(200).json({ skip: true, reason: 'Empresa não identificada' });
+      console.log(`[status-change] Disparando Gate MA-F para: ${empresa}`);
+      const result = await gateMaF(empresa);
+      return res.status(200).json({ gate: 'MA-F', empresa, ...result });
+    }
+
+    // MA-G: Go-Live → Monitoramento D+7
+    if (taskName.startsWith('🚀 Go-Live')) {
+      const empresa = extrairEmpresa(taskName, '🚀 Go-Live');
+      if (!empresa) return res.status(200).json({ skip: true, reason: 'Empresa não identificada' });
+      console.log(`[status-change] Disparando Gate MA-G para: ${empresa}`);
+      const result = await gateMaG(empresa);
+      return res.status(200).json({ gate: 'MA-G', empresa, ...result });
     }
 
     // Task não mapeada para nenhum gate
