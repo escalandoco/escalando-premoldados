@@ -394,14 +394,14 @@ async function processarLpBriefing(d) {
     comment_text: `\`\`\`json\n${JSON.stringify(briefingJson, null, 2)}\n\`\`\``,
   });
 
-  // Salva config/briefing-{slug}.json no VPS para gerar-copy.js (fire-and-forget)
+  // Salva config/lp-{slug}.json no VPS para Gate LP-1 (fire-and-forget)
   const VPS_URL       = (process.env.VPS_URL || 'http://129.121.45.61:3030').trim();
   const WORKER_SECRET = (process.env.WORKER_SECRET || '').trim();
-  fetch(`${VPS_URL}/api/save-briefing`, {
+  fetch(`${VPS_URL}/api/save-config`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ secret: WORKER_SECRET, slug, briefing: briefingJson }),
-  }).catch(e => console.warn('[lp-briefing] save-briefing falhou:', e.message));
+    body: JSON.stringify({ secret: WORKER_SECRET, cliente: slug, type: 'lp', data: briefingJson }),
+  }).catch(e => console.warn('[lp-briefing] save-config falhou:', e.message));
 
   const lpLabel = d.lp_nome ? ` — ${d.lp_nome}` : '';
   return { msg: `LP Briefing${lpLabel} recebido para ${d.empresa}. Task criada e briefing salvo no VPS.` };

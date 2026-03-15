@@ -81,8 +81,10 @@ export default async function handler(req, res) {
     }
 
     // ── Gate LP-1: LP Briefing ──────────────────────────────
+    // Task format: "📝 LP Briefing — {empresa}" ou "📝 LP Briefing — {empresa} — {lp_nome}"
+    // Sempre pega partes[1] para não incluir lp_nome no nome da empresa
     if (taskName.startsWith('📝 LP Briefing')) {
-      const empresa = extrairEmpresa(taskName, '📝 LP Briefing');
+      const empresa = taskName.split(' — ')[1]?.trim() || null;
       if (!empresa) return res.status(200).json({ skip: true, reason: 'Empresa não identificada' });
       console.log(`[status-change] Disparando Gate LP-1 para: ${empresa}`);
       const result = await gateLp1(empresa);
