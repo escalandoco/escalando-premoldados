@@ -103,26 +103,26 @@
     @media (max-width: 480px) { .row2, .row3 { grid-template-columns: 1fr; } }
     .hint { font-size: 11px; color: var(--gray-400); margin-top: 4px; font-style: italic; }
 
-    /* Planos */
-    .planos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; }
-    @media (max-width: 420px) { .planos { grid-template-columns: 1fr; } }
-    .plano-opt { cursor: pointer; }
-    .plano-opt input[type="radio"] { display: none; }
-    .plano-box {
+    /* Entregáveis */
+    .entregaveis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 4px; }
+    @media (max-width: 420px) { .entregaveis { grid-template-columns: 1fr; } }
+    .entregavel-opt { cursor: pointer; }
+    .entregavel-opt input[type="checkbox"] { display: none; }
+    .entregavel-box {
       border: 2px solid var(--gray-200); border-radius: var(--radius);
       padding: 14px 8px; text-align: center; transition: all 0.15s;
-      background: var(--gray-50);
+      background: var(--gray-50); user-select: none;
     }
-    .plano-opt:hover .plano-box { border-color: var(--gray-300); }
-    .plano-opt input:checked + .plano-box {
+    .entregavel-opt:hover .entregavel-box { border-color: var(--gray-300); }
+    .entregavel-opt input:checked + .entregavel-box {
       border-color: var(--gold-2); background: var(--gold-light);
     }
-    .plano-nome {
+    .entregavel-nome {
       font-size: 10px; font-weight: 800; text-transform: uppercase;
       letter-spacing: 0.8px; color: var(--gray-600);
     }
-    .plano-valor { font-size: 18px; font-weight: 900; color: var(--dark); margin-top: 5px; }
-    .plano-desc { font-size: 10px; color: var(--gray-500); margin-top: 4px; line-height: 1.4; }
+    .entregavel-icon { font-size: 20px; margin-bottom: 6px; }
+    .entregavel-desc { font-size: 10px; color: var(--gray-500); margin-top: 4px; line-height: 1.4; }
 
     /* Valor prefix */
     .input-wrap { position: relative; }
@@ -231,36 +231,9 @@
 
       <hr>
 
-      <!-- PLANO -->
+      <!-- CONTRATO -->
       <div class="section">
-        <div class="section-label">Plano Contratado</div>
-
-        <div class="planos">
-          <label class="plano-opt">
-            <input type="radio" name="plano" value="starter" data-valor="997" required>
-            <div class="plano-box">
-              <div class="plano-nome">Starter</div>
-              <div class="plano-valor">R$997</div>
-              <div class="plano-desc">GMB + Landing Page</div>
-            </div>
-          </label>
-          <label class="plano-opt">
-            <input type="radio" name="plano" value="growth" data-valor="1497">
-            <div class="plano-box">
-              <div class="plano-nome">Growth</div>
-              <div class="plano-valor">R$1.497</div>
-              <div class="plano-desc">+ Meta Ads</div>
-            </div>
-          </label>
-          <label class="plano-opt">
-            <input type="radio" name="plano" value="pro" data-valor="2500">
-            <div class="plano-box">
-              <div class="plano-nome">Pro</div>
-              <div class="plano-valor">R$2.500</div>
-              <div class="plano-desc">+ Google Ads</div>
-            </div>
-          </label>
-        </div>
+        <div class="section-label">Contrato</div>
 
         <div class="row2">
           <div class="field">
@@ -269,12 +242,42 @@
               <span class="prefix">R$</span>
               <input type="number" name="valor" id="valor" placeholder="0" min="0" required>
             </div>
-            <div class="hint">Auto-preenchido — edite se houve negociação</div>
           </div>
           <div class="field">
             <label>Data de início <span class="req">*</span></label>
             <input type="date" name="dataInicio" required>
           </div>
+        </div>
+
+        <div class="field" style="margin-top:6px">
+          <label>Entregáveis <span class="req">*</span></label>
+          <div class="entregaveis">
+            <label class="entregavel-opt">
+              <input type="checkbox" name="entregaveis" value="lp">
+              <div class="entregavel-box">
+                <div class="entregavel-icon">🌐</div>
+                <div class="entregavel-nome">Landing Page</div>
+                <div class="entregavel-desc">Criação e deploy da LP</div>
+              </div>
+            </label>
+            <label class="entregavel-opt">
+              <input type="checkbox" name="entregaveis" value="meta">
+              <div class="entregavel-box">
+                <div class="entregavel-icon">📘</div>
+                <div class="entregavel-nome">Meta Ads</div>
+                <div class="entregavel-desc">Gestão Facebook/Instagram</div>
+              </div>
+            </label>
+            <label class="entregavel-opt">
+              <input type="checkbox" name="entregaveis" value="google">
+              <div class="entregavel-box">
+                <div class="entregavel-icon">🔍</div>
+                <div class="entregavel-nome">Google Ads</div>
+                <div class="entregavel-desc">Gestão Google Search</div>
+              </div>
+            </label>
+          </div>
+          <div class="hint" id="entregaveis-hint" style="color:var(--red);display:none">Selecione ao menos um entregável</div>
         </div>
       </div>
 
@@ -339,13 +342,6 @@
     e.target.value = v;
   });
 
-  // Auto-fill valor a partir do plano
-  document.querySelectorAll('[name="plano"]').forEach(r => {
-    r.addEventListener('change', () => {
-      document.getElementById('valor').value = r.dataset.valor;
-    });
-  });
-
   // Show/hide "Indicado por"
   document.getElementById('canal').addEventListener('change', function() {
     const el = document.getElementById('indicado-field');
@@ -366,26 +362,37 @@
       el.classList.toggle('err', empty);
       if (empty && ok) { el.focus(); ok = false; }
     });
+
+    // Valida entregáveis
+    const entregaveis = [...document.querySelectorAll('[name="entregaveis"]:checked')].map(c => c.value);
+    const hintEl = document.getElementById('entregaveis-hint');
+    if (entregaveis.length === 0) {
+      hintEl.style.display = 'block';
+      if (ok) ok = false;
+    } else {
+      hintEl.style.display = 'none';
+    }
+
     if (!ok) return;
 
     st.className = 'status'; st.textContent = '';
     btn.disabled = true; btn.textContent = 'Criando estrutura...';
 
     const dados = {
-      action:      'fechamento',
-      empresa:     fd.get('empresa'),
-      cnpj:        fd.get('cnpj'),
-      nicho:       fd.get('nicho'),
-      responsavel: fd.get('responsavel'),
-      whatsapp:    fd.get('whatsapp'),
-      cidade:      fd.get('cidade'),
-      estado:      fd.get('estado'),
-      plano:       fd.get('plano'),
-      valor:       fd.get('valor'),
-      dataInicio:  fd.get('dataInicio'),
-      canal:       fd.get('canal'),
-      indicadoPor: fd.get('indicadoPor'),
-      obs:         fd.get('obs'),
+      action:       'fechamento',
+      empresa:      fd.get('empresa'),
+      cnpj:         fd.get('cnpj'),
+      nicho:        fd.get('nicho'),
+      responsavel:  fd.get('responsavel'),
+      whatsapp:     fd.get('whatsapp'),
+      cidade:       fd.get('cidade'),
+      estado:       fd.get('estado'),
+      valor:        fd.get('valor'),
+      dataInicio:   fd.get('dataInicio'),
+      entregaveis,
+      canal:        fd.get('canal'),
+      indicadoPor:  fd.get('indicadoPor'),
+      obs:          fd.get('obs'),
     };
 
     try {

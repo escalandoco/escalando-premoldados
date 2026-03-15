@@ -254,11 +254,7 @@ export async function gateC(empresa) {
       return { ok: false, faltando };
     }
 
-    // Descobre plano a partir do custom field Plano
-    const planoNome = (cfValor('Plano') || '').toLowerCase();
-    const plano = planoNome.includes('pro') ? 'pro' : planoNome.includes('growth') ? 'growth' : 'starter';
-
-    // Cria 1ª task no squad LP
+    // Cria 1ª task no squad LP (se lista Landing Pages existe)
     const listaLP = await encontrarLista(folder.id, 'Landing Pages');
     if (listaLP) {
       const lpExiste = await encontrarTask(listaLP.id, '📝 LP Briefing');
@@ -273,20 +269,21 @@ export async function gateC(empresa) {
       }
     }
 
-    // Cria 1ª task no squad Tráfego (growth/pro)
-    if (plano === 'growth' || plano === 'pro') {
-      const listaMeta = await encontrarLista(folder.id, 'Meta Ads');
-      if (listaMeta) {
-        const metaExiste = await encontrarTask(listaMeta.id, '🔑 Coletar Acessos');
-        if (!metaExiste) {
-          await cu('post', `/list/${listaMeta.id}/task`, {
-            name: `🔑 Coletar Acessos — ${empresa}`,
-            description: `Primeira task do squad de Tráfego Pago.\n\nSolicitar ao cliente:\n- Meta Business Manager (admin: jotagodeiro16@gmail.com)\n- Google Meu Negócio (gerente: jotagodeiro16@gmail.com)\n${plano === 'pro' ? '- Google Ads (admin: jotagodeiro16@gmail.com)' : ''}`,
-            priority: 1,
-          });
-          console.log('[Gate C] Task Coletar Acessos criada.');
-          await logJob('gate-c-criar-coletar-acessos', empresa, 'completed', `Task Coletar Acessos criada em Meta Ads (plano ${plano})`);
-        }
+    // Cria 1ª task no squad Meta Ads (se lista Meta Ads existe)
+    const listaMeta = await encontrarLista(folder.id, 'Meta Ads');
+    if (listaMeta) {
+      const metaExiste = await encontrarTask(listaMeta.id, '🔑 Coletar Acessos');
+      if (!metaExiste) {
+        // Verifica se também tem Google Ads para incluir na descrição
+        const listaGoogle = await encontrarLista(folder.id, 'Google Ads');
+        const temGoogle = !!listaGoogle;
+        await cu('post', `/list/${listaMeta.id}/task`, {
+          name: `🔑 Coletar Acessos — ${empresa}`,
+          description: `Primeira task do squad de Tráfego Pago.\n\nSolicitar ao cliente:\n- Meta Business Manager (admin: jotagodeiro16@gmail.com)\n- Google Meu Negócio (gerente: jotagodeiro16@gmail.com)${temGoogle ? '\n- Google Ads (admin: jotagodeiro16@gmail.com)' : ''}`,
+          priority: 1,
+        });
+        console.log('[Gate C] Task Coletar Acessos criada.');
+        await logJob('gate-c-criar-coletar-acessos', empresa, 'completed', 'Task Coletar Acessos criada em Meta Ads');
       }
     }
 

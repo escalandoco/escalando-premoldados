@@ -162,16 +162,19 @@ async function processarFechamento(d) {
     priority: 2,
   });
 
-  // 4. Listas dos squads (vazias — cada squad popula)
-  await cu('post', `/folder/${folder.id}/list`, { name: 'Landing Pages' });
-  await cu('post', `/folder/${folder.id}/list`, { name: 'Comercial' });
+  // 4. Listas dos squads baseadas nos entregáveis contratados (vazias — gates populam)
+  const entregaveis = Array.isArray(d.entregaveis) ? d.entregaveis : [];
 
-  if (d.plano === 'growth' || d.plano === 'pro') {
+  if (entregaveis.includes('lp')) {
+    await cu('post', `/folder/${folder.id}/list`, { name: 'Landing Pages' });
+  }
+  if (entregaveis.includes('meta')) {
     await cu('post', `/folder/${folder.id}/list`, { name: 'Meta Ads' });
   }
-  if (d.plano === 'pro') {
+  if (entregaveis.includes('google')) {
     await cu('post', `/folder/${folder.id}/list`, { name: 'Google Ads' });
   }
+  await cu('post', `/folder/${folder.id}/list`, { name: 'Comercial' });
 
   // 5. Cria briefing-ads-{slug}.json no VPS com nicho pré-preenchido
   const slugEmpresa = empresa.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
@@ -231,9 +234,10 @@ async function processarFechamento(d) {
     }).catch(() => {});
   }
 
-  const listas = ['Onboarding', 'Landing Pages', 'Comercial',
-    ...(d.plano === 'growth' || d.plano === 'pro' ? ['Meta Ads'] : []),
-    ...(d.plano === 'pro' ? ['Google Ads'] : [])];
+  const listas = ['Onboarding', 'Comercial',
+    ...(entregaveis.includes('lp')     ? ['Landing Pages'] : []),
+    ...(entregaveis.includes('meta')   ? ['Meta Ads']      : []),
+    ...(entregaveis.includes('google') ? ['Google Ads']    : [])];
 
   return { msg: `Estrutura criada para ${empresa} (${nomePlano(d.plano)})`, listas, drive };
 }
