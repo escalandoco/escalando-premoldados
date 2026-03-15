@@ -16,7 +16,7 @@ import { notifyMsg, MSG } from './notify.js';
 import { verificarGate } from './quality-gate.js';
 
 const CLICKUP_API_KEY = process.env.CLICKUP_API_KEY;
-const SPACE_CLIENTES  = process.env.CLICKUP_SPACE_ID || '901313553858';
+const SPACE_CLIENTES  = process.env.CLICKUP_SPACE_ID || '901313678809';
 const BASE_URL        = 'https://api.clickup.com/api/v2';
 const VPS_URL         = (process.env.VPS_URL || 'http://129.121.45.61:3030').trim();
 const WORKER_SECRET   = (process.env.WORKER_SECRET || '').trim();

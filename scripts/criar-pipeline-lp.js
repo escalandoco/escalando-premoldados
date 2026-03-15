@@ -19,7 +19,7 @@ const ROOT = path.join(__dirname, '..');
 
 // ---- Env ----
 const CLICKUP_API_KEY = process.env.CLICKUP_API_KEY || 'pk_84613660_MVXFF2FG90QSK6YN1RLF1LBA7C4NXK7J';
-const SPACE_CLIENTES  = process.env.CLICKUP_SPACE_ID || '901313553858';
+const SPACE_CLIENTES  = process.env.CLICKUP_SPACE_ID || '901313678809';
 const BASE_URL        = 'https://api.clickup.com/api/v2';
 
 // ---- CLI args ----

@@ -13,7 +13,7 @@
 import { notifyMsg, MSG } from './notify.js';
 
 const CLICKUP_API_KEY = process.env.CLICKUP_API_KEY;
-const SPACE_CLIENTES  = process.env.CLICKUP_SPACE_ID || '901313553858';
+const SPACE_CLIENTES  = process.env.CLICKUP_SPACE_ID || '901313678809';
 const BASE_URL        = 'https://api.clickup.com/api/v2';
 const HORAS_LIMITE    = 48;
 

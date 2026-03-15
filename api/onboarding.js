@@ -19,7 +19,7 @@ import { criarPastaCliente, registrarLead, registrarOrcamento } from './google-d
 import { gateB }                                                 from '../scripts/onboarding-gate.js';
 
 const CLICKUP_API_KEY = process.env.CLICKUP_API_KEY;
-const SPACE_CLIENTES  = process.env.CLICKUP_SPACE_ID || '901313553858';
+const SPACE_CLIENTES  = process.env.CLICKUP_SPACE_ID || '901313678809';
 const SPACE_OPERACAO  = process.env.CLICKUP_SPACE_OPERACAO || '901313601522';
 const BASE_URL        = 'https://api.clickup.com/api/v2';
 const WS_ID           = '90133050692';

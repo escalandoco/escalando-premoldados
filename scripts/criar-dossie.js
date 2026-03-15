@@ -32,7 +32,7 @@ const CLIENTE_NOME = CLIENTE.charAt(0).toUpperCase() + CLIENTE.slice(1);
 
 const CLICKUP_KEY = process.env.CLICKUP_API_KEY;
 const WS          = '90133050692';
-const SPACE_ID    = process.env.CLICKUP_SPACE_ID || '901313553858';
+const SPACE_ID    = process.env.CLICKUP_SPACE_ID || '901313678809';
 
 // ── ClickUp helpers ───────────────────────────────────────────
 async function cuGet(path) {

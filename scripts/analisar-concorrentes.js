@@ -33,7 +33,7 @@ const JOB_ID  = `analisar-concorrentes-${CLIENTE.toLowerCase()}`; // ID fixo —
 
 const CLICKUP_API_KEY  = process.env.CLICKUP_API_KEY;
 const ANTHROPIC_KEY    = process.env.ANTHROPIC_API_KEY;
-const SPACE_ID         = process.env.CLICKUP_SPACE_ID || '901313553858';
+const SPACE_ID         = process.env.CLICKUP_SPACE_ID || '901313678809';
 const LIST_SUCESSO     = '901326173213'; // Sucesso do Cliente
 
 // ── Job queue helpers ─────────────────────────────────────────

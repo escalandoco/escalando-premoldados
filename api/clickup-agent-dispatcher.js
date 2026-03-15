@@ -178,7 +178,7 @@ function extrairCampanhaDaTask(taskName = '') {
 // ── HELPER: Busca task de uma fase na lista Landing Pages ────
 async function buscarTaskDeFase(cliente, campanha, fase) {
   try {
-    const SPACE_ID = process.env.CLICKUP_SPACE_ID || '901313553858';
+    const SPACE_ID = process.env.CLICKUP_SPACE_ID || '901313678809';
     const { folders } = await clickupGet(`/space/${SPACE_ID}/folder?archived=false`);
     const folder = folders.find(f => f.name.toLowerCase() === cliente.toLowerCase());
     if (!folder) return null;
