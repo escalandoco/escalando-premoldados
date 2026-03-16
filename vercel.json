@@ -5,6 +5,7 @@
     { "src": "/kickoff", "dest": "/lp/kickoff.html" },
     { "src": "/orcamento", "dest": "/lp/orcamento.html" },
     { "src": "/lp-briefing", "dest": "/lp/lp-briefing.html" },
+    { "src": "/levert", "dest": "/lp/levert.html" },
     { "src": "/api/clickup-status-change", "dest": "/api/clickup-status-change.js" }
   ]
 }

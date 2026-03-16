@@ -1,0 +1,1506 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Levert — Pisos Táteis & Revestimentos Cimentícios em Sergipe</title>
+  <meta name="description" content="Fabricação própria de pisos táteis, cobogós e revestimentos cimentícios em Sergipe. Conformidade NBR 9050. Atendemos todo o Nordeste.">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Levert — Pisos Táteis & Revestimentos Cimentícios">
+  <meta property="og:description" content="Fábrica própria em Sergipe. Pisos táteis NBR 9050, cobogós e revestimentos sob demanda. Atendemos todo o Nordeste.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="assets/og-image.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:locale" content="pt_BR">
+
+  <link rel="icon" href="assets/favicon.png" type="image/png">
+  <style>
+    @font-face {
+      font-family: 'Paralucent';
+      src: url('assets/fonts/Paralucent-Light.otf') format('opentype');
+      font-weight: 300; font-style: normal; font-display: swap;
+    }
+    @font-face {
+      font-family: 'Paralucent';
+      src: url('assets/fonts/Paralucent-Regular.otf') format('opentype');
+      font-weight: 400; font-style: normal; font-display: swap;
+    }
+    @font-face {
+      font-family: 'Paralucent';
+      src: url('assets/fonts/Paralucent-Medium.otf') format('opentype');
+      font-weight: 500; font-style: normal; font-display: swap;
+    }
+    @font-face {
+      font-family: 'Paralucent';
+      src: url('assets/fonts/Paralucent-Bold.otf') format('opentype');
+      font-weight: 700; font-style: normal; font-display: swap;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --dark:   #14141D;
+      --bege:   #B9AA9B;
+      --bege2:  #CCBDB2;
+      --cream:  #FFF6EF;
+      --off:    #F9F9F7;
+      --border: #EBEBEB;
+      --branco: #FFFFFF;
+      --texto:  #2A2A2A;
+      --sub:    rgba(42,42,42,.55);
+      --zap:    #25D366;
+      --r:      10px;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Paralucent', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-weight: 300; color: var(--texto);
+      background: var(--branco); line-height: 1.6; overflow-x: hidden;
+    }
+    a { text-decoration: none; color: inherit; }
+    img { display: block; }
+
+    /* ─── TOPBAR ──────────────────────────────────────────────── */
+    .topbar {
+      background: var(--dark);
+      padding: 7px 48px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .topbar-left { font-size: .65rem; letter-spacing: .1em; color: rgba(255,255,255,.3); }
+    .topbar-left strong { color: var(--bege); font-weight: 400; margin-right: 14px; }
+    .topbar-right { font-size: .65rem; letter-spacing: .08em; color: rgba(255,255,255,.35); }
+    .topbar-right a { color: var(--bege); }
+
+    /* ─── NAV ─────────────────────────────────────────────────── */
+    .main-nav {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--branco);
+      border-bottom: 1px solid var(--border);
+      padding: 0 48px; height: 72px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-logo img { height: 52px; width: auto; max-width: 260px; object-fit: contain; object-position: left center; }
+    .nav-links {
+      display: flex; align-items: center; gap: 32px; list-style: none;
+    }
+    .nav-links a {
+      font-size: .68rem; letter-spacing: .14em; text-transform: uppercase;
+      color: rgba(42,42,42,.4); font-weight: 400; transition: color .2s;
+    }
+    .nav-links a:hover { color: var(--texto); }
+    .nav-cta {
+      background: var(--dark) !important;
+      color: var(--branco) !important;
+      font-weight: 400 !important; font-size: .68rem !important;
+      letter-spacing: .1em !important;
+      padding: 9px 22px; border-radius: 50px;
+      transition: background .2s;
+    }
+    .nav-cta:hover { background: #2a2a3e !important; }
+
+    /* ─── HAMBURGER ───────────────────────────────────────────── */
+    .nav-mobile-btn {
+      display: none;
+      flex-direction: column; gap: 5px;
+      background: none; border: none;
+      cursor: pointer; padding: 8px; margin: -8px;
+    }
+    .nav-mobile-btn span {
+      display: block; width: 22px; height: 2px;
+      background: var(--texto); border-radius: 2px;
+      transition: transform .28s ease, opacity .28s ease;
+    }
+    .nav-mobile-btn.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+    .nav-mobile-btn.active span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+    .nav-mobile-btn.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
+    /* ─── HERO ────────────────────────────────────────────────── */
+    #hero {
+      background: var(--dark);
+      min-height: 82vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      padding: 72px 48px 60px;
+      gap: 56px;
+      position: relative; overflow: hidden;
+    }
+    #hero::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 75% 50%, rgba(185,170,155,.05) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .hero-tag {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: .62rem; letter-spacing: .2em; text-transform: uppercase;
+      color: var(--bege); font-weight: 400; margin-bottom: 28px;
+    }
+    .hero-tag::before { content: ''; display: block; width: 20px; height: 1px; background: var(--bege); opacity: .5; }
+    .hero-h1 {
+      font-size: clamp(2.1rem, 3.8vw, 3.2rem);
+      font-weight: 300; color: var(--branco);
+      line-height: 1.18; letter-spacing: -.01em; margin-bottom: 22px;
+    }
+    .hero-h1 em { font-style: italic; color: var(--bege); font-weight: 300; }
+    .hero-sub {
+      font-size: .95rem; color: rgba(255,255,255,.55);
+      font-weight: 300; max-width: 420px;
+      line-height: 1.85; margin-bottom: 40px;
+    }
+    .hero-btns { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-bottom: 52px; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: 'Paralucent', 'Helvetica Neue', sans-serif;
+      font-size: .7rem; font-weight: 400;
+      letter-spacing: .12em; text-transform: uppercase;
+      padding: 13px 28px; border-radius: 50px;
+      transition: all .2s; border: 1px solid transparent;
+      cursor: pointer;
+    }
+    .btn-bege { background: var(--bege); color: var(--dark); border-color: var(--bege); }
+    .btn-bege:hover { background: var(--bege2); border-color: var(--bege2); transform: translateY(-1px); }
+    .btn-outline-white { background: transparent; color: rgba(255,255,255,.6); border-color: rgba(255,255,255,.25); }
+    .btn-outline-white:hover { border-color: var(--bege); color: var(--bege); }
+    .btn-dark { background: var(--dark); color: var(--branco); border-color: var(--dark); }
+    .btn-dark:hover { background: #2a2a3e; transform: translateY(-1px); }
+    .btn-outline-dark { background: transparent; color: var(--texto); border-color: var(--border); }
+    .btn-outline-dark:hover { border-color: var(--bege); color: var(--texto); }
+    .btn-zap { background: var(--zap); color: #fff; border-color: var(--zap); }
+    .btn-zap:hover { background: #1fba58; transform: translateY(-1px); }
+    .btn-zap svg { width: 16px; height: 16px; fill: #fff; }
+
+    .hero-address {
+      font-size: .7rem; color: rgba(255,255,255,.3);
+      border-top: 1px solid rgba(255,255,255,.06);
+      padding-top: 22px; letter-spacing: .06em;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .hero-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--bege); opacity: .4; }
+
+    .hero-photo { position: relative; z-index: 2; border-radius: var(--r); overflow: hidden; }
+    .hero-photo img {
+      width: 100%; height: 560px;
+      object-fit: cover;
+      filter: brightness(.8) saturate(.78);
+    }
+    .hero-photo-badge {
+      position: absolute; bottom: 20px; left: 20px; right: 20px;
+      background: rgba(20,20,29,.9);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(185,170,155,.14);
+      border-radius: 8px;
+      padding: 16px 20px;
+      display: flex;
+    }
+    .badge-item {
+      flex: 1; text-align: center;
+      border-right: 1px solid rgba(185,170,155,.1);
+    }
+    .badge-item:last-child { border-right: none; }
+    .badge-num { font-size: 1.2rem; font-weight: 400; color: var(--bege); line-height: 1; }
+    .badge-label { font-size: .6rem; color: rgba(255,255,255,.4); letter-spacing: .1em; text-transform: uppercase; margin-top: 5px; }
+
+    /* ─── SEÇÕES ──────────────────────────────────────────────── */
+    .sec { padding: 96px 48px; }
+    .sec-white { background: var(--branco); }
+    .sec-off { background: var(--off); }
+    .sec-dark { background: var(--dark); }
+    .sec-center { text-align: center; }
+
+    .sec-tag {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: .6rem; letter-spacing: .22em; text-transform: uppercase;
+      color: var(--bege); font-weight: 400; margin-bottom: 16px;
+    }
+    h2.sec-title {
+      font-size: clamp(1.7rem, 2.6vw, 2.3rem);
+      font-weight: 300; line-height: 1.2;
+      letter-spacing: -.015em; margin-bottom: 16px;
+      color: var(--texto);
+    }
+    .sec-sub {
+      font-size: .92rem; font-weight: 300;
+      max-width: 520px; margin: 0 auto 56px;
+      color: var(--sub); line-height: 1.9;
+    }
+    .sec-cta-wrap { margin-top: 48px; text-align: center; }
+
+    /* ─── PROBLEMA — OVERLAY CARDS ────────────────────────────── */
+    .cards-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; }
+    .card-p {
+      position: relative;
+      border-radius: var(--r);
+      overflow: hidden;
+      transition: transform .3s, box-shadow .3s;
+    }
+    .card-p:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(0,0,0,.2); }
+    .card-p img {
+      width: 100%; height: 300px;
+      object-fit: cover;
+      filter: brightness(.5) saturate(.7);
+      display: block;
+    }
+    .card-p-body {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      background: linear-gradient(to top, rgba(20,20,29,.96) 50%, transparent);
+      padding: 48px 24px 28px;
+    }
+    .card-p-body h3 {
+      font-size: .95rem; font-weight: 500; color: var(--branco);
+      margin-bottom: 8px; letter-spacing: .01em;
+    }
+    .card-p-body p { font-size: .84rem; color: rgba(255,255,255,.6); line-height: 1.75; }
+
+    /* ─── PRODUTOS — SLIDER ───────────────────────────────────── */
+    .slider-wrap { position: relative; overflow: hidden; }
+    .slider-track {
+      display: flex;
+      transition: transform .45s cubic-bezier(.4,0,.2,1);
+    }
+    .slide {
+      min-width: calc(50% - 12px);
+      margin-right: 24px;
+      flex-shrink: 0;
+    }
+    .slide:last-child { margin-right: 0; }
+    .card-prod {
+      background: var(--branco);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      overflow: hidden;
+      transition: transform .3s, box-shadow .3s;
+      height: 100%;
+    }
+    .card-prod:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,.08); }
+    .card-prod img { width: 100%; height: 220px; object-fit: cover; filter: brightness(.85) saturate(.75); }
+    .card-prod-body { padding: 24px; }
+    .card-prod-body h3 { font-size: .92rem; font-weight: 500; color: var(--texto); margin-bottom: 8px; }
+    .card-prod-body p { font-size: .84rem; color: var(--sub); line-height: 1.78; margin-bottom: 16px; }
+    .card-prod-link {
+      font-size: .65rem; letter-spacing: .14em; text-transform: uppercase;
+      color: var(--bege); font-weight: 500;
+      display: inline-flex; align-items: center; gap: 6px;
+      transition: color .2s;
+    }
+    .card-prod-link:hover { color: #9a8d7e; }
+    .card-prod-link::after { content: '→'; }
+
+    .slider-controls {
+      display: flex; align-items: center; justify-content: center;
+      gap: 16px; margin-top: 32px;
+    }
+    .slider-btn {
+      width: 40px; height: 40px; border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--branco);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: all .2s;
+      color: var(--texto);
+    }
+    .slider-btn:hover { border-color: var(--bege); background: var(--off); }
+    .slider-btn svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .slider-dots { display: flex; gap: 8px; }
+    .slider-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--border); transition: background .2s, width .2s;
+      cursor: pointer;
+    }
+    .slider-dot.active { background: var(--bege); width: 20px; border-radius: 3px; }
+
+    /* ─── DIFERENCIAIS ────────────────────────────────────────── */
+    #porqueLevert { background: var(--branco); }
+    .cards-why {
+      display: grid; grid-template-columns: repeat(2,1fr); gap: 20px;
+      max-width: 860px; margin: 0 auto;
+    }
+    .card-why {
+      background: var(--off);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      padding: 28px 26px;
+      display: flex; gap: 18px;
+      transition: transform .3s;
+    }
+    .card-why:hover { transform: translateY(-3px); }
+    .card-why-icon {
+      width: 40px; height: 40px; flex-shrink: 0;
+      background: var(--dark); border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .card-why-icon svg {
+      width: 20px; height: 20px;
+      fill: none; stroke: var(--bege);
+      stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round;
+    }
+    .card-why h3 { font-size: .88rem; font-weight: 500; color: var(--texto); margin-bottom: 6px; }
+    .card-why p { font-size: .84rem; color: var(--sub); line-height: 1.75; }
+
+    /* ─── DEPOIMENTOS ─────────────────────────────────────────── */
+    #depoimentos { background: var(--dark); }
+    #depoimentos .sec-tag { color: var(--bege); }
+    #depoimentos h2.sec-title { color: var(--branco); }
+    #depoimentos .sec-sub { color: rgba(255,255,255,.4); }
+    .dep-grid {
+      display: grid; grid-template-columns: repeat(3,1fr); gap: 24px;
+      max-width: 1100px; margin: 0 auto;
+    }
+    .dep-card {
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(185,170,155,.12);
+      border-radius: var(--r);
+      padding: 32px 28px;
+      display: flex; flex-direction: column; gap: 20px;
+      transition: background .25s;
+    }
+    .dep-card:hover { background: rgba(255,255,255,.08); }
+    .dep-stars { display: flex; gap: 4px; }
+    .dep-star { color: var(--bege); font-size: 1rem; }
+    .dep-text {
+      font-size: .9rem; color: rgba(255,255,255,.7);
+      line-height: 1.85; font-weight: 300; font-style: italic;
+      flex: 1;
+    }
+    .dep-author { display: flex; align-items: center; gap: 14px; }
+    .dep-avatar {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: rgba(185,170,155,.2);
+      border: 1px solid rgba(185,170,155,.2);
+      overflow: hidden; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .dep-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .dep-avatar-placeholder {
+      font-size: 1rem; font-weight: 500; color: var(--bege);
+    }
+    .dep-name { font-size: .84rem; font-weight: 500; color: var(--branco); }
+    .dep-role { font-size: .72rem; color: rgba(255,255,255,.35); letter-spacing: .06em; }
+
+    /* ─── FAQ ─────────────────────────────────────────────────── */
+    #faq { background: var(--branco); }
+    .faq-layout {
+      display: grid;
+      grid-template-columns: 1fr 1.65fr;
+      gap: 88px; align-items: start;
+    }
+    .faq-left h2.sec-title { text-align: left; margin-bottom: 14px; }
+    .faq-left p { font-size: .9rem; color: var(--sub); line-height: 1.85; margin-bottom: 28px; }
+    .faq-list { border-top: 1px solid var(--border); }
+    .faq-item { border-bottom: 1px solid var(--border); }
+    .faq-q {
+      width: 100%; background: none; border: none;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 0; cursor: pointer; gap: 16px;
+      font-family: 'Paralucent', 'Helvetica Neue', sans-serif;
+      font-size: .9rem; font-weight: 400;
+      color: var(--texto); text-align: left; letter-spacing: .01em;
+      transition: color .2s;
+    }
+    .faq-q:hover { color: var(--bege); }
+    .faq-icon {
+      flex-shrink: 0; width: 22px; height: 22px;
+      border: 1px solid var(--border); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: .75rem; color: var(--bege);
+      transition: transform .3s, background .25s, border-color .25s;
+    }
+    .faq-item.open .faq-icon {
+      transform: rotate(45deg);
+      background: var(--bege); color: var(--dark); border-color: var(--bege);
+    }
+    .faq-a {
+      font-size: .88rem; color: var(--sub);
+      line-height: 1.85; font-weight: 300;
+      max-height: 0; overflow: hidden;
+      transition: max-height .38s ease, padding .38s ease;
+      padding-bottom: 0;
+    }
+    .faq-item.open .faq-a { max-height: 300px; padding-bottom: 22px; }
+
+    /* ─── CTA FINAL ───────────────────────────────────────────── */
+    #ctaFinal {
+      background: var(--dark);
+      padding: 100px 48px;
+    }
+    .cta-layout {
+      max-width: 900px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 48px;
+      align-items: center;
+    }
+    .cta-left .sec-tag { color: var(--bege); }
+    .cta-left h2 {
+      font-size: clamp(1.8rem, 2.8vw, 2.4rem);
+      font-weight: 300; color: var(--branco);
+      line-height: 1.18; letter-spacing: -.015em; margin-bottom: 14px;
+    }
+    .cta-left h2 em { font-style: italic; color: var(--bege); }
+    .cta-left > p {
+      font-size: .9rem; color: rgba(255,255,255,.45);
+      line-height: 1.85; margin-bottom: 28px;
+    }
+    .cta-trust {
+      display: flex; gap: 0;
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 8px; overflow: hidden;
+    }
+    .cta-trust-item {
+      flex: 1; padding: 14px 12px; text-align: center;
+      border-right: 1px solid rgba(255,255,255,.1);
+    }
+    .cta-trust-item:last-child { border-right: none; }
+    .cta-trust-num { font-size: 1.1rem; font-weight: 400; color: var(--branco); line-height: 1; }
+    .cta-trust-label { font-size: .6rem; color: rgba(255,255,255,.35); letter-spacing: .1em; text-transform: uppercase; margin-top: 4px; }
+
+    /* Form */
+    .cta-form {
+      background: var(--branco);
+      border-radius: 16px;
+      padding: 40px 36px;
+      box-shadow: 0 24px 64px rgba(0,0,0,.4);
+    }
+    .cta-form h3 {
+      font-size: 1rem; font-weight: 500; color: var(--texto);
+      margin-bottom: 6px; letter-spacing: -.01em;
+    }
+    .cta-form p { font-size: .82rem; color: var(--sub); margin-bottom: 24px; line-height: 1.6; }
+    .form-field { margin-bottom: 14px; }
+    .form-field label {
+      display: block; font-size: .68rem; letter-spacing: .1em;
+      text-transform: uppercase; color: var(--sub); margin-bottom: 6px;
+    }
+    .form-field input, .form-field select {
+      width: 100%; padding: 11px 14px;
+      border: 1px solid var(--border); border-radius: 6px;
+      font-family: 'Paralucent', sans-serif;
+      font-size: .88rem; color: var(--texto);
+      background: var(--branco);
+      transition: border-color .2s;
+      outline: none;
+    }
+    .form-field input:focus, .form-field select:focus { border-color: var(--bege); }
+    .form-field input::placeholder { color: rgba(42,42,42,.3); }
+    .form-submit {
+      width: 100%; padding: 13px;
+      background: var(--dark); color: var(--branco);
+      border: none; border-radius: 50px;
+      font-family: 'Paralucent', sans-serif;
+      font-size: .7rem; font-weight: 400;
+      letter-spacing: .14em; text-transform: uppercase;
+      cursor: pointer; transition: background .2s;
+      margin-top: 8px;
+    }
+    .form-submit:hover { background: #2a2a3e; }
+    .form-or {
+      text-align: center; margin: 16px 0;
+      font-size: .68rem; color: rgba(42,42,42,.3);
+      letter-spacing: .1em; text-transform: uppercase;
+      position: relative;
+    }
+    .form-or::before, .form-or::after {
+      content: ''; position: absolute; top: 50%;
+      width: 38%; height: 1px; background: var(--border);
+    }
+    .form-or::before { left: 0; }
+    .form-or::after { right: 0; }
+    .form-zap {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      width: 100%; padding: 12px;
+      background: var(--zap); color: #fff;
+      border: none; border-radius: 50px;
+      font-family: 'Paralucent', sans-serif;
+      font-size: .7rem; font-weight: 400;
+      letter-spacing: .12em; text-transform: uppercase;
+      cursor: pointer; transition: background .2s;
+      text-decoration: none;
+    }
+    .form-zap:hover { background: #1fba58; }
+    .form-zap svg { width: 16px; height: 16px; fill: #fff; }
+    .form-tagline {
+      font-size: .62rem; letter-spacing: .08em; text-transform: uppercase;
+      color: var(--sub); text-align: center; margin-top: 14px;
+    }
+
+    /* ─── FOOTER ──────────────────────────────────────────────── */
+    footer {
+      background: var(--dark);
+      padding: 60px 48px 40px;
+      border-top: 1px solid rgba(185,170,155,.2);
+    }
+    .footer-top {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr 1fr;
+      gap: 48px;
+      padding-bottom: 48px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      margin-bottom: 32px;
+    }
+    .footer-brand img { height: 30px; margin-bottom: 32px; }
+    .footer-nav { display: flex; flex-direction: column; gap: 12px; margin-top: 4px; }
+    .footer-nav a {
+      font-size: .72rem; letter-spacing: .12em; text-transform: uppercase;
+      color: rgba(255,255,255,.35); transition: color .2s;
+    }
+    .footer-nav a:hover { color: rgba(255,255,255,.75); }
+    .footer-col-title {
+      font-size: .65rem; letter-spacing: .18em; text-transform: uppercase;
+      color: var(--branco); font-weight: 500; margin-bottom: 18px;
+    }
+    .footer-col p, .footer-col a {
+      font-size: .78rem; color: rgba(255,255,255,.38);
+      line-height: 1.9; display: block;
+    }
+    .footer-col a:hover { color: rgba(255,255,255,.7); }
+    .footer-col a.footer-zap {
+      display: inline-flex; align-items: center; gap: 8px;
+      color: var(--zap); font-size: .75rem;
+      margin-top: 4px;
+    }
+    .footer-col a.footer-zap:hover { color: #1fba58; }
+    .footer-col a.footer-zap svg { width: 14px; height: 14px; fill: currentColor; }
+    .footer-bottom {
+      display: flex; align-items: center; justify-content: space-between; gap: 24px;
+    }
+    .footer-copy {
+      font-size: .66rem; letter-spacing: .08em; text-transform: uppercase;
+      color: rgba(255,255,255,.22);
+    }
+    .footer-cta {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: var(--branco); color: var(--dark);
+      font-size: .68rem; font-weight: 500; letter-spacing: .14em; text-transform: uppercase;
+      padding: 12px 24px; border-radius: 4px;
+      transition: background .2s;
+    }
+    .footer-cta:hover { background: #ededed; }
+    .footer-cta svg { width: 16px; height: 16px; fill: var(--zap); }
+
+    /* ─── METRICAS ───────────────────────────────────────────── */
+    #metricas {
+      background: var(--branco);
+      padding: 80px 48px;
+    }
+    .metricas-layout {
+      max-width: 1100px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1.2fr;
+      gap: 64px; align-items: center;
+    }
+    .metricas-left .sec-tag { margin-bottom: 14px; }
+    .metricas-left h2 {
+      font-size: clamp(1.6rem, 2.4vw, 2.1rem);
+      font-weight: 300; line-height: 1.22;
+      letter-spacing: -.015em; color: var(--texto);
+      margin-bottom: 16px;
+    }
+    .metricas-left h2 em { font-style: italic; color: var(--bege); font-weight: 300; }
+    .metricas-left > p {
+      font-size: .9rem; color: var(--sub);
+      line-height: 1.85; max-width: 400px;
+    }
+    .metricas-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+    }
+    .metrica-card {
+      background: var(--off);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--bege);
+      border-radius: var(--r);
+      padding: 28px 22px;
+      text-align: center;
+      transition: transform .3s;
+    }
+    .metrica-card:hover { transform: translateY(-3px); }
+    .metrica-num {
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: 700; color: var(--dark);
+      line-height: 1; margin-bottom: 6px;
+    }
+    .metrica-label {
+      font-size: .68rem; letter-spacing: .12em;
+      text-transform: uppercase; color: var(--sub);
+      font-weight: 400;
+    }
+
+    /* ─── EQUIPE ─────────────────────────────────────────────── */
+    #equipe {
+      background: var(--off);
+      padding: 96px 48px;
+    }
+    .equipe-pretitle {
+      display: block; text-align: center;
+      font-size: .58rem; letter-spacing: .28em;
+      text-transform: uppercase; color: var(--bege);
+      font-weight: 500; margin-bottom: 8px;
+    }
+    #equipe h2.sec-title {
+      text-align: center; margin-bottom: 48px;
+    }
+    .equipe-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 28px; max-width: 900px; margin: 0 auto;
+    }
+    .equipe-card {
+      background: var(--branco);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      padding: 36px 24px;
+      text-align: center;
+      transition: transform .3s, box-shadow .3s;
+    }
+    .equipe-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(0,0,0,.06);
+    }
+    .equipe-avatar {
+      width: 80px; height: 80px; border-radius: 50%;
+      background: var(--dark);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 20px;
+      border: 2px solid var(--bege);
+    }
+    .equipe-avatar span {
+      font-size: 1.6rem; font-weight: 500; color: var(--bege);
+    }
+    .equipe-card h3 {
+      font-size: .92rem; font-weight: 500;
+      color: var(--texto); margin-bottom: 4px;
+    }
+    .equipe-card p {
+      font-size: .78rem; color: var(--sub);
+      letter-spacing: .04em;
+    }
+
+    /* ─── COBERTURA ───────────────────────────────────────────── */
+    #cobertura {
+      background: var(--dark);
+      padding: 96px 48px;
+    }
+    .cobertura-layout {
+      max-width: 1100px; margin: 0 auto;
+      display: grid; grid-template-columns: 1.1fr 1fr;
+      gap: 64px; align-items: center;
+    }
+    #cobertura h2 {
+      font-size: clamp(1.7rem, 2.6vw, 2.3rem);
+      font-weight: 300; color: var(--branco);
+      line-height: 1.2; letter-spacing: -.015em;
+      margin-bottom: 14px;
+    }
+    #cobertura h2 em { font-style: italic; color: var(--bege); font-weight: 300; }
+    .cobertura-sub {
+      font-size: .9rem; color: rgba(255,255,255,.45);
+      line-height: 1.85; margin-bottom: 32px; max-width: 440px;
+    }
+    .cobertura-estados {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 10px 24px;
+    }
+    .cobertura-estado {
+      display: flex; align-items: center; gap: 10px;
+      font-size: .82rem; color: rgba(255,255,255,.7);
+      font-weight: 300; padding: 6px 0;
+    }
+    .cobertura-check {
+      width: 20px; height: 20px; border-radius: 50%;
+      background: rgba(185,170,155,.15);
+      border: 1px solid rgba(185,170,155,.25);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .cobertura-check svg {
+      width: 12px; height: 12px;
+      fill: none; stroke: var(--bege);
+      stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round;
+    }
+    .cobertura-right {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+    }
+    .cobertura-stat {
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(185,170,155,.12);
+      border-radius: var(--r);
+      padding: 28px 20px;
+      text-align: center;
+    }
+    .cobertura-stat-num {
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      font-weight: 700; color: var(--bege);
+      line-height: 1; margin-bottom: 6px;
+    }
+    .cobertura-stat-label {
+      font-size: .65rem; letter-spacing: .12em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.35);
+    }
+
+    /* ─── RESPONSIVE — NOVAS SECOES ──────────────────────────── */
+    @media (max-width: 960px) {
+      #metricas { padding: 56px 20px; }
+      .metricas-layout { grid-template-columns: 1fr; gap: 36px; }
+      .metricas-grid { grid-template-columns: repeat(3, 1fr); }
+      .equipe-grid { grid-template-columns: 1fr; max-width: 340px; }
+      #equipe { padding: 64px 20px; }
+      .cobertura-layout { grid-template-columns: 1fr; gap: 40px; }
+      #cobertura { padding: 64px 20px; }
+    }
+    @media (max-width: 600px) {
+      #metricas { padding: 48px 16px; }
+      .metricas-grid { grid-template-columns: 1fr; gap: 14px; }
+      #equipe { padding: 56px 16px; }
+      #cobertura { padding: 56px 16px; }
+      .cobertura-right { grid-template-columns: 1fr 1fr; }
+      .cobertura-estados { grid-template-columns: 1fr; }
+    }
+
+    /* ─── FAB ─────────────────────────────────────────────────── */
+    .fab {
+      position: fixed; bottom: 24px; right: 24px; z-index: 999;
+      width: 52px; height: 52px; border-radius: 50%;
+      background: var(--zap);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 20px rgba(37,211,102,.35);
+      transition: transform .2s;
+    }
+    .fab:hover { transform: scale(1.08); }
+    .fab svg { width: 24px; height: 24px; fill: #fff; }
+
+    /* ─── RESPONSIVE ──────────────────────────────────────────── */
+    @media (max-width: 960px) {
+      .topbar { display: none; }
+      nav.main-nav { padding: 0 20px; }
+      .nav-mobile-btn { display: flex; }
+      .nav-links {
+        display: none;
+        position: absolute; top: 72px; left: 0; right: 0;
+        background: var(--branco);
+        flex-direction: column; align-items: flex-start;
+        padding: 8px 20px 24px; gap: 0;
+        border-bottom: 1px solid var(--border);
+        box-shadow: 0 8px 24px rgba(0,0,0,.08);
+        z-index: 99;
+      }
+      .nav-links.open { display: flex; }
+      .nav-links li { width: 100%; }
+      .nav-links a {
+        display: block; padding: 14px 0;
+        border-bottom: 1px solid var(--border);
+        font-size: .75rem; letter-spacing: .1em;
+        color: var(--texto) !important;
+      }
+      .nav-links li:last-child a { border-bottom: none; }
+      .nav-cta {
+        background: none !important; color: var(--dark) !important;
+        border-radius: 0 !important; padding: 14px 0 !important;
+      }
+      #hero { grid-template-columns: 1fr; padding: 80px 20px 48px; gap: 36px; }
+      .hero-photo img { height: 300px; }
+      .sec { padding: 64px 20px; }
+      .cards-3 { grid-template-columns: 1fr 1fr; }
+      .slide { min-width: calc(100% - 0px); margin-right: 24px; }
+      .cards-why { grid-template-columns: 1fr; }
+      .dep-grid { grid-template-columns: 1fr; gap: 16px; }
+      .faq-layout { grid-template-columns: 1fr; gap: 40px; }
+      .cta-layout { grid-template-columns: 1fr; }
+      footer { padding: 48px 20px 32px; }
+      .footer-top { grid-template-columns: 1fr; gap: 36px; }
+      .footer-bottom { flex-direction: column; text-align: center; gap: 20px; }
+    }
+    @media (max-width: 600px) {
+      .cards-3 { grid-template-columns: 1fr; }
+      #hero { padding: 72px 16px 40px; }
+      .sec { padding: 56px 16px; }
+      .hero-btns { flex-direction: column; }
+      #ctaFinal { padding: 64px 16px; }
+      .cta-trust { flex-direction: column; }
+      .cta-trust-item { border-right: none; border-bottom: 1px solid rgba(255,255,255,.1); }
+      .cta-trust-item:last-child { border-bottom: none; }
+      .cta-form { padding: 28px 20px; }
+      .dep-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-left">
+    <strong>Levert Pisos & Revestimentos</strong>
+    Nossa Senhora do Socorro, SE &nbsp;·&nbsp; Seg. a Sex. 8h–18h
+  </div>
+  <div class="topbar-right">
+    Fábrica própria · Nordeste &nbsp;·&nbsp; <a href="https://wa.me/5579991350940">(79) 99135-0940</a>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="main-nav">
+  <a href="#" class="nav-logo">
+    <img src="assets/logo-light.png" alt="Levert — Pisos & Revestimentos em Concreto">
+  </a>
+  <button class="nav-mobile-btn" id="mobileMenuBtn" aria-label="Abrir menu" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#problema">Soluções</a></li>
+    <li><a href="#produtos">Produtos</a></li>
+    <li><a href="#porqueLevert">Empresa</a></li>
+    <li><a href="#faq">FAQ</a></li>
+    <li><a href="https://wa.me/5579991350940?text=Olá!%20Vi%20o%20site%20da%20Levert%20e%20quero%20um%20orçamento" target="_blank" class="nav-cta">Pedir orçamento</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-content">
+    <div class="hero-tag">Fabricação própria · Sergipe</div>
+    <h1 class="hero-h1">
+      Pisos táteis que mantêm<br>
+      <em>a obra nas normas</em> —<br>
+      e o projeto com identidade
+    </h1>
+    <p class="hero-sub">
+      Fábrica em Sergipe, atendimento direto, peças feitas sob demanda. Do piso obrigatório ao revestimento que transforma o ambiente.
+    </p>
+    <div class="hero-btns">
+      <a class="btn btn-bege" href="https://wa.me/5579991350940?text=Olá!%20Vi%20o%20site%20da%20Levert%20e%20quero%20um%20orçamento" target="_blank">Solicitar orçamento</a>
+      <a class="btn btn-outline-white" href="#produtos">Ver produtos</a>
+    </div>
+    <div class="hero-address">
+      <div class="hero-dot"></div>
+      Nossa Senhora do Socorro, SE · Entregamos em todo o Nordeste
+    </div>
+  </div>
+
+  <div class="hero-photo">
+    <img src="https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=900&q=85" alt="Pisos táteis Levert" loading="eager">
+    <div class="hero-photo-badge">
+      <div class="badge-item">
+        <div class="badge-num">4</div>
+        <div class="badge-label">Linhas de produto</div>
+      </div>
+      <div class="badge-item">
+        <div class="badge-num">100%</div>
+        <div class="badge-label">Artesanal</div>
+      </div>
+      <div class="badge-item">
+        <div class="badge-num">NBR</div>
+        <div class="badge-label">9050 · Conformidade</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- METRICAS -->
+<section id="metricas">
+  <div class="metricas-layout">
+    <div class="metricas-left">
+      <div class="sec-tag">Resultados que falam</div>
+      <h2>Uma fabrica que <em>entrega</em><br>o que o Nordeste precisa</h2>
+      <p>Da producao artesanal ao atendimento tecnico especializado, construimos uma trajetoria de credibilidade e entregas consistentes em todo o Nordeste.</p>
+    </div>
+    <div class="metricas-grid">
+      <div class="metrica-card">
+        <div class="metrica-num">8+</div>
+        <div class="metrica-label">Anos de fabrica</div>
+      </div>
+      <div class="metrica-card">
+        <div class="metrica-num">5.000+</div>
+        <div class="metrica-label">m2 entregues</div>
+      </div>
+      <div class="metrica-card">
+        <div class="metrica-num">9</div>
+        <div class="metrica-label">Estados atendidos</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEMA -->
+<section id="problema" class="sec sec-off sec-center">
+  <div class="sec-tag">O problema que resolvemos</div>
+  <h2 class="sec-title">Reconheça os sinais:<br>sua obra precisa de ajuda?</h2>
+  <p class="sec-sub">Fornecedor de fora, produto sem personalidade, vistoria reprovada. A Levert foi criada para resolver exatamente isso.</p>
+  <div class="cards-3">
+    <div class="card-p">
+      <img src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=600&q=80" alt="Fornecedor longe" loading="lazy">
+      <div class="card-p-body">
+        <h3>Fornecedor de fora que atrasa tudo</h3>
+        <p>Prazo incerto, frete caro e ninguém para dar suporte quando surge dúvida no meio da obra.</p>
+      </div>
+    </div>
+    <div class="card-p">
+      <img src="https://images.unsplash.com/photo-1600566752355-35792bedcfea?w=600&q=80" alt="Produto de catálogo" loading="lazy">
+      <div class="card-p-body">
+        <h3>Produto de catálogo sem identidade</h3>
+        <p>Tudo igual, sem possibilidade de ajuste. Projetos diferenciados merecem peças feitas especialmente para eles.</p>
+      </div>
+    </div>
+    <div class="card-p">
+      <img src="https://images.unsplash.com/photo-1517715762827-c72d5be24da6?w=600&q=80" alt="Vistoria reprovada" loading="lazy">
+      <div class="card-p-body">
+        <h3>Obra reprovada na vistoria</h3>
+        <p>A prefeitura exige piso tátil com conformidade NBR. Sem o produto certo, o projeto trava.</p>
+      </div>
+    </div>
+  </div>
+  <div class="sec-cta-wrap">
+    <a class="btn btn-dark" href="https://wa.me/5579991350940?text=Quero%20resolver%20esses%20problemas" target="_blank">Falar com a Levert agora</a>
+  </div>
+</section>
+
+<!-- PRODUTOS -->
+<section id="produtos" class="sec sec-white sec-center">
+  <div class="sec-tag">Portfólio</div>
+  <h2 class="sec-title">Fabricação sob demanda<br>para qualquer projeto</h2>
+  <p class="sec-sub">Do piso tátil obrigatório ao revestimento que transforma — tudo fabricado em Sergipe com controle de qualidade por lote.</p>
+
+  <div class="slider-wrap" id="prodSlider">
+    <div class="slider-track" id="prodTrack">
+      <div class="slide">
+        <div class="card-prod">
+          <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80" alt="Pisos Táteis" loading="lazy">
+          <div class="card-prod-body">
+            <h3>Pisos Táteis</h3>
+            <p>Para calçadas, praças, rampas e áreas de acesso. Conformidade NBR 9050 garantida. Sua obra passa na vistoria.</p>
+            <a class="card-prod-link" href="https://wa.me/5579991350940?text=Quero%20saber%20mais%20sobre%20Pisos%20Táteis" target="_blank">Pedir orçamento</a>
+          </div>
+        </div>
+      </div>
+      <div class="slide">
+        <div class="card-prod">
+          <img src="https://images.unsplash.com/photo-1618221469555-7f3ad97540d6?w=600&q=80" alt="Cobogós" loading="lazy">
+          <div class="card-prod-body">
+            <h3>Cobogós</h3>
+            <p>Para fachadas, divisórias e elementos decorativos com ventilação natural. Design exclusivo por projeto.</p>
+            <a class="card-prod-link" href="https://wa.me/5579991350940?text=Quero%20saber%20mais%20sobre%20Cobogós" target="_blank">Pedir orçamento</a>
+          </div>
+        </div>
+      </div>
+      <div class="slide">
+        <div class="card-prod">
+          <img src="https://images.unsplash.com/photo-1600566752355-35792bedcfea?w=600&q=80" alt="Revestimentos Cimentícios" loading="lazy">
+          <div class="card-prod-body">
+            <h3>Revestimentos Cimentícios</h3>
+            <p>Paredes internas e externas. O visual do concreto aparente com acabamento controlado e textura sob medida.</p>
+            <a class="card-prod-link" href="https://wa.me/5579991350940?text=Quero%20saber%20mais%20sobre%20Revestimentos" target="_blank">Pedir orçamento</a>
+          </div>
+        </div>
+      </div>
+      <div class="slide">
+        <div class="card-prod">
+          <img src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=600&q=80" alt="Pisos Polidos" loading="lazy">
+          <div class="card-prod-body">
+            <h3>Pisos Polidos</h3>
+            <p>Para áreas externas residenciais e comerciais. Durabilidade do concreto com acabamento refinado e pigmentação personalizada.</p>
+            <a class="card-prod-link" href="https://wa.me/5579991350940?text=Quero%20saber%20mais%20sobre%20Pisos%20Polidos" target="_blank">Pedir orçamento</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slider-controls">
+    <button class="slider-btn" id="prodPrev" aria-label="Anterior">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <div class="slider-dots" id="prodDots"></div>
+    <button class="slider-btn" id="prodNext" aria-label="Próximo">
+      <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+  </div>
+
+  <div class="sec-cta-wrap">
+    <a class="btn btn-bege" href="https://wa.me/5579991350940?text=Quero%20um%20orçamento%20completo" target="_blank">Solicitar orçamento completo</a>
+  </div>
+</section>
+
+<!-- POR QUE LEVERT -->
+<section id="porqueLevert" class="sec sec-off sec-center">
+  <div class="sec-tag">Por que a Levert</div>
+  <h2 class="sec-title">Por que mais de 40 construtoras<br>escolhem a Levert no Nordeste?</h2>
+  <p class="sec-sub">Fábrica própria, atendimento direto e peças únicas feitas sob demanda. Sem intermediário, sem surpresa.</p>
+  <div class="cards-why">
+    <div class="card-why">
+      <div class="card-why-icon">
+        <svg viewBox="0 0 24 24">
+          <path d="M3 21V8l6-4v4l6-4v4l6-4v17H3z"/>
+          <path d="M9 21v-5h3v5"/>
+          <rect x="14" y="13" width="2" height="3" rx=".5"/>
+          <rect x="6" y="13" width="2" height="3" rx=".5"/>
+        </svg>
+      </div>
+      <div>
+        <h3>Fábrica própria em Sergipe</h3>
+        <p>Você fala direto com quem produz. Controle total de qualidade e prazo — sem depender de fornecedor de fora.</p>
+      </div>
+    </div>
+    <div class="card-why">
+      <div class="card-why-icon">
+        <svg viewBox="0 0 24 24">
+          <path d="M3 11a9 9 0 1 1 18 0"/>
+          <path d="M3 11v3a2 2 0 0 0 2 2h1v-5H4a1 1 0 0 0-1 1z"/>
+          <path d="M21 11v3a2 2 0 0 1-2 2h-1v-5h2a1 1 0 0 1 1 1z"/>
+          <path d="M18 17a6 6 0 0 1-6 3 6 6 0 0 1-3-.8"/>
+        </svg>
+      </div>
+      <div>
+        <h3>Atendimento técnico especializado</h3>
+        <p>Calculamos metragem, sugerimos modelos e tiramos dúvidas antes do pedido. Parceria real desde o projeto.</p>
+      </div>
+    </div>
+    <div class="card-why">
+      <div class="card-why-icon">
+        <svg viewBox="0 0 24 24">
+          <path d="M4 6h16M4 12h16M4 18h16"/>
+          <circle cx="8" cy="6" r="2" fill="var(--bege)" stroke="none"/>
+          <circle cx="16" cy="12" r="2" fill="var(--bege)" stroke="none"/>
+          <circle cx="10" cy="18" r="2" fill="var(--bege)" stroke="none"/>
+        </svg>
+      </div>
+      <div>
+        <h3>Peças feitas sob demanda</h3>
+        <p>Pigmentação, textura e dimensões definidas com você. Não há catálogo fixo — há o que o seu projeto precisa.</p>
+      </div>
+    </div>
+    <div class="card-why">
+      <div class="card-why-icon">
+        <svg viewBox="0 0 24 24">
+          <path d="M12 2l7 4v5c0 5-3.5 9.3-7 11-3.5-1.7-7-6-7-11V6l7-4z"/>
+          <polyline points="9 12 11 14 15 10"/>
+        </svg>
+      </div>
+      <div>
+        <h3>Conformidade NBR 9050</h3>
+        <p>Pisos táteis com controle de qualidade por lote. Sua obra passa na vistoria da prefeitura sem surpresa.</p>
+      </div>
+    </div>
+  </div>
+  <div class="sec-cta-wrap">
+    <a class="btn btn-dark" href="https://wa.me/5579991350940?text=Quero%20conhecer%20mais%20sobre%20a%20Levert" target="_blank">Falar com a Levert</a>
+  </div>
+</section>
+
+<!-- EQUIPE -->
+<section id="equipe">
+  <span class="equipe-pretitle">A equipe por tras de cada peca</span>
+  <h2 class="sec-title">Profissionais que garantem<br>qualidade em cada lote</h2>
+  <div class="equipe-grid">
+    <div class="equipe-card">
+      <div class="equipe-avatar"><span>J</span></div>
+      <h3>Joao Levert</h3>
+      <p>Fundador & Responsavel Tecnico</p>
+    </div>
+    <div class="equipe-card">
+      <div class="equipe-avatar"><span>M</span></div>
+      <h3>Maria Silva</h3>
+      <p>Especialista em Producao</p>
+    </div>
+    <div class="equipe-card">
+      <div class="equipe-avatar"><span>P</span></div>
+      <h3>Pedro Santos</h3>
+      <p>Consultor Tecnico</p>
+    </div>
+  </div>
+</section>
+
+<!-- DEPOIMENTOS -->
+<section id="depoimentos" class="sec sec-dark sec-center">
+  <div class="sec-tag">Depoimentos</div>
+  <h2 class="sec-title">O que nossos clientes dizem</h2>
+  <p class="sec-sub" style="color:rgba(255,255,255,.4)">Construtoras, arquitetos e incorporadoras que confiam na Levert.</p>
+  <div class="dep-grid">
+
+    <div class="dep-card">
+      <div class="dep-stars">
+        <span class="dep-star">★</span><span class="dep-star">★</span><span class="dep-star">★</span><span class="dep-star">★</span><span class="dep-star">★</span>
+      </div>
+      <p class="dep-text">"Prazo cumprido, produto dentro das normas e atendimento excelente. Já é a terceira vez que pedimos os pisos táteis da Levert para nossas obras em Aracaju."</p>
+      <div class="dep-author">
+        <div class="dep-avatar"><div class="dep-avatar-placeholder">C</div></div>
+        <div>
+          <div class="dep-name">Carlos Mendonça</div>
+          <div class="dep-role">Engenheiro Civil · Construtora Mendonça</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dep-card">
+      <div class="dep-stars">
+        <span class="dep-star">★</span><span class="dep-star">★</span><span class="dep-star">★</span><span class="dep-star">★</span><span class="dep-star">★</span>
+      </div>
+      <p class="dep-text">"Os cobogós personalizados ficaram exatamente como eu precisava para o projeto. Flexibilidade de dimensões e cores que nenhum fornecedor de catálogo oferece."</p>
+      <div class="dep-author">
+        <div class="dep-avatar"><div class="dep-avatar-placeholder">A</div></div>
+        <div>
+          <div class="dep-name">Ana Paula Freitas</div>
+          <div class="dep-role">Arquiteta · Studio AF Projetos</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dep-card">
+      <div class="dep-stars">
+        <span class="dep-star">★</span><span class="dep-star">★</span><span class="dep-star">★</span><span class="dep-star">★</span><span class="dep-star">★</span>
+      </div>
+      <p class="dep-text">"Fábrica local faz toda diferença no prazo. Nossa obra em Maceió precisava de revestimento cimentício urgente — a Levert entregou antes do previsto."</p>
+      <div class="dep-author">
+        <div class="dep-avatar"><div class="dep-avatar-placeholder">R</div></div>
+        <div>
+          <div class="dep-name">Roberto Lins</div>
+          <div class="dep-role">Incorporador · Grupo Lins</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- COBERTURA -->
+<section id="cobertura">
+  <div class="cobertura-layout">
+    <div class="cobertura-left">
+      <div class="sec-tag" style="color:var(--bege)">Cobertura regional</div>
+      <h2>Fabricamos em Sergipe,<br><em>entregamos em todo o Nordeste</em></h2>
+      <p class="cobertura-sub">Logistica propria e parcerias com transportadoras regionais garantem entrega rapida em 9 estados do Nordeste.</p>
+      <div class="cobertura-estados">
+        <div class="cobertura-estado">
+          <div class="cobertura-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+          Alagoas (AL)
+        </div>
+        <div class="cobertura-estado">
+          <div class="cobertura-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+          Bahia (BA)
+        </div>
+        <div class="cobertura-estado">
+          <div class="cobertura-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+          Ceara (CE)
+        </div>
+        <div class="cobertura-estado">
+          <div class="cobertura-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+          Maranhao (MA)
+        </div>
+        <div class="cobertura-estado">
+          <div class="cobertura-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+          Paraiba (PB)
+        </div>
+        <div class="cobertura-estado">
+          <div class="cobertura-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+          Pernambuco (PE)
+        </div>
+        <div class="cobertura-estado">
+          <div class="cobertura-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+          Piaui (PI)
+        </div>
+        <div class="cobertura-estado">
+          <div class="cobertura-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+          Rio Grande do Norte (RN)
+        </div>
+        <div class="cobertura-estado">
+          <div class="cobertura-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+          Sergipe (SE)
+        </div>
+      </div>
+    </div>
+    <div class="cobertura-right">
+      <div class="cobertura-stat">
+        <div class="cobertura-stat-num">9</div>
+        <div class="cobertura-stat-label">Estados</div>
+      </div>
+      <div class="cobertura-stat">
+        <div class="cobertura-stat-num">40+</div>
+        <div class="cobertura-stat-label">Construtoras</div>
+      </div>
+      <div class="cobertura-stat">
+        <div class="cobertura-stat-num">100%</div>
+        <div class="cobertura-stat-label">Fabricacao local</div>
+      </div>
+      <div class="cobertura-stat">
+        <div class="cobertura-stat-num">NBR</div>
+        <div class="cobertura-stat-label">9050 Conformidade</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq" class="sec sec-white">
+  <div class="faq-layout">
+    <div class="faq-left">
+      <div class="sec-tag">Dúvidas frequentes</div>
+      <h2 class="sec-title">Tire suas dúvidas<br>antes de entrar em contato</h2>
+      <p>Não encontrou o que procura? Nossa equipe responde pelo WhatsApp.</p>
+      <a class="btn btn-bege" href="https://wa.me/5579991350940?text=Tenho%20uma%20dúvida%20sobre%20os%20produtos%20da%20Levert" target="_blank">Falar no WhatsApp</a>
+    </div>
+    <div class="faq-list">
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Vocês atendem fora de Sergipe?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">Sim. Atendemos todo o Nordeste. Fale com a gente para verificar disponibilidade de entrega na sua cidade e calcular o frete.</div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Como funciona o processo de compra?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">Você nos conta o projeto e a metragem pelo WhatsApp. Fazemos o orçamento, confirmamos o pedido e iniciamos a produção — cada peça fabricada sob demanda.</div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Vocês fabricam modelos personalizados?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">Sim. Trabalhamos com pigmentação, textura e dimensões customizadas. Se você tem um projeto especial, nos conta — desenvolvemos junto com você.</div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Os pisos táteis atendem às normas da prefeitura?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">Sim. Nossos pisos táteis são produzidos com controle de qualidade por lote e atendem às exigências da NBR 9050. Sua obra passa na vistoria sem surpresa.</div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Qual o prazo de entrega?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">O prazo varia conforme volume e produto. Por termos fábrica própria em Sergipe, conseguimos prazos melhores que fornecedores de fora do estado. O prazo exato é confirmado no orçamento.</div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Vocês enviam amostras antes do pedido?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">Sim. Para pedidos maiores, trabalhamos com envio de amostras para aprovação antes de iniciar a produção. Fale com a gente para combinar.</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<section id="ctaFinal">
+  <div class="cta-layout">
+
+    <div class="cta-left">
+      <div class="sec-tag">Vamos conversar</div>
+      <h2>A sua obra <em>não pode esperar</em></h2>
+      <p>Calculamos metragem, enviamos amostras e apresentamos as opções. Sem compromisso, sem enrolação.</p>
+      <div class="cta-trust">
+        <div class="cta-trust-item">
+          <div class="cta-trust-num">40+</div>
+          <div class="cta-trust-label">Construtoras</div>
+        </div>
+        <div class="cta-trust-item">
+          <div class="cta-trust-num">NBR</div>
+          <div class="cta-trust-label">9050</div>
+        </div>
+        <div class="cta-trust-item">
+          <div class="cta-trust-num">100%</div>
+          <div class="cta-trust-label">Fabricação local</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cta-form">
+      <h3>Solicite seu orçamento</h3>
+      <p>Resposta em até 2h úteis. Sem compromisso.</p>
+      <div class="form-field">
+        <label>Nome</label>
+        <input type="text" placeholder="Seu nome ou empresa">
+      </div>
+      <div class="form-field">
+        <label>WhatsApp</label>
+        <input type="tel" placeholder="(79) 99999-9999">
+      </div>
+      <div class="form-field">
+        <label>Produto de interesse</label>
+        <select>
+          <option value="" disabled selected>Selecione...</option>
+          <option>Pisos Táteis</option>
+          <option>Cobogós</option>
+          <option>Revestimentos Cimentícios</option>
+          <option>Pisos Polidos</option>
+          <option>Mais de um produto</option>
+        </select>
+      </div>
+      <button class="form-submit" onclick="submitForm(this)">Solicitar orçamento grátis</button>
+      <div class="form-or">ou</div>
+      <a class="form-zap" href="https://wa.me/5579991350940?text=Olá!%20Vi%20o%20site%20da%20Levert%20e%20quero%20um%20orçamento" target="_blank">
+        <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Falar pelo WhatsApp agora
+      </a>
+      <p class="form-tagline">ENTREGAMOS EM TODO O NORDESTE</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <a href="#">
+        <img src="assets/logo-white.png" alt="Levert — Pisos & Revestimentos">
+      </a>
+      <div class="footer-nav">
+        <a href="#problema">Soluções</a>
+        <a href="#produtos">Produtos</a>
+        <a href="#porqueLevert">Empresa</a>
+        <a href="#faq">FAQ</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-title">Fábrica</div>
+      <p>Nossa Senhora do Socorro</p>
+      <p>Sergipe — Brasil</p>
+      <br>
+      <p>Atendemos todo o Nordeste</p>
+      <p>Seg. a Sex. das 8h às 18h</p>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-title">Contato</div>
+      <a class="footer-zap" href="https://wa.me/5579991350940" target="_blank">
+        <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        (79) 99135-0940
+      </a>
+      <br>
+      <p>Orçamento sem compromisso</p>
+      <p>Amostras disponíveis</p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-copy">© 2025 Levert Pisos & Revestimentos em Concreto · Nossa Senhora do Socorro, SE</div>
+    <a class="footer-cta" href="https://wa.me/5579991350940?text=Olá!%20Vi%20o%20site%20da%20Levert%20e%20quero%20um%20orçamento" target="_blank">
+      <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      Pedir orçamento
+    </a>
+  </div>
+</footer>
+
+<!-- FAB -->
+<a class="fab" href="https://wa.me/5579991350940?text=Olá!%20Vi%20o%20site%20da%20Levert%20e%20quero%20um%20orçamento" target="_blank" aria-label="WhatsApp">
+  <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
+
+<!-- Schema Markup -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "name": "Levert Pisos & Revestimentos em Concreto",
+  "description": "Fabricação própria de pisos táteis, cobogós e revestimentos cimentícios em Sergipe. Conformidade NBR 9050. Atendemos todo o Nordeste.",
+  "url": "https://levert.com.br",
+  "telephone": "+5579991350940",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Nossa Senhora do Socorro",
+    "addressRegion": "SE",
+    "addressCountry": "BR"
+  },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "addressRegion": "Sergipe"
+  },
+  "areaServed": "Nordeste do Brasil",
+  "openingHours": "Mo-Fr 08:00-18:00",
+  "priceRange": "$$",
+  "hasOfferCatalog": {
+    "@type": "OfferCatalog",
+    "name": "Produtos Levert",
+    "itemListElement": [
+      {"@type": "Offer", "itemOffered": {"@type": "Product", "name": "Pisos Táteis NBR 9050"}},
+      {"@type": "Offer", "itemOffered": {"@type": "Product", "name": "Cobogós Cimentícios"}},
+      {"@type": "Offer", "itemOffered": {"@type": "Product", "name": "Revestimentos Cimentícios"}},
+      {"@type": "Offer", "itemOffered": {"@type": "Product", "name": "Pisos Polidos"}}
+    ]
+  }
+}
+</script>
+
+<script>
+  /* ── FAQ ── */
+  function toggleFaq(btn) {
+    const item = btn.closest('.faq-item');
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item.open').forEach(el => el.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  }
+
+  /* ── Hamburger ── */
+  const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+  const navLinks = document.getElementById('navLinks');
+  mobileMenuBtn.addEventListener('click', function () {
+    const isOpen = navLinks.classList.contains('open');
+    navLinks.classList.toggle('open');
+    mobileMenuBtn.classList.toggle('active');
+    mobileMenuBtn.setAttribute('aria-expanded', String(!isOpen));
+  });
+  navLinks.querySelectorAll('a').forEach(function (link) {
+    link.addEventListener('click', function () {
+      navLinks.classList.remove('open');
+      mobileMenuBtn.classList.remove('active');
+      mobileMenuBtn.setAttribute('aria-expanded', 'false');
+    });
+  });
+
+  /* ── Produtos Slider ── */
+  (function () {
+    const track = document.getElementById('prodTrack');
+    const slides = track.querySelectorAll('.slide');
+    const dotsWrap = document.getElementById('prodDots');
+    const prevBtn = document.getElementById('prodPrev');
+    const nextBtn = document.getElementById('prodNext');
+    let current = 0;
+    const isMobile = () => window.innerWidth <= 960;
+    const perView = () => isMobile() ? 1 : 2;
+    const total = () => Math.ceil(slides.length / perView());
+
+    function buildDots() {
+      dotsWrap.innerHTML = '';
+      for (let i = 0; i < total(); i++) {
+        const d = document.createElement('div');
+        d.className = 'slider-dot' + (i === current ? ' active' : '');
+        d.addEventListener('click', () => goTo(i));
+        dotsWrap.appendChild(d);
+      }
+    }
+
+    function goTo(idx) {
+      current = Math.max(0, Math.min(idx, total() - 1));
+      const slideW = slides[0].offsetWidth + 24;
+      track.style.transform = 'translateX(-' + (current * perView() * slideW) + 'px)';
+      dotsWrap.querySelectorAll('.slider-dot').forEach((d, i) => {
+        d.classList.toggle('active', i === current);
+      });
+    }
+
+    prevBtn.addEventListener('click', () => goTo(current - 1));
+    nextBtn.addEventListener('click', () => goTo(current + 1));
+    buildDots();
+    window.addEventListener('resize', () => { current = 0; buildDots(); goTo(0); });
+  })();
+
+  /* ── Form submit → WhatsApp ── */
+  function submitForm(btn) {
+    const form = btn.closest('.cta-form');
+    const nome = form.querySelector('input[type=text]').value.trim();
+    const tel = form.querySelector('input[type=tel]').value.trim();
+    const produto = form.querySelector('select').value;
+    if (!nome || !tel) { alert('Por favor preencha nome e WhatsApp.'); return; }
+    const msg = encodeURIComponent('Olá! Vim pelo site da Levert.\nNome: ' + nome + '\nTelefone: ' + tel + '\nProduto: ' + (produto || 'Não informado'));
+    window.open('https://wa.me/5579991350940?text=' + msg, '_blank');
+  }
+</script>
+
+</body>
+</html>
