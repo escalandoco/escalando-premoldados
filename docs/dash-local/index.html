@@ -37,28 +37,16 @@ nav{display:flex;gap:2px;flex:1}
 .tab-icon{font-size:14px}
 .tab-badge{font-size:10px;background:var(--orange-l);color:var(--orange);border-radius:10px;padding:1px 6px;font-weight:700}
 
-/* hamburguer */
+/* hamburguer — sidebar toggle (mobile only) */
 .hamburger{display:none;flex-direction:column;justify-content:center;gap:5px;width:36px;height:36px;padding:6px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;flex-shrink:0}
 .hamburger span{display:block;height:2px;background:var(--text);border-radius:2px;transition:all .2s}
 .hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
 .hamburger.open span:nth-child(2){opacity:0}
 .hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
 
-/* mobile nav dropdown */
-@media(max-width:768px){
+@media(max-width:900px){
   .hamburger{display:flex}
-  nav{
-    display:none;position:fixed;top:52px;left:0;right:0;bottom:0;
-    background:var(--bg2);border-top:1px solid var(--border);
-    flex-direction:column;gap:4px;padding:12px;overflow-y:auto;
-    z-index:99;
-  }
-  nav.open{display:flex}
-  .tab{padding:12px 16px;font-size:15px;border-radius:var(--radius);border:1px solid transparent}
-  .tab.active{border-color:var(--orange);background:var(--bg3)}
-  .tab:hover{background:var(--bg3)}
   .header-right .updated{display:none}
-  .logo-sub{display:none}
 }
 
 .header-right{margin-left:auto;display:flex;align-items:center;gap:10px}
@@ -69,7 +57,6 @@ nav{display:flex;gap:2px;flex:1}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
 
 /* ── LAYOUT ── */
-.wrap{max-width:1440px;margin:0 auto;padding:24px 24px 80px}
 .tab-content{display:none}
 .tab-content.active{display:block}
 
@@ -278,6 +265,68 @@ section{margin-bottom:36px}
 /* prd iframe */
 #prd-frame{width:100%;height:calc(100vh - 80px);border:none;border-radius:var(--radius);display:block}
 
+/* ── PROSPECÇÃO OBRAS SE ── */
+.prospec-summary{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px}
+.prospec-sum-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:12px 18px;min-width:110px;flex:1}
+.prospec-sum-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
+.prospec-sum-val{font-size:22px;font-weight:700}
+.prospec-toolbar{display:flex;gap:10px;align-items:center;margin-bottom:16px;flex-wrap:wrap}
+.prospec-search{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:7px 12px;font-size:13px;color:var(--text);flex:1;min-width:180px}
+.prospec-search:focus{outline:none;border-color:var(--orange)}
+.prospec-select{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:7px 10px;font-size:12px;color:var(--text);cursor:pointer}
+.prospec-select:focus{outline:none;border-color:var(--orange)}
+.prospec-btn{background:var(--orange);border:none;border-radius:var(--radius-sm);padding:7px 14px;font-size:12px;font-weight:700;color:#fff;cursor:pointer;white-space:nowrap;transition:opacity .15s}
+.prospec-btn:hover{opacity:.85}
+.prospec-btn-sec{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:7px 12px;font-size:12px;color:var(--muted);cursor:pointer;transition:all .15s}
+.prospec-btn-sec:hover{border-color:var(--orange);color:var(--orange)}
+.prospec-table{width:100%;border-collapse:collapse;font-size:13px}
+.prospec-table th{background:var(--bg3);border-bottom:1px solid var(--border);padding:9px 12px;text-align:left;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;white-space:nowrap;cursor:pointer;user-select:none}
+.prospec-table th:hover{color:var(--text)}
+.prospec-table td{padding:9px 12px;border-bottom:1px solid var(--bg4);vertical-align:top}
+.prospec-table tr:hover td{background:var(--bg3)}
+.prospec-table tr.expanded td{background:var(--bg3)}
+.prospec-empresa{font-weight:600;font-size:13px;color:var(--text)}
+.prospec-seg{font-size:11px;color:var(--muted);margin-top:2px}
+.prospec-obra-tag{display:inline-block;font-size:10px;background:var(--blue-l);color:var(--blue);border-radius:4px;padding:1px 7px;margin:1px 2px}
+.prospec-tel{font-size:12px;color:var(--text);display:flex;align-items:center;gap:5px}
+.prospec-copy{background:none;border:none;font-size:10px;color:var(--muted);cursor:pointer;padding:1px 4px;border-radius:3px}
+.prospec-copy:hover{background:var(--bg4);color:var(--text)}
+.sp-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;white-space:nowrap;cursor:pointer;border:none;transition:opacity .15s}
+.sp-badge:hover{opacity:.75}
+.sp-novo{background:var(--blue-l);color:var(--blue)}
+.sp-contatado{background:var(--yellow-l);color:var(--yellow)}
+.sp-proposta{background:var(--purple-l);color:var(--purple)}
+.sp-negociacao{background:var(--orange-l);color:var(--orange)}
+.sp-cliente{background:var(--green-l);color:var(--green)}
+.sp-descartado{background:var(--bg4);color:var(--muted2)}
+.sp-pri-alta{background:rgba(248,81,73,.12);color:var(--red);font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px}
+.sp-pri-media{background:var(--yellow-l);color:var(--yellow);font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px}
+.sp-pri-baixa{background:var(--bg4);color:var(--muted);font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px}
+.prospec-expand{background:var(--bg2);border-top:none;padding:16px 12px 16px 24px;display:none}
+.prospec-expand.open{display:table-row}
+.prospec-expand-inner{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;background:var(--bg2);padding:14px 16px;border-radius:var(--radius-sm);border:1px solid var(--border)}
+.pe-field{display:flex;flex-direction:column;gap:3px}
+.pe-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.pe-value{font-size:12px;color:var(--text)}
+.pe-actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.pe-contatos{margin-top:8px;max-height:120px;overflow-y:auto}
+.pe-contato-item{font-size:11px;color:var(--muted);padding:3px 0;border-bottom:1px solid var(--bg4)}
+.pe-contato-item:last-child{border-bottom:none}
+.prospec-modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:999;align-items:center;justify-content:center}
+.prospec-modal-bg.open{display:flex}
+.prospec-modal{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:24px;width:520px;max-width:95vw;max-height:85vh;overflow-y:auto}
+.pm-title{font-size:16px;font-weight:700;margin-bottom:18px}
+.pm-field{margin-bottom:12px}
+.pm-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px}
+.pm-input{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 10px;font-size:13px;color:var(--text)}
+.pm-input:focus{outline:none;border-color:var(--orange)}
+.pm-select{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 10px;font-size:13px;color:var(--text)}
+.pm-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pm-footer{display:flex;justify-content:flex-end;gap:10px;margin-top:20px}
+.pm-cancel{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 16px;font-size:13px;color:var(--muted);cursor:pointer}
+.pm-save{background:var(--orange);border:none;border-radius:var(--radius-sm);padding:8px 20px;font-size:13px;font-weight:700;color:#fff;cursor:pointer}
+.status-select-inline{background:transparent;border:none;font-size:10px;font-weight:700;cursor:pointer;padding:0;color:inherit}
+
 /* workers 24/7 */
 .workers-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;margin-bottom:24px}
 .worker-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:18px;display:flex;flex-direction:column;gap:12px}
@@ -330,77 +379,475 @@ section{margin-bottom:36px}
 .lb-copy{background:var(--bg4);color:var(--muted);border:1px solid var(--border);cursor:pointer}
 .lb-copy:hover{background:var(--bg3)}
 
+/* ── TAREFAS TAB ── */
+.tasks-toolbar{display:flex;align-items:center;gap:10px;margin-bottom:20px;flex-wrap:wrap}
+.tasks-filter-group{display:flex;gap:6px;flex-wrap:wrap}
+.tasks-filter-btn{background:var(--bg3);border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:12px;color:var(--muted);cursor:pointer;transition:all .15s;white-space:nowrap}
+.tasks-filter-btn:hover{border-color:var(--border2);color:var(--text)}
+.tasks-filter-btn.active{background:var(--orange-l);border-color:var(--orange);color:var(--orange)}
+.btn-new-task{margin-left:auto;background:var(--orange);border:1px solid var(--orange);border-radius:var(--radius-sm);padding:7px 16px;font-size:13px;font-weight:700;color:#fff;cursor:pointer;transition:opacity .15s;white-space:nowrap}
+.btn-new-task:hover{opacity:.85}
+
+.kanban{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;align-items:start}
+@media(max-width:1100px){.kanban{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.kanban{grid-template-columns:1fr}}
+
+.kanban-col{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.kanban-col-hdr{padding:12px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.kanban-col-label{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+.kanban-col-count{font-size:11px;background:var(--bg4);border-radius:10px;padding:1px 7px;color:var(--muted)}
+.kanban-cards{padding:10px;display:flex;flex-direction:column;gap:8px;min-height:80px;transition:background .15s}
+.kanban-cards.drag-over{background:rgba(232,81,16,.06);outline:2px dashed rgba(232,81,16,.4);outline-offset:-4px;border-radius:6px}
+.kanban-empty{padding:20px;text-align:center;color:var(--muted2);font-size:12px}
+
+.task-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;cursor:grab;transition:all .15s;user-select:none}
+.task-card:hover{border-color:var(--border2);transform:translateY(-1px)}
+.task-card.dragging{opacity:.35;cursor:grabbing}
+.task-card-top{display:flex;align-items:flex-start;gap:8px;margin-bottom:8px}
+.task-card-title{font-size:12px;font-weight:600;flex:1;line-height:1.4}
+.task-card-pri{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.pri-alta{background:var(--red)}
+.pri-media{background:var(--yellow)}
+.pri-baixa{background:var(--green)}
+.task-card-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.task-cliente-tag{font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px}
+.tc-concrenor{background:rgba(88,166,255,.15);color:var(--blue)}
+.tc-brasbloco{background:rgba(63,185,80,.15);color:var(--green)}
+.tc-levert{background:rgba(255,166,87,.15);color:#FFA657}
+.tc-geral{background:var(--bg4);color:var(--muted);border:1px solid var(--border)}
+.task-tipo-tag{font-size:10px;color:var(--muted2);background:var(--bg4);border-radius:4px;padding:1px 6px}
+.task-agente-tag{font-size:10px;color:var(--muted);background:var(--bg4);border-radius:4px;padding:1px 6px;font-family:monospace}
+.task-comments-count{margin-left:auto;font-size:10px;color:var(--muted);display:flex;align-items:center;gap:3px}
+
+/* Task modal */
+.task-modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:400;display:none;align-items:center;justify-content:center;padding:24px}
+.task-modal-bg.open{display:flex}
+.task-modal{background:var(--bg2);border:1px solid var(--border);border-radius:14px;width:100%;max-width:600px;max-height:88vh;display:flex;flex-direction:column;overflow:hidden}
+.task-modal-hdr{padding:18px 20px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:12px}
+.task-modal-title{font-size:15px;font-weight:700;flex:1;line-height:1.4}
+.task-modal-close{background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;padding:2px 6px;border-radius:6px;line-height:1;flex-shrink:0}
+.task-modal-close:hover{background:var(--bg3);color:var(--text)}
+.task-modal-body{overflow-y:auto;padding:16px 20px;display:flex;flex-direction:column;gap:14px}
+.task-modal-meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.task-modal-status{display:flex;gap:6px}
+.status-btn{font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;cursor:pointer;border:1px solid var(--border);background:var(--bg4);color:var(--muted);transition:all .15s;white-space:nowrap}
+.status-btn:hover{border-color:var(--border2);color:var(--text)}
+.status-btn.active-todo{border-color:var(--muted);background:rgba(139,148,158,.15);color:var(--muted)}
+.status-btn.active-progress{border-color:var(--blue);background:var(--blue-l);color:var(--blue)}
+.status-btn.active-waiting{border-color:var(--yellow);background:var(--yellow-l);color:var(--yellow)}
+.status-btn.active-done{border-color:var(--green);background:var(--green-l);color:var(--green)}
+.task-modal-desc{font-size:13px;color:var(--muted);line-height:1.6;background:var(--bg3);border-radius:var(--radius-sm);padding:12px}
+.task-modal-comments-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:8px}
+.comment-item{background:var(--bg3);border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:6px}
+.comment-autor{font-size:10px;font-weight:700;color:var(--muted);margin-bottom:4px;display:flex;align-items:center;gap:6px}
+.comment-agente{background:var(--blue-l);color:var(--blue);border-radius:4px;padding:1px 6px}
+.comment-texto{font-size:12px;line-height:1.5;white-space:pre-wrap;word-break:break-word}
+.comment-code{background:var(--bg);border-radius:4px;padding:8px;margin-top:6px;font-family:monospace;font-size:11px;color:#7ee787;overflow-x:auto;max-height:150px;white-space:pre-wrap}
+.comment-input-row{display:flex;gap:8px;margin-top:4px}
+.comment-input{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 12px;font-size:13px;color:var(--text);outline:none;transition:border-color .15s;resize:none;min-height:38px;font-family:inherit}
+.comment-input:focus{border-color:var(--orange)}
+.btn-comment{background:var(--orange);border:1px solid var(--orange);border-radius:var(--radius-sm);padding:8px 14px;font-size:13px;font-weight:700;color:#fff;cursor:pointer;transition:opacity .15s;flex-shrink:0}
+.btn-comment:hover{opacity:.85}
+.btn-comment:disabled{opacity:.4;cursor:not-allowed}
+.task-modal-actions{display:flex;justify-content:flex-end;border-top:1px solid var(--border);padding-top:12px;margin-top:4px}
+.btn-delete-task{background:none;border:1px solid var(--border);border-radius:var(--radius-sm);padding:6px 14px;font-size:12px;color:var(--muted);cursor:pointer;transition:all .15s}
+.btn-delete-task:hover{border-color:var(--red);color:var(--red)}
+
+/* entregavel view */
+.ent-section{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:16px;overflow:hidden}
+.ent-section-hdr{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.ent-section-icon{font-size:16px}
+.ent-section-name{font-size:13px;font-weight:700}
+.ent-section-stats{margin-left:auto;display:flex;gap:6px}
+.ent-stat{font-size:11px;padding:2px 8px;border-radius:10px;font-weight:700}
+.ent-stat-todo{background:rgba(139,148,158,.15);color:var(--muted)}
+.ent-stat-progress{background:var(--blue-l);color:var(--blue)}
+.ent-stat-done{background:var(--green-l);color:var(--green)}
+.ent-tasks-list{display:flex;flex-direction:column;gap:0}
+.ent-task-row{display:flex;align-items:center;gap:10px;padding:10px 18px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .1s}
+.ent-task-row:last-child{border-bottom:none}
+.ent-task-row:hover{background:var(--bg3)}
+.ent-task-check{font-size:14px;flex-shrink:0}
+.ent-task-title{font-size:13px;flex:1}
+.ent-task-agente{font-size:11px;color:var(--muted);font-family:monospace;background:var(--bg4);padding:1px 6px;border-radius:4px}
+.ent-task-status{font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;white-space:nowrap}
+.ent-status-todo{background:rgba(139,148,158,.15);color:var(--muted)}
+.ent-status-progress{background:var(--blue-l);color:var(--blue)}
+.ent-status-waiting{background:var(--yellow-l);color:var(--yellow)}
+.ent-status-done{background:var(--green-l);color:var(--green)}
+.ent-task-pri{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.tasks-view-toggle{display:flex;gap:4px;margin-left:4px}
+.view-btn{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:5px 10px;font-size:12px;color:var(--muted);cursor:pointer;transition:all .15s}
+.view-btn.active{background:var(--bg4);border-color:var(--border2);color:var(--text)}
+.view-btn:hover{color:var(--text)}
+
+/* new task modal */
+.new-task-modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:500;display:none;align-items:center;justify-content:center;padding:24px}
+.new-task-modal-bg.open{display:flex}
+.new-task-modal{background:var(--bg2);border:1px solid var(--border);border-radius:14px;width:100%;max-width:480px;padding:24px}
+.ntm-title{font-size:15px;font-weight:700;margin-bottom:20px}
+.ntm-field{margin-bottom:14px}
+.ntm-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:6px}
+.ntm-input,.ntm-select,.ntm-textarea{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 12px;font-size:13px;color:var(--text);outline:none;transition:border-color .15s;font-family:inherit}
+.ntm-input:focus,.ntm-select:focus,.ntm-textarea:focus{border-color:var(--orange)}
+.ntm-select option{background:var(--bg2)}
+.ntm-textarea{resize:vertical;min-height:80px}
+.ntm-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.ntm-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:20px}
+
+/* ── CLIENTES LIST ── */
+.clientes-header{display:flex;align-items:center;margin-bottom:16px}
+.clientes-title{font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;flex:1}
+.clientes-count{font-size:12px;color:var(--muted2);margin-left:8px;font-weight:400;text-transform:none;letter-spacing:0}
+.btn-novo-cliente{background:var(--orange);border:none;border-radius:var(--radius-sm);padding:8px 18px;font-size:13px;font-weight:700;color:#fff;cursor:pointer;transition:opacity .15s}
+.btn-novo-cliente:hover{opacity:.85}
+
+.clientes-table{width:100%;border-collapse:collapse;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.clientes-table thead tr{background:var(--bg2);border-bottom:1px solid var(--border)}
+.clientes-table th{padding:10px 14px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);text-align:left;white-space:nowrap}
+.clientes-table tbody tr{background:var(--bg2);border-bottom:1px solid var(--border);transition:background .1s;cursor:pointer}
+.clientes-table tbody tr:last-child{border-bottom:none}
+.clientes-table tbody tr:hover{background:var(--bg3)}
+.clientes-table td{padding:12px 14px;font-size:13px;vertical-align:middle}
+.cl-avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0}
+.cl-nome-cell{display:flex;align-items:center;gap:10px}
+.cl-nome{font-weight:600}
+.cl-seg{font-size:11px;color:var(--muted)}
+.cl-badge-pill{font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;white-space:nowrap}
+.pill-online{background:var(--green-l);color:var(--green)}
+.pill-pendente{background:var(--bg4);color:var(--muted2)}
+.pill-ativo{background:var(--green-l);color:var(--green)}
+.pill-onboarding{background:var(--blue-l);color:var(--blue)}
+.pill-aguardando{background:var(--yellow-l);color:var(--yellow)}
+.pill-inativo{background:var(--bg4);color:var(--muted2)}
+.cl-entregaveis{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.cl-ent-tag{font-size:11px;padding:2px 8px;border-radius:4px;font-weight:600;white-space:nowrap}
+.cl-ent-on{background:var(--green-l);color:var(--green)}
+.cl-ent-off{background:var(--bg4);color:var(--muted2);text-decoration:line-through;opacity:.5}
+.cl-desde{font-size:12px;color:var(--muted)}
+
+/* ── CLIENTE DETAIL MODAL ── */
+.cd-modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:600;display:none;align-items:center;justify-content:center;padding:24px}
+.cd-modal-bg.open{display:flex}
+.cd-modal{background:var(--bg2);border:1px solid var(--border);border-radius:14px;width:100%;max-width:640px;max-height:90vh;overflow-y:auto;display:flex;flex-direction:column}
+.cd-hdr{padding:22px 24px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:14px}
+.cd-avatar{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;flex-shrink:0}
+.cd-hdr-info{flex:1}
+.cd-hdr-nome{font-size:17px;font-weight:700}
+.cd-hdr-seg{font-size:12px;color:var(--muted);margin-top:2px}
+.cd-close{background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer;padding:2px 6px;border-radius:6px;line-height:1;flex-shrink:0}
+.cd-close:hover{background:var(--bg3);color:var(--text)}
+.cd-body{padding:20px 24px;display:flex;flex-direction:column;gap:20px}
+.cd-section-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted2);margin-bottom:10px}
+.cd-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.cd-field{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px}
+.cd-field-label{font-size:10px;color:var(--muted2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px}
+.cd-field-value{font-size:13px;font-weight:500}
+.cd-field-value a{color:var(--blue);text-decoration:none}
+.cd-field-value a:hover{text-decoration:underline}
+.cd-ent-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.cd-ent-item{border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 8px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:4px}
+.cd-ent-item.on{border-color:var(--green);background:var(--green-l)}
+.cd-ent-item.off{opacity:.45}
+.cd-ent-icon{font-size:18px}
+.cd-ent-label{font-size:10px;font-weight:700;color:var(--muted)}
+.cd-ent-item.on .cd-ent-label{color:var(--green)}
+.cd-ent-check{font-size:11px}
+.cd-links-row{display:flex;gap:8px;flex-wrap:wrap}
+.cd-link{font-size:12px;padding:6px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg3);color:var(--muted);text-decoration:none;transition:all .15s;display:flex;align-items:center;gap:5px}
+.cd-link:hover{border-color:var(--border2);color:var(--text)}
+.cd-link.live{color:var(--blue);border-color:rgba(88,166,255,.3)}
+
+/* ── NOVO CLIENTE MODAL ── */
+.nc-modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:600;display:none;align-items:center;justify-content:center;padding:24px}
+.nc-modal-bg.open{display:flex}
+.nc-modal{background:var(--bg2);border:1px solid var(--border);border-radius:14px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto;padding:28px}
+.nc-modal-title{font-size:16px;font-weight:700;margin-bottom:4px}
+.nc-modal-sub{font-size:12px;color:var(--muted);margin-bottom:24px}
+.nc-field{margin-bottom:16px}
+.nc-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:6px}
+.nc-optional{font-size:10px;color:var(--muted2);font-weight:400;text-transform:none;letter-spacing:0;margin-left:4px}
+.nc-input,.nc-select{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 12px;font-size:13px;color:var(--text);outline:none;transition:border-color .15s;font-family:inherit}
+.nc-input:focus,.nc-select:focus{border-color:var(--orange)}
+.nc-select option{background:var(--bg2)}
+.nc-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.nc-divider{height:1px;background:var(--border);margin:20px 0}
+.nc-section{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted2);margin-bottom:14px}
+.nc-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:24px}
+
 /* toast */
-.toast{position:fixed;bottom:20px;right:20px;background:var(--bg2);border:1px solid var(--green);color:var(--green);border-radius:8px;padding:10px 16px;font-size:13px;font-weight:600;opacity:0;transform:translateY(6px);transition:all .2s;pointer-events:none;z-index:300}
+.toast{position:fixed;bottom:20px;right:20px;background:var(--bg2);border:1px solid var(--green);color:var(--green);border-radius:8px;padding:10px 16px;font-size:13px;font-weight:600;opacity:0;transform:translateY(6px);transition:all .2s;pointer-events:none;z-index:999}
 .toast.show{opacity:1;transform:translateY(0)}
+
+/* ── SIDEBAR LAYOUT ── */
+.sidebar{width:240px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:52px;left:0;bottom:0;overflow-y:auto;z-index:50;transition:transform .2s}
+.main-wrap{margin-left:240px;min-height:calc(100vh - 52px)}
+.wrap{max-width:1200px;padding:24px 24px 80px}
+
+.sb-section{padding:10px 8px 4px}
+.sb-section-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted2);padding:2px 10px 6px;display:block}
+
+.sb-item{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:var(--radius-sm);cursor:pointer;font-size:13px;font-weight:500;color:var(--muted);transition:all .15s;user-select:none;border:none;background:none;width:100%;text-align:left}
+.sb-item:hover{background:var(--bg3);color:var(--text)}
+.sb-item.active{background:var(--bg4);color:var(--text)}
+.sb-item-icon{font-size:14px;flex-shrink:0}
+.sb-item-badge{font-size:10px;background:var(--orange-l);color:var(--orange);border-radius:10px;padding:1px 6px;font-weight:700;margin-left:auto}
+
+.sb-divider{height:1px;background:var(--border);margin:6px 8px}
+
+.sb-client-item{display:flex;align-items:center;gap:8px;padding:5px 10px;border-radius:var(--radius-sm);cursor:pointer;font-size:12px;color:var(--muted);transition:all .15s;user-select:none}
+.sb-client-item:hover{background:var(--bg3);color:var(--text)}
+.sb-client-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.sb-client-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500}
+.sb-client-pill{font-size:9px;font-weight:700;padding:1px 5px;border-radius:8px;flex-shrink:0}
+.sb-pill-ativo{background:var(--green-l);color:var(--green)}
+.sb-pill-onboarding{background:var(--blue-l);color:var(--blue)}
+
+/* sidebar overlay for mobile */
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:49}
+.sidebar-overlay.open{display:block}
+
+@media(max-width:900px){
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.sb-open{transform:translateX(0);box-shadow:4px 0 24px rgba(0,0,0,.4)}
+  .main-wrap{margin-left:0}
+  .hamburger{display:flex}
+}
+
+/* ── CLIENT SELECTOR ── */
+.sb-client-selector{padding:12px;cursor:pointer;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);transition:background .15s;user-select:none}
+.sb-client-selector:hover{background:var(--bg3)}
+.sb-cs-avatar{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;flex-shrink:0}
+.sb-cs-info{flex:1;min-width:0}
+.sb-cs-name{font-size:13px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sb-cs-sub{font-size:10px;color:var(--muted)}
+.sb-cs-arrow{color:var(--muted);font-size:12px;transition:transform .15s;flex-shrink:0}
+.sb-cs-arrow.open{transform:rotate(180deg)}
+
+/* dropdown */
+.sb-dropdown{display:none;border-bottom:1px solid var(--border);background:var(--bg)}
+.sb-dropdown.open{display:block}
+.sb-dd-item{display:flex;align-items:center;gap:8px;padding:8px 12px;cursor:pointer;font-size:12px;color:var(--muted);transition:background .1s}
+.sb-dd-item:hover{background:var(--bg3);color:var(--text)}
+.sb-dd-item.current{color:var(--text);font-weight:600}
+.sb-dd-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.sb-dd-add{display:flex;align-items:center;gap:8px;padding:8px 12px;cursor:pointer;font-size:12px;color:var(--orange);border-top:1px solid var(--border);transition:background .1s;font-weight:600}
+.sb-dd-add:hover{background:var(--orange-l)}
+.sb-dd-search{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:6px 10px;font-size:12px;color:var(--text);outline:none;transition:border-color .15s}
+.sb-dd-search:focus{border-color:var(--orange)}
+
+/* nav back button */
+.sb-back{display:flex;align-items:center;gap:6px;padding:8px 10px;font-size:12px;color:var(--muted);cursor:pointer;border-radius:var(--radius-sm);transition:all .15s;border:none;background:none;width:100%;text-align:left}
+.sb-back:hover{background:var(--bg3);color:var(--text)}
+
+/* section label inside nav */
+.sb-nav-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted2);padding:10px 10px 4px;display:block}
+.sb-nav-divider{height:1px;background:var(--border);margin:6px 8px}
 </style>
 </head>
 <body>
 
 <header>
   <div class="header-inner">
-    <div class="logo">
-      <div class="logo-dot"></div>
-      <span class="logo-text">Escalando Premoldados</span>
-      <span class="logo-sub">· Dashboard</span>
-    </div>
-    <button class="hamburger" id="hamburger" aria-label="Menu" onclick="toggleMenu()">
+    <button class="hamburger" id="hamburger" aria-label="Menu" onclick="toggleSidebar()">
       <span></span><span></span><span></span>
     </button>
-    <nav id="tabs">
-      <button class="tab active" data-tab="overview"><span class="tab-icon">📊</span> Overview</button>
-      <button class="tab" data-tab="clientes"><span class="tab-icon">👥</span> Clientes</button>
-      <button class="tab" data-tab="workers"><span class="tab-icon">⚡</span> Workers 24/7</button>
-      <button class="tab" data-tab="stories"><span class="tab-icon">📋</span> Stories</button>
-      <button class="tab" data-tab="team"><span class="tab-icon">🤖</span> Time</button>
-      <button class="tab" data-tab="tools"><span class="tab-icon">⚙️</span> Ferramentas</button>
-      <button class="tab" data-tab="execucoes"><span class="tab-icon">🔄</span> Execuções <span class="tab-badge" id="exec-count" style="display:none">0</span></button>
-      <button class="tab" data-tab="links"><span class="tab-icon">🔗</span> Links</button>
-    </nav>
+    <div class="logo">
+      <div class="logo-dot"></div>
+      <span class="logo-text">Escalando</span>
+      <span class="logo-sub">· Premoldados</span>
+    </div>
     <div class="header-right">
       <span class="updated" id="updated-label"><span class="pulse"></span>ao vivo</span>
-      <button class="refresh-btn" onclick="loadData()">↻ Atualizar</button>
+      <button class="refresh-btn" onclick="loadClientes();loadTarefas()">↻</button>
     </div>
   </div>
 </header>
 
-<div class="wrap">
-  <!-- OVERVIEW -->
-  <div id="tab-overview" class="tab-content active">
-    <div class="loading"><div class="spinner"></div>Carregando...</div>
+<!-- Sidebar overlay (mobile) -->
+<div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+
+  <!-- Client Selector -->
+  <div class="sb-client-selector" id="sb-selector" onclick="toggleClientDropdown()">
+    <div class="sb-cs-avatar" id="sb-cs-avatar" style="background:var(--bg4);color:var(--orange)">📐</div>
+    <div class="sb-cs-info">
+      <div class="sb-cs-name" id="sb-cs-name">Todos os Clientes</div>
+      <div class="sb-cs-sub">Escalando · Workspace</div>
+    </div>
+    <span class="sb-cs-arrow" id="sb-cs-arrow">▾</span>
   </div>
 
+  <!-- Client Dropdown -->
+  <div class="sb-dropdown" id="sb-dropdown">
+    <div style="padding:8px 10px;border-bottom:1px solid var(--border)">
+      <input id="sb-dd-search" class="sb-dd-search" placeholder="Buscar cliente..." oninput="filterClientDropdown(this.value)" autocomplete="off">
+    </div>
+    <div id="sb-dd-clients" style="max-height:220px;overflow-y:auto"><!-- populated by JS --></div>
+    <div class="sb-dd-add" onclick="closeClientDropdown();openNcModal()">＋ Novo Cliente</div>
+  </div>
+
+  <!-- Dynamic Nav Body -->
+  <div id="sb-nav-body" style="flex:1;overflow-y:auto;padding:8px">
+    <!-- populated by renderSidebar() -->
+  </div>
+
+</aside>
+
+<!-- MAIN CONTENT -->
+<div class="main-wrap">
+<div class="wrap">
+
   <!-- CLIENTES -->
-  <div id="tab-clientes" class="tab-content"></div>
+  <div id="tab-clientes" class="tab-content active"></div>
+
+  <!-- TAREFAS -->
+  <div id="tab-tarefas" class="tab-content"></div>
 
   <!-- WORKERS -->
   <div id="tab-workers" class="tab-content"></div>
 
-  <!-- STORIES -->
-  <div id="tab-stories" class="tab-content">
-    <div class="loading"><div class="spinner"></div>Carregando...</div>
+  <!-- FERRAMENTAS -->
+  <div id="tab-ferramentas" class="tab-content"></div>
+
+  <!-- PROSPECÇÃO OBRAS SE -->
+  <div id="tab-prospeccao" class="tab-content"></div>
+
+</div>
+</div>
+
+<!-- TASK DETAIL MODAL -->
+<div class="task-modal-bg" id="task-modal" onclick="closeTaskModal(event)">
+  <div class="task-modal" id="task-modal-inner"></div>
+</div>
+
+<!-- NEW TASK MODAL -->
+<div class="new-task-modal-bg" id="new-task-modal" onclick="closeNewTaskModal(event)">
+  <div class="new-task-modal" id="new-task-modal-inner">
+    <div class="ntm-title">Nova Tarefa</div>
+    <div class="ntm-field">
+      <div class="ntm-label">Título *</div>
+      <input class="ntm-input" id="ntm-titulo" placeholder="O que precisa ser feito?">
+    </div>
+    <div class="ntm-row">
+      <div class="ntm-field">
+        <div class="ntm-label">Cliente</div>
+        <select class="ntm-select" id="ntm-cliente">
+          <option value="concrenor">Concrenor</option>
+          <option value="brasbloco">Brasbloco</option>
+          <option value="levert">Levert</option>
+          <option value="geral">Geral</option>
+        </select>
+      </div>
+      <div class="ntm-field">
+        <div class="ntm-label">Prioridade</div>
+        <select class="ntm-select" id="ntm-prioridade">
+          <option value="alta">Alta</option>
+          <option value="media" selected>Média</option>
+          <option value="baixa">Baixa</option>
+        </select>
+      </div>
+    </div>
+    <div class="ntm-row">
+      <div class="ntm-field">
+        <div class="ntm-label">Entregável</div>
+        <select class="ntm-select" id="ntm-entregavel">
+          <option value="">— Nenhum —</option>
+        </select>
+      </div>
+      <div class="ntm-field">
+        <div class="ntm-label">Responsável</div>
+        <select class="ntm-select" id="ntm-agente">
+          <option value="jon">Jon (Fundador)</option>
+          <option value="theo">Theo (Tráfego)</option>
+          <option value="dev">Dex (Dev)</option>
+          <option value="devops">Gage (DevOps)</option>
+          <option value="analyst">Alex (Analyst)</option>
+          <option value="qa">Quinn (QA)</option>
+        </select>
+      </div>
+    </div>
+    <div class="ntm-field">
+      <div class="ntm-label">Descrição</div>
+      <textarea class="ntm-textarea" id="ntm-descricao" placeholder="Detalhes opcionais..."></textarea>
+    </div>
+    <div class="ntm-actions">
+      <button class="btn-cancel" onclick="closeNewTaskModal()">Cancelar</button>
+      <button class="btn-save" onclick="submitNewTask()">Criar Tarefa</button>
+    </div>
   </div>
-
-  <!-- TEAM -->
-  <div id="tab-team" class="tab-content">
-    <div class="loading"><div class="spinner"></div>Carregando...</div>
-  </div>
-
-  <!-- TOOLS -->
-  <div id="tab-tools" class="tab-content">
-    <div class="loading"><div class="spinner"></div>Carregando...</div>
-  </div>
-
-  <!-- EXECUÇÕES -->
-  <div id="tab-execucoes" class="tab-content"></div>
-
-  <!-- LINKS -->
-  <div id="tab-links" class="tab-content"></div>
 </div>
 
 <!-- EDIT INTEGRATION MODAL -->
 <div class="edit-modal-bg" id="edit-modal" onclick="closeEditModal(event)">
   <div class="edit-modal" id="edit-modal-inner"></div>
+</div>
+
+<!-- CLIENTE DETAIL MODAL -->
+<div class="cd-modal-bg" id="cd-modal" onclick="closeCdModal(event)">
+  <div class="cd-modal" id="cd-modal-inner"></div>
+</div>
+
+<!-- NOVO CLIENTE MODAL -->
+<div class="nc-modal-bg" id="nc-modal" onclick="closeNcModal(event)">
+  <div class="nc-modal">
+    <div class="nc-modal-title">Novo Cliente</div>
+    <div class="nc-modal-sub">Preencha os dados básicos. Detalhes serão coletados no kickoff.</div>
+
+    <div class="nc-row">
+      <div class="nc-field">
+        <div class="nc-label">Nome da Empresa *</div>
+        <input class="nc-input" id="nc-nome" placeholder="Ex: Concrenor">
+      </div>
+      <div class="nc-field">
+        <div class="nc-label">Segmento</div>
+        <input class="nc-input" id="nc-segmento" placeholder="Ex: Pré-moldados">
+      </div>
+    </div>
+    <div class="nc-row">
+      <div class="nc-field">
+        <div class="nc-label">Cidade / Estado</div>
+        <input class="nc-input" id="nc-cidade" placeholder="Ex: Aracaju — SE">
+      </div>
+      <div class="nc-field">
+        <div class="nc-label">Plano</div>
+        <select class="nc-select" id="nc-plano">
+          <option value="Essencial">Essencial</option>
+          <option value="Pro">Pro</option>
+          <option value="Enterprise">Enterprise</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="nc-divider"></div>
+    <div class="nc-section">Links <span style="font-weight:400;color:var(--muted2)">(opcional — preencher conforme for configurando)</span></div>
+
+    <div class="nc-field">
+      <div class="nc-label">LP <span class="nc-optional">URL da landing page</span></div>
+      <input class="nc-input" id="nc-lp" placeholder="https://cliente.escalando.co/">
+    </div>
+    <div class="nc-field">
+      <div class="nc-label">ClickUp <span class="nc-optional">URL da lista/folder</span></div>
+      <input class="nc-input" id="nc-clickup" placeholder="https://app.clickup.com/...">
+    </div>
+    <div class="nc-row">
+      <div class="nc-field">
+        <div class="nc-label">Google Drive <span class="nc-optional">pasta do cliente</span></div>
+        <input class="nc-input" id="nc-drive" placeholder="https://drive.google.com/...">
+      </div>
+      <div class="nc-field">
+        <div class="nc-label">CRM Leads <span class="nc-optional">planilha</span></div>
+        <input class="nc-input" id="nc-crm" placeholder="https://docs.google.com/...">
+      </div>
+    </div>
+
+    <div class="nc-actions">
+      <button class="btn-cancel" onclick="closeNcModal()">Cancelar</button>
+      <button class="btn-save" id="nc-save-btn" onclick="submitNovoCliente()">Criar Cliente</button>
+    </div>
+  </div>
 </div>
 
 <!-- AGENT MODAL -->
@@ -414,6 +861,7 @@ section{margin-bottom:36px}
 // ── UTILS ────────────────────────────────────────────────────
 const $ = id => document.getElementById(id);
 let DATA = null;
+let ACTIVE_CLIENT_ID = null;
 
 function toast(msg, color = 'var(--green)') {
   const el = $('toast');
@@ -447,47 +895,182 @@ function statusBadge(s) {
   return `<span class="badge badge-pending">Pending</span>`;
 }
 
-// ── MENU MOBILE ──────────────────────────────────────────────
-function toggleMenu(){
-  const nav = $('tabs');
+// ── SIDEBAR ───────────────────────────────────────────────────
+function toggleSidebar() {
+  const sb  = $('sidebar');
+  const ov  = $('sidebar-overlay');
   const btn = $('hamburger');
-  const open = nav.classList.toggle('open');
+  const open = sb.classList.toggle('sb-open');
+  ov.classList.toggle('open', open);
   btn.classList.toggle('open', open);
   document.body.style.overflow = open ? 'hidden' : '';
 }
-function closeMenu(){
-  $('tabs').classList.remove('open');
+
+function closeSidebar() {
+  $('sidebar').classList.remove('sb-open');
+  $('sidebar-overlay').classList.remove('open');
   $('hamburger').classList.remove('open');
   document.body.style.overflow = '';
 }
 
+// ── CLIENT SELECTOR DROPDOWN ─────────────────────────────────
+function closeClientDropdown() {
+  $('sb-dropdown').classList.remove('open');
+  $('sb-cs-arrow').classList.remove('open');
+}
+
+function updateClientSelector() {
+  const c = ACTIVE_CLIENT_ID ? CLIENTES_DATA.find(x => x.id === ACTIVE_CLIENT_ID) : null;
+  const avatarEl = $('sb-cs-avatar');
+  const nameEl   = $('sb-cs-name');
+  if (c) {
+    avatarEl.style.background = c.cor + '33';
+    avatarEl.style.color = c.cor;
+    avatarEl.textContent = c.nome.slice(0,2).toUpperCase();
+    nameEl.textContent = c.nome;
+  } else {
+    avatarEl.style.background = 'var(--bg4)';
+    avatarEl.style.color = 'var(--orange)';
+    avatarEl.textContent = '📐';
+    nameEl.textContent = 'Todos os Clientes';
+  }
+}
+
+function populateClientDropdown() {
+  const el = $('sb-dd-clients');
+  if (!el) return;
+  el.innerHTML = `<div class="sb-dd-item ${!ACTIVE_CLIENT_ID?'current':''}" onclick="selectClient(null)">
+    <div class="sb-dd-dot" style="background:var(--muted)"></div>
+    <span>Todos os Clientes</span>
+  </div>` + (CLIENTES_DATA || []).map(c => `
+    <div class="sb-dd-item ${ACTIVE_CLIENT_ID===c.id?'current':''}" onclick="selectClient('${c.id}')">
+      <div class="sb-dd-dot" style="background:${c.cor}"></div>
+      <span>${c.nome}</span>
+    </div>`).join('');
+}
+
+function filterClientDropdown(q) {
+  const term = (q || '').toLowerCase();
+  const el = $('sb-dd-clients');
+  if (!el) return;
+  const filtered = !term ? CLIENTES_DATA : (CLIENTES_DATA || []).filter(c => c.nome.toLowerCase().includes(term));
+  el.innerHTML = (!term ? `<div class="sb-dd-item ${!ACTIVE_CLIENT_ID?'current':''}" onclick="selectClient(null)">
+    <div class="sb-dd-dot" style="background:var(--muted)"></div><span>Todos os Clientes</span></div>` : '') +
+    filtered.map(c => `<div class="sb-dd-item ${ACTIVE_CLIENT_ID===c.id?'current':''}" onclick="selectClient('${c.id}')">
+      <div class="sb-dd-dot" style="background:${c.cor}"></div><span>${c.nome}</span></div>`).join('');
+}
+
+function toggleClientDropdown() {
+  const dd  = $('sb-dropdown');
+  const arr = $('sb-cs-arrow');
+  const isOpen = dd.classList.toggle('open');
+  arr.classList.toggle('open', isOpen);
+  if (isOpen) {
+    const search = $('sb-dd-search');
+    if (search) { search.value = ''; filterClientDropdown(''); setTimeout(() => search.focus(), 50); }
+  }
+}
+
+function selectClient(id) {
+  ACTIVE_CLIENT_ID = id;
+  TASKS_FILTER_ENTREGAVEL_KEY = null;
+  if (!id) { TASKS_FILTER_CLIENTE = 'all'; TASKS_VIEW = 'kanban'; }
+  closeClientDropdown();
+  updateClientSelector();
+  populateClientDropdown();
+  renderSidebar();
+  if (id) {
+    showClientTimeline(id);
+  } else {
+    switchTab('clientes');
+  }
+  closeSidebar();
+}
+
 // ── TABS ─────────────────────────────────────────────────────
-document.querySelectorAll('.tab').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-    btn.classList.add('active');
-    $('tab-' + btn.dataset.tab).classList.add('active');
-    closeMenu(); // fecha menu mobile ao selecionar aba
-    // Workers: load fresh data
-    if (btn.dataset.tab === 'workers') {
-      loadWorkers();
-    }
-    // Execuções: load job queue
-    if (btn.dataset.tab === 'execucoes') {
-      loadExecucoes();
-    }
-    // Links: render once
-    if (btn.dataset.tab === 'links' && !$('tab-links').dataset.rendered) {
-      $('tab-links').innerHTML = renderLinks();
-      $('tab-links').dataset.rendered = '1';
-    }
-    // Clientes: load fresh data
-    if (btn.dataset.tab === 'clientes') {
-      loadClientes();
-    }
-  });
-});
+let ACTIVE_TAB = 'clientes';
+
+function switchTab(tab) {
+  ACTIVE_TAB = tab;
+  // Clear entregavel filter when switching to global tabs
+  if (tab === 'tarefas' || tab === 'clientes') {
+    TASKS_FILTER_ENTREGAVEL_KEY = null;
+    if (!ACTIVE_CLIENT_ID) TASKS_FILTER_CLIENTE = 'all';
+  }
+  renderSidebar();
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  const panel = $('tab-' + tab);
+  if (panel) panel.classList.add('active');
+  if (tab === 'clientes')    loadClientes();
+  if (tab === 'tarefas')     loadTarefas();
+  if (tab === 'workers')     loadWorkers();
+  if (tab === 'ferramentas') loadData();
+  if (tab === 'prospeccao')  loadProspeccao();
+  closeSidebar();
+}
+
+// ── SIDEBAR NAV ───────────────────────────────────────────────
+function renderSidebar() {
+  const el = $('sb-nav-body');
+  if (!el) return;
+
+  if (!ACTIVE_CLIENT_ID) {
+    el.innerHTML = `
+      <button class="sb-item ${ACTIVE_TAB==='clientes'?'active':''}" id="sb-tab-clientes" onclick="switchTab('clientes')">
+        <span class="sb-item-icon">👥</span> Clientes
+      </button>
+      <button class="sb-item ${ACTIVE_TAB==='tarefas'?'active':''}" id="sb-tab-tarefas" onclick="switchTab('tarefas')">
+        <span class="sb-item-icon">✅</span> Tarefas
+        <span class="sb-item-badge" id="tasks-count" style="display:none">0</span>
+      </button>
+      <button class="sb-item ${ACTIVE_TAB==='workers'?'active':''}" id="sb-tab-workers" onclick="switchTab('workers')">
+        <span class="sb-item-icon">⚙️</span> Workers 24/7
+      </button>
+      <button class="sb-item ${ACTIVE_TAB==='ferramentas'?'active':''}" id="sb-tab-ferramentas" onclick="switchTab('ferramentas')">
+        <span class="sb-item-icon">🔧</span> Ferramentas
+      </button>
+      <button class="sb-item ${ACTIVE_TAB==='prospeccao'?'active':''}" id="sb-tab-prospeccao" onclick="switchTab('prospeccao')">
+        <span class="sb-item-icon">🏗️</span> Prospecção Obras SE
+      </button>`;
+  } else {
+    const c = CLIENTES_DATA.find(x => x.id === ACTIVE_CLIENT_ID);
+    const ents = (c && c.entregaveis) || {};
+    const entLinks = ENT_DEFS.map(e => {
+      const active = ACTIVE_TAB === ('ent-' + e.key) && ACTIVE_CLIENT_ID;
+      const on = !!ents[e.key];
+      return `<button class="sb-item ${active?'active':''}" style="${!on?'opacity:.45':''}"
+        onclick="showClientEntregavel('${ACTIVE_CLIENT_ID}','${e.key}')">
+        <span class="sb-item-icon">${e.icon}</span> ${e.label}
+        ${!on ? '<span style="font-size:9px;color:var(--muted2);margin-left:auto">inativo</span>' : ''}
+      </button>`;
+    }).join('');
+
+    el.innerHTML = `
+      <button class="sb-back" onclick="selectClient(null)">← Todos os clientes</button>
+      <div class="sb-nav-divider"></div>
+      <button class="sb-item ${ACTIVE_TAB==='timeline'?'active':''}" id="sb-tab-timeline" onclick="showClientTimeline('${ACTIVE_CLIENT_ID}')">
+        <span class="sb-item-icon">📅</span> Timeline
+      </button>
+      <div class="sb-nav-divider"></div>
+      <span class="sb-nav-label">Entregaveis</span>
+      ${entLinks}
+      <div class="sb-nav-divider"></div>
+      <button class="sb-item ${ACTIVE_TAB==='config'?'active':''}" id="sb-tab-config" onclick="showClientConfig('${ACTIVE_CLIENT_ID}')">
+        <span class="sb-item-icon">⚙️</span> Configuracoes
+      </button>`;
+  }
+  const badge = $('tasks-count');
+  if (badge && TASKS_DATA) {
+    const todo = TASKS_DATA.filter(t => t.status !== 'done').length;
+    badge.textContent = todo;
+    badge.style.display = todo > 0 ? '' : 'none';
+  }
+}
+
+// ── RENDER SIDEBAR CLIENTS (legacy — now handled by populateClientDropdown) ──
+function renderSidebarClients(clientes) {
+  populateClientDropdown();
+}
 
 // ── LINKS ────────────────────────────────────────────────────
 const LINKS_DATA = [
@@ -624,7 +1207,8 @@ function renderWorkerCard(w) {
 }
 
 function loadWorkers() {
-  const el = $('tab-workers');
+  let el = $('tab-workers');
+  if (!el) return;
   el.innerHTML = '<div class="workers-loading">Carregando dados dos workers...</div>';
   fetch('/api/workers').then(r => r.json()).then(workers => {
     const ok    = workers.filter(w => w.lastRun?.ok === true).length;
@@ -774,19 +1358,7 @@ function toggleStory(file) {
   renderActive();
 }
 
-function goToStories(epicId) {
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-  document.querySelector('[data-tab="stories"]').classList.add('active');
-  $('tab-stories').classList.add('active');
-  if (DATA) {
-    $('tab-stories').innerHTML = renderStories(DATA, epicId);
-    setTimeout(() => {
-      const el = $(`epic-section-${epicId}`);
-      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 100);
-  }
-}
+function goToStories() {}
 
 // ── TEAM ─────────────────────────────────────────────────────
 const EXEC_LEGEND = [
@@ -1188,37 +1760,60 @@ async function fixAndRetry(id, fid, btn) {
 }
 
 // ── CLIENTES ─────────────────────────────────────────────────
-function renderClienteCard(c) {
-  const statusMap = {
-    ativo:      { cls: 'badge-done',     txt: '✅ Ativo'     },
-    onboarding: { cls: 'badge-progress', txt: '🔄 Onboarding' },
-    inativo:    { cls: 'badge-locked',   txt: '⏸ Inativo'   },
+function statusPill(status) {
+  const map = {
+    ativo:      'pill-ativo',
+    onboarding: 'pill-onboarding',
+    inativo:    'pill-inativo',
   };
-  const st = statusMap[c.status] || { cls: 'badge-pending', txt: c.status };
-  const lpBadge  = c.lpStatus === 'online'  ? `<span class="link-badge lb-live">LP Online</span>`   : `<span class="link-badge lb-pending">LP Pendente</span>`;
-  const adsBadge = c.metaAds === 'ativo'    ? `<span class="link-badge lb-live">Ads Ativo</span>`   : `<span class="link-badge lb-pending">Ads ${c.metaAds}</span>`;
-  const gmbBadge = c.gmb === 'ativo'        ? `<span class="link-badge lb-live">GMB Ativo</span>`   : `<span class="link-badge lb-pending">GMB ${c.gmb}</span>`;
+  const labels = { ativo:'Ativo', onboarding:'Onboarding', inativo:'Inativo' };
+  return `<span class="cl-badge-pill ${map[status]||'pill-pendente'}">${labels[status]||status}</span>`;
+}
 
-  return `
-    <div style="background:var(--bg2);border:1px solid var(--border);border-left:4px solid ${c.cor};border-radius:var(--radius);padding:20px;display:flex;flex-direction:column;gap:14px">
-      <div style="display:flex;align-items:center;gap:12px">
-        <div style="width:44px;height:44px;border-radius:50%;background:${c.cor}22;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:${c.cor}">${c.nome.slice(0,2).toUpperCase()}</div>
-        <div style="flex:1">
-          <div style="font-size:16px;font-weight:700">${c.nome}</div>
-          <div style="font-size:12px;color:var(--muted)">${c.segmento} · ${c.cidade}</div>
+function lpPill(lpStatus) {
+  return lpStatus === 'online'
+    ? `<span class="cl-badge-pill pill-online">LP Online</span>`
+    : `<span class="cl-badge-pill pill-pendente">LP Pendente</span>`;
+}
+
+function adsPill(metaAds) {
+  if (metaAds === 'ativo') return `<span class="cl-badge-pill pill-ativo">Ads Ativo</span>`;
+  if (metaAds === 'aguardando campanha') return `<span class="cl-badge-pill pill-aguardando">Ads Aguardando</span>`;
+  return `<span class="cl-badge-pill pill-pendente">Ads Pendente</span>`;
+}
+
+const ENT_DEFS = [
+  { key:'onboarding', icon:'🤝', label:'Onboarding'  },
+  { key:'lp',         icon:'🌐', label:'LP'           },
+  { key:'metaAds',    icon:'📣', label:'Meta Ads'     },
+  { key:'googleAds',  icon:'🔍', label:'Google Ads'   },
+  { key:'comercial',  icon:'💼', label:'Comercial'    },
+  { key:'crm',        icon:'📊', label:'CRM'          },
+];
+
+function renderClienteRow(c) {
+  const ents = c.entregaveis || {};
+  const tags = ENT_DEFS.map(e => {
+    const on = !!ents[e.key];
+    return `<span class="cl-ent-tag ${on?'cl-ent-on':'cl-ent-off'}">${e.icon} ${e.label}</span>`;
+  }).join('');
+
+  const desde = c.criadoEm ? new Date(c.criadoEm).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'2-digit'}) : '—';
+
+  return `<tr onclick="openClienteModal('${c.id}')">
+    <td>
+      <div class="cl-nome-cell">
+        <div class="cl-avatar" style="background:${c.cor}22;color:${c.cor}">${c.nome.slice(0,2).toUpperCase()}</div>
+        <div>
+          <div class="cl-nome">${c.nome}</div>
+          <div class="cl-seg">${c.segmento} · ${c.cidade}</div>
         </div>
-        <span class="badge ${st.cls}">${st.txt}</span>
       </div>
-      <div style="display:flex;gap:6px;flex-wrap:wrap">
-        ${lpBadge}${adsBadge}${gmbBadge}
-      </div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap">
-        ${c.lp ? `<a href="${c.lp}" target="_blank" rel="noopener" style="font-size:11px;color:var(--blue);text-decoration:none;padding:4px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg3)">🌐 LP</a>` : ''}
-        <a href="${c.clickup}" target="_blank" rel="noopener" style="font-size:11px;color:var(--muted);text-decoration:none;padding:4px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg3)">✅ ClickUp</a>
-        ${c.drive ? `<a href="${c.drive}" target="_blank" rel="noopener" style="font-size:11px;color:var(--muted);text-decoration:none;padding:4px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg3)">📁 Drive</a>` : ''}
-        ${c.crm ? `<a href="${c.crm}" target="_blank" rel="noopener" style="font-size:11px;color:var(--green);text-decoration:none;padding:4px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg3)">📊 CRM Leads</a>` : ''}
-      </div>
-    </div>`;
+    </td>
+    <td>${statusPill(c.status)}</td>
+    <td><div class="cl-entregaveis">${tags}</div></td>
+    <td><span class="cl-desde">${desde}</span></td>
+  </tr>`;
 }
 
 async function loadClientes() {
@@ -1227,15 +1822,32 @@ async function loadClientes() {
   el.innerHTML = '<div class="loading"><div class="spinner"></div>Carregando...</div>';
   try {
     const res      = await fetch('/api/clientes');
-    const clientes = await res.json();
+    CLIENTES_DATA  = await res.json();
+    const clientes = CLIENTES_DATA;
     const ativos   = clientes.filter(c => c.status === 'ativo').length;
     el.innerHTML = `
       <section>
-        <div class="section-title">Clientes <span style="font-size:13px;font-weight:400;color:var(--muted)">(${clientes.length} total · ${ativos} ativo${ativos!==1?'s':''})</span></div>
-        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px">
-          ${clientes.map(renderClienteCard).join('')}
+        <div class="clientes-header">
+          <span class="clientes-title">Clientes <span class="clientes-count">(${clientes.length} total · ${ativos} ativo${ativos!==1?'s':''})</span></span>
+          <button class="btn-novo-cliente" onclick="openNcModal()">+ Novo Cliente</button>
         </div>
+        <table class="clientes-table">
+          <thead>
+            <tr>
+              <th>Empresa</th>
+              <th>Status</th>
+              <th>Entregáveis</th>
+              <th>Desde</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${clientes.map(renderClienteRow).join('')}
+          </tbody>
+        </table>
       </section>`;
+    // Update sidebar
+    populateClientDropdown();
+    renderSidebar();
   } catch (e) {
     el.innerHTML = `<div style="text-align:center;padding:60px;color:var(--red)">Erro: ${e.message}</div>`;
   }
@@ -1243,11 +1855,7 @@ async function loadClientes() {
 
 // ── RENDER ACTIVE TABS ───────────────────────────────────────
 function renderActive() {
-  if (!DATA) return;
-  $('tab-overview').innerHTML = renderOverview(DATA);
-  $('tab-stories').innerHTML  = renderStories(DATA);
-  $('tab-team').innerHTML     = renderTeam(DATA.agents);
-  $('tab-tools').innerHTML    = renderTools(DATA);
+  // abas removidas — nada a renderizar aqui
 }
 
 // ── EDIT INTEGRATION MODAL ───────────────────────────────────
@@ -1335,6 +1943,9 @@ async function loadData() {
     DATA       = await res.json();
     lastUpdated = DATA.lastUpdated;
     renderActive();
+    // Render ferramentas if that tab is active
+    const fEl = $('tab-ferramentas');
+    if (fEl && ACTIVE_TAB === 'ferramentas') fEl.innerHTML = renderTools(DATA);
     $('updated-label').innerHTML = `<span class="pulse"></span>${timeSince(lastUpdated)}`;
     // Atualiza badge de execuções em background
     fetch('/api/job-queue').then(r => r.json()).then(jobs => {
@@ -1344,13 +1955,1222 @@ async function loadData() {
     }).catch(() => {});
   } catch (e) {
     const msg = `<div style="text-align:center;padding:60px;color:var(--red)">Erro: ${e.message}<br><small style="color:var(--muted)">server rodando?</small></div>`;
-    ['overview','stories','team','tools'].forEach(t => $('tab-'+t).innerHTML = msg);
+    $('tab-clientes').innerHTML = msg;
   }
 }
 
-// auto-refresh 30s
-loadData();
-setInterval(loadData, 30000);
+// ── TAREFAS ──────────────────────────────────────────────────
+let TASKS_DATA = [];
+let ENTREGAVEIS_DATA = [];
+let TASKS_FILTER_CLIENTE = 'all';
+let TASKS_FILTER_ENTREGAVEL_KEY = null; // null = all entregaveis
+let TASKS_VIEW = 'kanban'; // 'kanban' | 'entregavel'
+let ACTIVE_TASK_ID = null;
+
+const STATUS_COLS = [
+  { key:'todo',     label:'A Fazer',      cls:'status-btn active-todo' },
+  { key:'progress', label:'Em Andamento', cls:'status-btn active-progress' },
+  { key:'waiting',  label:'Aguardando',   cls:'status-btn active-waiting' },
+  { key:'done',     label:'Concluído',    cls:'status-btn active-done' },
+];
+
+const COL_COLORS = {
+  todo:     'var(--muted)',
+  progress: 'var(--blue)',
+  waiting:  'var(--yellow)',
+  done:     'var(--green)',
+};
+
+function clienteLabel(c) {
+  return { concrenor:'Concrenor', brasbloco:'Brasbloco', levert:'Levert', geral:'Geral' }[c] || c;
+}
+
+async function loadTarefas() {
+  try {
+    const res        = await fetch('/api/tasks');
+    const data       = await res.json();
+    TASKS_DATA       = data.tasks || [];
+    ENTREGAVEIS_DATA = data.entregaveis || [];
+    renderTarefas();
+    // Atualiza badge
+    const todo = TASKS_DATA.filter(t => t.status !== 'done').length;
+    const b = $('tasks-count');
+    if (b) { b.textContent = todo; b.style.display = todo > 0 ? '' : 'none'; }
+    renderSidebar();
+  } catch (e) {
+    $('tab-tarefas').innerHTML = `<div style="text-align:center;padding:60px;color:var(--red)">Erro ao carregar tarefas: ${e.message}</div>`;
+  }
+}
+
+function getEntregavel(id) {
+  return ENTREGAVEIS_DATA.find(e => e.id === id) || null;
+}
+
+function matchesEntKey(entNome, key) {
+  const n = (entNome || '').toLowerCase();
+  if (key === 'googleAds')  return n.includes('google');
+  if (key === 'metaAds')    return n.includes('meta');
+  if (key === 'onboarding') return n.includes('onboard');
+  if (key === 'comercial')  return n.includes('comercial');
+  if (key === 'crm')        return n.includes('crm') || n.includes('leads');
+  if (key === 'lp')         return n.includes('landing') || n.includes(' lp') || n === 'lp';
+  return n.includes(key.toLowerCase());
+}
+
+function entregavelLabel(task) {
+  const e = getEntregavel(task.entregavelId);
+  if (e) return `${e.icon || ''} ${e.nome}`.trim();
+  return task.tipo || '—';
+}
+
+function renderTarefas() {
+  // When in client context, force-filter to that client only
+  if (ACTIVE_CLIENT_ID) TASKS_FILTER_CLIENTE = ACTIVE_CLIENT_ID;
+
+  // Filter by client
+  let filtered = TASKS_FILTER_CLIENTE === 'all'
+    ? TASKS_DATA
+    : TASKS_DATA.filter(t => t.cliente === TASKS_FILTER_CLIENTE);
+
+  // Additionally filter by specific entregavel if active
+  if (TASKS_FILTER_ENTREGAVEL_KEY) {
+    const activeEntIds = ENTREGAVEIS_DATA
+      .filter(e => e.cliente === ACTIVE_CLIENT_ID && matchesEntKey(e.nome, TASKS_FILTER_ENTREGAVEL_KEY))
+      .map(e => e.id);
+    filtered = filtered.filter(t => activeEntIds.includes(t.entregavelId));
+  }
+
+  const clientes = [...new Set(TASKS_DATA.map(t => t.cliente))];
+
+  // In client context: hide multi-client filter buttons, show only view toggle
+  const clientFilterHtml = ACTIVE_CLIENT_ID
+    ? `<div style="font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px">
+        <span style="font-weight:700;color:var(--text)">${clienteLabel(ACTIVE_CLIENT_ID)}</span>
+        ${TASKS_FILTER_ENTREGAVEL_KEY ? `<span>· ${ENT_DEFS.find(e=>e.key===TASKS_FILTER_ENTREGAVEL_KEY)?.icon||''} ${ENT_DEFS.find(e=>e.key===TASKS_FILTER_ENTREGAVEL_KEY)?.label||''}</span>` : ''}
+        <span style="color:var(--muted2)">· ${filtered.length} tarefa${filtered.length!==1?'s':''}</span>
+       </div>`
+    : `<div class="tasks-filter-group">
+        <button class="tasks-filter-btn ${TASKS_FILTER_CLIENTE==='all'?'active':''}" onclick="filterTasks('all')">Todos</button>
+        ${clientes.map(c => `<button class="tasks-filter-btn ${TASKS_FILTER_CLIENTE===c?'active':''}" onclick="filterTasks('${c}')">${clienteLabel(c)}</button>`).join('')}
+       </div>`;
+
+  const toolbar = `<div class="tasks-toolbar">
+    ${clientFilterHtml}
+    <div class="tasks-view-toggle">
+      <button class="view-btn ${TASKS_VIEW==='kanban'?'active':''}" onclick="setTasksView('kanban')" title="Kanban">⊞ Kanban</button>
+      <button class="view-btn ${TASKS_VIEW==='entregavel'?'active':''}" onclick="setTasksView('entregavel')" title="Por Entregável">☰ Entregável</button>
+    </div>
+    <button class="btn-new-task" onclick="openNewTaskModal()">+ Nova Tarefa</button>
+  </div>`;
+
+  if (TASKS_VIEW === 'entregavel') {
+    $('tab-tarefas').innerHTML = toolbar + renderEntregavelView(filtered);
+    return;
+  }
+
+  let html = toolbar + `<div class="kanban">`;
+
+  for (const col of STATUS_COLS) {
+    const cards = filtered.filter(t => t.status === col.key);
+    html += `<div class="kanban-col">
+      <div class="kanban-col-hdr">
+        <div style="width:8px;height:8px;border-radius:50%;background:${COL_COLORS[col.key]};flex-shrink:0"></div>
+        <span class="kanban-col-label" style="color:${COL_COLORS[col.key]}">${col.label}</span>
+        <span class="kanban-col-count">${cards.length}</span>
+      </div>
+      <div class="kanban-cards" data-status="${col.key}" ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event,'${col.key}')">`;
+
+    if (cards.length === 0) {
+      html += `<div class="kanban-empty">Nenhuma tarefa</div>`;
+    } else {
+      for (const t of cards) {
+        const priCls = { alta:'pri-alta', media:'pri-media', baixa:'pri-baixa' }[t.prioridade] || 'pri-media';
+        html += `<div class="task-card" draggable="true" data-id="${t.id}" ondragstart="onDragStart(event,'${t.id}')" ondragend="onDragEnd(event)" onclick="openTaskModal('${t.id}')">
+          <div class="task-card-top">
+            <div class="task-card-pri ${priCls}"></div>
+            <div class="task-card-title">${t.titulo}</div>
+          </div>
+          <div class="task-card-meta">
+            <span class="task-cliente-tag tc-${t.cliente}">${clienteLabel(t.cliente)}</span>
+            <span class="task-tipo-tag">${entregavelLabel(t)}</span>
+            <span class="task-agente-tag">@${t.agente}</span>
+            ${t.comentarios.length > 0 ? `<span class="task-comments-count">💬 ${t.comentarios.length}</span>` : ''}
+          </div>
+        </div>`;
+      }
+    }
+    html += `</div></div>`;
+  }
+  html += `</div>`;
+  $('tab-tarefas').innerHTML = html;
+}
+
+function filterTasks(cliente) {
+  TASKS_FILTER_CLIENTE = cliente;
+  renderTarefas();
+}
+
+function setTasksView(view) {
+  TASKS_VIEW = view;
+  renderTarefas();
+}
+
+function renderEntregavelView(tasks) {
+  const statusLabel = { todo:'A Fazer', progress:'Em Andamento', waiting:'Aguardando', done:'Concluído' };
+  const statusCls   = { todo:'ent-status-todo', progress:'ent-status-progress', waiting:'ent-status-waiting', done:'ent-status-done' };
+  const priCls      = { alta:'pri-alta', media:'pri-media', baixa:'pri-baixa' };
+
+  // Build sections: entregaveis with tasks, then ungrouped
+  // If a specific entregavel key is active, filter to only that entregavel
+  const activeKey = TASKS_FILTER_ENTREGAVEL_KEY;
+
+  // Helper: check if an entregavel name matches an ENT_DEF key
+  const matchesKey = (entNome, key) => {
+    const n = (entNome || '').toLowerCase();
+    if (key === 'googleAds')  return n.includes('google');
+    if (key === 'metaAds')    return n.includes('meta');
+    if (key === 'onboarding') return n.includes('onboard');
+    if (key === 'comercial')  return n.includes('comercial');
+    if (key === 'crm')        return n.includes('crm') || n.includes('leads');
+    if (key === 'lp')         return n.includes('landing') || n.includes(' lp') || n === 'lp';
+    return n.includes(key.toLowerCase());
+  };
+
+  // When in client context, only show entregaveis belonging to that client
+  const entregaveisToShow = ACTIVE_CLIENT_ID
+    ? ENTREGAVEIS_DATA.filter(e => e.cliente === ACTIVE_CLIENT_ID)
+    : ENTREGAVEIS_DATA;
+
+  const sections = [];
+  for (const ent of entregaveisToShow) {
+    if (activeKey && !matchesKey(ent.nome, activeKey)) continue;
+    const entTasks = tasks.filter(t => t.entregavelId === ent.id);
+    if (entTasks.length === 0 && !activeKey && TASKS_FILTER_CLIENTE !== 'all') continue;
+    if (entTasks.length === 0 && activeKey) {
+      sections.push({ id: ent.id, icon: ent.icon || '', name: ent.nome, tasks: [] });
+      continue;
+    }
+    sections.push({ id: ent.id, icon: ent.icon || '', name: ent.nome, tasks: entTasks });
+  }
+  // Ungrouped tasks (only show when not filtering by specific entregavel)
+  if (!activeKey) {
+    const knownIds = new Set(ENTREGAVEIS_DATA.map(e => e.id));
+    const ungrouped = tasks.filter(t => !t.entregavelId || !knownIds.has(t.entregavelId));
+    if (ungrouped.length > 0) sections.push({ id: null, icon: '📌', name: 'Sem entregável', tasks: ungrouped });
+  }
+
+  if (sections.length === 0) return '<div style="text-align:center;padding:60px;color:var(--muted2)">Nenhuma tarefa</div>';
+
+  return sections.map(sec => {
+    const done  = sec.tasks.filter(t => t.status === 'done').length;
+    const prog  = sec.tasks.filter(t => t.status === 'progress').length;
+    const todo  = sec.tasks.filter(t => t.status === 'todo' || t.status === 'waiting').length;
+    const stats = [
+      todo  > 0 ? `<span class="ent-stat ent-stat-todo">${todo} pendente${todo>1?'s':''}</span>` : '',
+      prog  > 0 ? `<span class="ent-stat ent-stat-progress">${prog} em andamento</span>` : '',
+      done  > 0 ? `<span class="ent-stat ent-stat-done">${done} concluído${done>1?'s':''}</span>` : '',
+    ].join('');
+
+    const rows = sec.tasks.length === 0
+      ? '<div style="padding:14px 18px;color:var(--muted2);font-size:12px">Nenhuma tarefa neste entregável</div>'
+      : sec.tasks.map(t => {
+          const check = t.status === 'done' ? '✅' : t.status === 'progress' ? '🔄' : t.status === 'waiting' ? '⏳' : '◻️';
+          return `<div class="ent-task-row" onclick="openTaskModal('${t.id}')">
+            <span class="ent-task-check">${check}</span>
+            <div class="ent-task-pri ${priCls[t.prioridade] || 'pri-media'}"></div>
+            <span class="ent-task-title">${t.titulo}</span>
+            <span class="ent-task-agente">@${t.agente}</span>
+            <span class="ent-task-status ${statusCls[t.status] || ''}">${statusLabel[t.status] || t.status}</span>
+          </div>`;
+        }).join('');
+
+    return `<div class="ent-section">
+      <div class="ent-section-hdr">
+        <span class="ent-section-icon">${sec.icon}</span>
+        <span class="ent-section-name">${sec.name}</span>
+        <div class="ent-section-stats">${stats}</div>
+      </div>
+      <div class="ent-tasks-list">${rows}</div>
+    </div>`;
+  }).join('');
+}
+
+// ── DRAG AND DROP ────────────────────────────────────────────
+let dragTaskId = null;
+
+function onDragStart(e, id) {
+  dragTaskId = id;
+  e.dataTransfer.effectAllowed = 'move';
+  e.currentTarget.classList.add('dragging');
+}
+
+function onDragEnd(e) {
+  e.currentTarget.classList.remove('dragging');
+  document.querySelectorAll('.kanban-cards').forEach(c => c.classList.remove('drag-over'));
+}
+
+function onDragOver(e) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  e.currentTarget.classList.add('drag-over');
+}
+
+function onDragLeave(e) {
+  if (!e.currentTarget.contains(e.relatedTarget)) {
+    e.currentTarget.classList.remove('drag-over');
+  }
+}
+
+async function onDrop(e, newStatus) {
+  e.preventDefault();
+  e.currentTarget.classList.remove('drag-over');
+  if (!dragTaskId) return;
+  const task = TASKS_DATA.find(t => t.id === dragTaskId);
+  if (!task || task.status === newStatus) return;
+  await fetch(`/api/tasks/${dragTaskId}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ status: newStatus })
+  });
+  dragTaskId = null;
+  await loadTarefas();
+}
+
+// ── Guias contextuais por gate ────────────────────────────────
+const GATE_GUIDES = {
+  'MA-A': {
+    titulo: '🔑 O que coletar neste gate',
+    cor: '#f0a500',
+    checklist: [
+      '[ ] Saúde da conta — Qualidade da Conta no Meta = Boa',
+      '[ ] BM sem restrições ativas',
+      '[ ] Máximo 3 anúncios reprovados no mês',
+      '[ ] Página do Facebook ativa e sem avisos',
+    ],
+    dados: [
+      'Ad Account ID → business.facebook.com → Contas de Anúncios',
+      'Business Manager ID → Configurações do Negócio (topo da página)',
+      'Pixel ID → Fontes de Dados → Pixels',
+      'WhatsApp Business → número confirmado com o cliente',
+      'Acesso Admin → Usuários → confirmar Escalando como Admin do BM',
+    ],
+    comando: 'Quando concluído, comente: "briefing aprovado"',
+  },
+  'MA-B': {
+    titulo: '📋 O que preencher neste gate',
+    cor: '#58a6ff',
+    checklist: [
+      '[ ] Avatar do cliente definido (quem compra, faixa etária, dores)',
+      '[ ] Produto foco e diferenciais anotados',
+      '[ ] Call de ideias feita com cliente (30 min)',
+      '[ ] 5+ concorrentes analisados na Meta Ad Library',
+      '[ ] 3 oportunidades de diferenciação identificadas',
+    ],
+    dados: [
+      'Meta Ad Library → facebook.com/ads/library → buscar concorrentes',
+      'Ficha do cliente no ClickUp → preencher avatar + produto + área',
+    ],
+    comando: 'Quando concluído, comente: "estratégia aprovada"',
+  },
+  'MA-C': {
+    titulo: '📐 O que definir neste gate',
+    cor: '#bc8cff',
+    checklist: [
+      '[ ] Ângulo principal da campanha definido',
+      '[ ] 3 abordagens criativas mapeadas (dor / resultado / prova social)',
+      '[ ] Fase definida: Discovery ou Scale',
+      '[ ] Nomenclatura MAT gerada para campanha + conjuntos',
+    ],
+    dados: [
+      'Campanha: TEMPERATURA | PRODUTO | OBJETIVO | OTIMIZAÇÃO | DATA',
+      'Conjunto: ORIGEM | SEXO | IDADE | ETAPA | DURAÇÃO',
+      'Use o comando "cria a campanha" para gerar automaticamente',
+    ],
+    comando: 'Quando concluído, comente: "copy aprovada"',
+  },
+  'MA-D': {
+    titulo: '✏️ O que produzir neste gate',
+    cor: '#3fb950',
+    checklist: [
+      '[ ] Mínimo 3 hooks por abordagem',
+      '[ ] Copy completa: Hook → Narrativa → Dor/Desejo → Contra-intuitivo → CTA',
+      '[ ] Versão feed (curto, até 5 linhas) e stories (longo, até 15 linhas)',
+      '[ ] Sem promessas que violem políticas Meta',
+      '[ ] Cliente aprovou a copy (enviar pelo WhatsApp)',
+    ],
+    dados: [
+      'Use o comando "gerar copy ads" para gerar automaticamente com Claude',
+    ],
+    comando: 'Quando cliente aprovar, comente: "copy aprovada"',
+  },
+  'MA-E': {
+    titulo: '🎨 O que produzir neste gate',
+    cor: '#ff7b72',
+    checklist: [
+      '[ ] Brief visual gerado a partir da copy aprovada',
+      '[ ] Mínimo 2 artes: feed 1:1 e stories 9:16',
+      '[ ] Texto na imagem: máximo 20% da área',
+      '[ ] Nomenclatura MAT nos arquivos: AD 01 | IMG | HOOK',
+      '[ ] Cliente aprovou as artes',
+    ],
+    dados: [
+      'Canva → usar brief visual gerado pelo agente como referência',
+      'Salvar artes no Drive do cliente na pasta Meta Ads',
+    ],
+    comando: 'Quando cliente aprovar, comente: "criativos aprovados"',
+  },
+  'MA-F': {
+    titulo: '🔗 O que configurar neste gate',
+    cor: '#ffa657',
+    checklist: [
+      '[ ] LP publicada em URL definitiva',
+      '[ ] Pixel disparando PageView (verificar no Pixel Helper)',
+      '[ ] Evento Contact disparando no clique do WhatsApp',
+      '[ ] Evento Lead no submit do formulário',
+      '[ ] Conversions API (CAPI) ativa',
+      '[ ] Link WhatsApp com UTM configurado',
+    ],
+    dados: [
+      'Meta Events Manager → verificar eventos recebidos',
+      'Pixel Helper (extensão Chrome) → verificar disparos na LP',
+    ],
+    comando: 'Quando concluído, comente: "pixel ok"',
+  },
+  'MA-G': {
+    titulo: '🚀 O que verificar antes do go-live',
+    cor: '#f78166',
+    checklist: [
+      '[ ] Gates MA-D e MA-E concluídos (+ MA-F se Fluxo A)',
+      '[ ] Reputação da conta ok (verificação final)',
+      '[ ] Budget diário configurado no Meta',
+      '[ ] Alertas de custo configurados no Meta',
+      '[ ] Públicos criados (engajamento + LAL + CRM)',
+      '[ ] Cliente confirmou: atende leads em até 2h',
+    ],
+    dados: [
+      'Meta → Qualidade da Conta → confirmar status Boa',
+      'Alertas → Conta de Anúncios → Notificações de custo',
+    ],
+    comando: 'Para subir a campanha, comente: "go-live autorizado"',
+  },
+  'Coletar Acessos': {
+    titulo: '🔑 O que coletar',
+    cor: '#f0a500',
+    checklist: [
+      '[ ] Ad Account ID coletado',
+      '[ ] Business Manager ID coletado',
+      '[ ] Acesso Admin da Escalando confirmado no BM',
+      '[ ] Pixel ID registrado (ou confirmar que não tem)',
+      '[ ] WhatsApp Business confirmado',
+    ],
+    dados: [
+      'business.facebook.com → Configurações do Negócio',
+      'Anotar os IDs nos comentários desta task',
+    ],
+    comando: 'Quando concluído, comente: "briefing aprovado"',
+  },
+};
+
+function renderGateGuide(titulo = '') {
+  const key = Object.keys(GATE_GUIDES).find(k => titulo.includes(k));
+  if (!key) return '';
+  const g = GATE_GUIDES[key];
+  const checks = g.checklist.map(c => `<div style="margin:3px 0;font-size:12px">${c}</div>`).join('');
+  const dados = g.dados.map(d => `<div style="margin:3px 0;font-size:11px;color:var(--muted)">→ ${d}</div>`).join('');
+  return `<div style="border:1px solid ${g.cor}33;border-left:3px solid ${g.cor};border-radius:var(--radius-sm);padding:12px;background:${g.cor}0a">
+    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:${g.cor};margin-bottom:8px">${g.titulo}</div>
+    <div style="margin-bottom:8px;font-family:monospace">${checks}</div>
+    ${dados ? `<div style="margin-top:8px;border-top:1px solid ${g.cor}22;padding-top:8px">${dados}</div>` : ''}
+    <div style="margin-top:8px;font-size:11px;font-weight:600;color:${g.cor}">${g.comando}</div>
+  </div>`;
+}
+
+function gateCommandHint(titulo = '') {
+  const key = Object.keys(GATE_GUIDES).find(k => titulo.includes(k));
+  if (key) return `<strong>Comandos disponíveis:</strong> "cria a campanha", "gerar copy ads", "monitora ads", "relatorio"`;
+  return `Ex: "monitora os ads", "gerar copy ads", "deploy lp", "relatório ads"`;
+}
+
+function openTaskModal(id) {
+  const t = TASKS_DATA.find(x => x.id === id);
+  if (!t) return;
+  ACTIVE_TASK_ID = id;
+
+  const statusBtns = STATUS_COLS.map(col => {
+    const active = t.status === col.key ? col.cls : 'status-btn';
+    return `<button class="${active}" onclick="changeTaskStatus('${id}','${col.key}')">${col.label}</button>`;
+  }).join('');
+
+  const comments = t.comentarios.map(c => {
+    const isAgent = c.autor === 'agente';
+    const textoHtml = isAgent
+      ? c.texto.replace(/```\n?([\s\S]*?)\n?```/g, (_, code) => `<div class="comment-code">${code.replace(/</g,'&lt;')}</div>`).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      : c.texto.replace(/</g,'&lt;');
+    return `<div class="comment-item">
+      <div class="comment-autor">
+        ${c.autor} ${isAgent ? '<span class="comment-agente">agente</span>' : ''}
+        <span style="margin-left:auto;font-weight:400;color:var(--muted2)">${new Date(c.criadoEm).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}</span>
+      </div>
+      <div class="comment-texto">${textoHtml}</div>
+    </div>`;
+  }).join('') || '<div style="color:var(--muted2);font-size:12px;padding:8px 0">Nenhum comentário ainda.</div>';
+
+  $('task-modal-inner').innerHTML = `
+    <div class="task-modal-hdr">
+      <div class="task-modal-title">${t.titulo}</div>
+      <button class="task-modal-close" onclick="closeTaskModal()">×</button>
+    </div>
+    <div class="task-modal-body">
+      <div class="task-modal-meta">
+        <span class="task-cliente-tag tc-${t.cliente}">${clienteLabel(t.cliente)}</span>
+        <span class="task-tipo-tag">${entregavelLabel(t)}</span>
+        <span class="task-agente-tag">@${t.agente}</span>
+        <span class="task-tipo-tag">prioridade: ${t.prioridade}</span>
+      </div>
+      <div class="task-modal-status">${statusBtns}</div>
+      ${t.descricao ? `<div class="task-modal-desc">${t.descricao}</div>` : ''}
+      ${renderGateGuide(t.titulo)}
+      <div>
+        <div class="task-modal-comments-title">Comentários — digite um comando para acionar um agente</div>
+        <div id="task-comments-list">${comments}</div>
+        <div style="margin-top:10px;font-size:11px;color:var(--muted2);margin-bottom:6px">${gateCommandHint(t.titulo)}</div>
+        <div class="comment-input-row">
+          <textarea class="comment-input" id="comment-text" placeholder="Escreva um comentário ou comando de agente..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();submitComment()}"></textarea>
+          <button class="btn-comment" id="btn-comment-send" onclick="submitComment()">Enviar</button>
+        </div>
+      </div>
+      <div class="task-modal-actions">
+        <button class="btn-delete-task" onclick="deleteTask('${id}')">Excluir tarefa</button>
+      </div>
+    </div>`;
+
+  $('task-modal').classList.add('open');
+}
+
+function closeTaskModal(e) {
+  if (!e || e.target === $('task-modal')) {
+    $('task-modal').classList.remove('open');
+    ACTIVE_TASK_ID = null;
+  }
+}
+
+async function changeTaskStatus(id, status) {
+  await fetch(`/api/tasks/${id}`, { method:'PUT', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ status }) });
+  await loadTarefas();
+  if (ACTIVE_TASK_ID === id) openTaskModal(id);
+}
+
+async function submitComment() {
+  if (!ACTIVE_TASK_ID) return;
+  const input = $('comment-text');
+  const texto = input.value.trim();
+  if (!texto) return;
+  const btn = $('btn-comment-send');
+  btn.disabled = true;
+  btn.textContent = '...';
+  input.value = '';
+  try {
+    const res = await fetch(`/api/tasks/${ACTIVE_TASK_ID}/comment`, {
+      method: 'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ texto, autor: 'jon' })
+    });
+    const data = await res.json();
+    if (data.agentDispatched) toast(`Agente ${data.agentDispatched} acionado!`);
+    await loadTarefas();
+    if (ACTIVE_TASK_ID) openTaskModal(ACTIVE_TASK_ID);
+  } catch (e) { toast('Erro ao enviar comentário', 'var(--red)'); }
+  btn.disabled = false;
+  btn.textContent = 'Enviar';
+}
+
+async function deleteTask(id) {
+  if (!confirm('Excluir esta tarefa?')) return;
+  await fetch(`/api/tasks/${id}`, { method:'DELETE' });
+  closeTaskModal();
+  await loadTarefas();
+  toast('Tarefa excluída');
+}
+
+// ── CLIENTE DETAIL MODAL ─────────────────────────────────────
+let CLIENTES_DATA = [];
+
+function openClienteModal(id) {
+  const c = CLIENTES_DATA.find(x => x.id === id);
+  if (!c) return;
+
+  const ents = c.entregaveis || {};
+  const entGrid = ENT_DEFS.map(e => {
+    const on = !!ents[e.key];
+    return `<div class="cd-ent-item ${on?'on':'off'}">
+      <span class="cd-ent-icon">${e.icon}</span>
+      <span class="cd-ent-label">${e.label}</span>
+      <span class="cd-ent-check">${on?'✅':'—'}</span>
+    </div>`;
+  }).join('');
+
+  const links = [
+    c.lp      ? `<a class="cd-link live" href="${c.lp}" target="_blank" rel="noopener">🌐 Landing Page</a>` : '',
+    c.clickup ? `<a class="cd-link" href="${c.clickup}" target="_blank" rel="noopener">✅ ClickUp</a>` : '',
+    c.drive   ? `<a class="cd-link" href="${c.drive}" target="_blank" rel="noopener">📁 Google Drive</a>` : '',
+    c.crm     ? `<a class="cd-link live" href="${c.crm}" target="_blank" rel="noopener">📊 CRM Leads</a>` : '',
+  ].filter(Boolean).join('');
+
+  const desde = c.criadoEm ? new Date(c.criadoEm).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric'}) : '—';
+
+  const statusLabels = { ativo:'✅ Ativo', onboarding:'🔄 Onboarding', inativo:'⏸ Inativo' };
+
+  $('cd-modal-inner').innerHTML = `
+    <div class="cd-hdr">
+      <div class="cd-avatar" style="background:${c.cor}22;color:${c.cor}">${c.nome.slice(0,2).toUpperCase()}</div>
+      <div class="cd-hdr-info">
+        <div class="cd-hdr-nome">${c.nome}</div>
+        <div class="cd-hdr-seg">${c.segmento} · ${c.cidade}</div>
+      </div>
+      <button class="cd-close" onclick="closeCdModal()">×</button>
+    </div>
+    <div class="cd-body">
+
+      <div>
+        <div class="cd-section-title">Informações Gerais</div>
+        <div class="cd-grid">
+          <div class="cd-field">
+            <div class="cd-field-label">Status</div>
+            <div class="cd-field-value">${statusLabels[c.status] || c.status}</div>
+          </div>
+          <div class="cd-field">
+            <div class="cd-field-label">Cliente desde</div>
+            <div class="cd-field-value">${desde}</div>
+          </div>
+          <div class="cd-field">
+            <div class="cd-field-label">Responsável</div>
+            <div class="cd-field-value">${c.responsavel || '—'}</div>
+          </div>
+          <div class="cd-field">
+            <div class="cd-field-label">WhatsApp</div>
+            <div class="cd-field-value">${c.whatsapp ? `<a href="https://wa.me/${c.whatsapp}" target="_blank">+${c.whatsapp}</a>` : '—'}</div>
+          </div>
+          <div class="cd-field">
+            <div class="cd-field-label">Verba Ads / mês</div>
+            <div class="cd-field-value">${c.verba_ads ? `R$ ${c.verba_ads}` : '—'}</div>
+          </div>
+          <div class="cd-field">
+            <div class="cd-field-label">LP Status</div>
+            <div class="cd-field-value">${c.lpStatus || '—'}</div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="cd-section-title">Entregáveis contratados</div>
+        <div class="cd-ent-grid">${entGrid}</div>
+      </div>
+
+      ${links ? `<div>
+        <div class="cd-section-title">Links & Acessos</div>
+        <div class="cd-links-row">${links}</div>
+      </div>` : ''}
+
+    </div>`;
+
+  $('cd-modal').classList.add('open');
+}
+
+function closeCdModal(e) {
+  if (!e || e.target === $('cd-modal')) $('cd-modal').classList.remove('open');
+}
+
+// ── NOVO CLIENTE ─────────────────────────────────────────────
+function openNcModal() {
+  ['nc-nome','nc-segmento','nc-cidade','nc-lp','nc-clickup','nc-drive','nc-crm'].forEach(id => { const el = $(id); if (el) el.value = ''; });
+  $('nc-modal').classList.add('open');
+  setTimeout(() => $('nc-nome')?.focus(), 50);
+}
+
+function closeNcModal(e) {
+  if (!e || e.target === $('nc-modal')) $('nc-modal').classList.remove('open');
+}
+
+async function submitNovoCliente() {
+  const nome = $('nc-nome').value.trim();
+  if (!nome) { toast('Nome obrigatório', 'var(--red)'); return; }
+  const btn = $('nc-save-btn');
+  btn.disabled = true; btn.textContent = 'Criando...';
+  try {
+    const body = {
+      nome,
+      segmento: $('nc-segmento').value.trim(),
+      cidade:   $('nc-cidade').value.trim(),
+      plano:    $('nc-plano').value,
+      lp:       $('nc-lp').value.trim(),
+      clickup:  $('nc-clickup').value.trim(),
+      drive:    $('nc-drive').value.trim(),
+      crm:      $('nc-crm').value.trim(),
+    };
+    const res  = await fetch('/api/clientes', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Erro ao criar cliente');
+    $('nc-modal').classList.remove('open');
+    toast(`✅ ${data.cliente.nome} criado!`);
+    await loadClientes();
+  } catch (e) {
+    toast('❌ ' + e.message, 'var(--red)');
+  }
+  btn.disabled = false; btn.textContent = 'Criar Cliente';
+}
+
+function openNewTaskModal() {
+  // Popula select de entregáveis dinamicamente
+  const sel = $('ntm-entregavel');
+  sel.innerHTML = '<option value="">— Nenhum —</option>' +
+    ENTREGAVEIS_DATA.map(e => `<option value="${e.id}">${e.icon || ''} ${e.nome}</option>`).join('');
+  $('new-task-modal').classList.add('open');
+  $('ntm-titulo').focus();
+}
+function closeNewTaskModal(e) {
+  if (!e || e.target === $('new-task-modal')) $('new-task-modal').classList.remove('open');
+}
+
+async function submitNewTask() {
+  const titulo = $('ntm-titulo').value.trim();
+  if (!titulo) { toast('Título obrigatório', 'var(--red)'); return; }
+  const entregavelId = $('ntm-entregavel').value || undefined;
+  const body = {
+    titulo,
+    cliente:     $('ntm-cliente').value,
+    prioridade:  $('ntm-prioridade').value,
+    entregavelId,
+    agente:      $('ntm-agente').value,
+    descricao:   $('ntm-descricao').value.trim(),
+  };
+  await fetch('/api/tasks', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
+  $('new-task-modal').classList.remove('open');
+  $('ntm-titulo').value = '';
+  $('ntm-descricao').value = '';
+  await loadTarefas();
+  toast('Tarefa criada!');
+}
+
+// ── TIMELINE ──────────────────────────────────────────────────
+function showClientTimeline(clientId) {
+  ACTIVE_TAB = 'timeline';
+  ACTIVE_CLIENT_ID = clientId;
+  TASKS_FILTER_ENTREGAVEL_KEY = null; // clear entregavel filter
+  renderSidebar();
+  updateClientSelector();
+  showPanel('timeline', renderTimeline(clientId));
+  closeSidebar();
+}
+
+function renderTimeline(clientId) {
+  const c = CLIENTES_DATA.find(x => x.id === clientId);
+  if (!c) return '<div style="padding:60px;text-align:center;color:var(--muted)">Cliente nao encontrado</div>';
+
+  const tasks = TASKS_DATA.filter(t => t.cliente === clientId);
+  const events = [];
+
+  events.push({
+    date: new Date(c.criadoEm || Date.now()),
+    icon: '🎉',
+    title: `${c.nome} entrou como cliente`,
+    sub: c.segmento || '',
+    color: 'var(--orange)',
+  });
+
+  for (const t of tasks) {
+    if (t.criadoEm) {
+      events.push({
+        date: new Date(t.criadoEm),
+        icon: t.status === 'done' ? '✅' : '📋',
+        title: t.titulo,
+        sub: entregavelLabel(t) + (t.agente ? ` · @${t.agente}` : ''),
+        color: t.status === 'done' ? 'var(--green)' : t.status === 'progress' ? 'var(--blue)' : 'var(--muted)',
+        status: t.status,
+      });
+    }
+    for (const cmt of (t.comentarios || [])) {
+      if (cmt.criadoEm) {
+        events.push({
+          date: new Date(cmt.criadoEm),
+          icon: cmt.autor === 'agente' ? '🤖' : '💬',
+          title: `Comentario em "${t.titulo}"`,
+          sub: cmt.texto.slice(0, 80) + (cmt.texto.length > 80 ? '...' : ''),
+          color: cmt.autor === 'agente' ? 'var(--blue)' : 'var(--muted)',
+        });
+      }
+    }
+  }
+
+  events.sort((a, b) => b.date - a.date);
+
+  if (events.length === 0) {
+    return `<div style="text-align:center;padding:60px;color:var(--muted2)">Nenhum evento ainda</div>`;
+  }
+
+  const fmtDate = d => d.toLocaleDateString('pt-BR', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
+
+  const rows = events.map(ev => `
+    <div style="display:flex;gap:14px;padding:12px 0;border-bottom:1px solid var(--border)">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:0;flex-shrink:0">
+        <div style="width:32px;height:32px;border-radius:50%;background:${ev.color}22;display:flex;align-items:center;justify-content:center;font-size:14px">${ev.icon}</div>
+        <div style="flex:1;width:2px;background:var(--border);margin-top:4px;min-height:12px"></div>
+      </div>
+      <div style="flex:1;padding-top:4px;padding-bottom:8px">
+        <div style="font-size:13px;font-weight:600;color:var(--text)">${ev.title}</div>
+        ${ev.sub ? `<div style="font-size:11px;color:var(--muted);margin-top:2px">${ev.sub}</div>` : ''}
+        <div style="font-size:10px;color:var(--muted2);margin-top:4px">${fmtDate(ev.date)}</div>
+      </div>
+    </div>`).join('');
+
+  return `
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px">
+      <div style="width:40px;height:40px;border-radius:50%;background:${c.cor}22;color:${c.cor};display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800">${c.nome.slice(0,2).toUpperCase()}</div>
+      <div>
+        <div style="font-size:16px;font-weight:700">${c.nome}</div>
+        <div style="font-size:12px;color:var(--muted)">${c.segmento} · ${events.length} evento${events.length!==1?'s':''}</div>
+      </div>
+    </div>
+    <div>${rows}</div>`;
+}
+
+// ── CLIENT ENTREGAVEL VIEW ────────────────────────────────────
+function showClientEntregavel(clientId, entKey) {
+  ACTIVE_TAB = 'ent-' + entKey;
+  ACTIVE_CLIENT_ID = clientId;
+  TASKS_FILTER_CLIENTE = clientId;
+  TASKS_FILTER_ENTREGAVEL_KEY = entKey; // filter to this specific entregavel
+  TASKS_VIEW = 'entregavel';
+  renderSidebar();
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  $('tab-tarefas').classList.add('active');
+  renderTarefas();
+  closeSidebar();
+}
+
+// ── CLIENT CONFIG ─────────────────────────────────────────────
+function showClientConfig(clientId) {
+  ACTIVE_TAB = 'config';
+  renderSidebar();
+  const c = CLIENTES_DATA.find(x => x.id === clientId);
+  if (!c) return;
+
+  const ents = c.entregaveis || {};
+  const entChecks = ENT_DEFS.map(e => `
+    <label style="display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:6px;cursor:pointer;transition:background .1s">
+      <input type="checkbox" id="cfg-ent-${e.key}" ${ents[e.key]?'checked':''} style="accent-color:var(--orange);width:14px;height:14px">
+      <span style="font-size:13px">${e.icon} ${e.label}</span>
+    </label>`).join('');
+
+  showPanel('config', `
+    <div style="max-width:600px">
+      <div style="display:flex;align-items:center;gap:14px;margin-bottom:28px">
+        <div style="width:48px;height:48px;border-radius:50%;background:${c.cor}22;color:${c.cor};display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800">${c.nome.slice(0,2).toUpperCase()}</div>
+        <div>
+          <div style="font-size:18px;font-weight:700">${c.nome}</div>
+          <div style="font-size:12px;color:var(--muted)">Configuracoes do cliente</div>
+        </div>
+      </div>
+
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:16px">
+        <div class="cd-section-title" style="margin-bottom:16px">Informacoes Gerais</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div><div class="nc-label">Nome</div><input class="nc-input" id="cfg-nome" value="${c.nome}"></div>
+          <div><div class="nc-label">Segmento</div><input class="nc-input" id="cfg-segmento" value="${c.segmento||''}"></div>
+          <div><div class="nc-label">Cidade</div><input class="nc-input" id="cfg-cidade" value="${c.cidade||''}"></div>
+          <div><div class="nc-label">Status</div>
+            <select class="nc-select" id="cfg-status">
+              <option value="onboarding" ${c.status==='onboarding'?'selected':''}>Onboarding</option>
+              <option value="ativo" ${c.status==='ativo'?'selected':''}>Ativo</option>
+              <option value="inativo" ${c.status==='inativo'?'selected':''}>Inativo</option>
+            </select>
+          </div>
+          <div><div class="nc-label">Responsavel</div><input class="nc-input" id="cfg-responsavel" value="${c.responsavel||''}"></div>
+          <div><div class="nc-label">WhatsApp</div><input class="nc-input" id="cfg-whatsapp" value="${c.whatsapp||''}"></div>
+          <div><div class="nc-label">Verba Ads / mes</div><input class="nc-input" type="number" id="cfg-verba" value="${c.verba_ads||''}"></div>
+        </div>
+      </div>
+
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:16px">
+        <div class="cd-section-title" style="margin-bottom:12px">Entregaveis contratados</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px">${entChecks}</div>
+      </div>
+
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:24px">
+        <div class="cd-section-title" style="margin-bottom:16px">Links & Acessos</div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div><div class="nc-label">Landing Page</div><input class="nc-input" id="cfg-lp" value="${c.lp||''}"></div>
+          <div><div class="nc-label">Google Drive</div><input class="nc-input" id="cfg-drive" value="${c.drive||''}"></div>
+          <div><div class="nc-label">CRM Leads</div><input class="nc-input" id="cfg-crm" value="${c.crm||''}"></div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:10px">
+        <button class="btn-save" onclick="saveClientConfig('${clientId}')">💾 Salvar Alteracoes</button>
+        <button class="btn-cancel" onclick="selectClient(null)">Cancelar</button>
+      </div>
+    </div>`);
+}
+
+async function saveClientConfig(clientId) {
+  const ents = {};
+  ENT_DEFS.forEach(e => { ents[e.key] = !!document.getElementById('cfg-ent-' + e.key)?.checked; });
+  const body = {
+    nome:        document.getElementById('cfg-nome')?.value.trim(),
+    segmento:    document.getElementById('cfg-segmento')?.value.trim(),
+    cidade:      document.getElementById('cfg-cidade')?.value.trim(),
+    status:      document.getElementById('cfg-status')?.value,
+    responsavel: document.getElementById('cfg-responsavel')?.value.trim(),
+    whatsapp:    document.getElementById('cfg-whatsapp')?.value.trim(),
+    verba_ads:   Number(document.getElementById('cfg-verba')?.value) || 0,
+    lp:          document.getElementById('cfg-lp')?.value.trim(),
+    drive:       document.getElementById('cfg-drive')?.value.trim(),
+    crm:         document.getElementById('cfg-crm')?.value.trim(),
+    entregaveis: ents,
+  };
+  try {
+    const res = await fetch(`/api/clientes/${clientId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Erro');
+    toast('Configuracoes salvas!');
+    await loadClientes();
+    showClientConfig(clientId);
+  } catch (e) {
+    toast('Erro: ' + e.message, 'var(--red)');
+  }
+}
+
+// ── SHOW PANEL (generic content panel) ───────────────────────
+function showPanel(tabId, html) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  let el = $('tab-' + tabId);
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'tab-' + tabId;
+    el.className = 'tab-content';
+    document.querySelector('.wrap').appendChild(el);
+  }
+  el.innerHTML = html;
+  el.classList.add('active');
+}
+
+// ── PROSPECÇÃO OBRAS SE ──────────────────────────────────────
+let PROSPEC_DATA = [];
+let PROSPEC_SORT = { col: 'prioridade', asc: false };
+let PROSPEC_FILTER = { busca: '', segmento: '', status: '', prioridade: '' };
+let PROSPEC_EXPANDED = null;
+
+const PROSPEC_STATUS_LABELS = { novo:'Novo', contatado:'Contatado', proposta:'Proposta', negociacao:'Negociação', cliente:'Cliente', descartado:'Descartado' };
+const PROSPEC_PRI_ORD = { alta:0, media:1, baixa:2 };
+
+async function loadProspeccao() {
+  const el = $('tab-prospeccao');
+  if (!el) return;
+  el.innerHTML = '<div style="padding:60px;text-align:center;color:var(--muted)"><div class="spinner"></div><div style="margin-top:10px">Carregando leads...</div></div>';
+  try {
+    const res  = await fetch('/api/prospeccao');
+    const data = await res.json();
+    PROSPEC_DATA = data.leads || [];
+    renderProspeccao();
+  } catch (e) {
+    el.innerHTML = `<div style="padding:40px;color:var(--red)">Erro: ${e.message}</div>`;
+  }
+}
+
+function renderProspeccao() {
+  const el = $('tab-prospeccao');
+  if (!el) return;
+
+  let leads = [...PROSPEC_DATA];
+
+  // filtros
+  const { busca, segmento, status, prioridade } = PROSPEC_FILTER;
+  if (busca) {
+    const q = busca.toLowerCase();
+    leads = leads.filter(l =>
+      l.empresa.toLowerCase().includes(q) ||
+      l.cidade.toLowerCase().includes(q) ||
+      (l.obras||[]).join(' ').toLowerCase().includes(q) ||
+      l.observacoes.toLowerCase().includes(q) ||
+      (l.setor_compras?.nome||'').toLowerCase().includes(q)
+    );
+  }
+  if (segmento) leads = leads.filter(l => l.segmento.toLowerCase().includes(segmento.toLowerCase()));
+  if (status)    leads = leads.filter(l => l.status === status);
+  if (prioridade) leads = leads.filter(l => l.prioridade === prioridade);
+
+  // ordenação
+  leads.sort((a, b) => {
+    let va, vb;
+    if (PROSPEC_SORT.col === 'empresa')    { va = a.empresa; vb = b.empresa; }
+    else if (PROSPEC_SORT.col === 'status') { va = a.status; vb = b.status; }
+    else if (PROSPEC_SORT.col === 'cidade') { va = a.cidade; vb = b.cidade; }
+    else { va = PROSPEC_PRI_ORD[a.prioridade]??9; vb = PROSPEC_PRI_ORD[b.prioridade]??9; return PROSPEC_SORT.asc ? va - vb : vb - va; }
+    return PROSPEC_SORT.asc ? va.localeCompare(vb) : vb.localeCompare(va);
+  });
+
+  // counts
+  const total = PROSPEC_DATA.length;
+  const porStatus = {};
+  for (const l of PROSPEC_DATA) porStatus[l.status] = (porStatus[l.status]||0) + 1;
+
+  const statusColors = { novo:'var(--blue)', contatado:'var(--yellow)', proposta:'var(--purple)', negociacao:'var(--orange)', cliente:'var(--green)', descartado:'var(--muted)' };
+
+  const sumCards = `
+    <div class="prospec-sum-card"><div class="prospec-sum-label">Total</div><div class="prospec-sum-val">${total}</div></div>
+    ${Object.entries(PROSPEC_STATUS_LABELS).map(([k,v]) => `
+      <div class="prospec-sum-card" style="border-color:${statusColors[k]}22">
+        <div class="prospec-sum-label">${v}</div>
+        <div class="prospec-sum-val" style="color:${statusColors[k]}">${porStatus[k]||0}</div>
+      </div>`).join('')}`;
+
+  const segmentos = [...new Set(PROSPEC_DATA.map(l => l.segmento))].filter(Boolean).sort();
+  const th = (col, lbl) => {
+    const active = PROSPEC_SORT.col === col;
+    return `<th onclick="prospecSort('${col}')">${lbl} ${active ? (PROSPEC_SORT.asc ? '↑':'↓') : ''}</th>`;
+  };
+
+  const rows = leads.map(l => {
+    const sc = l.setor_compras || {};
+    const tel = sc.telefone || '—';
+    const email = sc.email || '';
+    const obras = (l.obras||[]).slice(0,2).map(o => `<span class="prospec-obra-tag">${o}</span>`).join('') + (l.obras.length > 2 ? `<span class="prospec-obra-tag">+${l.obras.length-2}</span>` : '');
+    const priCls = `sp-pri-${l.prioridade||'media'}`;
+    const stCls  = `sp-${(l.status||'novo').replace(/ã/g,'a')}`;
+    const exp = PROSPEC_EXPANDED === l.id;
+
+    const expandContent = exp ? `
+      <tr id="expand-${l.id}" class="prospec-expand open">
+        <td colspan="6" style="padding:0 12px 14px">
+          <div class="prospec-expand-inner">
+            <div>
+              <div class="pe-field"><div class="pe-label">Endereço</div><div class="pe-value">${l.endereco||'—'}</div></div>
+              <div class="pe-field" style="margin-top:10px"><div class="pe-label">Obras em andamento</div><div class="pe-value">${(l.obras||[]).join('<br>') || '—'}</div></div>
+            </div>
+            <div>
+              <div class="pe-field"><div class="pe-label">Contato compras</div><div class="pe-value">${sc.nome||'—'}</div></div>
+              <div class="pe-field" style="margin-top:6px"><div class="pe-label">Telefone</div><div class="pe-value">${tel !== '—' ? `<span onclick="navigator.clipboard.writeText('${tel}');toast('Copiado!')" style="cursor:pointer;text-decoration:underline dotted">${tel}</span>` : '—'}</div></div>
+              <div class="pe-field" style="margin-top:6px"><div class="pe-label">E-mail</div><div class="pe-value">${email ? `<span onclick="navigator.clipboard.writeText('${email}');toast('Copiado!')" style="cursor:pointer;text-decoration:underline dotted">${email}</span>` : '—'}</div></div>
+              ${sc.linkedin ? `<div class="pe-field" style="margin-top:6px"><div class="pe-label">LinkedIn</div><div class="pe-value">${sc.linkedin}</div></div>` : ''}
+            </div>
+            <div>
+              <div class="pe-field"><div class="pe-label">Observações</div><div class="pe-value" style="font-size:12px;color:var(--muted)">${l.observacoes||'—'}</div></div>
+              <div class="pe-field" style="margin-top:10px"><div class="pe-label">Histórico de contatos</div>
+                <div class="pe-contatos">${(l.contatos||[]).length === 0 ? '<span style="color:var(--muted2);font-size:11px">Nenhum contato registrado</span>' :
+                  (l.contatos||[]).slice(-5).reverse().map(c => `<div class="pe-contato-item"><b>${c.data?.slice(0,10)||''}</b> — ${c.texto}</div>`).join('')}</div>
+                <textarea id="ct-text-${l.id}" placeholder="Registrar contato..." style="width:100%;margin-top:6px;background:var(--bg4);border:1px solid var(--border);border-radius:4px;padding:6px;font-size:12px;color:var(--text);resize:vertical" rows="2"></textarea>
+                <button onclick="prospecAddContato('${l.id}')" style="margin-top:4px;font-size:11px;padding:4px 10px;background:var(--bg4);border:1px solid var(--border);border-radius:4px;color:var(--text);cursor:pointer">+ Registrar</button>
+              </div>
+            </div>
+          </div>
+          <div class="pe-actions">
+            <select onchange="prospecUpdateStatus('${l.id}',this.value)" style="background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:5px 8px;font-size:12px;color:var(--text)">
+              ${Object.entries(PROSPEC_STATUS_LABELS).map(([k,v]) => `<option value="${k}" ${l.status===k?'selected':''}>${v}</option>`).join('')}
+            </select>
+            ${l.website ? `<a href="https://${l.website}" target="_blank" class="prospec-btn-sec" style="text-decoration:none;font-size:12px">🌐 Site</a>` : ''}
+            ${l.instagram ? `<a href="https://instagram.com/${l.instagram.replace('@','')}" target="_blank" class="prospec-btn-sec" style="text-decoration:none;font-size:12px">📷 Instagram</a>` : ''}
+            <button onclick="prospecDelete('${l.id}')" style="font-size:12px;padding:5px 12px;background:var(--red-l);border:1px solid var(--red);border-radius:4px;color:var(--red);cursor:pointer;margin-left:auto">Remover</button>
+          </div>
+        </td>
+      </tr>` : '';
+
+    return `
+      <tr onclick="prospecToggle('${l.id}')" style="cursor:pointer" id="row-${l.id}">
+        <td><div class="prospec-empresa">${l.empresa}</div><div class="prospec-seg">${l.segmento}</div></td>
+        <td style="color:var(--muted);font-size:12px">${l.cidade}</td>
+        <td>${obras || '<span style="color:var(--muted2);font-size:11px">—</span>'}</td>
+        <td><div class="prospec-tel">${tel !== '—' ? `<span onclick="event.stopPropagation();navigator.clipboard.writeText('${tel}');toast('Copiado!')" title="Copiar" style="cursor:pointer;text-decoration:underline dotted">${tel}</span>` : '<span style="color:var(--muted2)">—</span>'}</div>${email ? `<div style="font-size:11px;color:var(--muted);margin-top:2px">${email}</div>` : ''}</td>
+        <td><span class="${stCls} sp-badge" onclick="event.stopPropagation();prospecCycleStatus('${l.id}')">${PROSPEC_STATUS_LABELS[l.status]||l.status}</span></td>
+        <td><span class="${priCls}">${l.prioridade||'media'}</span></td>
+      </tr>
+      ${expandContent}`;
+  }).join('');
+
+  el.innerHTML = `
+    <div style="padding:24px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+        <div>
+          <div style="font-size:17px;font-weight:700">🏗️ Prospecção de Obras — Sergipe</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:3px">Construtoras e órgãos públicos com obras ativas em SE</div>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="prospec-btn-sec" onclick="prospecExportCSV()">⬇ Exportar CSV</button>
+          <button class="prospec-btn" onclick="prospecOpenModal()">+ Adicionar Lead</button>
+        </div>
+      </div>
+
+      <div class="prospec-summary">${sumCards}</div>
+
+      <div class="prospec-toolbar">
+        <input class="prospec-search" id="prospec-busca" placeholder="Buscar empresa, cidade, obra..." value="${busca}" oninput="PROSPEC_FILTER.busca=this.value;renderProspeccao()">
+        <select class="prospec-select" id="prospec-seg" onchange="PROSPEC_FILTER.segmento=this.value;renderProspeccao()">
+          <option value="">Todos segmentos</option>
+          ${segmentos.map(s => `<option value="${s}" ${segmento===s?'selected':''}>${s}</option>`).join('')}
+        </select>
+        <select class="prospec-select" id="prospec-status" onchange="PROSPEC_FILTER.status=this.value;renderProspeccao()">
+          <option value="">Todos status</option>
+          ${Object.entries(PROSPEC_STATUS_LABELS).map(([k,v]) => `<option value="${k}" ${status===k?'selected':''}>${v}</option>`).join('')}
+        </select>
+        <select class="prospec-select" id="prospec-pri" onchange="PROSPEC_FILTER.prioridade=this.value;renderProspeccao()">
+          <option value="">Todas prioridades</option>
+          <option value="alta" ${prioridade==='alta'?'selected':''}>Alta</option>
+          <option value="media" ${prioridade==='media'?'selected':''}>Média</option>
+          <option value="baixa" ${prioridade==='baixa'?'selected':''}>Baixa</option>
+        </select>
+        ${(busca||segmento||status||prioridade) ? `<button class="prospec-btn-sec" onclick="PROSPEC_FILTER={busca:'',segmento:'',status:'',prioridade:''};renderProspeccao()">✕ Limpar</button>` : ''}
+        <span style="font-size:12px;color:var(--muted);margin-left:auto">${leads.length} de ${total}</span>
+      </div>
+
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden">
+        <table class="prospec-table">
+          <thead><tr>
+            ${th('empresa','Empresa')}
+            ${th('cidade','Cidade')}
+            <th>Obras em andamento</th>
+            <th>Contato Compras</th>
+            ${th('status','Status')}
+            ${th('prioridade','Prioridade')}
+          </tr></thead>
+          <tbody>${rows || '<tr><td colspan="6" style="padding:40px;text-align:center;color:var(--muted)">Nenhum lead encontrado</td></tr>'}</tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- MODAL NOVO LEAD -->
+    <div class="prospec-modal-bg" id="prospec-modal" onclick="if(event.target===this)prospecCloseModal()">
+      <div class="prospec-modal">
+        <div class="pm-title">Novo Lead</div>
+        <div class="pm-field"><div class="pm-label">Empresa *</div><input class="pm-input" id="pm-empresa" placeholder="Nome da construtora"></div>
+        <div class="pm-row">
+          <div class="pm-field"><div class="pm-label">Segmento</div><input class="pm-input" id="pm-segmento" placeholder="Ex: Incorporação Residencial"></div>
+          <div class="pm-field"><div class="pm-label">Cidade</div><input class="pm-input" id="pm-cidade" placeholder="Ex: Aracaju/SE"></div>
+        </div>
+        <div class="pm-field"><div class="pm-label">Obras (separe por vírgula)</div><input class="pm-input" id="pm-obras" placeholder="Ex: Residencial X, Obra Y"></div>
+        <div class="pm-row">
+          <div class="pm-field"><div class="pm-label">Telefone (compras)</div><input class="pm-input" id="pm-tel" placeholder="(79) 0000-0000"></div>
+          <div class="pm-field"><div class="pm-label">E-mail (compras)</div><input class="pm-input" id="pm-email" placeholder="compras@empresa.com"></div>
+        </div>
+        <div class="pm-row">
+          <div class="pm-field"><div class="pm-label">Site</div><input class="pm-input" id="pm-website" placeholder="www.empresa.com.br"></div>
+          <div class="pm-field"><div class="pm-label">Prioridade</div>
+            <select class="pm-select" id="pm-prioridade"><option value="alta">Alta</option><option value="media" selected>Média</option><option value="baixa">Baixa</option></select>
+          </div>
+        </div>
+        <div class="pm-field"><div class="pm-label">Observações</div><textarea class="pm-input" id="pm-obs" rows="3" placeholder="Notas sobre a empresa ou oportunidade..."></textarea></div>
+        <div class="pm-footer">
+          <button class="pm-cancel" onclick="prospecCloseModal()">Cancelar</button>
+          <button class="pm-save" onclick="prospecSaveLead()">Salvar Lead</button>
+        </div>
+      </div>
+    </div>`;
+}
+
+function prospecSort(col) {
+  if (PROSPEC_SORT.col === col) PROSPEC_SORT.asc = !PROSPEC_SORT.asc;
+  else { PROSPEC_SORT.col = col; PROSPEC_SORT.asc = true; }
+  renderProspeccao();
+}
+
+function prospecToggle(id) {
+  PROSPEC_EXPANDED = PROSPEC_EXPANDED === id ? null : id;
+  renderProspeccao();
+}
+
+async function prospecUpdateStatus(id, status) {
+  await fetch(`/api/prospeccao/${id}`, { method:'PUT', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ status }) });
+  const lead = PROSPEC_DATA.find(l => l.id === id);
+  if (lead) lead.status = status;
+  renderProspeccao();
+  toast('Status atualizado');
+}
+
+function prospecCycleStatus(id) {
+  const order = ['novo','contatado','proposta','negociacao','cliente','descartado'];
+  const lead  = PROSPEC_DATA.find(l => l.id === id);
+  if (!lead) return;
+  const idx = order.indexOf(lead.status);
+  const next = order[(idx + 1) % order.length];
+  prospecUpdateStatus(id, next);
+}
+
+async function prospecAddContato(id) {
+  const el = document.getElementById(`ct-text-${id}`);
+  const texto = el?.value.trim();
+  if (!texto) return;
+  await fetch(`/api/prospeccao/${id}/contato`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ texto }) });
+  const lead = PROSPEC_DATA.find(l => l.id === id);
+  if (lead) { lead.contatos = lead.contatos || []; lead.contatos.push({ id:'c-'+Date.now(), texto, autor:'jon', data: new Date().toISOString() }); }
+  renderProspeccao();
+  toast('Contato registrado');
+}
+
+async function prospecDelete(id) {
+  if (!confirm('Remover este lead?')) return;
+  await fetch(`/api/prospeccao/${id}`, { method:'DELETE' });
+  PROSPEC_DATA = PROSPEC_DATA.filter(l => l.id !== id);
+  PROSPEC_EXPANDED = null;
+  renderProspeccao();
+  toast('Lead removido');
+}
+
+function prospecOpenModal() {
+  const el = document.getElementById('prospec-modal');
+  if (el) el.classList.add('open');
+}
+function prospecCloseModal() {
+  const el = document.getElementById('prospec-modal');
+  if (el) el.classList.remove('open');
+}
+
+async function prospecSaveLead() {
+  const empresa = document.getElementById('pm-empresa')?.value.trim();
+  if (!empresa) { toast('Empresa é obrigatória', 'var(--red)'); return; }
+  const obrasRaw = document.getElementById('pm-obras')?.value.trim();
+  const obras = obrasRaw ? obrasRaw.split(',').map(s => s.trim()).filter(Boolean) : [];
+  const body = {
+    empresa,
+    segmento:  document.getElementById('pm-segmento')?.value.trim(),
+    cidade:    document.getElementById('pm-cidade')?.value.trim(),
+    obras,
+    setor_compras: { nome:'', telefone: document.getElementById('pm-tel')?.value.trim(), email: document.getElementById('pm-email')?.value.trim(), linkedin:'' },
+    website:   document.getElementById('pm-website')?.value.trim(),
+    prioridade: document.getElementById('pm-prioridade')?.value,
+    observacoes: document.getElementById('pm-obs')?.value.trim(),
+  };
+  try {
+    const res  = await fetch('/api/prospeccao', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error);
+    PROSPEC_DATA.unshift(data.lead);
+    prospecCloseModal();
+    renderProspeccao();
+    toast('Lead adicionado!');
+  } catch(e) { toast('Erro: ' + e.message, 'var(--red)'); }
+}
+
+function prospecExportCSV() {
+  const headers = ['Empresa','Segmento','Cidade','Obras','Telefone','Email','Status','Prioridade','Observações'];
+  const rows = PROSPEC_DATA.map(l => [
+    l.empresa, l.segmento, l.cidade, (l.obras||[]).join('; '),
+    l.setor_compras?.telefone||'', l.setor_compras?.email||'',
+    l.status, l.prioridade, l.observacoes
+  ].map(v => `"${(v||'').replace(/"/g,'""')}"`));
+  const csv = [headers, ...rows].map(r => r.join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent('﻿' + csv);
+  a.download = 'prospeccao-obras-se.csv';
+  a.click();
+}
+
+// ── INIT ─────────────────────────────────────────────────────
+(async () => {
+  await loadClientes();
+  await loadTarefas();
+  renderSidebar();
+})();
+setInterval(() => { loadClientes(); loadTarefas(); }, 30000);
 setInterval(() => {
   if (lastUpdated) $('updated-label').innerHTML = `<span class="pulse"></span>${timeSince(lastUpdated)}`;
 }, 5000);

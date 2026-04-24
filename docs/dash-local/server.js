@@ -10,9 +10,12 @@ import path     from 'path';
 import { exec } from 'child_process';
 import { fileURLToPath } from 'url';
 
-const __dirname  = path.dirname(fileURLToPath(import.meta.url));
-const ROOT       = path.join(__dirname, '../..');
-const QUEUE_FILE = path.join(ROOT, 'data/job-queue.json');
+const __dirname   = path.dirname(fileURLToPath(import.meta.url));
+const ROOT        = path.join(__dirname, '../..');
+const QUEUE_FILE    = path.join(ROOT, 'data/job-queue.json');
+const TASKS_FILE    = path.join(ROOT, 'data/tasks.json');
+const CLIENTS_FILE  = path.join(ROOT, 'data/clients.json');
+const PROSPEC_FILE  = path.join(ROOT, 'data/prospeccao-obras-se.json');
 const PORT          = process.env.DASH_PORT ? parseInt(process.env.DASH_PORT) : 3030;
 const DASH_USER     = process.env.DASH_USER     || '';
 const DASH_PASS     = process.env.DASH_PASS     || '';
@@ -842,60 +845,292 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  // ── CLIENTS HELPERS ──
+  function readClients() {
+    try {
+      if (!fs.existsSync(CLIENTS_FILE)) return [];
+      return JSON.parse(fs.readFileSync(CLIENTS_FILE, 'utf8'));
+    } catch { return []; }
+  }
+  function saveClients(data) {
+    fs.writeFileSync(CLIENTS_FILE, JSON.stringify(data, null, 2));
+  }
+
   // ── GET /api/clientes ──
   if (req.method === 'GET' && req.url === '/api/clientes') {
-    const CLIENTES = [
-      {
-        id: 'concrenor',
-        nome: 'Concrenor',
-        segmento: 'Pré-moldados de concreto',
-        cidade: 'Sergipe',
-        plano: 'Essencial',
-        status: 'ativo',
-        lp: 'https://concrenor.escalando.co/',
-        lpStatus: 'online',
-        clickup: 'https://app.clickup.com/90133050692/v/l/901317576140',
-        drive: 'https://drive.google.com/drive/folders/1qLhzqMmp_QNEkr5XRoKa7il9WdWr-blZ',
-        crm: 'https://docs.google.com/spreadsheets/d/1q76BCHazHc9YhybnHkKgv32MgrhfpIVnGGkyou-I6RA',
-        metaAds: 'aguardando campanha',
-        gmb: 'pendente',
-        cor: '#58A6FF',
-      },
-      {
-        id: 'brasbloco',
-        nome: 'Brasbloco',
-        segmento: 'Blocos e estruturas',
-        cidade: '—',
-        plano: 'Essencial',
-        status: 'onboarding',
-        lp: '',
-        lpStatus: 'pendente',
-        clickup: 'https://app.clickup.com/90133050692/v/l/901317642669',
-        drive: 'https://drive.google.com/drive/folders/1MD0QibTR-T47mu3VHyNemFGVGdFoMND1',
-        crm: '',
-        metaAds: 'pendente',
-        gmb: 'pendente',
-        cor: '#3FB950',
-      },
-      {
-        id: 'levert',
-        nome: 'Levert',
-        segmento: 'Pré-moldados',
-        cidade: '—',
-        plano: 'Essencial',
-        status: 'onboarding',
-        lp: '',
-        lpStatus: 'pendente',
-        clickup: 'https://app.clickup.com/90133050692/v/l/901317642685',
-        drive: 'https://drive.google.com/drive/folders/1Occ7VSq-4u7Ge0setM4O4LRefGq9N990',
-        crm: '',
-        metaAds: 'pendente',
-        gmb: 'pendente',
-        cor: '#FFA657',
-      },
-    ];
     res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify(CLIENTES));
+    res.end(JSON.stringify(readClients()));
+    return;
+  }
+
+  // ── POST /api/clientes — criar cliente ──
+  if (req.method === 'POST' && req.url === '/api/clientes') {
+    let body = '';
+    req.on('data', d => body += d);
+    req.on('end', () => {
+      try {
+        const { nome, segmento, cidade, plano, whatsapp, lp, clickup, drive, crm } = JSON.parse(body || '{}');
+        if (!nome) { res.writeHead(400, { 'Content-Type': 'application/json' }); res.end(JSON.stringify({ error: 'nome obrigatório' })); return; }
+        const id     = nome.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+        const cores  = ['#58A6FF','#3FB950','#FFA657','#D2A8FF','#FF7B72','#79C0FF','#56D364','#F0883E'];
+        const clients = readClients();
+        const cor    = cores[clients.length % cores.length];
+        const now    = new Date().toISOString();
+        const cliente = { id, nome, segmento: segmento || '—', cidade: cidade || '—', plano: plano || 'Essencial', status: 'onboarding', lp: lp || '', lpStatus: 'pendente', clickup: clickup || '', drive: drive || '', crm: crm || '', metaAds: 'pendente', gmb: 'pendente', cor, criadoEm: now };
+        if (clients.find(c => c.id === id)) { res.writeHead(409, { 'Content-Type': 'application/json' }); res.end(JSON.stringify({ error: 'Cliente já existe' })); return; }
+        clients.push(cliente);
+        saveClients(clients);
+        res.writeHead(201, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ ok: true, cliente }));
+      } catch (e) { res.writeHead(500, { 'Content-Type': 'application/json' }); res.end(JSON.stringify({ error: e.message })); }
+    });
+    return;
+  }
+
+  // ── PUT /api/clientes/:id — atualizar cliente ──
+  if (req.method === 'PUT' && req.url.match(/^\/api\/clientes\/[^/]+$/)) {
+    const id = req.url.split('/').pop();
+    let body = '';
+    req.on('data', d => body += d);
+    req.on('end', () => {
+      try {
+        const updates = JSON.parse(body || '{}');
+        const clients = readClients();
+        const idx = clients.findIndex(c => c.id === id);
+        if (idx === -1) { res.writeHead(404, { 'Content-Type': 'application/json' }); res.end(JSON.stringify({ error: 'Cliente não encontrado' })); return; }
+        clients[idx] = { ...clients[idx], ...updates, id, criadoEm: clients[idx].criadoEm };
+        saveClients(clients);
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ ok: true, cliente: clients[idx] }));
+      } catch (e) { res.writeHead(500, { 'Content-Type': 'application/json' }); res.end(JSON.stringify({ error: e.message })); }
+    });
+    return;
+  }
+
+  // ── TASKS CRUD ────────────────────────────────────────────────
+
+  function readTasks() {
+    try {
+      if (!fs.existsSync(TASKS_FILE)) return { tasks: [] };
+      return JSON.parse(fs.readFileSync(TASKS_FILE, 'utf8'));
+    } catch { return { tasks: [] }; }
+  }
+
+  function saveTasks(data) {
+    fs.writeFileSync(TASKS_FILE, JSON.stringify(data, null, 2));
+  }
+
+  // GET /api/tasks
+  if (req.method === 'GET' && req.url === '/api/tasks') {
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify(readTasks()));
+    return;
+  }
+
+  // POST /api/tasks — criar task
+  if (req.method === 'POST' && req.url === '/api/tasks') {
+    let body = '';
+    req.on('data', d => body += d);
+    req.on('end', () => {
+      try {
+        const { titulo, cliente, entregavelId, tipo, prioridade, agente, descricao } = JSON.parse(body || '{}');
+        if (!titulo) { res.writeHead(400, { 'Content-Type': 'application/json' }); res.end(JSON.stringify({ error: 'titulo obrigatório' })); return; }
+        const data = readTasks();
+        const now  = new Date().toISOString();
+        const id   = 'task-' + Date.now();
+        const task = { id, titulo, cliente: cliente || 'geral', entregavelId: entregavelId || null, tipo: tipo || null, status: 'todo', prioridade: prioridade || 'media', agente: agente || 'jon', descricao: descricao || '', comentarios: [], criadoEm: now, atualizadoEm: now };
+        data.tasks.unshift(task);
+        saveTasks(data);
+        res.writeHead(201, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ ok: true, task }));
+      } catch (e) { res.writeHead(500, { 'Content-Type': 'application/json' }); res.end(JSON.stringify({ error: e.message })); }
+    });
+    return;
+  }
+
+  // PUT /api/tasks/:id — atualizar task
+  if (req.method === 'PUT' && req.url?.startsWith('/api/tasks/')) {
+    const id = req.url.split('/api/tasks/')[1].split('?')[0];
+    let body = '';
+    req.on('data', d => body += d);
+    req.on('end', () => {
+      try {
+        const updates = JSON.parse(body || '{}');
+        const data = readTasks();
+        const idx  = data.tasks.findIndex(t => t.id === id);
+        if (idx < 0) { res.writeHead(404, { 'Content-Type': 'application/json' }); res.end(JSON.stringify({ error: 'Task não encontrada' })); return; }
+        data.tasks[idx] = { ...data.tasks[idx], ...updates, id, atualizadoEm: new Date().toISOString() };
+        saveTasks(data);
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ ok: true, task: data.tasks[idx] }));
+      } catch (e) { res.writeHead(500, { 'Content-Type': 'application/json' }); res.end(JSON.stringify({ error: e.message })); }
+    });
+    return;
+  }
+
+  // DELETE /api/tasks/:id
+  if (req.method === 'DELETE' && req.url?.startsWith('/api/tasks/')) {
+    const id = req.url.split('/api/tasks/')[1];
+    try {
+      const data = readTasks();
+      data.tasks = data.tasks.filter(t => t.id !== id);
+      saveTasks(data);
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ ok: true }));
+    } catch (e) { res.writeHead(500, { 'Content-Type': 'application/json' }); res.end(JSON.stringify({ error: e.message })); }
+    return;
+  }
+
+  // POST /api/tasks/:id/comment — adicionar comentário
+  if (req.method === 'POST' && req.url?.match(/^\/api\/tasks\/[^/]+\/comment$/)) {
+    const id = req.url.split('/')[3];
+    let body = '';
+    req.on('data', d => body += d);
+    req.on('end', () => {
+      try {
+        const { texto, autor } = JSON.parse(body || '{}');
+        if (!texto) { res.writeHead(400, { 'Content-Type': 'application/json' }); res.end(JSON.stringify({ error: 'texto obrigatório' })); return; }
+        const data = readTasks();
+        const idx  = data.tasks.findIndex(t => t.id === id);
+        if (idx < 0) { res.writeHead(404, { 'Content-Type': 'application/json' }); res.end(JSON.stringify({ error: 'Task não encontrada' })); return; }
+        const comentario = { id: 'c-' + Date.now(), texto, autor: autor || 'jon', criadoEm: new Date().toISOString() };
+        data.tasks[idx].comentarios.push(comentario);
+        data.tasks[idx].atualizadoEm = new Date().toISOString();
+        saveTasks(data);
+
+        // Dispara agente se o comentário contém comando
+        const agentMap = {
+          'monitorar': 'monitorar-ads', 'monitora': 'monitorar-ads',
+          'relatório': 'relatorio-ads', 'relatorio': 'relatorio-ads', 'report': 'relatorio-ads',
+          'gerar copy': 'gerar-copy-ads', 'copy ads': 'gerar-copy-ads',
+          'deploy lp': 'deploy-lp', 'faz o deploy': 'deploy-lp',
+          'gerar lp': 'gerar-lp', 'gera lp': 'gerar-lp',
+          'exportar leads': 'exportar-leads-meta',
+          'verificar lp': 'verificar-lp', 'verifica lp': 'verificar-lp',
+        };
+        const lower = texto.toLowerCase();
+        let agentScript = null;
+        for (const [kw, script] of Object.entries(agentMap)) {
+          if (lower.includes(kw)) { agentScript = script; break; }
+        }
+
+        const task = data.tasks[idx];
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+
+        if (agentScript) {
+          // Executa script e posta resultado como comentário
+          const cliente  = task.cliente === 'geral' ? 'concrenor' : task.cliente;
+          const empresa  = cliente.charAt(0).toUpperCase() + cliente.slice(1);
+          const cmd      = `node --env-file=.env scripts/${agentScript}.js --cliente=${cliente} --empresa=${empresa}`;
+          const ts       = new Date().toISOString().replace('T',' ').slice(0,19);
+          console.log(`[${ts}] task-agent: ${cmd}`);
+          res.end(JSON.stringify({ ok: true, comentario, agentDispatched: agentScript }));
+
+          exec(cmd, { cwd: ROOT, timeout: 120000, env: { ...process.env } }, (err, stdout, stderr) => {
+            const output  = (stdout || '').slice(0, 1500) || (stderr || '').slice(0, 500) || 'Script finalizado.';
+            const resposta = { id: 'c-' + Date.now(), texto: `**[${agentScript}]** \n\`\`\`\n${output}\n\`\`\``, autor: 'agente', criadoEm: new Date().toISOString() };
+            const d2 = readTasks();
+            const i2 = d2.tasks.findIndex(t => t.id === id);
+            if (i2 >= 0) { d2.tasks[i2].comentarios.push(resposta); d2.tasks[i2].atualizadoEm = new Date().toISOString(); saveTasks(d2); }
+          });
+        } else {
+          res.end(JSON.stringify({ ok: true, comentario }));
+        }
+      } catch (e) { res.writeHead(500, { 'Content-Type': 'application/json' }); res.end(JSON.stringify({ error: e.message })); }
+    });
+    return;
+  }
+
+  // ── PROSPECÇÃO HELPERS ────────────────────────────────────────
+  function readProspec() {
+    try {
+      if (!fs.existsSync(PROSPEC_FILE)) return { leads: [] };
+      return JSON.parse(fs.readFileSync(PROSPEC_FILE, 'utf8'));
+    } catch { return { leads: [] }; }
+  }
+  function saveProspec(data) { fs.writeFileSync(PROSPEC_FILE, JSON.stringify(data, null, 2)); }
+
+  // GET /api/prospeccao
+  if (req.method === 'GET' && req.url === '/api/prospeccao') {
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify(readProspec()));
+    return;
+  }
+
+  // POST /api/prospeccao — criar lead
+  if (req.method === 'POST' && req.url === '/api/prospeccao') {
+    let body = '';
+    req.on('data', d => body += d);
+    req.on('end', () => {
+      try {
+        const { empresa, segmento, cidade, endereco, obras, setor_compras, website, instagram, prioridade, observacoes } = JSON.parse(body || '{}');
+        if (!empresa) { res.writeHead(400, { 'Content-Type': 'application/json' }); res.end(JSON.stringify({ error: 'empresa obrigatória' })); return; }
+        const data = readProspec();
+        const now  = new Date().toISOString();
+        const id   = empresa.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'') + '-' + Date.now();
+        const lead = { id, empresa, segmento: segmento||'', cidade: cidade||'', endereco: endereco||'', obras: obras||[], setor_compras: setor_compras||{ nome:'', telefone:'', email:'', linkedin:'' }, website: website||'', instagram: instagram||'', prioridade: prioridade||'media', status: 'novo', observacoes: observacoes||'', contatos: [], criadoEm: now, atualizadoEm: now };
+        data.leads.unshift(lead);
+        saveProspec(data);
+        res.writeHead(201, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ ok: true, lead }));
+      } catch (e) { res.writeHead(500, { 'Content-Type': 'application/json' }); res.end(JSON.stringify({ error: e.message })); }
+    });
+    return;
+  }
+
+  // PUT /api/prospeccao/:id — atualizar lead
+  if (req.method === 'PUT' && req.url?.match(/^\/api\/prospeccao\/[^/]+$/)) {
+    const id = req.url.split('/').pop();
+    let body = '';
+    req.on('data', d => body += d);
+    req.on('end', () => {
+      try {
+        const updates = JSON.parse(body || '{}');
+        const data = readProspec();
+        const idx  = data.leads.findIndex(l => l.id === id);
+        if (idx < 0) { res.writeHead(404, { 'Content-Type': 'application/json' }); res.end(JSON.stringify({ error: 'Lead não encontrado' })); return; }
+        data.leads[idx] = { ...data.leads[idx], ...updates, id, atualizadoEm: new Date().toISOString() };
+        saveProspec(data);
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ ok: true, lead: data.leads[idx] }));
+      } catch (e) { res.writeHead(500, { 'Content-Type': 'application/json' }); res.end(JSON.stringify({ error: e.message })); }
+    });
+    return;
+  }
+
+  // DELETE /api/prospeccao/:id
+  if (req.method === 'DELETE' && req.url?.match(/^\/api\/prospeccao\/[^/]+$/)) {
+    const id = req.url.split('/').pop();
+    try {
+      const data = readProspec();
+      data.leads = data.leads.filter(l => l.id !== id);
+      saveProspec(data);
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ ok: true }));
+    } catch (e) { res.writeHead(500, { 'Content-Type': 'application/json' }); res.end(JSON.stringify({ error: e.message })); }
+    return;
+  }
+
+  // POST /api/prospeccao/:id/contato — registrar contato
+  if (req.method === 'POST' && req.url?.match(/^\/api\/prospeccao\/[^/]+\/contato$/)) {
+    const id = req.url.split('/')[3];
+    let body = '';
+    req.on('data', d => body += d);
+    req.on('end', () => {
+      try {
+        const { texto, autor } = JSON.parse(body || '{}');
+        if (!texto) { res.writeHead(400, { 'Content-Type': 'application/json' }); res.end(JSON.stringify({ error: 'texto obrigatório' })); return; }
+        const data = readProspec();
+        const idx  = data.leads.findIndex(l => l.id === id);
+        if (idx < 0) { res.writeHead(404, { 'Content-Type': 'application/json' }); res.end(JSON.stringify({ error: 'Lead não encontrado' })); return; }
+        const contato = { id: 'c-' + Date.now(), texto, autor: autor || 'jon', data: new Date().toISOString() };
+        data.leads[idx].contatos.push(contato);
+        data.leads[idx].atualizadoEm = new Date().toISOString();
+        saveProspec(data);
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ ok: true, contato }));
+      } catch (e) { res.writeHead(500, { 'Content-Type': 'application/json' }); res.end(JSON.stringify({ error: e.message })); }
+    });
     return;
   }
 
