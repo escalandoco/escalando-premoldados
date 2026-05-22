@@ -1,0 +1,31 @@
+name: social-squad
+version: "1.0.0"
+short-title: "Social Squad"
+description: "Squad de Social Media da Escalando Assessoria. Marina gerencia estratégia, calendário, roteiros, legendas e carrosseis para todos os clientes da assessoria — sem tocar em visual."
+author: "Escalando Assessoria"
+
+aios:
+  type: squad
+
+tags:
+  - social-media
+  - instagram
+  - conteudo
+  - roteiro
+  - legenda
+  - calendario-editorial
+  - posicionamento
+
+components:
+  agents:
+    - marina.md   # Social Media Strategist — agente principal da assessoria
+
+activation:
+  interactive: "@marina"
+
+context:
+  assessoria: Escalando — assessoria de marketing digital para PMEs
+  plataforma_principal: Instagram (Reels + Feed + Stories)
+  escopo: Todos os clientes ativos da assessoria
+  regra_principal: Marina não toca em visual. Ela entrega o que gravar, fotografar e publicar — a equipe do cliente executa.
+  entregaveis_base: Lidos do pacote contratado de cada cliente (quantidade e tipo definidos pelo plano)
